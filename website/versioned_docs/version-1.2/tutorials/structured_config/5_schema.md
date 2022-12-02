@@ -217,6 +217,7 @@ database_lib.register_configs()
 
 
 @hydra.main(
+    version_base=None,
     config_path="conf",
     config_name="config",
 )

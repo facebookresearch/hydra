@@ -157,7 +157,9 @@ class CompletionPlugin(Plugin):
 
         return matches
 
-    def _query_config_groups(self, word: str) -> Tuple[List[str], bool]:
+    def _query_config_groups(
+        self, word: str, config_name: Optional[str], words: List[str]
+    ) -> Tuple[List[str], bool]:
         is_addition = word.startswith("+")
         is_deletion = word.startswith("~")
         if is_addition or is_deletion:
@@ -178,7 +180,10 @@ class CompletionPlugin(Plugin):
                 parent_group = word[0:last_slash_index]
 
         all_matched_groups = self.config_loader.get_group_options(
-            group_name=parent_group, results_filter=results_filter
+            group_name=parent_group,
+            results_filter=results_filter,
+            config_name=config_name,
+            overrides=words,
         )
         matched_groups: List[str] = []
         if results_filter == ObjectType.CONFIG:
@@ -192,10 +197,16 @@ class CompletionPlugin(Plugin):
                 name = f"{parent_group}/{match}" if parent_group != "" else match
                 if name.startswith(word):
                     files = self.config_loader.get_group_options(
-                        group_name=name, results_filter=ObjectType.CONFIG
+                        group_name=name,
+                        results_filter=ObjectType.CONFIG,
+                        config_name=config_name,
+                        overrides=words,
                     )
                     dirs = self.config_loader.get_group_options(
-                        group_name=name, results_filter=ObjectType.GROUP
+                        group_name=name,
+                        results_filter=ObjectType.GROUP,
+                        config_name=config_name,
+                        overrides=words,
                     )
                     if len(dirs) == 0 and len(files) > 0 and not is_deletion:
                         name = name + "="
@@ -224,7 +235,9 @@ class CompletionPlugin(Plugin):
             result = CompletionPlugin.complete_files(filename)
             result = [fname_prefix + file for file in result]
         else:
-            matched_groups, exact_match = self._query_config_groups(word)
+            matched_groups, exact_match = self._query_config_groups(
+                word, config_name=config_name, words=words
+            )
             config_matches: List[str] = []
             if not exact_match:
 
@@ -275,18 +288,18 @@ class DefaultCompletionPlugin(CompletionPlugin):
     """
 
     def install(self) -> None:
-        ...
+        raise NotImplementedError
 
     def uninstall(self) -> None:
-        ...
+        raise NotImplementedError
 
     @staticmethod
     def provides() -> str:
-        ...
+        raise NotImplementedError
 
     def query(self, config_name: Optional[str]) -> None:
-        ...
+        raise NotImplementedError
 
     @staticmethod
     def help(command: str) -> str:
-        ...
+        raise NotImplementedError

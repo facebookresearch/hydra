@@ -15,7 +15,7 @@ from hydra.core.override_parser.types import Override
 from hydra.errors import HydraException, OverrideParseException
 
 try:
-    from hydra.grammar.gen.OverrideLexer import (
+    from hydra.grammar.gen.OverrideLexer import (  # type: ignore[attr-defined]
         CommonTokenStream,
         InputStream,
         OverrideLexer,

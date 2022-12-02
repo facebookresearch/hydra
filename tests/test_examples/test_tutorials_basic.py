@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
 import re
 import subprocess
 from pathlib import Path
+from textwrap import dedent
 from typing import Any, List
 
 from _pytest.python_api import RaisesContext
@@ -52,6 +54,26 @@ def test_tutorial_working_directory(tmpdir: Path) -> None:
     ]
     result, _err = run_python_script(cmd)
     assert result == "Working directory : {}".format(tmpdir)
+
+
+def test_tutorial_working_directory_original_cwd(tmpdir: Path) -> None:
+    cmd = [
+        "examples/tutorials/basic/running_your_hydra_app/3_working_directory/original_cwd.py",
+        f"hydra.run.dir={tmpdir}",
+        "hydra.job.chdir=True",
+    ]
+    result, _err = run_python_script(cmd)
+    assert (
+        result.strip()
+        == dedent(
+            f"""
+            Current working directory : {tmpdir}
+            Orig working directory    : {os.getcwd()}
+            to_absolute_path('foo')   : {Path(os.getcwd()) / "foo"}
+            to_absolute_path('/foo')  : {Path("/foo").resolve()}
+            """
+        ).strip()
+    )
 
 
 @mark.parametrize(

@@ -5,7 +5,7 @@ import re
 import sys
 import warnings
 from textwrap import dedent
-from typing import Any, List, MutableSequence, Optional
+from typing import Any, List, MutableSequence, Optional, Tuple
 
 from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
 from omegaconf.errors import (
@@ -221,6 +221,15 @@ class ConfigLoaderImpl(ConfigLoader):
                     ),
                 )
 
+    def _parse_overrides_and_create_caching_repo(
+        self, config_name: Optional[str], overrides: List[str]
+    ) -> Tuple[List[Override], CachingConfigRepository]:
+        parser = OverridesParser.create()
+        parsed_overrides = parser.parse_overrides(overrides=overrides)
+        caching_repo = CachingConfigRepository(self.repository)
+        self._process_config_searchpath(config_name, parsed_overrides, caching_repo)
+        return parsed_overrides, caching_repo
+
     def _load_configuration_impl(
         self,
         config_name: Optional[str],
@@ -232,12 +241,9 @@ class ConfigLoaderImpl(ConfigLoader):
         from hydra import __version__, version
 
         self.ensure_main_config_source_available()
-        caching_repo = CachingConfigRepository(self.repository)
-
-        parser = OverridesParser.create()
-        parsed_overrides = parser.parse_overrides(overrides=overrides)
-
-        self._process_config_searchpath(config_name, parsed_overrides, caching_repo)
+        parsed_overrides, caching_repo = self._parse_overrides_and_create_caching_repo(
+            config_name, overrides
+        )
 
         if validate_sweep_overrides:
             self.validate_sweep_overrides_legal(
@@ -510,9 +516,18 @@ class ConfigLoaderImpl(ConfigLoader):
         )
 
     def get_group_options(
-        self, group_name: str, results_filter: Optional[ObjectType] = ObjectType.CONFIG
+        self,
+        group_name: str,
+        results_filter: Optional[ObjectType] = ObjectType.CONFIG,
+        config_name: Optional[str] = None,
+        overrides: Optional[List[str]] = None,
     ) -> List[str]:
-        return self.repository.get_group_options(group_name, results_filter)
+        if overrides is None:
+            overrides = []
+        _, caching_repo = self._parse_overrides_and_create_caching_repo(
+            config_name, overrides
+        )
+        return caching_repo.get_group_options(group_name, results_filter)
 
     def _compose_config_from_defaults_list(
         self,
@@ -557,12 +572,11 @@ class ConfigLoaderImpl(ConfigLoader):
         overrides: List[str],
         run_mode: RunMode,
     ) -> DefaultsList:
-        parser = OverridesParser.create()
-        parsed_overrides = parser.parse_overrides(overrides=overrides)
-        repo = CachingConfigRepository(self.repository)
-        self._process_config_searchpath(config_name, parsed_overrides, repo)
+        parsed_overrides, caching_repo = self._parse_overrides_and_create_caching_repo(
+            config_name, overrides
+        )
         defaults_list = create_defaults_list(
-            repo=repo,
+            repo=caching_repo,
             config_name=config_name,
             overrides_list=parsed_overrides,
             prepend_hydra=True,

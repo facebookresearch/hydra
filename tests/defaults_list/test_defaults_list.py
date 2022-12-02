@@ -1669,6 +1669,105 @@ def test_duplicate_items(
     "config_name,overrides,expected",
     [
         param(
+            "config_with_same_name_as_group",
+            [],
+            [
+                ResultDefault(
+                    config_path="config_with_same_name_as_group/item",
+                    package="config_with_same_name_as_group",
+                    parent="config_with_same_name_as_group",
+                ),
+                ResultDefault(
+                    config_path="config_with_same_name_as_group",
+                    package="",
+                    is_self=True,
+                    primary=True,
+                ),
+            ],
+            id="config_with_same_name_as_group",
+        ),
+        param(
+            "include_group_with_same_name_as_config",
+            [],
+            [
+                ResultDefault(
+                    config_path="config_with_same_name_as_group/item",
+                    package="config_with_same_name_as_group",
+                    parent="include_group_with_same_name_as_config",
+                ),
+                ResultDefault(
+                    config_path="include_group_with_same_name_as_config",
+                    package="",
+                    is_self=True,
+                    primary=True,
+                ),
+            ],
+            id="include_group_with_same_name_as_config",
+        ),
+        param(
+            "test_extend_from_config_with_same_name_as_group",
+            [],
+            [
+                ResultDefault(
+                    config_path="config_with_same_name_as_group/item",
+                    package="config_with_same_name_as_group",
+                    parent="config_with_same_name_as_group",
+                ),
+                ResultDefault(
+                    config_path="config_with_same_name_as_group",
+                    package="",
+                    parent="test_extend_from_config_with_same_name_as_group",
+                    is_self=True,
+                ),
+                ResultDefault(
+                    config_path="test_extend_from_config_with_same_name_as_group",
+                    package="",
+                    is_self=True,
+                    primary=True,
+                ),
+            ],
+            id="test_extend_from_config_with_same_name_as_group",
+        ),
+        param(
+            "test_extend_from_group_with_same_name_as_config",
+            [],
+            [
+                ResultDefault(
+                    config_path="config_with_same_name_as_group/item",
+                    package="config_with_same_name_as_group",
+                    parent="test_extend_from_group_with_same_name_as_config",
+                ),
+                ResultDefault(
+                    config_path="test_extend_from_group_with_same_name_as_config",
+                    package="",
+                    is_self=True,
+                    primary=True,
+                ),
+            ],
+            id="test_extend_from_group_with_same_name_as_config",
+        ),
+    ],
+)
+@mark.parametrize("version_base", ["1.2", None])
+def test_name_collision(
+    config_name: str,
+    overrides: List[str],
+    expected: List[ResultDefault],
+    version_base: Optional[str],
+    hydra_restore_singletons: Any,
+) -> None:
+    version.setbase(version_base)
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
             "group1/file_with_group_header",
             [],
             [

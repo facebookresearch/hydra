@@ -1,0 +1,2 @@
+defaults:
+  - config_with_same_name_as_group: item

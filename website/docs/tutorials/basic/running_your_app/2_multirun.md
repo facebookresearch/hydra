@@ -38,7 +38,7 @@ python my_app.py -m db=mysql,postgresql schema=warehouse,support,school
 You can access `hydra.mode` at runtime to determine whether the application is in RUN or MULTIRUN mode. Check [here](/configure_hydra/Intro.md)
 on how to access Hydra config at run time.
 
-If conflicts arise (eg, `hydra.mode=RUN` and the application was run with `--multirun`), Hydra will determine the value of `hydra.mode`
+If conflicts arise (e.g., `hydra.mode=RUN` and the application was run with `--multirun`), Hydra will determine the value of `hydra.mode`
 at run time. The following table shows what runtime `hydra.mode` value you'd get with different input configs and commandline combinations.
 
 [//]: # (Conversion matrix)
@@ -84,12 +84,12 @@ in the input config. If we run the same application with the above input config 
 [2021-01-20 17:25:03,602][HYDRA]        #2 : db=mysql schema=school
 ```
 :::info
-The above configuration methods only apply to Hydra's default `BasicSweeper` for now. For other sweepers, please checkout the 
+The above configuration methods only apply to Hydra's default `BasicSweeper` for now. For other sweepers, please check out the 
 corresponding documentations.
 :::
 
 ### Additional sweep types
-Hydra supports other kinds of sweeps, e.g:
+Hydra supports other kinds of sweeps, e.g.:
 ```python
 x=range(1,10)                  # 1-9
 schema=glob(*)                 # warehouse,support,school
