@@ -57,7 +57,7 @@ Hydra is licensed under [MIT License](LICENSE).
 ## Hydra Ecosystem
 
 #### Check out these third-party libraries that build on Hydra's functionality:
-* [hydra-zen](https://github.com/mit-ll-responsible-ai/hydra-zen): Configurable, reproducible, and scalable Python programs, via Hydra
+* [hydra-zen](https://github.com/mit-ll-responsible-ai/hydra-zen): Pythonic utilities for working with Hydra. Dynamic config generation capabilities, enhanced config store features, a Python API for launching Hydra jobs, and more.
 * [hydra-torch](https://github.com/pytorch/hydra-torch): ...
 * [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template): ...
 
