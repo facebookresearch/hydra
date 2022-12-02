@@ -58,9 +58,8 @@ Hydra is licensed under [MIT License](LICENSE).
 
 #### Check out these third-party libraries that build on Hydra's functionality:
 * [hydra-zen](https://github.com/mit-ll-responsible-ai/hydra-zen): Pythonic utilities for working with Hydra. Dynamic config generation capabilities, enhanced config store features, a Python API for launching Hydra jobs, and more.
-* [hydra-torch](https://github.com/pytorch/hydra-torch): ...
-* [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template): ...
-* [configen](https://github.com/facebookresearch/hydra/tree/main/tools/configen): Automatically generates Structured Configs that can be used with `hydra.utils.instantiate()`
+* [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template): user-friendly template combining Hydra with [Pytorch-Lightning](https://github.com/Lightning-AI/lightning) for ML experimentation
+* [hydra-torch](https://github.com/pytorch/hydra-torch): [configen](https://github.com/facebookresearch/hydra/tree/main/tools/configen)-generated configuration classes enabling type-safe PyTorch configuration for Hydra apps.
 
 #### Ask questions in Github Discussions or StackOverflow (Use the tag #fb-hydra or #omegaconf):
 * [Github Discussions](https://github.com/facebookresearch/hydra/discussions)
