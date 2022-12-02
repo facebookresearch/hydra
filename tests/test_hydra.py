@@ -3,7 +3,6 @@ import os
 import re
 import subprocess
 import sys
-from dataclasses import dataclass
 from logging import getLogger
 from pathlib import Path
 from textwrap import dedent
