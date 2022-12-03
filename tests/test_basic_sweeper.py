@@ -91,7 +91,8 @@ def test_partial_failure(
 
     expected_err_regex = dedent(
         r"""
-        Error executing job with overrides: \['\+divisor=0'\]
+        Error executing job with overrides: \['\+divisor=0'\](
+        )?
         Traceback \(most recent call last\):
           File ".*my_app\.py", line 9, in my_app
             val = 1 / cfg\.divisor(
