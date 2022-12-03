@@ -608,9 +608,7 @@ def test_jupyter_notebooks(session: Session) -> None:
 
     session.install("jupyter", "nbval", "pyzmq", "pytest")
     if platform.system() == "Windows":
-        # Newer versions of pywin32 are causing CI issues on Windows.
-        # see https://github.com/mhammond/pywin32/issues/1709
-        session.install("pywin32==225")
+        session.install("pywin32")
 
     install_hydra(session, ["pip", "install", "-e"])
     args = pytest_args(
