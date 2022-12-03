@@ -16,7 +16,10 @@ from hydra._internal.utils import run_and_report
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
 from hydra.errors import HydraDeprecationError
-from hydra.test_utils.test_utils import assert_regex_match
+from hydra.test_utils.test_utils import (
+    assert_multiline_regex_search,
+    assert_regex_match,
+)
 
 
 def test_get_original_cwd(hydra_restore_singletons: Any) -> None:
@@ -168,42 +171,43 @@ class TestRunAndReport:
                 DemoFunctions.simple_error,
                 dedent(
                     r"""
-                    Traceback \(most recent call last\):$
-                      File "[^"]+", line \d+, in run_and_report$
-                        return func\(\)$
-                      File "[^"]+", line \d+, in simple_error$
-                        assert False, "simple_err_msg"$
-                    AssertionError: simple_err_msg$
-                    assert False$
+                    Traceback \(most recent call last\):
+                      File "[^"]+", line \d+, in run_and_report
+                        return func\(\)
+                      File "[^"]+", line \d+, in simple_error
+                        assert False, "simple_err_msg"
+                    AssertionError: simple_err_msg
+                    assert False
                     """
-                ),
+                ).strip(),
                 id="simple_failure_full_traceback",
             ),
             param(
                 DemoFunctions.run_job_wrapper,
                 dedent(
                     r"""
-                    Traceback \(most recent call last\):$
-                      File "[^"]+", line \d+, in nested_error$
-                        assert False, "nested_err"$
-                    AssertionError: nested_err$
-                    assert False$
-                    Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
+                    Traceback \(most recent call last\):
+                      File "[^"]+", line \d+, in nested_error
+                        assert False, "nested_err"
+                    AssertionError: nested_err
+                    assert False
+                    Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
                     """
-                ),
+                ).strip(),
                 id="strip_run_job_from_top_of_stack",
             ),
             param(
                 DemoFunctions.omegaconf_job_wrapper,
                 dedent(
                     r"""
-                    Traceback \(most recent call last\):$
-                      File "[^"]+", line \d+, in job_calling_omconf$
-                        OmegaConf.resolve\(123\)  # type: ignore$
-                    ValueError: Invalid config type \(int\), expected an OmegaConf Container$
-                    Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
+                    Traceback \(most recent call last\):
+                      File "[^"]+", line \d+, in job_calling_omconf
+                        OmegaConf.resolve\(123\)  # type: ignore
+                    ValueError: Invalid config type \(int\), expected an OmegaConf Container
+
+                    Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
                     """
-                ),
+                ).strip(),
                 id="strip_omegaconf_from_bottom_of_stack",
             ),
         ],
@@ -214,7 +218,7 @@ class TestRunAndReport:
             run_and_report(demo_func)
         mock_stderr.seek(0)
         stderr_output = mock_stderr.read()
-        assert_regex_match(expected_traceback_regex, stderr_output)
+        assert_multiline_regex_search(expected_traceback_regex, stderr_output)
 
     def test_simplified_traceback_with_no_module(self) -> None:
         """
