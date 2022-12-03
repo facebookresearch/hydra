@@ -192,6 +192,7 @@ class TestRunAndReport:
                         assert False, "nested_err"
                     AssertionError: nested_err
                     assert False
+
                     Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
                     """
                 ).strip(),
