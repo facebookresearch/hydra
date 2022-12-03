@@ -1294,7 +1294,8 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
           File ".*my_app\.py", line 13, in my_app
             foo\(cfg\)
           File ".*my_app\.py", line 8, in foo
-            cfg\.foo = "bar"  # does not exist in the config
+            cfg\.foo = "bar"  # does not exist in the config(
+            \^+)?
         omegaconf\.errors\.ConfigAttributeError: Key 'foo' is not in struct
             full_key: foo
             object_type=dict
@@ -1397,7 +1398,8 @@ class TestTaskRunnerLogging:
             Error executing job with overrides: \[\]
             Traceback \(most recent call last\):
               File ".*my_app\.py", line 9, in my_app
-                1 / 0
+                1 / 0(
+                ~~\^~~)?
             ZeroDivisionError: division by zero
 
             Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.

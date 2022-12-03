@@ -94,7 +94,8 @@ def test_partial_failure(
         Error executing job with overrides: \['\+divisor=0'\]
         Traceback \(most recent call last\):
           File ".*my_app\.py", line 9, in my_app
-            val = 1 / cfg\.divisor
+            val = 1 / cfg\.divisor(
+                  ~~\^~~~~~~~~~~~~)?
         ZeroDivisionError: division by zero
 
         Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.

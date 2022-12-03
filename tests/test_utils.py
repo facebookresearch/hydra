@@ -173,7 +173,8 @@ class TestRunAndReport:
                     r"""
                     Traceback \(most recent call last\):
                       File "[^"]+", line \d+, in run_and_report
-                        return func\(\)
+                        return func\(\)(
+                               \^+)?
                       File "[^"]+", line \d+, in simple_error
                         assert False, "simple_err_msg"
                     AssertionError: simple_err_msg
@@ -202,7 +203,8 @@ class TestRunAndReport:
                     r"""
                     Traceback \(most recent call last\):
                       File "[^"]+", line \d+, in job_calling_omconf
-                        OmegaConf.resolve\(123\)  # type: ignore
+                        OmegaConf.resolve\(123\)  # type: ignore(
+                        \^+)?
                     ValueError: Invalid config type \(int\), expected an OmegaConf Container
 
                     Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
