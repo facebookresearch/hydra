@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import hydra
 from hydra.core.config_store import ConfigStore
@@ -20,8 +20,8 @@ class UserInterface:
 
 @dataclass
 class MyConfig:
-    db: MySQLConfig = MySQLConfig()
-    ui: UserInterface = UserInterface()
+    db: MySQLConfig = field(default_factory=MySQLConfig)
+    ui: UserInterface = field(default_factory=UserInterface)
 
 
 cs = ConfigStore.instance()

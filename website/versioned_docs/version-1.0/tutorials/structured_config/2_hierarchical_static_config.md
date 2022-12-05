@@ -23,8 +23,8 @@ class UserInterface:
 
 @dataclass
 class MyConfig:
-    db: MySQLConfig = MySQLConfig()
-    ui: UserInterface = UserInterface()
+    db: MySQLConfig = field(default_factory=MySQLConfig)
+    ui: UserInterface = field(default_factory=UserInterface)
 
 cs = ConfigStore.instance()
 cs.store(name="config", node=MyConfig)

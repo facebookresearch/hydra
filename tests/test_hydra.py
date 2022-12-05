@@ -1287,28 +1287,25 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
         f"hydra.sweep.dir={tmpdir}",
         "hydra.job.chdir=True",
     ]
-    expected = dedent(
-        """\
-        Error executing job with overrides: []
-        Traceback (most recent call last):
-          File ".*my_app.py", line 13, in my_app
-            foo(cfg)
-          File ".*my_app.py", line 8, in foo
-            cfg.foo = "bar"  # does not exist in the config
-        omegaconf.errors.ConfigAttributeError: Key 'foo' is not in struct
+    expected_regex = dedent(
+        r"""
+        Error executing job with overrides: \[\]
+        Traceback \(most recent call last\):
+          File ".*my_app\.py", line 13, in my_app
+            foo\(cfg\)
+          File ".*my_app\.py", line 8, in foo
+            cfg\.foo = "bar"  # does not exist in the config(
+            \^+)?
+        omegaconf\.errors\.ConfigAttributeError: Key 'foo' is not in struct
             full_key: foo
             object_type=dict
 
-        Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
-    )
+        Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
+        """
+    ).strip()
 
     ret = run_with_error(cmd)
-    assert_regex_match(
-        from_line=expected,
-        to_line=ret,
-        from_name="Expected output",
-        to_name="Actual output",
-    )
+    assert_multiline_regex_search(expected_regex, ret)
 
 
 def test_hydra_to_job_config_interpolation(tmpdir: Any) -> Any:
@@ -1394,25 +1391,25 @@ class TestTaskRunnerLogging:
 
 
 @mark.parametrize(
-    "expected",
+    "expected_regex",
     [
-        (
-            dedent(
-                """\
-                Error executing job with overrides: []
-                Traceback (most recent call last):
-                  File ".*my_app.py", line 9, in my_app
-                    1 / 0
-                ZeroDivisionError: division by zero
+        dedent(
+            r"""
+            Error executing job with overrides: \[\]
+            Traceback \(most recent call last\):
+              File ".*my_app\.py", line 9, in my_app
+                1 / 0(
+                ~~\^~~)?
+            ZeroDivisionError: division by zero
 
-                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace."""
-            )
-        ),
+            Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
+            """
+        ).strip()
     ],
 )
 def test_job_exception(
     tmpdir: Any,
-    expected: str,
+    expected_regex: str,
 ) -> None:
     ret = run_with_error(
         [
@@ -1421,12 +1418,7 @@ def test_job_exception(
             "hydra.job.chdir=True",
         ]
     )
-    assert_regex_match(
-        from_line=expected,
-        to_line=ret,
-        from_name="Expected output",
-        to_name="Actual output",
-    )
+    assert_multiline_regex_search(expected_regex, ret)
 
 
 def test_job_exception_full_error(tmpdir: Any) -> None:

@@ -19,7 +19,7 @@ class RayConf:
 @dataclass
 class RayLauncherConf:
     _target_: str = "hydra_plugins.hydra_ray_launcher.ray_launcher.RayLauncher"
-    ray: RayConf = RayConf()
+    ray: RayConf = field(default_factory=RayConf)
 
 
 def _pkg_version(mdl_name: str) -> Optional[str]:
@@ -251,9 +251,9 @@ class RayClusterConf:
     # If a node is idle for this many minutes, it will be removed.
     idle_timeout_minutes: int = 5
 
-    docker: RayDockerConf = RayDockerConf()
+    docker: RayDockerConf = field(default_factory=RayDockerConf)
 
-    provider: RayProviderConf = RayProviderConf()
+    provider: RayProviderConf = field(default_factory=RayProviderConf)
 
     # For additional options, check:
     # https://github.com/ray-project/ray/blob/master/python/ray/autoscaler/aws/example-full.yaml
@@ -330,7 +330,7 @@ class RayClusterConf:
 
 @dataclass
 class RayAWSConf(RayConf):
-    cluster: RayClusterConf = RayClusterConf()
+    cluster: RayClusterConf = field(default_factory=RayClusterConf)
     run_env: RayRunEnv = RayRunEnv.auto
 
 
@@ -338,9 +338,9 @@ class RayAWSConf(RayConf):
 class RayAWSLauncherConf:
     _target_: str = "hydra_plugins.hydra_ray_launcher.ray_aws_launcher.RayAWSLauncher"
 
-    env_setup: EnvSetupConf = EnvSetupConf()
+    env_setup: EnvSetupConf = field(default_factory=EnvSetupConf)
 
-    ray: RayAWSConf = RayAWSConf()
+    ray: RayAWSConf = field(default_factory=RayAWSConf)
 
     # Stop Ray AWS cluster after jobs are finished.
     # (if False, cluster will remain provisioned and can be started with "ray up cluster.yaml").
@@ -350,21 +350,25 @@ class RayAWSLauncherConf:
     # This can be used for syncing up source code to remote cluster for execution.
     # You need to sync up if your code contains multiple modules.
     # source is local dir, target is remote dir
-    sync_up: RsyncConf = RsyncConf()
+    sync_up: RsyncConf = field(default_factory=RsyncConf)
 
     # sync_down is executed after jobs finishes on the cluster.
     # This can be used to download jobs output to local machine avoid the hassle to log on remote machine.
     # source is remote dir, target is local dir
-    sync_down: RsyncConf = RsyncConf()
+    sync_down: RsyncConf = field(default_factory=RsyncConf)
 
     # Ray sdk.configure_logging parameters: log_style, color_mode, verbosity
-    logging: RayLoggingConf = RayLoggingConf()
+    logging: RayLoggingConf = field(default_factory=RayLoggingConf)
 
     # Ray sdk.create_or_update_cluster parameters: no_restart, restart_only, no_config_cache
-    create_update_cluster: RayCreateOrUpdateClusterConf = RayCreateOrUpdateClusterConf()
+    create_update_cluster: RayCreateOrUpdateClusterConf = field(
+        default_factory=RayCreateOrUpdateClusterConf
+    )
 
     # Ray sdk.teardown parameters: workers_only, keep_min_workers
-    teardown_cluster: RayTeardownClusterConf = RayTeardownClusterConf()
+    teardown_cluster: RayTeardownClusterConf = field(
+        default_factory=RayTeardownClusterConf
+    )
 
 
 config_store = ConfigStore.instance()

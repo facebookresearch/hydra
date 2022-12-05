@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional
 
 from hydra.core.config_store import ConfigStore
@@ -17,7 +17,7 @@ class Flags:
 class ModuleConf:
     name: str = MISSING
     classes: List[str] = MISSING
-    default_flags: Flags = Flags()
+    default_flags: Flags = field(default_factory=Flags)
 
 
 @dataclass
@@ -37,7 +37,7 @@ class ConfigenConf:
 @dataclass
 class Config:
     init_config_dir: Optional[str] = None
-    configen: ConfigenConf = ConfigenConf()
+    configen: ConfigenConf = field(default_factory=ConfigenConf)
 
 
 config_store = ConfigStore.instance()

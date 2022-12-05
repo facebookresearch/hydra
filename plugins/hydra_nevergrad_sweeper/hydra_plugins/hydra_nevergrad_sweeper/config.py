@@ -74,7 +74,7 @@ class NevergradSweeperConf:
     )
 
     # configuration of the optimizer
-    optim: OptimConf = OptimConf()
+    optim: OptimConf = field(default_factory=OptimConf)
 
     # default parametrization of the search space
     # can be specified:

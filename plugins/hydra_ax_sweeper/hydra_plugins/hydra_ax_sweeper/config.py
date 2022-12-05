@@ -46,9 +46,9 @@ class AxConfig:
 
     # max_trials is application-specific. Tune it for your use case
     max_trials: int = 10
-    early_stop: EarlyStopConfig = EarlyStopConfig()
-    experiment: ExperimentConfig = ExperimentConfig()
-    client: ClientConfig = ClientConfig()
+    early_stop: EarlyStopConfig = field(default_factory=EarlyStopConfig)
+    experiment: ExperimentConfig = field(default_factory=ExperimentConfig)
+    client: ClientConfig = field(default_factory=ClientConfig)
     params: Dict[str, Any] = field(default_factory=dict)
     # is_noisy = True indicates measurements have unknown uncertainty
     # is_noisy = False indicates measurements have an uncertainty of zero
@@ -60,7 +60,7 @@ class AxSweeperConf:
     _target_: str = "hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper"
     # Maximum number of trials to run in parallel
     max_batch_size: Optional[int] = None
-    ax_config: AxConfig = AxConfig()
+    ax_config: AxConfig = field(default_factory=AxConfig)
 
 
 ConfigStore.instance().store(
