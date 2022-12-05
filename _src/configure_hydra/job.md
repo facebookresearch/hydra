@@ -49,9 +49,9 @@ class JobConf:
             item_sep: str = ","
             exclude_keys: List[str] = field(default_factory=list)
 
-        override_dirname: OverrideDirname = OverrideDirname()
+        override_dirname: OverrideDirname = field(default_factory=OverrideDirname)
 
-    config: JobConfig = JobConfig()
+    config: JobConfig = field(default_factory=JobConfig)
 ```
 </details>
 
