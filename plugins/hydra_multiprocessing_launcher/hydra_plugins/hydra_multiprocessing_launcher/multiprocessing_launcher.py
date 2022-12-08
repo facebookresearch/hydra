@@ -84,7 +84,16 @@ class MultiprocessingLauncher(Launcher):
         self.executor = NestablePool(**self.mp_config)
 
     def launch(
-        self, job_overrides: Union[Sequence[Sequence[str]], ExperimentSequence], initial_job_idx: int
+        self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
+    ) -> Sequence[JobReturn]:
+        from . import _core
+
+        return _core.launch(
+            launcher=self, job_overrides=job_overrides, initial_job_idx=initial_job_idx
+        )
+    
+    def launch_experiment_sequence(
+        self, job_overrides: ExperimentSequence, initial_job_idx: int
     ) -> Sequence[JobReturn]:
         from . import _core
 

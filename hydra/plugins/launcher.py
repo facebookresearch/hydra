@@ -17,7 +17,7 @@
 Launcher plugin interface
 """
 from abc import abstractmethod
-from typing import Sequence, Union
+from typing import Sequence
 
 from omegaconf import DictConfig
 
@@ -44,10 +44,21 @@ class Launcher(Plugin):
 
     @abstractmethod
     def launch(
-        self, job_overrides: Union[Sequence[Sequence[str]], ExperimentSequence], initial_job_idx: int
+        self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
     ) -> Sequence[JobReturn]:
         """
         :param job_overrides: a batch of job arguments
         :param initial_job_idx: Initial job idx. used by sweepers that executes several batches
         """
         raise NotImplementedError()
+    
+    def launch_experiment_sequence(
+        self, job_overrides: ExperimentSequence, initial_job_idx: int
+    ) -> Sequence[JobReturn]:
+        """
+        :param job_overrides: a batch of job arguments
+        :param initial_job_idx: Initial job idx. used by sweepers that executes several batches
+        """
+        raise NotImplementedError(
+            "This launcher doesn't support launching experiment sequence."
+        )

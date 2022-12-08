@@ -17,7 +17,7 @@
 Sweeper plugin interface
 """
 from abc import abstractmethod
-from typing import Any, List, Sequence, Optional, Dict, Tuple
+from typing import Any, List, Sequence, Optional
 
 from hydra.types import TaskFunction
 from omegaconf import DictConfig

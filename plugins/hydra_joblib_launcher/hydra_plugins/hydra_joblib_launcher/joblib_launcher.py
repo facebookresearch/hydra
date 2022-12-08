@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Any, Optional, Sequence, Union
+from typing import Any, Optional, Sequence
 
 from hydra.core.utils import JobReturn
 from hydra.plugins.launcher import Launcher
@@ -39,7 +39,16 @@ class JoblibLauncher(Launcher):
         self.hydra_context = hydra_context
 
     def launch(
-        self, job_overrides: Union[Sequence[Sequence[str]], ExperimentSequence], initial_job_idx: int
+        self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
+    ) -> Sequence[JobReturn]:
+        from . import _core
+
+        return _core.launch(
+            launcher=self, job_overrides=job_overrides, initial_job_idx=initial_job_idx
+        )
+    
+    def launch_experiment_sequence(
+        self, job_overrides: ExperimentSequence, initial_job_idx: int
     ) -> Sequence[JobReturn]:
         from . import _core
 
