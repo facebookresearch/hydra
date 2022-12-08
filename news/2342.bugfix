@@ -1,1 +1,0 @@
-Fix an issue where Hydra's exception-handling logic could raise an `AssertionError`
