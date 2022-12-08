@@ -46,7 +46,7 @@
 
 #### Stable
 
-**Hydra 1.2** is the stable version of Hydra.
+**Hydra 1.3** is the stable version of Hydra.
 - [Documentation](https://hydra.cc/docs/intro)
 - Installation : `pip install hydra-core --upgrade`
 
