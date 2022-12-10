@@ -163,8 +163,8 @@ def get_plugin_os_names(classifiers: List[str]) -> List[str]:
 @functools.lru_cache()
 def list_plugins(directory: str) -> List[Plugin]:
     blacklist = [".isort.cfg", "examples"]
-    _plugins = [
-        {"dir_name": x, "path": x}
+    _plugin_directories = [
+        x
         for x in sorted(os.listdir(os.path.join(BASE, directory)))
         if x not in blacklist
     ]
@@ -175,9 +175,9 @@ def list_plugins(directory: str) -> List[Plugin]:
     )
 
     plugins: List[Plugin] = []
-    for plugin in _plugins:
+    for dir_name in _plugin_directories:
 
-        abspath = os.path.join(BASE, directory, plugin["path"])
+        abspath = os.path.join(BASE, directory, dir_name)
         setup_py = os.path.join(abspath, "setup.py")
         plugin_name = subprocess.check_output(
             [sys.executable, setup_py, "--name"],
@@ -189,11 +189,11 @@ def list_plugins(directory: str) -> List[Plugin]:
         ).splitlines()
 
         if "hydra_plugins" in os.listdir(abspath):
-            module = "hydra_plugins." + plugin["dir_name"]
+            module = "hydra_plugins." + dir_name
             source_dir = "hydra_plugins"
         else:
-            module = plugin["dir_name"]
-            source_dir = plugin["dir_name"]
+            module = dir_name
+            source_dir = dir_name
 
         plugins.append(
             Plugin(
@@ -201,7 +201,7 @@ def list_plugins(directory: str) -> List[Plugin]:
                 abspath=abspath,
                 source_dir=source_dir,
                 module=module,
-                dir_name=plugin["dir_name"],
+                dir_name=dir_name,
                 setup_py=setup_py,
                 classifiers=classifiers,
             )
