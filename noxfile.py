@@ -179,14 +179,11 @@ def list_plugins(directory: str) -> List[Plugin]:
 
         abspath = os.path.join(BASE, directory, plugin["path"])
         setup_py = os.path.join(abspath, "setup.py")
-        plugin_name = subprocess.check_output(
-            [sys.executable, setup_py, "--name"],
-            universal_newlines=True,
-        ).strip()
-        classifiers = subprocess.check_output(
-            [sys.executable, setup_py, "--classifiers"],
+        name_and_classifiers: List[str] = subprocess.check_output(
+            [sys.executable, setup_py, "--name", "--classifiers"],
             universal_newlines=True,
         ).splitlines()
+        name, classifiers = name_and_classifiers[0], name_and_classifiers[1:]
 
         if "hydra_plugins" in os.listdir(abspath):
             module = "hydra_plugins." + plugin["dir_name"]
@@ -197,7 +194,7 @@ def list_plugins(directory: str) -> List[Plugin]:
 
         plugins.append(
             Plugin(
-                name=plugin_name,
+                name=name,
                 abspath=abspath,
                 source_dir=source_dir,
                 module=module,
