@@ -116,12 +116,32 @@ def install_selected_plugins(
 
 
 def install_plugin(session: Session, install_cmd: List[str], plugin: Plugin) -> None:
+    if plugin_requires_torch(plugin):
+        install_cpu_torch(session)
     cmd = install_cmd + [plugin.abspath]
     session.run(*cmd, silent=SILENT)
     if not SILENT:
         session.run("pipdeptree", "-p", plugin.name)
     # Test that we can import all installed plugins
     session.run("python", "-c", f"import {plugin.module}")
+
+
+def plugin_requires_torch(plugin: Plugin) -> bool:
+    """Determine whether the given plugin depends on pytorch as a requirement"""
+    return '"torch"' in Path(plugin.setup_py).read_text()
+
+
+def install_cpu_torch(session: Session) -> None:
+    """
+    Install the CPU version of pytorch.
+    This is a much smaller download size than the normal version of `torch` package hosted on pypi.
+    The smaller download prevents our CI jobs from timing out.
+    """
+    # Unfortunately there's currently no easy way to install the "latest" CPU version of pytorch.
+    # See https://github.com/pytorch/pytorch/issues/26340
+    session.install(
+        "torch==1.13.0+cpu", "-f", "https://download.pytorch.org/whl/torch_stable.html"
+    )
 
 
 def pytest_args(*args: str) -> List[str]:
