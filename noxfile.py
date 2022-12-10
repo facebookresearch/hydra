@@ -83,11 +83,11 @@ def find_dirs(path: str) -> Iterator[str]:
             yield fullname
 
 
-def _print_installed_omegaconf_version(session: Session) -> None:
+def print_installed_package_version(session: Session, package_name: str) -> None:
     pip_list: str = session.run("pip", "list", silent=True)
     for line in pip_list.split("\n"):
-        if "omegaconf" in line:
-            print(f"Installed omegaconf version: {line}")
+        if package_name in line:
+            print(f"Installed {package_name} version: {line}")
 
 
 def install_hydra(session: Session, cmd: List[str]) -> None:
@@ -98,7 +98,7 @@ def install_hydra(session: Session, cmd: List[str]) -> None:
     if USE_OMEGACONF_DEV_VERSION:
         session.install("--pre", "omegaconf", silent=SILENT)
     session.run(*cmd, ".", silent=SILENT)
-    _print_installed_omegaconf_version(session)
+    print_installed_package_version(session, "omegaconf")
     if not SILENT:
         session.install("pipdeptree", silent=SILENT)
         session.run("pipdeptree", "-p", "hydra-core")
@@ -116,14 +116,19 @@ def install_selected_plugins(
 
 
 def install_plugin(session: Session, install_cmd: List[str], plugin: Plugin) -> None:
-    if plugin_requires_torch(plugin):
-        install_cpu_torch(session)
+    maybe_install_torch(session, plugin)
     cmd = install_cmd + [plugin.abspath]
     session.run(*cmd, silent=SILENT)
     if not SILENT:
         session.run("pipdeptree", "-p", plugin.name)
     # Test that we can import all installed plugins
     session.run("python", "-c", f"import {plugin.module}")
+
+
+def maybe_install_torch(session: Session, plugin: Plugin) -> None:
+    if plugin_requires_torch(plugin):
+        install_cpu_torch(session)
+        print_installed_package_version(session, "torch")
 
 
 def plugin_requires_torch(plugin: Plugin) -> bool:
