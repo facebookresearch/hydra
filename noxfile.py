@@ -139,13 +139,11 @@ def plugin_requires_torch(plugin: Plugin) -> bool:
 def install_cpu_torch(session: Session) -> None:
     """
     Install the CPU version of pytorch.
-    This is a much smaller download size than the normal version of `torch` package hosted on pypi.
+    This is a much smaller download size than the normal version `torch` package hosted on pypi.
     The smaller download prevents our CI jobs from timing out.
     """
-    # Unfortunately there's currently no easy way to install the "latest" CPU version of pytorch.
-    # See https://github.com/pytorch/pytorch/issues/26340
     session.install(
-        "torch==1.13.0+cpu", "-f", "https://download.pytorch.org/whl/torch_stable.html"
+        "torch", "--extra-index-url", "https://download.pytorch.org/whl/cpu"
     )
 
 
