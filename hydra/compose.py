@@ -13,7 +13,7 @@ from ._internal.deprecation_warning import deprecation_warning
 
 def compose(
     config_name: Optional[str] = None,
-    overrides: List[str] = [],
+    overrides: Optional[List[str]] = None,
     return_hydra_config: bool = False,
     strict: Optional[bool] = None,
 ) -> DictConfig:
@@ -25,6 +25,10 @@ def compose(
     :param strict: DEPRECATED. If false, returned config has struct mode disabled.
     :return: the composed config
     """
+    
+    if overrides is None:
+            overrides = []
+    
     assert (
         GlobalHydra().is_initialized()
     ), "GlobalHydra is not initialized, use @hydra.main() or call one of the hydra initialization methods first"
