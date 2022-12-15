@@ -1,3 +1,17 @@
+# Copyright (c) 2022, NVIDIA CORPORATION. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#           http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import functools
 import logging
@@ -246,8 +260,8 @@ class OptunaExperimentSequence(ExperimentSequence):
         # raise if too many failures
         if self.fault_tolerance < 0:
             log.error(
-                f"Failed {int(self.num_experiments * self.max_failure_rate)} times out of {self.num_experiments} "
-                f"with max_failure_rate={self.max_failure_rate}."
+                f"Failed more then allowed {int(self.num_experiments * self.max_failure_rate)} time(s) "
+                f"out of total {self.num_experiments} experiments with max_failure_rate={self.max_failure_rate}."
             )
             ret.return_value  # delegate raising to JobReturn, with actual traceback
     
