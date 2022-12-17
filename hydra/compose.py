@@ -25,10 +25,10 @@ def compose(
     :param strict: DEPRECATED. If false, returned config has struct mode disabled.
     :return: the composed config
     """
-    
+
     if overrides is None:
-            overrides = []
-    
+        overrides = []
+
     assert (
         GlobalHydra().is_initialized()
     ), "GlobalHydra is not initialized, use @hydra.main() or call one of the hydra initialization methods first"
