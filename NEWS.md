@@ -1,3 +1,11 @@
+1.3.1 (2022-12-20)
+==================
+
+### Bug Fixes
+
+- Relax OmegaConf pin allowing OmegaConf 2.3 to be installed ([#2510](https://github.com/facebookresearch/hydra/issues/2510))
+
+
 1.3.0 (2022-12-08)
 ==================
 
