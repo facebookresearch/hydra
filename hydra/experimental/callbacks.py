@@ -13,6 +13,7 @@ from hydra.experimental.callback import Callback
 
 class LogJobReturnCallback(Callback):
     """Log the job's return value or error upon job end"""
+
     def __init__(self) -> None:
         self.log = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
 
@@ -29,6 +30,7 @@ class LogJobReturnCallback(Callback):
 
 class PickleJobInfoCallback(Callback):
     """Pickle the job config/return-value in ${output_dir}/{config,job_return}.pickle"""
+
     output_dir: Path
 
     def __init__(self) -> None:
