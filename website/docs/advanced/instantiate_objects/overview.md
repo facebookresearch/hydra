@@ -392,3 +392,51 @@ from hydra.utils import instantiate
 # instantiate({"_target_": "len"}, [1,2,3])  # this gives an InstantiationException
 instantiate({"_target_": "builtins.len"}, [1,2,3])  # this works, returns the number 3
 ```
+
+### Dotpath lookup machinery
+
+Hydra looks up a given `_target_` by attempting to find a module that
+corresponds to a prefix of the given dotpath and then looking for an object in
+that module corresponding to the dotpath's tail. For example, to look up a `_target_`
+given by the dotpath `"my_module.my_nested_module.my_object"`, hydra first locates
+the module `my_module.my_nested_module`, then find `my_object` inside that nested module.
+
+Hydra exposes an API allowing direct use of this dotpath lookup machinery.
+The following three functions, which can be imported from the <GithubLink to="hydra/utils.py">hydra.utils</GithubLink> module,
+accept a string-typed dotpath as an argument and return the located class/callable/object:
+```python
+def get_class(path: str) -> type:
+    """
+    Look up a class based on a dotpath.
+    Fails if the path does not point to a class.
+
+    >>> import my_module
+    >>> from hydra.utils import get_class
+    >>> assert get_class("my_module.MyClass") is my_module.MyClass
+    """
+    ...
+
+def get_method(path: str) -> Callable[..., Any]:
+    """
+    Look up a callable based on a dotpath.
+    Fails if the path does not point to a callable object.
+
+    >>> import my_module
+    >>> from hydra.utils import get_method
+    >>> assert get_method("my_module.my_function") is my_module.my_function
+    """
+    ...
+
+# Alias for get_method
+get_static_method = get_method
+
+def get_object(path: str) -> Any:
+    """
+    Look up a callable based on a dotpath.
+
+    >>> import my_module
+    >>> from hydra.utils import get_object
+    >>> assert get_object("my_module.my_object") is my_module.my_object
+    """
+    ...
+```
