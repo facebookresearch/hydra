@@ -28,7 +28,7 @@ def get_class(path: str) -> type:
             )
         return cls
     except Exception as e:
-        log.error(f"Error initializing class at {path}: {e}")
+        log.error(f"Error getting class at {path}: {e}")
         raise e
 
 
