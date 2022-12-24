@@ -20,7 +20,7 @@ Hydra Callback for saving the job info:
 hydra:
   callbacks:
     save_job_info:
-      _target_: hydra.experimental.pickle_job_info_callback.PickleJobInfoCallback
+      _target_: hydra.experimental.callbacks.PickleJobInfoCallback
 ```
 
 
