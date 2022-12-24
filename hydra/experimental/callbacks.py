@@ -12,6 +12,8 @@ from hydra.experimental.callback import Callback
 
 
 class LogJobReturnCallback(Callback):
+    """Log the job's return value or error upon job end"""
+
     def __init__(self) -> None:
         self.log = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
 
@@ -27,12 +29,15 @@ class LogJobReturnCallback(Callback):
 
 
 class PickleJobInfoCallback(Callback):
+    """Pickle the job config/return-value in ${output_dir}/{config,job_return}.pickle"""
+
     output_dir: Path
 
     def __init__(self) -> None:
         self.log = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
 
     def on_job_start(self, config: DictConfig, **kwargs: Any) -> None:
+        """Pickle the job's config in ${output_dir}/config.pickle."""
         self.output_dir = Path(config.hydra.runtime.output_dir) / Path(
             config.hydra.output_subdir
         )
@@ -43,6 +48,7 @@ class PickleJobInfoCallback(Callback):
     def on_job_end(
         self, config: DictConfig, job_return: JobReturn, **kwargs: Any
     ) -> None:
+        """Pickle the job's return value in ${output_dir}/job_return.pickle."""
         filename = "job_return.pickle"
         self._save_pickle(obj=job_return, filename=filename, output_dir=self.output_dir)
         self.log.info(f"Saving job_return in {self.output_dir / filename}")
