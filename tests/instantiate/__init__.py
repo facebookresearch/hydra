@@ -436,3 +436,5 @@ def recisinstance(got: Any, expected: Any) -> bool:
             for key in expected._fields
         )
     return True
+
+an_object = object()
