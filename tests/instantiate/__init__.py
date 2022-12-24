@@ -437,4 +437,5 @@ def recisinstance(got: Any, expected: Any) -> bool:
         )
     return True
 
+
 an_object = object()

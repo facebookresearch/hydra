@@ -8,7 +8,7 @@ from _pytest.python_api import RaisesContext, raises
 from pytest import mark, param
 
 from hydra._internal.utils import _locate
-from hydra.utils import get_class, get_method
+from hydra.utils import get_class, get_method, get_object
 from tests.instantiate import (
     AClass,
     Adam,
@@ -231,3 +231,38 @@ def test_get_class(path: str, expected: Any) -> None:
             get_class(path)
     else:
         assert get_class(path) == expected
+
+
+@mark.parametrize(
+    "path,expected",
+    [
+        param("tests.instantiate.AClass", AClass, id="class"),
+        param("builtins.print", print, id="callable"),
+        param(
+            "datetime",
+            datetime,
+            id="module-error",
+        ),
+        param("tests.instantiate.an_object", an_object, id="object"),
+        param(
+            "builtins.int.not_found",
+            raises(
+                ImportError,
+                match=dedent(
+                    r"""
+                    Error loading 'builtins\.int\.not_found':
+                    AttributeError\("type object 'int' has no attribute 'not_found'",?\)
+                    Are you sure that 'not_found' is an attribute of 'builtins\.int'\?
+                    """
+                ).strip(),
+            ),
+            id="builtin_attribute_error",
+        ),
+    ],
+)
+def test_get_object(path: str, expected: Any) -> None:
+    if isinstance(expected, RaisesContext):
+        with expected:
+            get_object(path)
+    else:
+        assert get_object(path) == expected
