@@ -16,6 +16,7 @@ from tests.instantiate import (
     ASubclass,
     NestingClass,
     Parameters,
+    an_object,
 )
 
 from .module_shadowed_by_function import a_function
@@ -131,6 +132,7 @@ from .module_shadowed_by_function import a_function
             ),
             id="import_assertion_error",
         ),
+        param("tests.instantiate.an_object", an_object, id="object"),
     ],
 )
 def test_locate(name: str, expected: Any) -> None:
@@ -174,6 +176,14 @@ def test_locate_relative_import_fails(name: str) -> None:
             ),
             id="module-error",
         ),
+        param(
+            "tests.instantiate.an_object",
+            raises(
+                ValueError,
+                match="Located non-callable of type 'object' while loading 'tests.instantiate.an_object'",
+            ),
+            id="object-error",
+        ),
     ],
 )
 def test_get_method(path: str, expected: Any) -> None:
@@ -204,6 +214,14 @@ def test_get_method(path: str, expected: Any) -> None:
                 match="Located non-class of type 'module' while loading 'datetime'",
             ),
             id="module-error",
+        ),
+        param(
+            "tests.instantiate.an_object",
+            raises(
+                ValueError,
+                match="Located non-class of type 'object' while loading 'tests.instantiate.an_object'",
+            ),
+            id="object-error",
         ),
     ],
 )
