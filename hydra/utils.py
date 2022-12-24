@@ -51,6 +51,15 @@ def get_method(path: str) -> Callable[..., Any]:
 get_static_method = get_method
 
 
+def get_object(path: str) -> Any:
+    try:
+        obj = _locate(path)
+        return obj
+    except Exception as e:
+        log.error(f"Error getting object at {path} : {e}")
+        raise e
+
+
 def get_original_cwd() -> str:
     """
     :return: the original working directory the Hydra application was launched from
