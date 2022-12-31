@@ -192,9 +192,16 @@ def list_plugins(directory: str) -> List[Plugin]:
         if x not in blacklist
     ]
 
-    # Install read-version in base python environment, needed to run setup.py
+    # Install bootstrap deps in base python environment
     subprocess.check_output(
-        [sys.executable, "-m", "pip", "install", "read-version"],
+        [
+            sys.executable,
+            "-m",
+            "pip",
+            "install",
+            "read-version",  # needed to read data from setup.py
+            "toml",  # so read-version can read pyproject.toml
+        ],
     )
 
     plugins: List[Plugin] = []
