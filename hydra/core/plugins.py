@@ -182,20 +182,16 @@ class Plugins(metaclass=Singleton):
                     import_time = timer()
 
                     with warnings.catch_warnings(record=True) as recorded_warnings:
-                        if sys.version_info < (3, 10):
-                            m = importer.find_module(modname)  # type: ignore
-                            assert m is not None
-                            loaded_mod = m.load_module(modname)
+                        spec = importer.find_spec(modname, None)
+                        assert spec is not None
+                        if modname in sys.modules:
+                            loaded_mod = sys.modules[modname]
                         else:
-                            spec = importer.find_spec(modname)
-                            assert spec is not None
-                            if modname in sys.modules:
-                                loaded_mod = sys.modules[modname]
-                            else:
-                                loaded_mod = importlib.util.module_from_spec(spec)
-                            if loaded_mod is not None:
-                                spec.loader.exec_module(loaded_mod)
-                                sys.modules[modname] = loaded_mod
+                            loaded_mod = importlib.util.module_from_spec(spec)
+                        if loaded_mod is not None:
+                            sys.modules[modname] = loaded_mod
+                            assert spec.loader
+                            spec.loader.exec_module(loaded_mod)
 
                     import_time = timer() - import_time
                     if len(recorded_warnings) > 0:
