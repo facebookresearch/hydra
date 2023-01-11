@@ -12,7 +12,7 @@ They can be grouped by placing them in [Config Groups](#config-group).
 ### Config files
 Config files are form of input configs in [YAML](https://yaml.org/) format. They can exist in the file system or
 in a Python module.
-```yaml title="Example config file
+```yaml title="Example config file"
 user:
   name: James Bond
   age: 7
