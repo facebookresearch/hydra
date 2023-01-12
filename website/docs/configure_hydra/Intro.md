@@ -30,7 +30,7 @@ You can view the Hydra config structure <GithubLink to="hydra/conf/__init__.py">
 
 You can view the Hydra config using `--cfg hydra`:
 <details>
-<summary> $ python my_app.p <b>--cfg hydra</b> (Click to expand)</summary>
+<summary> $ python my_app.py <b>--cfg hydra</b> (Click to expand)</summary>
 
 ```yaml
 hydra:
