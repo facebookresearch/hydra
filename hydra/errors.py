@@ -33,7 +33,7 @@ class MissingConfigException(IOError, ConfigCompositionException):
     def __init__(
         self,
         message: str,
-        missing_cfg_file: Optional[str],
+        missing_cfg_file: Optional[str] = None,
         options: Optional[Sequence[str]] = None,
     ) -> None:
         super(MissingConfigException, self).__init__(message)
