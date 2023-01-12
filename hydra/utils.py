@@ -69,7 +69,7 @@ get_static_method = get_method
 
 def get_object(path: str) -> Any:
     """
-    Look up a callable based on a dotpath.
+    Look up an object based on a dotpath.
 
     >>> import my_module
     >>> from hydra.utils import get_object
