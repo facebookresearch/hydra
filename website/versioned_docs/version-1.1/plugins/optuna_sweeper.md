@@ -66,6 +66,7 @@ direction: minimize
 storage: null
 study_name: sphere
 n_trials: 20
+n_jobs: 1
 search_space:
   x:
     type: float
@@ -270,6 +271,7 @@ direction:
 storage: null
 study_name: multi-objective
 n_trials: 20
+n_jobs: 1
 search_space:
   x:
     type: float

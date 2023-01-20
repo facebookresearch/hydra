@@ -69,6 +69,7 @@ direction: minimize
 storage: null
 study_name: sphere
 n_trials: 20
+n_jobs: 1
 params:
   x: range(-5.5,5.5,step=0.5)
   y: choice(-5,0,5)
@@ -234,6 +235,7 @@ direction:
 storage: null
 study_name: multi-objective
 n_trials: 20
+n_jobs: 1
 params:
   x: range(0, 5, step=0.5)
   y: range(0, 3, step=0.5)
@@ -276,6 +278,7 @@ hydra:
     study_name: custom-search-space
     storage: null
     n_trials: 20
+    n_jobs: 1
 
     params:
       x: range(-5.5, 5.5, 0.5)
