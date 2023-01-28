@@ -4,7 +4,6 @@ import logging
 import os
 import re
 import sys
-import traceback
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime
@@ -189,7 +188,7 @@ def run_job(
             except Exception as e:
                 name = "HYDRA_FULL_ERROR"
                 if name in os.environ and os.environ[name] == "1":
-                    log.info(traceback.format_exc())
+                    log.exception("Got error while running job")
                 ret.return_value = e
                 ret.status = JobStatus.FAILED
 
