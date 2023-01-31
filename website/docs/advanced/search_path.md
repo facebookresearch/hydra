@@ -94,7 +94,7 @@ defaults:
 
 hydra:
   searchpath:
-    - pkg://additonal_conf
+    - pkg://additional_conf
     # You can also use file based schema:
     # - file:///etc/my_app
     # - file://${oc.env:HOME}/.my_app
@@ -148,7 +148,7 @@ dataset:
 `hydra.searchpath` can be defined or overridden via the command line as well:
 
 ```bash title="command line override"
-python my_app.py 'hydra.searchpath=[pkg://additonal_conf]'
+python my_app.py 'hydra.searchpath=[pkg://additional_conf]'
 ```
 
 #### Overriding `--config-dir` from the command line
