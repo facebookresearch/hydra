@@ -123,9 +123,13 @@ def compute_search_path_dir(
     calling_module: Optional[str],
     config_path: Optional[str],
 ) -> Optional[str]:
-    if config_path is not None and os.path.isabs(config_path):
-        search_path_dir = config_path
-    elif calling_file is not None:
+    if config_path is not None:
+        if os.path.isabs(config_path):
+            return config_path
+        if config_path.startswith("pkg://"):
+            return config_path
+
+    if calling_file is not None:
         abs_base_dir = realpath(dirname(calling_file))
 
         if config_path is not None:
