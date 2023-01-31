@@ -845,13 +845,13 @@ def test_help(
     "overrides,expected",
     [
         param(
-            ["--info", "searchpath", "hydra.searchpath=['pkg://additonal_conf']"],
-            r".*hydra.searchpath in command-line\s+|\s+pkg://additonal_conf.*",
+            ["--info", "searchpath", "hydra.searchpath=['pkg://additional_conf']"],
+            r".*hydra.searchpath in command-line\s+|\s+pkg://additional_conf.*",
             id="searchpath config from command-line",
         ),
         param(
             ["--info", "searchpath"],
-            r".*hydra.searchpath in main\s+|\s+pkg://additonal_conf.*",
+            r".*hydra.searchpath in main\s+|\s+pkg://additional_conf.*",
             id="print info with searchpath config",
         ),
         param(

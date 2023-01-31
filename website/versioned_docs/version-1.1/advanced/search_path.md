@@ -59,7 +59,7 @@ In this example, we add a second config directory - `additional_conf`, next to t
 │   ├── config.yaml
 │   └── dataset
 │       └── cifar10.yaml
-├── additonal_conf
+├── additional_conf
 │   ├── __init__.py
 │   └── dataset
 │       └── imagenet.yaml
@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
 `conf/config.yaml` is the primary config for `my_app.py`, config groups `cifar10` and `imagenet` are 
 under different folders. 
-We can add `additonal_conf` to  `hydra.searchpath` for Hydra to discover `dataset/imagenet`.
+We can add `additional_conf` to  `hydra.searchpath` for Hydra to discover `dataset/imagenet`.
 
 <div className="row">
 <div className="col col--7">
@@ -94,7 +94,7 @@ defaults:
 
 hydra:
   searchpath:
-    - pkg://additonal_conf
+    - pkg://additional_conf
     # You can also use file based schema:
     # - file:///etc/my_app
     # - file://${oc.env:HOME}/.my_app
@@ -148,7 +148,7 @@ dataset:
 `hydra.searchpath` can be defined or overridden via the command line as well:
 
 ```bash title="command line override"
-python my_app.py 'hydra.searchpath=[pkg://additonal_conf]'
+python my_app.py 'hydra.searchpath=[pkg://additional_conf]'
 ```
 
 #### Overriding `--config-dir` from the command line
