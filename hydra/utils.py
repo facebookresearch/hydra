@@ -69,7 +69,7 @@ get_static_method = get_method
 
 def get_object(path: str) -> Any:
     """
-    Look up an entity based on the dotpath. 
+    Look up an entity based on the dotpath.
     Does not perform any type checks on the entity.
 
     >>> import my_module
