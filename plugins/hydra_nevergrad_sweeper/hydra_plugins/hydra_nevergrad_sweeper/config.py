@@ -35,7 +35,6 @@ class ScalarConfigSpec:
 
 @dataclass
 class OptimConf:
-
     # name of the Nevergrad optimizer to use. Here is a sample:
     #   - "OnePlusOne" extremely simple and robust, especially at low budget, but
     #     tends to converge early.

@@ -58,7 +58,6 @@ class IConfigRepository(ABC):
 
 
 class ConfigRepository(IConfigRepository):
-
     config_search_path: ConfigSearchPath
     sources: List[ConfigSource]
 

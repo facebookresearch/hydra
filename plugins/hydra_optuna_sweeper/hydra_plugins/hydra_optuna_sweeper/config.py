@@ -118,7 +118,6 @@ class MOTPESamplerConfig(SamplerConfig):
 
 @dataclass
 class DistributionConfig:
-
     # Type of distribution. "int", "float" or "categorical"
     type: DistributionType
 

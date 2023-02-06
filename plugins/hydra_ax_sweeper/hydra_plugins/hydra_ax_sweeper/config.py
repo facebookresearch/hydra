@@ -34,7 +34,6 @@ class ExperimentConfig:
 
 @dataclass
 class ClientConfig:
-
     verbose_logging: bool = False
 
     # set random seed here to make Ax results reproducible
@@ -43,7 +42,6 @@ class ClientConfig:
 
 @dataclass
 class AxConfig:
-
     # max_trials is application-specific. Tune it for your use case
     max_trials: int = 10
     early_stop: EarlyStopConfig = field(default_factory=EarlyStopConfig)
