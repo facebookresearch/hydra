@@ -206,7 +206,6 @@ def list_plugins(directory: str) -> List[Plugin]:
 
     plugins: List[Plugin] = []
     for dir_name in _plugin_directories:
-
         abspath = os.path.join(BASE, directory, dir_name)
         setup_py = os.path.join(abspath, "setup.py")
         name_and_classifiers: List[str] = subprocess.check_output(

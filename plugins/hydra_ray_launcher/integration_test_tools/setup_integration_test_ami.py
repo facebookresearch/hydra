@@ -22,7 +22,6 @@ def _run_command(command: str) -> str:
 
 
 def run(py_version):
-
     _run_command("rm /home/ubuntu/ray_bootstrap_config.yaml")
 
     _run_command(f"conda create -n hydra_{py_version} python={py_version} -y")

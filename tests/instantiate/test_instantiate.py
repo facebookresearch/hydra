@@ -691,7 +691,6 @@ def test_instantiate_bad_adam_conf(instantiate_func: Any, recwarn: Any) -> None:
 
 
 def test_instantiate_with_missing_module(instantiate_func: Any) -> None:
-
     _target_ = "tests.instantiate.ClassWithMissingModule"
     with raises(
         InstantiationException,

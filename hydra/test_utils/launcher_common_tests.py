@@ -215,7 +215,6 @@ class LauncherTestSuite:
         overrides: List[str],
         tmpdir: Path,
     ) -> None:
-
         overrides1 = ["hydra/launcher=" + launcher_name] + overrides
 
         def task_func(c: DictConfig) -> Any:

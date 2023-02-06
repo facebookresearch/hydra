@@ -37,7 +37,6 @@ def _get_module_name_override() -> Optional[str]:
 def detect_calling_file_or_module_from_task_function(
     task_function: Any,
 ) -> Tuple[Optional[str], Optional[str]]:
-
     # if function is decorated, unwrap it
     while hasattr(task_function, "__wrapped__"):
         task_function = task_function.__wrapped__
@@ -65,7 +64,6 @@ def detect_calling_file_or_module_from_task_function(
 def detect_calling_file_or_module_from_stack_frame(
     stack_depth: int,
 ) -> Tuple[Optional[str], Optional[str]]:
-
     stack = inspect.stack()
     frame = stack[stack_depth]
     if is_notebook() and "_dh" in frame[0].f_globals:
@@ -102,7 +100,6 @@ def is_notebook() -> bool:
 
 
 def detect_task_name(calling_file: Optional[str], calling_module: Optional[str]) -> str:
-
     if calling_file is not None:
         target_file = os.path.basename(calling_file)
         task_name = get_valid_filename(os.path.splitext(target_file)[0])
@@ -310,7 +307,6 @@ def _run_hydra(
     config_name: Optional[str],
     caller_stack_depth: int = 2,
 ) -> None:
-
     from hydra.core.global_hydra import GlobalHydra
 
     from .hydra import Hydra

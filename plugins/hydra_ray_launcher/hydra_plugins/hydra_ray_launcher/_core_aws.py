@@ -125,7 +125,6 @@ def launch_jobs(
         **launcher.create_update_cluster,
     )
     with tempfile.TemporaryDirectory() as local_tmp_download_dir:
-
         with ray_tmp_dir(config, launcher.ray_cfg.run_env.name) as remote_tmp_dir:
             sdk.rsync(
                 config,
