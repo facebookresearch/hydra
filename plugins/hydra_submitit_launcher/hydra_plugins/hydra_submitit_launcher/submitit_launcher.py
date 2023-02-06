@@ -16,7 +16,6 @@ log = logging.getLogger(__name__)
 
 
 class BaseSubmititLauncher(Launcher):
-
     _EXECUTOR = "abstract"
 
     def __init__(self, **params: Any) -> None:

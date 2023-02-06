@@ -620,7 +620,6 @@ class Hydra:
         overrides: List[str],
         run_mode: RunMode = RunMode.RUN,
     ) -> None:
-
         from .. import __version__
 
         self._log_header(f"Hydra {__version__}", filler="=")

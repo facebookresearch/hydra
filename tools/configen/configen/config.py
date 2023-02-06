@@ -22,7 +22,6 @@ class ModuleConf:
 
 @dataclass
 class ConfigenConf:
-
     # output dir
     output_dir: str = MISSING
 

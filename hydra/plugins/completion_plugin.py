@@ -240,7 +240,6 @@ class CompletionPlugin(Plugin):
             )
             config_matches: List[str] = []
             if not exact_match:
-
                 run_mode = RunMode.MULTIRUN if parsed_args.multirun else RunMode.RUN
                 config_matches = []
                 try:
