@@ -710,7 +710,6 @@ def _create_defaults_list(
     prepend_hydra: bool,
     skip_missing: bool,
 ) -> Tuple[List[ResultDefault], DefaultsTreeNode]:
-
     root = _create_root(config_name=config_name, with_hydra=prepend_hydra)
 
     defaults_tree = _create_defaults_tree(

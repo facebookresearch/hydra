@@ -1824,7 +1824,6 @@ def test_hydra_mode(
         ]
     )
     if error:
-
         expected = normalize_newlines(expected_output)
         ret = run_with_error(cmd)
         assert_regex_match(
@@ -1834,7 +1833,6 @@ def test_hydra_mode(
             to_name="Actual output",
         )
     elif warning:
-
         out, err = run_python_script(cmd, allow_warnings=True)
         assert_regex_match(
             from_line=expected_output,
