@@ -50,6 +50,7 @@
 - [Documentation](https://hydra.cc/docs/1.3/intro/)
 - Installation : `pip install hydra-core --upgrade`
 
+See the [NEWS.md](NEWS.md) file for a summary of recent changes to Hydra.
 
 ### License
 Hydra is licensed under [MIT License](LICENSE).
