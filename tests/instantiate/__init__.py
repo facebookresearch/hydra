@@ -420,6 +420,11 @@ class NestedConf:
     b: Any = field(default_factory=lambda: User(name="b", age=2))
 
 
+@dataclass
+class NestedConfNoTarget:
+    a: Any = field(default_factory=lambda: SimpleClassDefaultPrimitiveConf)
+
+
 def recisinstance(got: Any, expected: Any) -> bool:
     """Compare got with expected type, recursively on dict and list."""
     if not isinstance(got, type(expected)):
