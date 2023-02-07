@@ -67,6 +67,8 @@ Hydra is licensed under [MIT License](LICENSE).
 * [StackOverflow](https://stackexchange.com/filters/391828/hydra-questions)
 * [Twitter](https://twitter.com/Hydra_Framework)
 
+Check out the Meta AI [blog post](https://ai.facebook.com/blog/reengineering-facebook-ais-deep-learning-platforms-for-interoperability/) on how Hydra fits in to Meta's efforts to reengineering deep learning platforms for interoperability.
+
 ### Citing Hydra
 If you use Hydra in your research please use the following BibTeX entry:
 ```BibTeX
