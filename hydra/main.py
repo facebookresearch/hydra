@@ -48,7 +48,11 @@ def main(
     version_base: Optional[str] = _UNSPECIFIED_,
 ) -> Callable[[TaskFunction], Any]:
     """
-    :param config_path: The config path, a directory relative to the declaring python file.
+    :param config_path: The config path, a directory where Hydra will search for
+                        config files. This path is added to Hydra's searchpath.
+                        Relative paths are interpreted relative to the declaring python
+                        file. Alternatively, you can use the prefix `pkg://` to specify
+                        a python package to add to the searchpath.
                         If config_path is None no directory is added to the Config search path.
     :param config_name: The name of the config (usually the file name without the .yaml extension)
     """
