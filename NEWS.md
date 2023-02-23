@@ -1,3 +1,24 @@
+1.3.2 (2023-02-22)
+==================
+
+### Features
+
+- Add a `hydra.utils.get_object` function that gives users access to Hydra's dotpath-lookup machinery. ([#2139](https://github.com/facebookresearch/hydra/issues/2139))
+- Allow config_path to specify a non-relative module path, by starting with `pkg://` ([#2564](https://github.com/facebookresearch/hydra/issues/2564))
+
+### Maintenance Changes
+
+- Drop support for python3.6 ([#2304](https://github.com/facebookresearch/hydra/issues/2304))
+
+
+1.3.1 (2022-12-20)
+==================
+
+### Bug Fixes
+
+- Relax OmegaConf pin allowing OmegaConf 2.3 to be installed ([#2510](https://github.com/facebookresearch/hydra/issues/2510))
+
+
 1.3.0 (2022-12-08)
 ==================
 
