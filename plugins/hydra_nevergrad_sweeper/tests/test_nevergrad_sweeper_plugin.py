@@ -36,6 +36,8 @@ def assert_ng_param_equals(expected: Any, actual: Any) -> None:
     elif isinstance(actual, ng.p.Log) or isinstance(actual, ng.p.Scalar):
         assert expected.bounds == actual.bounds
         assert expected.integer == actual.integer
+    elif isinstance(actual, str):
+        assert expected == actual
     else:
         assert False, f"Unexpected type: {type(actual)}"
 
@@ -95,6 +97,13 @@ def test_create_nevergrad_parameter_from_config(
             "key=tag(log, int(interval(1,12)))",
             get_scalar_with_integer_bounds(lower=1, upper=12, type=ng.p.Log),
         ),
+        ("key=abc", "abc"),
+        ("key='a&c'", "'a&c'"),
+        ("key='${f:${x}}'", "'${f:${x}}'"),
+        (r"key=$\{f\:$\{x\}\}", r"$\{f\:$\{x\}\}"),
+        ("key=0", "0"),
+        ("key=true", "True"),
+        ("key=null", "null"),
     ],
 )
 def test_create_nevergrad_parameter_from_override(
