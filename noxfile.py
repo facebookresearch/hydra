@@ -504,7 +504,13 @@ def test_core(session: Session) -> None:
     session.install("pytest")
 
     if not SKIP_CORE_TESTS:
-        run_pytest(session, "build_helpers", "tests", *session.posargs)
+        run_pytest(
+            session,
+            "build_helpers",
+            "tests",
+            "-W ignore:pkg_resources is deprecated as an API:DeprecationWarning:pkg_resources",
+            *session.posargs,
+        )
     else:
         session.log("Skipping Hydra core tests")
 
