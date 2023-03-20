@@ -60,7 +60,7 @@ def create_nevergrad_param_from_config(
 def create_nevergrad_parameter_from_override(override: Override) -> Any:
     val = override.value()
     if not override.is_sweep_override():
-        return val
+        return override.get_value_element_as_str()
     if override.is_choice_sweep():
         assert isinstance(val, ChoiceSweep)
         vals = [x for x in override.sweep_iterator(transformer=Transformer.encode)]
