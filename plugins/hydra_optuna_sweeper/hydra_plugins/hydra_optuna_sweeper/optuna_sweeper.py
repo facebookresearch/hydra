@@ -23,6 +23,7 @@ class OptunaSweeper(Sweeper):
         search_space: Optional[DictConfig],
         custom_search_space: Optional[str],
         params: Optional[DictConfig],
+        load_if_exists: Optional[bool] = True,
     ) -> None:
         from ._impl import OptunaSweeperImpl
 
@@ -37,6 +38,7 @@ class OptunaSweeper(Sweeper):
             search_space,
             custom_search_space,
             params,
+            load_if_exists,
         )
 
     def setup(
