@@ -131,7 +131,7 @@ jobs:
             conda activate hydra
             pip install nox dataclasses --progress-bar off
             if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              SKIP_PLUGINS=hydra_ray_launcher nox -s lint test_tools test_core \
+              nox -s lint test_tools test_core \
                 test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
             else
               nox -s lint test_tools test_core test_jupyter_notebooks -ts
@@ -152,7 +152,7 @@ jobs:
             export NOX_PYTHON_VERSIONS=<< parameters.py_version >>
             pip install nox dataclasses --progress-bar off
             if [ -n "$CIRCLE_PR_NUMBER" ]; then
-              SKIP_PLUGINS=hydra_ray_launcher nox -s lint test_tools test_core \
+              nox -s lint test_tools test_core \
                 test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
             else
               nox -s lint test_tools test_core test_jupyter_notebooks -ts
@@ -174,7 +174,6 @@ jobs:
             $env:PYTHONIOENCODING="utf_8"
             conda activate hydra
             If ($env:CIRCLE_PR_NUMBER) {
-              $env:SKIP_PLUGINS="hydra_ray_launcher"
               nox -s lint test_tools test_core test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
             } else {
               nox -s lint test_tools test_core test_jupyter_notebooks -ts
