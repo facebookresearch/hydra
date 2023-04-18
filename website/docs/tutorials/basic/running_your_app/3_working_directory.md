@@ -8,33 +8,35 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
 <ExampleGithubLink to="examples/tutorials/basic/running_your_hydra_app/3_working_directory"/>
 
-Hydra solves the problem of your needing to specify a new output directory for each run, by 
-creating a directory for each run and executing your code within that working directory.
+Hydra can solve the problem of your needing to specify a new output directory for each run, by
+creating a directory for each run and executing your code within that output directory.
+By default, this output directory is used to store Hydra output for the run (Configuration, Logs etc).
 
-The working directory is used to:
-* Store the output for the application (For example, a database dump file)
-* Store the Hydra output for the run (Configuration, Logs etc)
+Every time you run the app, a new output directory is created.
+You can retrieve the path of the output directy by
+[inspecting the Hydra config](/configure_hydra/Intro.md#accessing-the-hydra-config) as in the example below.
 
-Every time you run the app, a new working directory is created:
-
-Python file: `my_app.py`
-```python
+```python title="my_app.py"
 import os
-import hydra
 from omegaconf import DictConfig
+import hydra
 
 @hydra.main(version_base=None)
-def my_app(cfg: DictConfig) -> None:
-    print("Working directory : {}".format(os.getcwd()))
+def my_app(_cfg: DictConfig) -> None:
+    print(f"Working directory : {os.getcwd()}")
+    print(f"Output directory  : {hydra.core.hydra_config.HydraConfig.get().runtime.output_dir}")
+```
+```text
+$ python my_app.py
+Working directory : /home/omry/dev/hydra
+Output directory  : /home/omry/dev/hydra/outputs/2019-09-25/15-16-17
 
 $ python my_app.py
-Working directory : /home/omry/dev/hydra/outputs/2019-09-25/15-16-17
-
-$ python my_app.py
-Working directory : /home/omry/dev/hydra/outputs/2019-09-25/15-16-19
+Working directory : /home/omry/dev/hydra
+Output directory  : /home/omry/dev/hydra/outputs/2019-09-25/15-16-19
 ```
 
-Let's take a look at one of the working directories:
+Let's take a look at one of the output directories:
 ```text
 $ tree outputs/2019-09-25/15-16-17
 outputs/2019-09-25/15-16-17
@@ -54,22 +56,42 @@ Inside the Hydra output directory we have:
 And in the main output directory:
 * `my_app.log`: A log file created for this run
 
-### Disable changing current working dir to job's output dir
+You can configure the name of the output directory using
+the [customizing the working directory](/configure_hydra/workdir.md) pattern.
 
-By default, Hydra's `@hydra.main` decorator makes a call to `os.chdir` before passing control to the user's decorated main function.
-Set `hydra.job.chdir=False` to disable this behavior.
+
+### Enable/disable changing current working dir to job's output dir
+
+By setting `hydra.job.chdir=True`, you can configure
+Hydra's `@hydra.main` decorator to change python's working directory by calling
+`os.chdir` before passing control to the user's decorated main function.
+As of Hydra v1.2, `hydra.job.chdir` defaults to `False`.
+Setting `hydra.job.chdir=True` enables convenient use of the output directory to
+store output for the application (For example, a database dump file).
+
 ```bash
 # check current working dir
-$ pwd  
-/home/omry/dev/hydra
+$ pwd
+/home/jasha/dev/hydra
 
-# working dir remains the same
+# working dir changed to output dir
+$ python my_app.py hydra.job.chdir=True
+Working directory : /home/jasha/dev/hydra/outputs/2023-04-18/13-43-17
+Output directory  : /home/jasha/dev/hydra/outputs/2023-04-18/13-43-17
+
+# working dir remains unchanged
 $ python my_app.py hydra.job.chdir=False
-Working directory : /home/omry/dev/hydra
+Working directory : /home/jasha/dev/hydra
+Output directory  : /home/jasha/dev/hydra/outputs/2023-04-18/13-43-20
 
-# output dir and files are still created, even if `chdir` is disabled:
-$ tree -a outputs/2021-10-25/09-46-26/
-outputs/2021-10-25/09-46-26/
+# for Hydra >= 1.2, working dir remains unchanged by default
+$ python my_app.py
+Working directory : /home/jasha/dev/hydra
+Output directory  : /home/jasha/dev/hydra/outputs/2023-04-18/13-43-24
+
+# output dir and files are still created even if `chdir` is disabled:
+$ tree -a outputs/2023-04-18/13-43-24/
+outputs/2023-04-18/13-43-24/
 ├── .hydra
 │   ├── config.yaml
 │   ├── hydra.yaml
@@ -80,7 +102,7 @@ outputs/2021-10-25/09-46-26/
 
 ### Changing or disabling Hydra's output subdir 
 You can change the `.hydra` subdirectory name by overriding `hydra.output_subdir`.
-You can disable its creation by overriding `hydra.output_subdir` to `null`. 
+You can disable its creation by overriding `hydra.output_subdir` to `null`.
 
 
 ### Accessing the original working directory in your application
@@ -107,6 +129,5 @@ Original working directory : /Users/omry/dev/hydra
 to_absolute_path('foo')    : /Users/omry/dev/hydra/foo
 to_absolute_path('/foo')   : /foo
 ```
-
 
 The name of the generated working directories can be [customized](/configure_hydra/workdir.md).
