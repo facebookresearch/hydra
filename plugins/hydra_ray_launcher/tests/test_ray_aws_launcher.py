@@ -22,9 +22,7 @@ from hydra.test_utils.test_utils import chdir_hydra_root, chdir_plugin_root
 from omegaconf import OmegaConf
 from pytest import fixture, mark
 
-from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
-    RayAWSLauncher,
-)
+from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import RayAWSLauncher
 
 # mypy complains about "unused type: ignore comment" on macos
 # workaround adapted from: https://github.com/twisted/twisted/pull/1416
