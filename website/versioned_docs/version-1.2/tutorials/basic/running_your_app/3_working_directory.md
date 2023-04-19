@@ -74,20 +74,15 @@ store output for the application (For example, a database dump file).
 $ pwd
 /home/jasha/dev/hydra
 
-# working dir changed to output dir
-$ python my_app.py hydra.job.chdir=True
-Working directory : /home/jasha/dev/hydra/outputs/2023-04-18/13-43-17
-Output directory  : /home/jasha/dev/hydra/outputs/2023-04-18/13-43-17
-
-# working dir remains unchanged
-$ python my_app.py hydra.job.chdir=False
-Working directory : /home/jasha/dev/hydra
-Output directory  : /home/jasha/dev/hydra/outputs/2023-04-18/13-43-20
-
 # for Hydra >= 1.2, working dir remains unchanged by default
 $ python my_app.py
 Working directory : /home/jasha/dev/hydra
 Output directory  : /home/jasha/dev/hydra/outputs/2023-04-18/13-43-24
+
+# working dir changed to output dir
+$ python my_app.py hydra.job.chdir=True
+Working directory : /home/jasha/dev/hydra/outputs/2023-04-18/13-43-17
+Output directory  : /home/jasha/dev/hydra/outputs/2023-04-18/13-43-17
 
 # output dir and files are still created even if `chdir` is disabled:
 $ tree -a outputs/2023-04-18/13-43-24/
