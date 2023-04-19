@@ -60,7 +60,7 @@ You can configure the name of the output directory using
 the [customizing the working directory](/configure_hydra/workdir.md) pattern.
 
 
-### Enable/disable changing current working dir to job's output dir
+### Automatically change current working dir to job's output dir
 
 By setting `hydra.job.chdir=True`, you can configure
 Hydra's `@hydra.main` decorator to change python's working directory by calling
