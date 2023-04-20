@@ -107,7 +107,8 @@ class HydraOverrideVisitor(OverrideParserVisitor):
         item = next(children)
         assert isinstance(item, OverrideParser.DictKeyContext)
         pkey = self.visitDictKey(item)
-        assert self.is_matching_terminal(next(children), OverrideLexer.COLON)
+        colon = next(children)
+        assert self.is_matching_terminal(colon, OverrideLexer.COLON)
         value = next(children)
         assert isinstance(value, OverrideParser.ElementContext)
         return pkey, self.visitElement(value)
@@ -212,7 +213,8 @@ class HydraOverrideVisitor(OverrideParserVisitor):
         kwargs = {}
         children = ctx.getChildren()
         func_name = next(children).getText()
-        assert self.is_matching_terminal(next(children), OverrideLexer.POPEN)
+        popen = next(children)
+        assert self.is_matching_terminal(popen, OverrideLexer.POPEN)
         in_kwargs = False
         while True:
             cur = next(children)

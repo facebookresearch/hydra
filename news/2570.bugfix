@@ -1,0 +1,1 @@
+Fix a command line parsing bug in multirun mode when `PYTHONOPTIMIZE=1`
