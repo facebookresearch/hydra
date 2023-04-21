@@ -156,10 +156,10 @@ class OptunaSweeperImpl(Sweeper):
         n_trials: int,
         n_jobs: int,
         max_failure_rate: float,
+        load_if_exists: Optional[bool],
         search_space: Optional[DictConfig],
         custom_search_space: Optional[str],
         params: Optional[DictConfig],
-        load_if_exists: Optional[bool] = True,
     ) -> None:
         self.sampler = sampler
         self.direction = direction
