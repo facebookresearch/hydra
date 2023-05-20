@@ -66,6 +66,9 @@ class SlurmQueueConf(BaseQueueConf):
     # check the following for more info on slurm_max_num_timeout
     # https://github.com/facebookincubator/submitit/blob/master/docs/checkpointing.md
     max_num_timeout: int = 0
+    # Path to Python executable.
+    # Useful when calling the Slurm Python executable is different from the original.
+    python: Optional[str] = None
     # Useful to add parameters which are not currently available in the plugin.
     # Eg: {"mail-user": "blublu@fb.com", "mail-type": "BEGIN"}
     additional_parameters: Dict[str, Any] = field(default_factory=dict)

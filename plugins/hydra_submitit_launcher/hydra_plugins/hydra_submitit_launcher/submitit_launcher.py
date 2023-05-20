@@ -96,7 +96,10 @@ class BaseSubmititLauncher(Launcher):
         # build executor
         init_params = {"folder": self.params["submitit_folder"]}
         specific_init_keys = {"max_num_timeout"}
-
+        
+        if self._EXECUTOR == "slurm":
+            specific_init_keys = specific_init_keys | {"python"}
+        
         init_params.update(
             **{
                 f"{self._EXECUTOR}_{x}": y
