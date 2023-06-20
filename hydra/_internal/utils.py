@@ -494,7 +494,7 @@ def _get_completion_help() -> str:
             completion_info.append(plugin_cls.help(cmd).format(_get_exec_command()))
         completion_info.append("")
 
-    completion_help = "\n".join([f"    {x}" if x else x for x in completion_info])
+    completion_help = "\n".join(f"    {x}" if x else x for x in completion_info)
     return completion_help
 
 

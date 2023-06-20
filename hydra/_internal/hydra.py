@@ -233,7 +233,7 @@ class Hydra:
 
         for shell, plugins in shell_to_plugin.items():
             if len(plugins) > 1:
-                lst = ",".join([type(plugin).__name__ for plugin in plugins])
+                lst = ",".join(type(plugin).__name__ for plugin in plugins)
                 raise ValueError(f"Multiple plugins installed for {shell} : {lst}")
 
         return shell_to_plugin
@@ -251,7 +251,7 @@ class Hydra:
 
         def find_plugin(cmd: str) -> CompletionPlugin:
             if cmd not in shell_to_plugin:
-                lst = "\n".join(["\t" + x for x in shell_to_plugin.keys()])
+                lst = "\n".join("\t" + x for x in shell_to_plugin.keys())
                 raise ValueError(
                     f"No completion plugin for '{cmd}' found, available : \n{lst}"
                 )
@@ -307,7 +307,7 @@ class Hydra:
                 items = ", ".join(options)
                 line = f"{group}: {items}"
             else:
-                items = "\n".join(["  " + o for o in options])
+                items = "\n".join("  " + o for o in options)
                 line = f"{group}:\n{items}"
             s += line + "\n"
 

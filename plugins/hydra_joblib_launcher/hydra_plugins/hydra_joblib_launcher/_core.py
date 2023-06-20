@@ -90,7 +90,7 @@ def launch(
 
     log.info(
         "Joblib.Parallel({}) is launching {} jobs".format(
-            ",".join([f"{k}={v}" for k, v in joblib_cfg.items()]),
+            ",".join(f"{k}={v}" for k, v in joblib_cfg.items()),
             len(job_overrides),
         )
     )

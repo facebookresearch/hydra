@@ -47,7 +47,7 @@ def type_str(t: Any) -> str:
 
     args = getattr(t, "__args__", None)
     if args is not None:
-        args = ", ".join([type_str(t) for t in t.__args__])
+        args = ", ".join(type_str(t) for t in t.__args__)
         ret = f"{name}[{args}]"
     else:
         ret = name

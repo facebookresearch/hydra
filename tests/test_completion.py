@@ -269,7 +269,7 @@ class TestRunCompletion:
 
         cmd.extend(expected)
         if verbose:
-            print("\nCOMMAND:\n" + " ".join([f"'{x}'" for x in cmd]))
+            print("\nCOMMAND:\n" + " ".join(f"'{x}'" for x in cmd))
 
         subprocess.check_call(cmd)
 
