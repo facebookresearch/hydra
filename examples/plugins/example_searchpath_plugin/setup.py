@@ -3,7 +3,7 @@
 from setuptools import find_namespace_packages, setup, find_packages
 
 
-with open("README.md", "r") as fh:
+with open("README.md") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-example-searchpath-plugin",

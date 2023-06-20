@@ -53,7 +53,7 @@ def test_tutorial_working_directory(tmpdir: Path) -> None:
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
-    assert result == "Working directory : {}".format(tmpdir)
+    assert result == f"Working directory : {tmpdir}"
 
 
 def test_tutorial_working_directory_original_cwd(tmpdir: Path) -> None:

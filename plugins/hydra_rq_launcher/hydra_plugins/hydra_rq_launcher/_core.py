@@ -95,7 +95,7 @@ def launch(
     log.info(
         f"RQ Launcher is enqueuing {len(job_overrides)} job(s) in queue : {rq_cfg.queue}"
     )
-    log.info("Sweep output dir : {}".format(sweep_dir))
+    log.info(f"Sweep output dir : {sweep_dir}")
     if not sweep_dir.is_absolute():
         log.warn(
             "Using relative sweep dir: Please be aware that dir will be relative to where workers are started from."

@@ -62,7 +62,7 @@ class BasicSweeper(Sweeper):
         """
         Instantiates
         """
-        super(BasicSweeper, self).__init__()
+        super().__init__()
 
         if params is None:
             params = {}

@@ -210,7 +210,7 @@ def list_plugins(directory: str) -> List[Plugin]:
         setup_py = os.path.join(abspath, "setup.py")
         name_and_classifiers: List[str] = subprocess.check_output(
             [sys.executable, setup_py, "--name", "--classifiers"],
-            universal_newlines=True,
+            text=True,
         ).splitlines()
         name, classifiers = name_and_classifiers[0], name_and_classifiers[1:]
 

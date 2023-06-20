@@ -221,7 +221,7 @@ def find_parent_dir_containing(
         cur = os.path.relpath(os.path.join(cur, ".."))
         max_up = max_up - 1
     if max_up == 0:
-        raise IOError(f"Could not find {target} in parents of {os.getcwd()}")
+        raise OSError(f"Could not find {target} in parents of {os.getcwd()}")
     return cur
 
 
@@ -333,7 +333,7 @@ if __name__ == "__main__":
                 modified_env.update(env_override)
         subprocess.check_call(cmd, env=modified_env)
 
-        with open(output_file, "r") as f:
+        with open(output_file) as f:
             file_str = f.read()
             output = str.splitlines(file_str)
 

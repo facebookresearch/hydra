@@ -34,7 +34,7 @@ class TrialBatch:
 
 def encoder_parameters_into_string(parameters: List[Dict[str, Any]]) -> str:
     """Convert a list of params into a string"""
-    mandatory_keys = set(["name", "type", "bounds", "values", "value"])
+    mandatory_keys = {"name", "type", "bounds", "values", "value"}
     parameter_log_string = ""
     for parameter in parameters:
         parameter_log_string += "\n"

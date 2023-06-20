@@ -180,7 +180,7 @@ class DictValues:
         )
 
 
-class PeskySentinel(object):
+class PeskySentinel:
     def __repr__(self):
         return "<I am a pesky sentinel>"
 

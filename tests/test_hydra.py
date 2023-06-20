@@ -1090,7 +1090,7 @@ def test_hydra_output_dir(
     ) as task:
         assert task.temp_dir is not None
         path = Path(task.temp_dir)
-        files = set([str(x)[len(task.temp_dir) + 1 :] for x in path.iterdir()])
+        files = {str(x)[len(task.temp_dir) + 1 :] for x in path.iterdir()}
         assert files == expected_files
 
 

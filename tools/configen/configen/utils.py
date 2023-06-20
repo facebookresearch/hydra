@@ -59,10 +59,7 @@ def type_str(t: Any) -> str:
 
 def is_tuple_annotation(type_: Any) -> bool:
     origin = getattr(type_, "__origin__", None)
-    if sys.version_info < (3, 7, 0):
-        return origin is Tuple or type_ is Tuple  # pragma: no cover
-    else:
-        return origin is tuple  # pragma: no cover
+    return origin is tuple  # pragma: no cover
 
 
 def convert_imports(imports: Set[Any], string_imports: Iterable[str]) -> List[str]:
