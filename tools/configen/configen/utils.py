@@ -59,7 +59,7 @@ def type_str(t: Any) -> str:
 
 def is_tuple_annotation(type_: Any) -> bool:
     origin = getattr(type_, "__origin__", None)
-    return origin is tuple  # pragma: no cover
+    return origin is tuple
 
 
 def convert_imports(imports: Set[Any], string_imports: Iterable[str]) -> List[str]:
