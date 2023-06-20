@@ -27,7 +27,7 @@ to test a single plugin:
 ```shell {4}
 $ PLUGINS=hydra_colorlog nox -s test_plugins-3.8
 Operating system        :       Linux
-NOX_PYTHON_VERSIONS     :       ['3.6', '3.7', '3.8', '3.9']
+NOX_PYTHON_VERSIONS     :       ['3.7', '3.8', '3.9', '3.10', '3.11']
 PLUGINS                 :       ['hydra_colorlog']
 SKIP_CORE_TESTS         :       False
 FIX                     :       False

@@ -21,7 +21,6 @@ with open("README.md", "r") as fh:
             "License :: OSI Approved :: MIT License",
             # Hydra uses Python version and Operating system to determine
             # In which environments to test this plugin
-            "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Programming Language :: Python :: 3.9",
