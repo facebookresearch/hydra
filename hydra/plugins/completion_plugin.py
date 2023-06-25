@@ -107,7 +107,7 @@ class CompletionPlugin(Plugin):
         if config is None:
             return []
         elif OmegaConf.is_config(config):
-            matches = []
+            matches: List[str] = []
             if word.endswith(".") or word.endswith("="):
                 exact_key = word[0:-1]
                 try:
