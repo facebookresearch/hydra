@@ -26,12 +26,12 @@ class ExampleClass:
     def __init__(
         self,
         no_default: float,
-        lst: list[str],
-        passthrough_list: list[LibraryClass],
-        dataclass_val: list[User],
-        def_value: list[str] = [],
+        lst: List[str],
+        passthrough_list: List[LibraryClass],
+        dataclass_val: List[User],
+        def_value: List[str] = [],
         default_str="Bond, James Bond",
-        none_str: str | None = None,
+        none_str: Optional[str] = None,
     ):
         self.no_default = no_default
         self.lst = lst
