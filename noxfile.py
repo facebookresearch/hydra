@@ -508,7 +508,7 @@ def test_core(session: Session) -> None:
             session,
             "build_helpers",
             "tests",
-            "-W ignore:pkg_resources is deprecated as an API:DeprecationWarning:pkg_resources",
+            "-W ignore:pkg_resources is deprecated as an API:DeprecationWarning",
             *session.posargs,
         )
     else:
