@@ -233,7 +233,7 @@ class Hydra:
 
         for shell, plugins in shell_to_plugin.items():
             if len(plugins) > 1:
-                lst = ",".join([type(plugin).__name__ for plugin in plugins])
+                lst = ",".join(type(plugin).__name__ for plugin in plugins)
                 raise ValueError(f"Multiple plugins installed for {shell} : {lst}")
 
         return shell_to_plugin
@@ -251,7 +251,7 @@ class Hydra:
 
         def find_plugin(cmd: str) -> CompletionPlugin:
             if cmd not in shell_to_plugin:
-                lst = "\n".join(["\t" + x for x in shell_to_plugin.keys()])
+                lst = "\n".join("\t" + x for x in shell_to_plugin.keys())
                 raise ValueError(
                     f"No completion plugin for '{cmd}' found, available : \n{lst}"
                 )
@@ -287,7 +287,7 @@ class Hydra:
             if parent == "":
                 group_name = group
             else:
-                group_name = "{}/{}".format(parent, group)
+                group_name = f"{parent}/{group}"
             files = self.config_loader.get_group_options(group_name, ObjectType.CONFIG)
             dirs = self.config_loader.get_group_options(group_name, ObjectType.GROUP)
             if len(files) > 0:
@@ -305,10 +305,10 @@ class Hydra:
             options = sorted(self.config_loader.get_group_options(group))
             if compact:
                 items = ", ".join(options)
-                line = "{}: {}".format(group, items)
+                line = f"{group}: {items}"
             else:
-                items = "\n".join(["  " + o for o in options])
-                line = "{}:\n{}".format(group, items)
+                items = "\n".join("  " + o for o in options)
+                line = f"{group}:\n{items}"
             s += line + "\n"
 
         return s
@@ -396,14 +396,14 @@ class Hydra:
             if len(plugins) > 0:
                 Hydra._log_header(header=f"{plugin_type.__name__}:", prefix="\t")
                 for plugin in plugins:
-                    log.debug("\t\t{}".format(plugin.__name__))
+                    log.debug(f"\t\t{plugin.__name__}")
                     if plugin.__name__ in all_plugins:
                         all_plugins.remove(plugin.__name__)
 
         if len(all_plugins) > 0:
             Hydra._log_header(header="Generic plugins: ", prefix="\t")
             for plugin_name in all_plugins:
-                log.debug("\t\t{}".format(plugin_name))
+                log.debug(f"\t\t{plugin_name}")
 
     def _print_search_path(
         self,

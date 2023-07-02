@@ -21,7 +21,7 @@ with pathlib.Path("requirements/requirements.txt").open() as requirements_txt:
     ]
 
 
-with open("README.md", "r") as fh:
+with open("README.md") as fh:
     LONG_DESC = fh.read()
     setup(
         cmdclass={

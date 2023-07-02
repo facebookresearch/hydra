@@ -133,10 +133,10 @@ class ConfigStore(metaclass=Singleton):
     def list(self, path: str) -> List[str]:
         d = self._open(path)
         if d is None:
-            raise IOError(f"Path not found {path}")
+            raise OSError(f"Path not found {path}")
 
         if not isinstance(d, dict):
-            raise IOError(f"Path points to a file : {path}")
+            raise OSError(f"Path points to a file : {path}")
 
         return sorted(d.keys())
 

@@ -183,7 +183,7 @@ def test_save_job_return_callback(tmpdir: Path, multirun: bool) -> None:
         log_paths = [tmpdir / "my_app.log"]
 
     for p in log_paths:
-        with open(p, "r") as file:
+        with open(p) as file:
             logs = file.readlines()
             assert log_msg in logs
 
@@ -215,7 +215,7 @@ def test_experimental_rerun(
     assert config_file.exists()
     assert log_file.exists()
 
-    with open(log_file, "r") as file:
+    with open(log_file) as file:
         logs = file.read().splitlines()
         assert "[JOB] Running my_app" in logs
 
@@ -232,6 +232,6 @@ def test_experimental_rerun(
     result, err = run_python_script(cmd, allow_warnings=True)
     assert warning_msg in err
 
-    with open(log_file, "r") as file:
+    with open(log_file) as file:
         logs = file.read().splitlines()
         assert "[JOB] Running my_app" in logs

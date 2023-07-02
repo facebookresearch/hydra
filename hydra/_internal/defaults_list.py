@@ -312,7 +312,7 @@ def _check_not_missing(
                 group_path,
                 results_filter=ObjectType.CONFIG,
             )
-            opt_list = "\n".join(["\t" + x for x in options])
+            opt_list = "\n".join("\t" + x for x in options)
             msg = dedent(
                 f"""\
                 You must specify '{override_key}', e.g, {override_key}=<OPTION>
@@ -778,7 +778,7 @@ def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> N
         if isinstance(element, GroupDefault):
             msg = f"Could not find '{element.get_config_path()}'\n"
             if options is not None and len(options) > 0:
-                opt_list = "\n".join(["\t" + x for x in options])
+                opt_list = "\n".join("\t" + x for x in options)
                 msg = f"{msg}\nAvailable options in '{group}':\n" + opt_list
         else:
             msg = dedent(
