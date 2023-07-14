@@ -4,7 +4,7 @@
 
 (Write your motivation for proposed changes here.)
 
-### Have you read the [Contributing Guidelines on pull requests](https://github.com/facebookresearch/hydra/blob/master/CONTRIBUTING.md)?
+### Have you read the [Contributing Guidelines on pull requests](https://github.com/facebookresearch/hydra/blob/main/CONTRIBUTING.md)?
 
 Yes/No
 
