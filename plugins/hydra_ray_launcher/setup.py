@@ -27,7 +27,7 @@ setup(
         "boto3==1.22.6",
         "hydra-core>=1.1.2",
         "ray[default]~=1.12",
-        "aiohttp==3.8.1",
+        "aiohttp==3.8.5",
         "cloudpickle==2.0.0",
         "pickle5==0.0.11; python_version < '3.8'",
     ],
