@@ -1480,7 +1480,7 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
         f"""
         .*my_app.py:7: UserWarning:
         The version_base parameter is not specified.
-        Please specify a compatability version level, or None.
+        Please specify a compatibility version level, or None.
         Will assume defaults for version {version.__compat_version__}
           @hydra.main()
         .*my_app.py:7: UserWarning:
