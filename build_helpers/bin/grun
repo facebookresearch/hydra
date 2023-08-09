@@ -4,7 +4,7 @@ import subprocess
 import sys
 
 my_dir = os.path.realpath(os.path.dirname(__file__))
-antlr = "antlr-4.9.3-complete.jar"
+antlr = "antlr-4.11.1-complete.jar"
 args = ["java", "-cp", my_dir + "/" + antlr, "org.antlr.v4.gui.TestRig"]
 args.extend(sys.argv[1:])
 subprocess.check_call(args)

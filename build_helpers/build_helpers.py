@@ -185,7 +185,7 @@ class ANTLRCommand(Command):  # type: ignore
             command = [
                 "java",
                 "-jar",
-                join(root_dir, "bin/antlr-4.9.3-complete.jar"),
+                join(root_dir, "bin/antlr-4.11.1-complete.jar"),
                 "-Dlanguage=Python3",
                 "-o",
                 join(project_root, "hydra/grammar/gen/"),
