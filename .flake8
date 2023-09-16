@@ -1,5 +1,5 @@
 [flake8]
-exclude = 
+exclude =
     .git
     ,.nox,build
     ,hydra/grammar/gen
