@@ -66,8 +66,8 @@ By setting `hydra.job.chdir=True`, you can configure
 Hydra's `@hydra.main` decorator to change python's working directory by calling
 `os.chdir` before passing control to the user's decorated main function.
 As of Hydra v1.2, `hydra.job.chdir` defaults to `False`.
-Setting `hydra.job.chdir=True` enables convenient use of the output directory to
-store output for the application (For example, a database dump file).
+Setting `hydra.job.chdir=True` enables convenient use of the output directory
+to store output for the application (For example, a database dump file).
 
 ```bash
 # check current working dir
@@ -95,7 +95,7 @@ outputs/2023-04-18/13-43-24/
 ```
 
 
-### Changing or disabling Hydra's output subdir 
+### Changing or disabling Hydra's output subdir
 You can change the `.hydra` subdirectory name by overriding `hydra.output_subdir`.
 You can disable its creation by overriding `hydra.output_subdir` to `null`.
 
