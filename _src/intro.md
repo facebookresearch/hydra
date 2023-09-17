@@ -119,7 +119,7 @@ db:
 You can have as many config groups as you need.
 
 ### Multirun
-You can run your function multiple times with different configuration easily with the `--multirun|-m` flag.
+You can run your function multiple times with different configurations easily with the `--multirun|-m` flag.
 
 
 ```

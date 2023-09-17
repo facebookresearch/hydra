@@ -30,7 +30,7 @@ You can view the Hydra config structure <GithubLink to="hydra/conf/__init__.py">
 
 You can view the Hydra config using `--cfg hydra`:
 <details>
-<summary> $ python my_app.p <b>--cfg hydra</b> (Click to expand)</summary>
+<summary> $ python my_app.py <b>--cfg hydra</b> (Click to expand)</summary>
 
 ```yaml
 hydra:
@@ -73,7 +73,22 @@ def my_app(cfg: DictConfig) -> None:
     print(HydraConfig.get().job.name)
 ```
 
-The following variables are populated at runtime.  
+### Top-level Hydra settings
+The following fields are present at the top level of the Hydra Config.
+- mode: Optional, one of `RUN` or `MULTIRUN`. See [multirun](/tutorials/basic/running_your_app/2_multirun.md) for more info.
+- **searchpath**: A list of paths that Hydra searches in order to find configs.
+  See [overriding `hydra.searchpath`](advanced/search_path.md#overriding-hydrasearchpath-config)
+- **job_logging** and **hydra_logging**: Configure logging settings.
+  See [logging](/tutorials/basic/running_your_app/4_logging.md) and [customizing logging](logging.md).
+- **sweeper**: [Sweeper](/tutorials/basic/running_your_app/2_multirun.md#sweeper) plugin settings. Defaults to basic sweeper.
+- **launcher**: [Launcher](/tutorials/basic/running_your_app/2_multirun.md#launcher) plugin settings. Defaults to basic launcher.
+- **callbacks**: [Experimental callback support](/experimental/callbacks.md).
+- **help**: Configures your app's `--help` CLI flag. See [customizing application's help](app_help.md).
+- **hydra_help**: Configures the `--hydra-help` CLI flag.
+- **output_subdir**: Configures the `.hydra` subdirectory name.
+  See [changing or disabling the output subdir](/tutorials/basic/running_your_app/3_working_directory.md#changing-or-disabling-hydras-output-subdir).
+- **verbose**: Configures per-file DEBUG-level logging.
+  See [logging](/tutorials/basic/running_your_app/4_logging.md).
 
 ### hydra.job:
 The **hydra.job** node is used for configuring some aspects of your job. 
@@ -84,6 +99,7 @@ Fields under **hydra.job**:
 - **name** : Job name, defaults to the Python file name without the suffix. can be overridden.
 - **override_dirname** : Pathname derived from the overrides for this job
 - **chdir**: If `True`, Hydra calls `os.chdir(output_dir)` before calling back to the user's main function.
+  See the [Output/Working directory tutorial](tutorials/basic/running_your_app/3_working_directory.md#automatically-change-current-working-dir-to-jobs-output-dir).
 - **id** : Job ID in the underlying jobs system (SLURM etc)
 - **num** : job serial number in sweep
 - **config_name** : The name of the config used by the job (Output only)
@@ -117,25 +133,6 @@ Fields under **hydra.overrides** are populated automatically and should not be o
   Contains the same information as the `.hydra/overrides.yaml` file.
   See [Output/Working directory](/tutorials/basic/running_your_app/3_working_directory.md).
 - **hydra**: Contains a list of the command-line `hydra` config overrides used.
-
-### hydra.mode
-See [multirun](/tutorials/basic/running_your_app/2_multirun.md) for more info.
-
-### Other Hydra settings
-The following fields are present at the top level of the Hydra Config.
-- **searchpath**: A list of paths that Hydra searches in order to find configs.
-  See [overriding `hydra.searchpath`](advanced/search_path.md#overriding-hydrasearchpath-config)
-- **job_logging** and **hydra_logging**: Configure logging settings.
-  See [logging](/tutorials/basic/running_your_app/4_logging.md) and [customizing logging](logging.md).
-- **sweeper**: [Sweeper](/tutorials/basic/running_your_app/2_multirun.md#sweeper) plugin settings. Defaults to basic sweeper.
-- **launcher**: [Launcher](/tutorials/basic/running_your_app/2_multirun.md#launcher) plugin settings. Defaults to basic launcher.
-- **callbacks**: [Experimental callback support](/experimental/callbacks.md).
-- **help**: Configures your app's `--help` CLI flag. See [customizing application's help](app_help.md).
-- **hydra_help**: Configures the `--hydra-help` CLI flag.
-- **output_subdir**: Configures the `.hydra` subdirectory name.
-  See [changing or disabling the output subdir](/tutorials/basic/running_your_app/3_working_directory.md#changing-or-disabling-hydras-output-subdir).
-- **verbose**: Configures per-file DEBUG-level logging.
-  See [logging](/tutorials/basic/running_your_app/4_logging.md).
 
 
 ### Resolvers provided by Hydra

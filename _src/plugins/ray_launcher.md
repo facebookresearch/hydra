@@ -320,7 +320,7 @@ INFO services.py:1164 -- View the Ray dashboard at http://127.0.0.1:8266
 
 You can run the example application on your existing ray cluster as well by overriding `hydra.launcher.ray.init.address`:
 ```commandline
-$ python my_app.py  --multirun hydra/launcher=ray hydra.launcher.ray.init.address=localhost:6379'
+$ python my_app.py  --multirun hydra/launcher=ray hydra.launcher.ray.init.address=localhost:6379
 [HYDRA] Ray Launcher is launching 1 jobs, sweep output dir: multirun/2020-11-10/15-13-32
 [HYDRA] Initializing ray with config: {'num_cpus': None, 'num_gpus': None, 'address': 'localhost:6379'}
 INFO worker.py:633 -- Connecting to existing Ray cluster at address: 10.30.99.17:6379
