@@ -22,7 +22,7 @@ chdir_plugin_root()
 
 os.environ["HYDRA_FULL_ERROR"] = "1"
 
-filter_ax_internal_warnings = pytest.mark.filterwarnings("ignore::DeprecationWarning", "ignore::FutureWarning", "ignore::RuntimeWarning", "ignore::UserWarning", "ignore::linear_operator.utils.warnings.NumericalWarning")
+filter_ax_internal_warnings = pytest.mark.filterwarnings("ignore::DeprecationWarning", "ignore::FutureWarning", "ignore::RuntimeWarning", "ignore::linear_operator.utils.warnings.NumericalWarning")
 
 
 def test_discovery() -> None:
@@ -201,7 +201,6 @@ def test_configuration_set_via_cmd_and_default_config(
         assert "quadratic.x" in best_parameters
         assert "quadratic.y" in best_parameters
 
-@filter_ax_internal_warnings
 @mark.parametrize(
     "cmd_arg, expected_str",
     [
@@ -233,7 +232,6 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
     assert expected_str in result
     assert "polynomial.z: fixed=10" in result
 
-@filter_ax_internal_warnings
 @mark.parametrize(
     "cmd_args",
     [
@@ -249,7 +247,7 @@ def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: List[str]) -> 
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + cmd_args
-    run_python_script(cmd)
+    run_python_script(cmd, allow_warnings=True)
 
 
 @mark.parametrize(
@@ -326,7 +324,6 @@ def test_jobs_using_choice_between_lists(
         ),
     ],
 )
-@filter_ax_internal_warnings
 def test_jobs_using_choice_between_dicts(
     tmpdir: Path,
     cmd_arg: str,
@@ -347,7 +344,6 @@ def test_jobs_using_choice_between_dicts(
     assert f"New best value: {best_value}" in result
 
 
-@filter_ax_internal_warnings
 def test_example_app(tmpdir: Path) -> None:
     cmd = [
         "example/banana.py",
