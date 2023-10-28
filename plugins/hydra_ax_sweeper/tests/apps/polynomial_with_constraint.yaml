@@ -12,8 +12,9 @@ hydra:
       max_trials: 10
 
       experiment:
-        minimize: true
-        objective_name: result
+        objectives:
+          result: 
+            minimize: true
         outcome_constraints: ['constraint_metric >= 2.1']  # Optional.
 
       early_stop:

@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional
 
 from hydra.core.config_store import ConfigStore
 
+from ax.service.utils.instantiation import ObjectiveProperties
 
 @dataclass
 class EarlyStopConfig:
@@ -20,11 +21,7 @@ class ExperimentConfig:
     # Experiment name
     name: Optional[str] = None
 
-    # Name of metric to optimize or null if you only return one metric
-    objective_name: str = "objective"
-
-    # Defaults to minimize, set to false to maximize
-    minimize: bool = True
+    objectives: Optional[Dict[str, ObjectiveProperties]] = None
 
     # For the remaining parameters, refer the Ax documentation: https://ax.dev/api/core.html#experiment
     parameter_constraints: Optional[List[str]] = None
