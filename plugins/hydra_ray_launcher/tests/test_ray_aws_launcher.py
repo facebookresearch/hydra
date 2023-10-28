@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Dict, Generator, Optional
 
 import boto3  # type: ignore
-import pkg_resources
+from importlib.metadata import version
 from botocore.exceptions import NoCredentialsError, NoRegionError  # type: ignore
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
@@ -195,11 +195,10 @@ def validate_lib_version(connect_config: Dict[Any, Any]) -> None:
     # a few lib versions that we care about
     libs = ["ray", "cloudpickle", "pickle5"]
     for lib in libs:
-        local_version = f"{pkg_resources.get_distribution(lib).version}"
         out = sdk.run_on_cluster(
             connect_config, cmd=f"pip show {lib} | grep Version", with_output=True
         ).decode()
-        assert local_version in out, f"{lib} version mismatch"
+        assert version(lib) in out, f"{lib} version mismatch"
 
     # validate python version
     info = sys.version_info

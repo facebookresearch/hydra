@@ -2,6 +2,8 @@
 import logging
 from typing import Optional, Sequence
 
+import warnings
+
 from hydra.core.utils import JobReturn
 from hydra.plugins.launcher import Launcher
 from hydra.types import HydraContext, TaskFunction
@@ -17,7 +19,6 @@ from ._config import (
 
 log = logging.getLogger(__name__)
 
-
 class RayAWSLauncher(Launcher):
     def __init__(
         self,
@@ -30,6 +31,8 @@ class RayAWSLauncher(Launcher):
         create_update_cluster: RayCreateOrUpdateClusterConf,
         teardown_cluster: RayTeardownClusterConf,
     ) -> None:
+        warnings.warn("RayAWSLauncher may not work", DeprecationWarning, stacklevel=2)
+
         self.ray_cfg = ray
         self.stop_cluster = stop_cluster
         self.sync_up = sync_up
