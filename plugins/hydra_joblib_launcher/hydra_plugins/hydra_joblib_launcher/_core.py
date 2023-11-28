@@ -109,7 +109,6 @@ def launch(
         )
         batch_size = v if (v := joblib_cfg['n_jobs']) != -1 else mp.cpu_count()
         runs = []
-        overrides = []
         for idx, overrides in enumerate(_batch_sequence(job_overrides, batch_size)):
             results = Parallel(**joblib_cfg)(
                 delayed(execute_job)(
