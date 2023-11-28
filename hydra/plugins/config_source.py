@@ -69,6 +69,7 @@ class ConfigSource(Plugin):
         """
         ...
 
+    @abstractmethod
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
         """
         List items under the specified config path

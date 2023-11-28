@@ -8,7 +8,6 @@ import sys
 # when installed and executed from the command line.
 # You don't need to repeat those tests in your own app.
 class TestAppOutput:
-
     # Testing the Hydra app as an executable script
     # This only works if we are at the root of the hydra-app-example
     def test_python_run(self, tmpdir: str) -> None:

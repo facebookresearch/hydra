@@ -691,7 +691,6 @@ def test_instantiate_bad_adam_conf(instantiate_func: Any, recwarn: Any) -> None:
 
 
 def test_instantiate_with_missing_module(instantiate_func: Any) -> None:
-
     _target_ = "tests.instantiate.ClassWithMissingModule"
     with raises(
         InstantiationException,
@@ -1505,6 +1504,7 @@ def test_cannot_locate_target(instantiate_func: Any) -> None:
         param(None, False, id="unspecified"),
         param(ConvertMode.NONE, False, id="none"),
         param(ConvertMode.PARTIAL, True, id="partial"),
+        param(ConvertMode.OBJECT, True, id="object"),
         param(ConvertMode.ALL, True, id="all"),
     ],
 )
@@ -1587,6 +1587,8 @@ def test_convert_params_override(
         param("none", id="none"),
         param(ConvertMode.PARTIAL, id="partial"),
         param("partial", id="partial"),
+        param(ConvertMode.OBJECT, id="object"),
+        param("object", id="object"),
         param(ConvertMode.ALL, id="all"),
         param("all", id="all"),
     ],
@@ -1619,7 +1621,7 @@ def test_convert_params(
     kwargs = {"a": {"_convert_": convert_mode}}
     ret = instantiate_func(cfg.obj, **kwargs)
 
-    if convert_mode in (ConvertMode.PARTIAL, ConvertMode.ALL):
+    if convert_mode in (ConvertMode.PARTIAL, ConvertMode.OBJECT, ConvertMode.ALL):
         assert isinstance(ret.a.a, dict)
         assert isinstance(ret.a.b, list)
     elif convert_mode in (None, ConvertMode.NONE):
@@ -1677,6 +1679,7 @@ def test_convert_and_recursive_node(
                 ),
                 SimpleDataClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
                 SimpleDataClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
+                SimpleDataClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
             ),
             id="dataclass+dataclass",
         ),
@@ -1700,6 +1703,7 @@ def test_convert_and_recursive_node(
                     ),
                     b=None,
                 ),
+                SimpleClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
                 SimpleClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
                 SimpleClass(a=SimpleDataClass(a={"foo": 99}, b=[1, 99]), b=None),
             ),
@@ -1729,16 +1733,68 @@ def test_convert_and_recursive_node(
                 ),
                 {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
                 {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
+                {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
             ),
             id="dict+dataclass",
+        ),
+        param(
+            {
+                "obj": {
+                    "_target_": "tests.instantiate.SimpleClass",
+                    "a": SimpleDataClass(a="foo"),
+                    "b": None,
+                }
+            },
+            (
+                SimpleClass(a=OmegaConf.create({"a": "foo", "b": None}), b=None),
+                SimpleClass(a=OmegaConf.create({"a": "foo", "b": None}), b=None),
+                SimpleClass(a=SimpleDataClass(a="foo", b=None), b=None),
+                SimpleClass(a={"a": "foo", "b": None}, b=None),
+            ),
+            id="class+dataclass_instance",
+        ),
+        param(
+            {
+                "obj": SimpleDataClass(
+                    a={
+                        "_target_": "tests.instantiate.SimpleClass",
+                        "a": "foo",
+                        "b": None,
+                    }
+                )
+            },
+            (
+                OmegaConf.create(
+                    {"a": SimpleClass(a="foo", b=None), "b": None},
+                    flags={"allow_objects": True},
+                ),
+                OmegaConf.create(
+                    {"a": SimpleClass(a="foo", b=None), "b": None},
+                    flags={"allow_objects": True},
+                ),
+                SimpleDataClass(a=SimpleClass(a="foo", b=None), b=None),
+                {"a": SimpleClass(a="foo", b=None), "b": None},
+            ),
+            id="dataclass_instance+class",
+        ),
+        param(
+            {"obj": SimpleClassDefaultPrimitiveConf(a=SimpleDataClass(a="foo"))},
+            (
+                SimpleClass(a=OmegaConf.create({"a": "foo", "b": None}), b=None),
+                SimpleClass(a=OmegaConf.create({"a": "foo", "b": None}), b=None),
+                SimpleClass(a=SimpleDataClass(a="foo", b=None), b=None),
+                SimpleClass(a={"a": "foo", "b": None}, b=None),
+            ),
+            id="dataclass_instance_with_target+dataclass_instance",
         ),
     ],
 )
 def test_instantiate_convert_dataclasses(
-    instantiate_func: Any, config: Any, expected: Tuple[Any, Any, Any]
+    instantiate_func: Any, config: Any, expected: Tuple[Any, Any, Any, Any]
 ) -> None:
     """Instantiate on nested dataclass + dataclass."""
-    modes = [ConvertMode.NONE, ConvertMode.PARTIAL, ConvertMode.ALL]
+    modes = [ConvertMode.NONE, ConvertMode.PARTIAL, ConvertMode.OBJECT, ConvertMode.ALL]
+    assert len(modes) == len(expected)
     for exp, mode in zip(expected, modes):
         # create DictConfig to ensure interpolations are working correctly when we pass a cfg.obj
         cfg = OmegaConf.create(config)
@@ -1753,6 +1809,7 @@ def test_instantiate_convert_dataclasses(
         param(ConvertMode.NONE, DictConfig, ListConfig, id="none"),
         param(ConvertMode.ALL, dict, list, id="all"),
         param(ConvertMode.PARTIAL, dict, list, id="partial"),
+        param(ConvertMode.OBJECT, dict, list, id="object"),
     ],
 )
 def test_instantiated_regular_class_container_types(
@@ -1789,6 +1846,19 @@ def test_instantiated_regular_class_container_types_partial(
     assert OmegaConf.get_type(ret.b) is User
 
 
+def test_instantiated_regular_class_container_types_object(
+    instantiate_func: Any,
+) -> None:
+    cfg = {
+        "_target_": "tests.instantiate.SimpleClass",
+        "a": {},
+        "b": User(name="Bond", age=7),
+    }
+    ret = instantiate_func(cfg, _convert_=ConvertMode.OBJECT)
+    assert isinstance(ret.a, dict)
+    assert isinstance(ret.b, User)
+
+
 def test_instantiated_regular_class_container_types_partial2(
     instantiate_func: Any,
 ) -> None:
@@ -1802,6 +1872,20 @@ def test_instantiated_regular_class_container_types_partial2(
     assert isinstance(ret.a[0], dict)
     assert isinstance(ret.a[1], DictConfig)
     assert OmegaConf.get_type(ret.a[1]) is User
+
+
+def test_instantiated_regular_class_container_types_object2(
+    instantiate_func: Any,
+) -> None:
+    cfg = {
+        "_target_": "tests.instantiate.SimpleClass",
+        "a": [{}, User(name="Bond", age=7)],
+        "b": None,
+    }
+    ret = instantiate_func(cfg, _convert_=ConvertMode.OBJECT)
+    assert isinstance(ret.a, list)
+    assert isinstance(ret.a[0], dict)
+    assert isinstance(ret.a[1], User)
 
 
 @mark.parametrize(
@@ -1826,6 +1910,29 @@ def test_instantiated_regular_class_container_types_partial__recursive(
     assert isinstance(ret.a.a, dict)
     assert isinstance(ret.a.b, DictConfig)
     assert OmegaConf.get_type(ret.a.b) is User
+
+
+@mark.parametrize(
+    "src",
+    [
+        {
+            "_target_": "tests.instantiate.SimpleClass",
+            "a": {
+                "_target_": "tests.instantiate.SimpleClass",
+                "a": {},
+                "b": User(name="Bond", age=7),
+            },
+            "b": None,
+        }
+    ],
+)
+def test_instantiated_regular_class_container_types_object__recursive(
+    instantiate_func: Any, config: Any
+) -> None:
+    ret = instantiate_func(config, _convert_=ConvertMode.OBJECT)
+    assert isinstance(ret.a, SimpleClass)
+    assert isinstance(ret.a.a, dict)
+    assert isinstance(ret.a.b, User)
 
 
 @mark.parametrize(
@@ -1887,6 +1994,7 @@ def test_convert_in_config(
         (ConvertMode.ALL, ConvertMode.ALL, True),
         (ConvertMode.NONE, "none", True),
         (ConvertMode.PARTIAL, "Partial", True),
+        (ConvertMode.OBJECT, "object", True),
         (ConvertMode.ALL, ConvertMode.NONE, False),
         (ConvertMode.NONE, "all", False),
     ],

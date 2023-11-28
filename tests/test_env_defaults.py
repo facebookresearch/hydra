@@ -7,7 +7,6 @@ chdir_hydra_root()
 
 
 def test_env_defaults(tmpdir: Path) -> None:
-
     cmd = [
         "tests/test_apps/custom_env_defaults/my_app.py",
         "hydra.run.dir=" + str(tmpdir),

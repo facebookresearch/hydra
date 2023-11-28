@@ -18,8 +18,9 @@ module.exports = {
     projectName: 'hydra', // Usually your repo name.
     customFields: {
         githubLinkVersionToBaseUrl: {
-            // TODO: Update once a branch is cut for 1.3
-            "1.3": "https://github.com/facebookresearch/hydra/blob/main/",
+            // TODO: Update once a branch is cut for 1.4
+            "1.4": "https://github.com/facebookresearch/hydra/blob/main/",
+            "1.3": "https://github.com/facebookresearch/hydra/blob/1.3_branch/",
             "1.2": "https://github.com/facebookresearch/hydra/blob/1.2_branch/",
             "1.1": "https://github.com/facebookresearch/hydra/blob/1.1_branch/",
             "1.0": "https://github.com/facebookresearch/hydra/blob/1.0_branch/",

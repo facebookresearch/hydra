@@ -3,22 +3,15 @@ import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Sequence
+from typing import Any, List, Sequence, Union
 
 import cloudpickle  # type: ignore
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
-from omegaconf import OmegaConf, open_dict, read_write
+from omegaconf import Node, OmegaConf, open_dict, read_write
 
-from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
-    JOB_RETURN_PICKLE,
-    JOB_SPEC_PICKLE,
-    ray_tmp_dir,
-    rsync,
-)
-from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import (  # type: ignore
-    RayAWSLauncher,
-)
+from ._launcher_util import JOB_RETURN_PICKLE, JOB_SPEC_PICKLE, ray_tmp_dir, rsync
+from .ray_aws_launcher import RayAWSLauncher
 
 try:
     import pickle5 as pickle  # type: ignore
@@ -48,7 +41,7 @@ def _get_abs_code_dir(code_dir: str) -> str:
         return ""
 
 
-def _pickle_jobs(tmp_dir: str, **jobspec: Dict[Any, Any]) -> None:
+def _pickle_jobs(tmp_dir: str, **jobspec: Any) -> None:
     path = os.path.join(tmp_dir, JOB_SPEC_PICKLE)
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
@@ -76,6 +69,7 @@ def launch(
         )
         setup_commands.extend(launcher.ray_cfg.cluster.setup_commands)
 
+    assert isinstance(launcher.ray_cfg.cluster, Node)
     with read_write(launcher.ray_cfg.cluster):
         launcher.ray_cfg.cluster.setup_commands = setup_commands
 
@@ -105,7 +99,7 @@ def launch(
         _pickle_jobs(
             tmp_dir=local_tmp_dir,
             hydra_context=launcher.hydra_context,
-            sweep_configs=sweep_configs,  # type: ignore
+            sweep_configs=sweep_configs,
             task_function=launcher.task_function,
             singleton_state=Singleton.get_state(),
         )
@@ -125,7 +119,7 @@ def launch_jobs(
         **launcher.create_update_cluster,
     )
     with tempfile.TemporaryDirectory() as local_tmp_download_dir:
-
+        assert isinstance(config, dict)
         with ray_tmp_dir(config, launcher.ray_cfg.run_env.name) as remote_tmp_dir:
             sdk.rsync(
                 config,
@@ -144,7 +138,7 @@ def launch_jobs(
             )
 
             if launcher.sync_up.source_dir:
-                source_dir = _get_abs_code_dir(launcher.sync_up.source_dir)
+                sync_up_source_dir = _get_abs_code_dir(launcher.sync_up.source_dir)
                 target_dir = (
                     launcher.sync_up.target_dir
                     if launcher.sync_up.target_dir
@@ -154,7 +148,7 @@ def launch_jobs(
                     config,
                     launcher.sync_up.include,
                     launcher.sync_up.exclude,
-                    os.path.join(source_dir, ""),
+                    os.path.join(sync_up_source_dir, ""),
                     target_dir,
                 )
             sdk.run_on_cluster(
@@ -178,7 +172,7 @@ def launch_jobs(
                 or sync_down_cfg.include
                 or sync_down_cfg.exclude
             ):
-                source_dir = (
+                sync_down_source_dir: Union[str, Path] = (
                     sync_down_cfg.source_dir if sync_down_cfg.source_dir else sweep_dir
                 )
                 target_dir = (
@@ -191,12 +185,12 @@ def launch_jobs(
                     config,
                     launcher.sync_down.include,
                     launcher.sync_down.exclude,
-                    os.path.join(source_dir),
+                    os.path.join(sync_down_source_dir),
                     str(target_dir),
                     up=False,
                 )
                 log.info(
-                    f"Syncing outputs from remote dir: {source_dir} to local dir: {target_dir.absolute()} "
+                    f"Syncing outputs from remote dir: {sync_down_source_dir} to local dir: {target_dir.absolute()} "
                 )
 
         if launcher.stop_cluster:

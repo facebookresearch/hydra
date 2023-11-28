@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import collections
 import collections.abc
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import partial
 from typing import Any, Dict, List, NoReturn, Optional, Tuple
 
@@ -39,7 +39,7 @@ def partial_equal(obj1: Any, obj2: Any) -> bool:
     if isinstance(obj1, list):
         if len(obj1) != len(obj2):
             return False
-        return all([partial_equal(obj1[i], obj2[i]) for i in range(len(obj1))])
+        return all(partial_equal(o1, o2) for o1, o2 in zip(obj1, obj2))
     if not (isinstance(obj1, partial) and isinstance(obj2, partial)):
         return False
     return all(
@@ -189,7 +189,7 @@ class Adam:
 
 @dataclass
 class NestingClass:
-    a: ASubclass = ASubclass(10)
+    a: ASubclass = field(default_factory=lambda: ASubclass(10))
 
 
 nesting = NestingClass()
@@ -385,6 +385,10 @@ class SimpleClass:
             return self.a == other.a and self.b == other.b
         return False
 
+    @property
+    def _fields(self) -> List[str]:
+        return ["a", "b"]
+
 
 @dataclass
 class SimpleClassPrimitiveConf:
@@ -412,8 +416,8 @@ class SimpleClassDefaultPrimitiveConf:
 @dataclass
 class NestedConf:
     _target_: str = "tests.instantiate.SimpleClass"
-    a: Any = User(name="a", age=1)
-    b: Any = User(name="b", age=2)
+    a: Any = field(default_factory=lambda: User(name="a", age=1))
+    b: Any = field(default_factory=lambda: User(name="b", age=2))
 
 
 def recisinstance(got: Any, expected: Any) -> bool:
@@ -422,6 +426,16 @@ def recisinstance(got: Any, expected: Any) -> bool:
         return False
     if isinstance(expected, collections.abc.Mapping):
         return all(recisinstance(got[key], expected[key]) for key in expected)
-    elif isinstance(expected, collections.abc.Iterable):
+    elif isinstance(expected, collections.abc.Iterable) and not isinstance(
+        expected, str
+    ):
         return all(recisinstance(got[idx], exp) for idx, exp in enumerate(expected))
+    elif hasattr(expected, "_fields"):
+        return all(
+            recisinstance(getattr(got, key), getattr(expected, key))
+            for key in expected._fields
+        )
     return True
+
+
+an_object = object()

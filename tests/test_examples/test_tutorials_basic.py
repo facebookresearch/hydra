@@ -53,7 +53,8 @@ def test_tutorial_working_directory(tmpdir: Path) -> None:
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
-    assert result == "Working directory : {}".format(tmpdir)
+    working_directory, output_directory = result.split("\n")
+    assert working_directory == f"Working directory : {tmpdir}"
 
 
 def test_tutorial_working_directory_original_cwd(tmpdir: Path) -> None:
@@ -312,7 +313,6 @@ def test_sweeping_example(
 def test_advanced_ad_hoc_composition(
     monkeypatch: Any, tmpdir: Path, args: List[str], expected: Any
 ) -> None:
-
     monkeypatch.setenv("USER", "test_user")
     cmd = [
         "examples/advanced/ad_hoc_composition/hydra_compose_example.py",

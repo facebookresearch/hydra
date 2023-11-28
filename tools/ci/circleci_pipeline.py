@@ -69,6 +69,7 @@ def run() -> None:
             post_url,
             headers=headers,
             data=json.dumps(data),
+            timeout=60,
         )
         assert (
             r.status_code == 201

@@ -38,7 +38,7 @@ class SlurmQueueConf(BaseQueueConf):
     )
 
     # Params are used to configure sbatch, for more info check:
-    # https://github.com/facebookincubator/submitit/blob/master/submitit/slurm/slurm.py
+    # https://github.com/facebookincubator/submitit/blob/main/submitit/slurm/slurm.py
 
     # Following parameters are slurm specific
     # More information: https://slurm.schedmd.com/sbatch.html
@@ -64,7 +64,7 @@ class SlurmQueueConf(BaseQueueConf):
     # Change this only after you confirmed your code can handle re-submission
     # by properly resuming from the latest stored checkpoint.
     # check the following for more info on slurm_max_num_timeout
-    # https://github.com/facebookincubator/submitit/blob/master/docs/checkpointing.md
+    # https://github.com/facebookincubator/submitit/blob/main/docs/checkpointing.md
     max_num_timeout: int = 0
     # Useful to add parameters which are not currently available in the plugin.
     # Eg: {"mail-user": "blublu@fb.com", "mail-type": "BEGIN"}

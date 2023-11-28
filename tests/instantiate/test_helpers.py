@@ -8,7 +8,7 @@ from _pytest.python_api import RaisesContext, raises
 from pytest import mark, param
 
 from hydra._internal.utils import _locate
-from hydra.utils import get_class, get_method
+from hydra.utils import get_class, get_method, get_object
 from tests.instantiate import (
     AClass,
     Adam,
@@ -16,6 +16,7 @@ from tests.instantiate import (
     ASubclass,
     NestingClass,
     Parameters,
+    an_object,
 )
 
 from .module_shadowed_by_function import a_function
@@ -131,6 +132,7 @@ from .module_shadowed_by_function import a_function
             ),
             id="import_assertion_error",
         ),
+        param("tests.instantiate.an_object", an_object, id="object"),
     ],
 )
 def test_locate(name: str, expected: Any) -> None:
@@ -174,6 +176,14 @@ def test_locate_relative_import_fails(name: str) -> None:
             ),
             id="module-error",
         ),
+        param(
+            "tests.instantiate.an_object",
+            raises(
+                ValueError,
+                match="Located non-callable of type 'object' while loading 'tests.instantiate.an_object'",
+            ),
+            id="object-error",
+        ),
     ],
 )
 def test_get_method(path: str, expected: Any) -> None:
@@ -205,6 +215,14 @@ def test_get_method(path: str, expected: Any) -> None:
             ),
             id="module-error",
         ),
+        param(
+            "tests.instantiate.an_object",
+            raises(
+                ValueError,
+                match="Located non-class of type 'object' while loading 'tests.instantiate.an_object'",
+            ),
+            id="object-error",
+        ),
     ],
 )
 def test_get_class(path: str, expected: Any) -> None:
@@ -213,3 +231,38 @@ def test_get_class(path: str, expected: Any) -> None:
             get_class(path)
     else:
         assert get_class(path) == expected
+
+
+@mark.parametrize(
+    "path,expected",
+    [
+        param("tests.instantiate.AClass", AClass, id="class"),
+        param("builtins.print", print, id="callable"),
+        param(
+            "datetime",
+            datetime,
+            id="module-error",
+        ),
+        param("tests.instantiate.an_object", an_object, id="object"),
+        param(
+            "builtins.int.not_found",
+            raises(
+                ImportError,
+                match=dedent(
+                    r"""
+                    Error loading 'builtins\.int\.not_found':
+                    AttributeError\("type object 'int' has no attribute 'not_found'",?\)
+                    Are you sure that 'not_found' is an attribute of 'builtins\.int'\?
+                    """
+                ).strip(),
+            ),
+            id="builtin_attribute_error",
+        ),
+    ],
+)
+def test_get_object(path: str, expected: Any) -> None:
+    if isinstance(expected, RaisesContext):
+        with expected:
+            get_object(path)
+    else:
+        assert get_object(path) == expected

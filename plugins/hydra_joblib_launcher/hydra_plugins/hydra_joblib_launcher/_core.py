@@ -39,7 +39,7 @@ def execute_job(
         config, list(overrides)
     )
     with open_dict(sweep_config):
-        sweep_config.hydra.job.id = "{}_{}".format(sweep_config.hydra.job.name, idx)
+        sweep_config.hydra.job.id = f"{sweep_config.hydra.job.name}_{idx}"
         sweep_config.hydra.job.num = idx
     HydraConfig.instance().set_config(sweep_config)
 
@@ -127,11 +127,11 @@ def launch(
     else:
         log.info(
             "Joblib.Parallel({}) is launching {} jobs".format(
-                ",".join([f"{k}={v}" for k, v in joblib_cfg.items()]),
+                ",".join(f"{k}={v}" for k, v in joblib_cfg.items()),
                 len(job_overrides),
             )
         )
-        log.info("Launching jobs, sweep output dir : {}".format(sweep_dir))
+        log.info(f"Launching jobs, sweep output dir : {sweep_dir}")
         for idx, overrides in enumerate(job_overrides):
             log.info("\t#{} : {}".format(idx, " ".join(filter_overrides(overrides))))
 

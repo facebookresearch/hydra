@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/facebookresearch/hydra/master/website/static/img/Hydra-Readme-logo2.svg" alt="logo" width="70%" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/facebookresearch/hydra/main/website/static/img/Hydra-Readme-logo2.svg" alt="logo" width="70%" /></p>
 
 <p align="center">
   <a href="https://pypi.org/project/hydra-core/">
@@ -46,21 +46,29 @@
 
 #### Stable
 
-**Hydra 1.1** is the stable version of Hydra.
-- [Documentation](https://hydra.cc/docs/intro)
+**Hydra 1.3** is the stable version of Hydra.
+- [Documentation](https://hydra.cc/docs/1.3/intro/)
 - Installation : `pip install hydra-core --upgrade`
 
+See the [NEWS.md](NEWS.md) file for a summary of recent changes to Hydra.
 
 ### License
 Hydra is licensed under [MIT License](LICENSE).
 
-## Community
+## Hydra Ecosystem
 
-Ask questions in Github Discussions or StackOverflow (Use the tag #fb-hydra or #omegaconf):
+#### Check out these third-party libraries that build on Hydra's functionality:
+* [hydra-zen](https://github.com/mit-ll-responsible-ai/hydra-zen): Pythonic utilities for working with Hydra. Dynamic config generation capabilities, enhanced config store features, a Python API for launching Hydra jobs, and more.
+* [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template): user-friendly template combining Hydra with [Pytorch-Lightning](https://github.com/Lightning-AI/lightning) for ML experimentation.
+* [hydra-torch](https://github.com/pytorch/hydra-torch): [configen](https://github.com/facebookresearch/hydra/tree/main/tools/configen)-generated configuration classes enabling type-safe PyTorch configuration for Hydra apps.
+* NVIDIA's DeepLearningExamples repository contains a Hydra Launcher plugin, the [distributed_launcher](https://github.com/NVIDIA/DeepLearningExamples/tree/9c34e35c218514b8607d7cf381d8a982a01175e9/Tools/PyTorch/TimeSeriesPredictionPlatform/distributed_launcher), which makes use of the pytorch [distributed.launch](https://pytorch.org/docs/stable/distributed.html#launch-utility) API.
+
+#### Ask questions in Github Discussions or StackOverflow (Use the tag #fb-hydra or #omegaconf):
 * [Github Discussions](https://github.com/facebookresearch/hydra/discussions)
 * [StackOverflow](https://stackexchange.com/filters/391828/hydra-questions)
 * [Twitter](https://twitter.com/Hydra_Framework)
 
+Check out the Meta AI [blog post](https://ai.facebook.com/blog/reengineering-facebook-ais-deep-learning-platforms-for-interoperability/) to learn about how Hydra fits into Meta's efforts to reengineer deep learning platforms for interoperability.
 
 ### Citing Hydra
 If you use Hydra in your research please use the following BibTeX entry:

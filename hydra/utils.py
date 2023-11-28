@@ -19,6 +19,14 @@ ConvertMode = hydra.types.ConvertMode
 
 
 def get_class(path: str) -> type:
+    """
+    Look up a class based on a dotpath.
+    Fails if the path does not point to a class.
+
+    >>> import my_module
+    >>> from hydra.utils import get_class
+    >>> assert get_class("my_module.MyClass") is my_module.MyClass
+    """
     try:
         cls = _locate(path)
         if not isinstance(cls, type):
@@ -28,11 +36,19 @@ def get_class(path: str) -> type:
             )
         return cls
     except Exception as e:
-        log.error(f"Error initializing class at {path}: {e}")
+        log.error(f"Error getting class at {path}: {e}")
         raise e
 
 
 def get_method(path: str) -> Callable[..., Any]:
+    """
+    Look up a callable based on a dotpath.
+    Fails if the path does not point to a callable object.
+
+    >>> import my_module
+    >>> from hydra.utils import get_method
+    >>> assert get_method("my_module.my_function") is my_module.my_function
+    """
     try:
         obj = _locate(path)
         if not callable(obj):
@@ -49,6 +65,23 @@ def get_method(path: str) -> Callable[..., Any]:
 
 # Alias for get_method
 get_static_method = get_method
+
+
+def get_object(path: str) -> Any:
+    """
+    Look up an entity based on the dotpath.
+    Does not perform any type checks on the entity.
+
+    >>> import my_module
+    >>> from hydra.utils import get_object
+    >>> assert get_object("my_module.my_object") is my_module.my_object
+    """
+    try:
+        obj = _locate(path)
+        return obj
+    except Exception as e:
+        log.error(f"Error getting object at {path} : {e}")
+        raise e
 
 
 def get_original_cwd() -> str:

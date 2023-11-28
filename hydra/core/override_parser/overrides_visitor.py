@@ -36,7 +36,7 @@ except ModuleNotFoundError:
     sys.exit(1)
 
 
-class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
+class HydraOverrideVisitor(OverrideParserVisitor):
     def __init__(self, functions: Functions):
         self.functions = functions
 
@@ -107,31 +107,32 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
         item = next(children)
         assert isinstance(item, OverrideParser.DictKeyContext)
         pkey = self.visitDictKey(item)
-        assert self.is_matching_terminal(next(children), OverrideLexer.COLON)
+        colon = next(children)
+        assert self.is_matching_terminal(colon, OverrideLexer.COLON)
         value = next(children)
         assert isinstance(value, OverrideParser.ElementContext)
         return pkey, self.visitElement(value)
 
     def visitElement(self, ctx: OverrideParser.ElementContext) -> ParsedElementType:
         assert isinstance(ctx, OverrideParser.ElementContext)
-        if ctx.function():
+        if ctx.function():  # type: ignore[no-untyped-call]
             return self.visitFunction(ctx.function())  # type: ignore
-        elif ctx.primitive():
-            return self.visitPrimitive(ctx.primitive())
-        elif ctx.listContainer():
-            return self.visitListContainer(ctx.listContainer())
-        elif ctx.dictContainer():
-            return self.visitDictContainer(ctx.dictContainer())
+        elif ctx.primitive():  # type: ignore[no-untyped-call]
+            return self.visitPrimitive(ctx.primitive())  # type: ignore[no-untyped-call]
+        elif ctx.listContainer():  # type: ignore[no-untyped-call]
+            return self.visitListContainer(ctx.listContainer())  # type: ignore[no-untyped-call]
+        elif ctx.dictContainer():  # type: ignore[no-untyped-call]
+            return self.visitDictContainer(ctx.dictContainer())  # type: ignore[no-untyped-call]
         else:
             assert False
 
     def visitValue(
         self, ctx: OverrideParser.ValueContext
     ) -> Union[ChoiceSweep, RangeSweep, IntervalSweep, ParsedElementType]:
-        if ctx.element():
-            return self.visitElement(ctx.element())
-        elif ctx.simpleChoiceSweep() is not None:
-            return self.visitSimpleChoiceSweep(ctx.simpleChoiceSweep())
+        if ctx.element():  # type: ignore[no-untyped-call]
+            return self.visitElement(ctx.element())  # type: ignore[no-untyped-call]
+        elif ctx.simpleChoiceSweep() is not None:  # type: ignore[no-untyped-call]
+            return self.visitSimpleChoiceSweep(ctx.simpleChoiceSweep())  # type: ignore[no-untyped-call]
         assert False
 
     def visitOverride(self, ctx: OverrideParser.OverrideContext) -> Override:
@@ -167,11 +168,11 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
             value_type = None
         else:
             assert self.is_matching_terminal(eq_node, OverrideLexer.EQUAL)
-            if ctx.value() is None:
+            if ctx.value() is None:  # type: ignore[no-untyped-call]
                 value = ""
                 value_type = ValueType.ELEMENT
             else:
-                value = self.visitValue(ctx.value())
+                value = self.visitValue(ctx.value())  # type: ignore[no-untyped-call]
                 if isinstance(value, ChoiceSweep):
                     if value.simple_form:
                         value_type = ValueType.SIMPLE_CHOICE_SWEEP
@@ -212,7 +213,8 @@ class HydraOverrideVisitor(OverrideParserVisitor):  # type: ignore
         kwargs = {}
         children = ctx.getChildren()
         func_name = next(children).getText()
-        assert self.is_matching_terminal(next(children), OverrideLexer.POPEN)
+        popen = next(children)
+        assert self.is_matching_terminal(popen, OverrideLexer.POPEN)
         in_kwargs = False
         while True:
             cur = next(children)

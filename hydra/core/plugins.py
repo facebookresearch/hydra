@@ -121,7 +121,6 @@ class Plugins(metaclass=Singleton):
 
     @staticmethod
     def is_in_toplevel_plugins_module(clazz: str) -> bool:
-
         return clazz.startswith("hydra_plugins.") or clazz.startswith(
             "hydra._internal.core_plugins."
         )
@@ -164,7 +163,6 @@ class Plugins(metaclass=Singleton):
     def _scan_all_plugins(
         modules: List[Any],
     ) -> Tuple[List[Type[Plugin]], ScanStats]:
-
         stats = ScanStats()
         stats.total_time = timer()
 

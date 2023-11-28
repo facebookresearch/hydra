@@ -105,7 +105,6 @@ class ConfigSourceExample(ConfigSource):
         return config_path in configs
 
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
-
         groups: Dict[str, List[str]] = {
             "": ["dataset", "level1", "optimizer"],
             "dataset": [],

@@ -21,7 +21,7 @@ with pathlib.Path("requirements/requirements.txt").open() as requirements_txt:
     ]
 
 
-with open("README.md", "r") as fh:
+with open("README.md") as fh:
     LONG_DESC = fh.read()
     setup(
         cmdclass={
@@ -46,11 +46,11 @@ with open("README.md", "r") as fh:
         classifiers=[
             "License :: OSI Approved :: MIT License",
             "Development Status :: 4 - Beta",
-            "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",
+            "Programming Language :: Python :: 3.11",
             "Operating System :: POSIX :: Linux",
             "Operating System :: MacOS",
             "Operating System :: Microsoft :: Windows",

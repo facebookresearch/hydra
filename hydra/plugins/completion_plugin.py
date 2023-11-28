@@ -107,7 +107,7 @@ class CompletionPlugin(Plugin):
         if config is None:
             return []
         elif OmegaConf.is_config(config):
-            matches = []
+            matches: List[str] = []
             if word.endswith(".") or word.endswith("="):
                 exact_key = word[0:-1]
                 try:
@@ -127,7 +127,7 @@ class CompletionPlugin(Plugin):
                 else:
                     key_matches = []
 
-                matches.extend([f"{word}{match}" for match in key_matches])
+                matches.extend(f"{word}{match}" for match in key_matches)
             else:
                 last_dot = word.rfind(".")
                 if last_dot != -1:
@@ -135,7 +135,7 @@ class CompletionPlugin(Plugin):
                     partial_key = word[last_dot + 1 :]
                     conf_node = OmegaConf.select(config, base_key)
                     key_matches = CompletionPlugin._get_matches(conf_node, partial_key)
-                    matches.extend([f"{base_key}.{match}" for match in key_matches])
+                    matches.extend(f"{base_key}.{match}" for match in key_matches)
                 else:
                     if isinstance(config, DictConfig):
                         for key, value in config.items_ex(resolve=False):
@@ -240,7 +240,6 @@ class CompletionPlugin(Plugin):
             )
             config_matches: List[str] = []
             if not exact_match:
-
                 run_mode = RunMode.MULTIRUN if parsed_args.multirun else RunMode.RUN
                 config_matches = []
                 try:
@@ -288,18 +287,18 @@ class DefaultCompletionPlugin(CompletionPlugin):
     """
 
     def install(self) -> None:
-        ...
+        raise NotImplementedError
 
     def uninstall(self) -> None:
-        ...
+        raise NotImplementedError
 
     @staticmethod
     def provides() -> str:
-        ...
+        raise NotImplementedError
 
     def query(self, config_name: Optional[str]) -> None:
-        ...
+        raise NotImplementedError
 
     @staticmethod
     def help(command: str) -> str:
-        ...
+        raise NotImplementedError

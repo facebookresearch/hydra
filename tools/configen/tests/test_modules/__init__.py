@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -78,7 +78,7 @@ class WithLibraryClassArg:
 
 @dataclass
 class IncompatibleDataclass:
-    library: LibraryClass = LibraryClass()
+    library: LibraryClass = field(default_factory=LibraryClass)
 
     def __eq__(self, other):
         return isinstance(other, type(self)) and other.library == self.library
@@ -180,7 +180,7 @@ class DictValues:
         )
 
 
-class PeskySentinel(object):
+class PeskySentinel:
     def __repr__(self):
         return "<I am a pesky sentinel>"
 

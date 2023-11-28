@@ -3,10 +3,10 @@
 from omegaconf import DictConfig
 
 import hydra
-from tests.test_apps.app_with_cfg_decorated.decorators.inner_decorator import (  # type: ignore[import]
+from tests.test_apps.app_with_cfg_decorated.decorators.inner_decorator import (
     inner_decorator,
 )
-from tests.test_apps.app_with_cfg_decorated.decorators.outer_decorator import (  # type: ignore[import]
+from tests.test_apps.app_with_cfg_decorated.decorators.outer_decorator import (
     data,
     outer_decorator,
 )

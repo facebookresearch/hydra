@@ -65,7 +65,7 @@ def setbase(ver: Any) -> None:
             message=dedent(
                 f"""
             The version_base parameter is not specified.
-            Please specify a compatability version level, or None.
+            Please specify a compatibility version level, or None.
             Will assume defaults for version {__compat_version__}"""
             ),
             stacklevel=3,

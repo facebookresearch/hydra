@@ -62,7 +62,7 @@ class BasicSweeper(Sweeper):
         """
         Instantiates
         """
-        super(BasicSweeper, self).__init__()
+        super().__init__()
 
         if params is None:
             params = {}
@@ -107,7 +107,6 @@ class BasicSweeper(Sweeper):
     def split_arguments(
         overrides: List[Override], max_batch_size: Optional[int]
     ) -> List[List[List[str]]]:
-
         lists = []
         final_overrides = OrderedDict()
         for override in overrides:

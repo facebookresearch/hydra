@@ -3,7 +3,7 @@
 from setuptools import find_namespace_packages, setup, find_packages
 
 
-with open("README.md", "r") as fh:
+with open("README.md") as fh:
     LONG_DESC = fh.read()
     setup(
         name="hydra-example-searchpath-plugin",
@@ -21,11 +21,11 @@ with open("README.md", "r") as fh:
             "License :: OSI Approved :: MIT License",
             # Hydra uses Python version and Operating system to determine
             # In which environments to test this plugin
-            "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
             "Programming Language :: Python :: 3.8",
             "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",
+            "Programming Language :: Python :: 3.11",
             "Operating System :: OS Independent",
         ],
         install_requires=[

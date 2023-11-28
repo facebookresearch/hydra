@@ -36,8 +36,12 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                         none    : Passed objects are DictConfig and ListConfig, default
                         partial : Passed objects are converted to dict and list, with
                                   the exception of Structured Configs (and their fields).
+                        object  : Passed objects are converted to dict and list.
+                                  Structured Configs are converted to instances of the
+                                  backing dataclass / attr class.
                         all     : Passed objects are dicts, lists and primitives without
-                                  a trace of OmegaConf containers
+                                  a trace of OmegaConf containers. Structured configs
+                                  are converted to dicts / lists too.
                    _partial_: If True, return functools.partial wrapped method or object
                               False by default. Configure per target.
     :param args: Optional positional parameters pass-through
@@ -218,7 +222,11 @@ callable. You can change instantiate's argument conversion strategy using the
 `_convert_` parameter. Supported values are:
 
 - `"none"` : Default behavior, Use OmegaConf containers
-- `"partial"` : Convert OmegaConf containers to dict and list, except Structured Configs.
+- `"partial"` : Convert OmegaConf containers to dict and list, except
+  Structured Configs, which remain as DictConfig instances.
+- `"object"` : Convert OmegaConf containers to dict and list, except Structured
+  Configs, which are converted to instances of the backing dataclass / attr
+  class using `OmegaConf.to_object`.
 - `"all"` : Convert everything to primitive containers
 
 The conversion strategy applies recursively to all subconfigs of the instantiation target.
@@ -256,6 +264,11 @@ assert isinstance(obj_partial, MyTarget)
 assert isinstance(obj_partial.foo, DictConfig)
 assert isinstance(obj_partial.bar, dict)
 
+obj_object = instantiate(cfg, _convert_="object")
+assert isinstance(obj_object, MyTarget)
+assert isinstance(obj_object.foo, Foo)
+assert isinstance(obj_object.bar, dict)
+
 obj_all = instantiate(cfg, _convert_="all")
 assert isinstance(obj_none, MyTarget)
 assert isinstance(obj_all.foo, dict)
@@ -273,14 +286,12 @@ obj_none = instantiate(cfg_none)
 cfg_partial = OmegaConf.create({..., "_convert_": "partial"})
 obj_partial = instantiate(cfg_partial)
 
+cfg_object = OmegaConf.create({..., "_convert_": "object"})
+obj_object = instantiate(cfg_object)
+
 cfg_all = OmegaConf.create({..., "_convert_": "all"})
 obj_all = instantiate(cfg_all)
 ```
-
-If performance is a concern, note that the `_convert_="none"` strategy does the
-least work -- no conversion (from `DictConfig`/`ListConfig` to native python
-containers) is taking place. The `_convert_="partial"` strategy does more work,
-and `_convert_="all"` does more work yet.
 
 ### Partial Instantiation
 Sometimes you may not set all parameters needed to instantiate an object from the configuration, in this case you can set
@@ -380,4 +391,52 @@ you will need to provide a dotpath looking up that function in Python's [`builti
 from hydra.utils import instantiate
 # instantiate({"_target_": "len"}, [1,2,3])  # this gives an InstantiationException
 instantiate({"_target_": "builtins.len"}, [1,2,3])  # this works, returns the number 3
+```
+
+### Dotpath lookup machinery
+
+Hydra looks up a given `_target_` by attempting to find a module that
+corresponds to a prefix of the given dotpath and then looking for an object in
+that module corresponding to the dotpath's tail. For example, to look up a `_target_`
+given by the dotpath `"my_module.my_nested_module.my_object"`, hydra first locates
+the module `my_module.my_nested_module`, then find `my_object` inside that nested module.
+
+Hydra exposes an API allowing direct use of this dotpath lookup machinery.
+The following three functions, which can be imported from the <GithubLink to="hydra/utils.py">hydra.utils</GithubLink> module,
+accept a string-typed dotpath as an argument and return the located class/callable/object:
+```python
+def get_class(path: str) -> type:
+    """
+    Look up a class based on a dotpath.
+    Fails if the path does not point to a class.
+
+    >>> import my_module
+    >>> from hydra.utils import get_class
+    >>> assert get_class("my_module.MyClass") is my_module.MyClass
+    """
+    ...
+
+def get_method(path: str) -> Callable[..., Any]:
+    """
+    Look up a callable based on a dotpath.
+    Fails if the path does not point to a callable object.
+
+    >>> import my_module
+    >>> from hydra.utils import get_method
+    >>> assert get_method("my_module.my_function") is my_module.my_function
+    """
+    ...
+
+# Alias for get_method
+get_static_method = get_method
+
+def get_object(path: str) -> Any:
+    """
+    Look up a callable based on a dotpath.
+
+    >>> import my_module
+    >>> from hydra.utils import get_object
+    >>> assert get_object("my_module.my_object") is my_module.my_object
+    """
+    ...
 ```

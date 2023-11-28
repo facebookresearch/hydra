@@ -1,3 +1,40 @@
+1.3.2 (2023-02-22)
+==================
+
+### Features
+
+- Add a `hydra.utils.get_object` function that gives users access to Hydra's dotpath-lookup machinery. ([#2139](https://github.com/facebookresearch/hydra/issues/2139))
+- Allow config_path to specify a non-relative module path, by starting with `pkg://` ([#2564](https://github.com/facebookresearch/hydra/issues/2564))
+
+### Maintenance Changes
+
+- Drop support for python3.6 ([#2304](https://github.com/facebookresearch/hydra/issues/2304))
+
+
+1.3.1 (2022-12-20)
+==================
+
+### Bug Fixes
+
+- Relax OmegaConf pin allowing OmegaConf 2.3 to be installed ([#2510](https://github.com/facebookresearch/hydra/issues/2510))
+
+
+1.3.0 (2022-12-08)
+==================
+
+### Features
+
+- Implement `_convert_="object"` option for `instantiate`, enabling conversion of non-`_target_` structured configs to instances of the backing dataclass / attr class. ([#1719](https://github.com/facebookresearch/hydra/issues/1719))
+- Enable layering of the `@hydra.main` decorator on top of other decorators produced using `functools.wraps`. ([#2303](https://github.com/facebookresearch/hydra/issues/2303))
+- Allow for non-leading dashes in override keys ([#2363](https://github.com/facebookresearch/hydra/issues/2363))
+- support specifying an absolute path with `--config-path` ([#2368](https://github.com/facebookresearch/hydra/issues/2368))
+- Support python3.11 ([#2443](https://github.com/facebookresearch/hydra/issues/2443))
+
+### Bug Fixes
+
+- Fix an issue where Hydra's exception-handling logic could raise an `AssertionError` ([#2342](https://github.com/facebookresearch/hydra/issues/2342))
+
+
 1.2.0 (2022-05-17)
 ==================
 

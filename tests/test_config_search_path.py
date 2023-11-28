@@ -172,6 +172,7 @@ def test_prepend(
             "../conf",
             realpath(os.path.join(os.getcwd(), "../conf")),
         ),
+        (None, "package.module", "pkg://some/conf", "pkg://some/conf"),
     ],
 )
 def test_compute_search_path_dir(

@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 from hydra.core.config_store import ConfigStore
@@ -46,11 +46,11 @@ class EnqueueConf:
 class RQLauncherConf:
     _target_: str = "hydra_plugins.hydra_rq_launcher.rq_launcher.RQLauncher"
     # enqueue configuration
-    enqueue: EnqueueConf = EnqueueConf()
+    enqueue: EnqueueConf = field(default_factory=EnqueueConf)
     # queue name
     queue: str = "default"
     # redis configuration
-    redis: RedisConf = RedisConf()
+    redis: RedisConf = field(default_factory=RedisConf)
     # stop after enqueueing by raising custom exception
     stop_after_enqueue: bool = False
     # wait time in seconds when polling results
