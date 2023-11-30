@@ -34,7 +34,7 @@ There are 3 initialization methods:
 
 All 3 can be used as methods or contexts.
 When used as methods, they are initializing Hydra globally and should only be called once.
-When used as contexts, they are initializing Hydra within the context can be used multiple times.
+When used as contexts, they are initializing Hydra within the context and can be used multiple times.
 Like <b>@hydra.main()</b> all three support the [version_base](../upgrades/version_base.md) parameter
 to define the compatibility level to use.
 
