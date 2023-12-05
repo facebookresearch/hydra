@@ -3,9 +3,9 @@ import sys
 import warnings
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from antlr4 import ParserRuleContext, TerminalNode, Token
-from antlr4.error.ErrorListener import ErrorListener
-from antlr4.tree.Tree import TerminalNodeImpl
+from omegaconf.vendor.antlr4 import ParserRuleContext, TerminalNode, Token
+from omegaconf.vendor.antlr4.error.ErrorListener import ErrorListener
+from omegaconf.vendor.antlr4.tree.Tree import TerminalNodeImpl
 
 from hydra._internal.grammar.functions import FunctionCall, Functions
 from hydra._internal.grammar.utils import _ESC_QUOTED_STR
