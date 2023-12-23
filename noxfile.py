@@ -578,7 +578,7 @@ def test_selected_plugins(session: Session, selected_plugins: List[Plugin]) -> N
     # Run tests for all installed plugins
     for plugin in selected_plugins:
         session.chdir(plugin.abspath)
-        run_pytest(session)
+        run_pytest(session,".","-W ignore:pkg_resources is deprecated as an API:DeprecationWarning")
 
 
 @nox.session(python="3.8")  # type: ignore
