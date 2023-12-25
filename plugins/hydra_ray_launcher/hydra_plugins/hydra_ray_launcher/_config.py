@@ -3,11 +3,11 @@ import sys
 from dataclasses import dataclass, field
 from enum import Enum, IntEnum
 from importlib import import_module
+from importlib.metadata import version
 from typing import Any, Dict, List, Optional
 
 from hydra.core.config_store import ConfigStore
 from omegaconf import OmegaConf
-from importlib.metadata import version
 
 
 @dataclass
@@ -182,7 +182,7 @@ def _pip_pkgs_default_factory() -> Dict[str, str]:
     }
 
     if sys.version_info < (3, 8):
-        d["pickle5"] = get_distribution("pickle5").version
+        d["pickle5"] = version("pickle5")
 
     return d
 

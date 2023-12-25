@@ -1,8 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Optional, Sequence
-
 import warnings
+from typing import Optional, Sequence
 
 from hydra.core.utils import JobReturn
 from hydra.plugins.launcher import Launcher
@@ -18,6 +17,7 @@ from ._config import (
 )
 
 log = logging.getLogger(__name__)
+
 
 class RayAWSLauncher(Launcher):
     def __init__(

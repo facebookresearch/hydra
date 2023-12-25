@@ -581,7 +581,7 @@ def test_selected_plugins(session: Session, selected_plugins: List[Plugin]) -> N
         run_pytest(
             session,
             ".",
-            "-W ignore:pkg_resources is deprecated as an API:DeprecationWarning",
+            "-W ignore:pkg_resources is deprecated as an API.",
             *session.posargs,
         )
 
