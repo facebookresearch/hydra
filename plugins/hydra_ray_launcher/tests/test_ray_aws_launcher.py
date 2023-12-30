@@ -6,11 +6,11 @@ import string
 import subprocess
 import sys
 import tempfile
+from importlib.metadata import version
 from pathlib import Path
 from typing import Any, Dict, Generator, Optional
 
 import boto3  # type: ignore
-from importlib.metadata import version
 from botocore.exceptions import NoCredentialsError, NoRegionError  # type: ignore
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
