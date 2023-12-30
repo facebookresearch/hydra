@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any, List
 
 import pytest
-
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import (
@@ -22,7 +21,12 @@ chdir_plugin_root()
 
 os.environ["HYDRA_FULL_ERROR"] = "1"
 
-filter_ax_internal_warnings = pytest.mark.filterwarnings("ignore::DeprecationWarning", "ignore::FutureWarning", "ignore::RuntimeWarning", "ignore::linear_operator.utils.warnings.NumericalWarning")
+filter_ax_internal_warnings = pytest.mark.filterwarnings(
+    "ignore::DeprecationWarning",
+    "ignore::FutureWarning",
+    "ignore::RuntimeWarning",
+    "ignore::linear_operator.utils.warnings.NumericalWarning",
+)
 
 
 def test_discovery() -> None:
@@ -66,6 +70,7 @@ def test_chunk_method_for_invalid_inputs(n: int) -> None:
     batch = [1, 2, 3, 4, 5]
     with raises(ValueError):
         list(chunk_func(batch, n))
+
 
 @filter_ax_internal_warnings
 def test_jobs_dirs(hydra_sweep_runner: TSweepRunner) -> None:
@@ -149,6 +154,7 @@ def test_jobs_configured_via_cmd(
         assert math.isclose(best_parameters["quadratic.x"], expected_x, abs_tol=1e-4)
         assert math.isclose(best_parameters["quadratic.y"], -2.0, abs_tol=1e-4)
 
+
 @filter_ax_internal_warnings
 def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
@@ -173,6 +179,7 @@ def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) ->
         best_parameters = returns.ax
         assert math.isclose(best_parameters["quadratic.x"], -2.0, abs_tol=1e-4)
         assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-4)
+
 
 @filter_ax_internal_warnings
 def test_configuration_set_via_cmd_and_default_config(
@@ -200,6 +207,7 @@ def test_configuration_set_via_cmd_and_default_config(
         best_parameters = returns.ax
         assert "quadratic.x" in best_parameters
         assert "quadratic.y" in best_parameters
+
 
 @mark.parametrize(
     "cmd_arg, expected_str",
@@ -231,6 +239,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
     assert "polynomial.x: range=[-5.0, -2.0]" in result
     assert expected_str in result
     assert "polynomial.z: fixed=10" in result
+
 
 @mark.parametrize(
     "cmd_args",
@@ -306,6 +315,7 @@ def test_jobs_using_choice_between_lists(
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
+
 
 @mark.parametrize(
     "cmd_arg, serialized_encoding, best_coefficients, best_value",

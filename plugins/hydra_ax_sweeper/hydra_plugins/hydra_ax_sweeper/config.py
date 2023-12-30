@@ -2,9 +2,9 @@
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
+from ax.service.utils.instantiation import ObjectiveProperties
 from hydra.core.config_store import ConfigStore
 
-from ax.service.utils.instantiation import ObjectiveProperties
 
 @dataclass
 class EarlyStopConfig:

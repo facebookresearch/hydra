@@ -18,7 +18,7 @@ hydra:
 
       experiment:
         objectives:
-          result: 
+          result:
             minimize: true
 
       early_stop:

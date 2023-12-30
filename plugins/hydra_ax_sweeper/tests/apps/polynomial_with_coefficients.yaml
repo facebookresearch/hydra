@@ -1,18 +1,19 @@
+---
 defaults:
-  - override hydra/sweeper: ax
+    - override hydra/sweeper: ax
 
 polynomial:
-  coefficients: ???
+    coefficients: ???
 
 hydra:
-  sweeper:
-    ax_config:
-      max_trials: 10
+    sweeper:
+        ax_config:
+            max_trials: 10
 
-      experiment:
-        objectives:
-          result: 
-            minimize: true
+            experiment:
+                objectives:
+                    result:
+                        minimize: true
 
-      early_stop:
-        max_epochs_without_improvement: 2
+            early_stop:
+                max_epochs_without_improvement: 2

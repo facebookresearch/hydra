@@ -19,7 +19,7 @@ hydra:
       experiment:
         # Default to minimize, set to false to maximize
         objectives:
-          result: 
+          result:
             minimize: true
 
       early_stop:
