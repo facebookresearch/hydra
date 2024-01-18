@@ -18,7 +18,9 @@ hydra:
 
       experiment:
         # Default to minimize, set to false to maximize
-        minimize: true
+        objectives:
+          result:
+            minimize: true
 
       early_stop:
         # Number of epochs without a significant improvement from

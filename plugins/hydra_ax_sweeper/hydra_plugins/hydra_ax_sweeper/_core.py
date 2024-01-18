@@ -184,7 +184,12 @@ class CoreAxSweeper(Sweeper):
                 num_trials_so_far += len(list_of_trials_to_launch)
                 num_trials_left -= len(list_of_trials_to_launch)
 
-                best_parameters, predictions = ax_client.get_best_parameters()
+                result = ax_client.get_best_parameters()
+                if result is None:
+                    log.info("Ax has not yet found any parameters")
+                    continue
+
+                best_parameters, predictions = result
                 metric = predictions[0][ax_client.objective_name]
 
                 if self.early_stopper.should_stop(metric, best_parameters):
@@ -336,8 +341,8 @@ def create_choice_param_from_range_override(override: Override) -> Dict[str, Any
         "name": key,
         "type": "choice",
         "values": [val for val in override.sweep_iterator()],
+        "is_ordered": False,
     }
-
     return param
 
 

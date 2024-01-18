@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from typing import Any, List
 
+import pytest
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import (
@@ -17,6 +18,15 @@ from pytest import mark, raises
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
 
 chdir_plugin_root()
+
+os.environ["HYDRA_FULL_ERROR"] = "1"
+
+filter_ax_internal_warnings = pytest.mark.filterwarnings(
+    "ignore::DeprecationWarning",
+    "ignore::FutureWarning",
+    "ignore::RuntimeWarning",
+    "ignore::linear_operator.utils.warnings.NumericalWarning",
+)
 
 
 def test_discovery() -> None:
@@ -62,6 +72,7 @@ def test_chunk_method_for_invalid_inputs(n: int) -> None:
         list(chunk_func(batch, n))
 
 
+@filter_ax_internal_warnings
 def test_jobs_dirs(hydra_sweep_runner: TSweepRunner) -> None:
     # Verify that the spawned jobs are not overstepping the directories of one another.
     sweep = hydra_sweep_runner(
@@ -144,6 +155,7 @@ def test_jobs_configured_via_cmd(
         assert math.isclose(best_parameters["quadratic.y"], -2.0, abs_tol=1e-4)
 
 
+@filter_ax_internal_warnings
 def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) -> None:
     sweep = hydra_sweep_runner(
         calling_file="tests/test_ax_sweeper_plugin.py",
@@ -169,6 +181,7 @@ def test_jobs_configured_via_cmd_and_config(hydra_sweep_runner: TSweepRunner) ->
         assert math.isclose(best_parameters["quadratic.y"], 1.0, abs_tol=1e-4)
 
 
+@filter_ax_internal_warnings
 def test_configuration_set_via_cmd_and_default_config(
     hydra_sweep_runner: TSweepRunner,
 ) -> None:
@@ -222,7 +235,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
         "polynomial.z=10",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + [cmd_arg]
-    result, _ = run_python_script(cmd)
+    result, _ = run_python_script(cmd, allow_warnings=True)
     assert "polynomial.x: range=[-5.0, -2.0]" in result
     assert expected_str in result
     assert "polynomial.z: fixed=10" in result
@@ -243,7 +256,7 @@ def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: List[str]) -> 
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + cmd_args
-    run_python_script(cmd)
+    run_python_script(cmd, allow_warnings=True)
 
 
 @mark.parametrize(
@@ -264,7 +277,7 @@ def test_search_space_with_constraint_metric(tmpdir: Path, cmd_args: List[str]) 
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + cmd_args
-    results, _ = run_python_script(cmd)
+    results, _ = run_python_script(cmd, allow_warnings=True)
 
 
 @mark.parametrize(
@@ -298,7 +311,7 @@ def test_jobs_using_choice_between_lists(
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
-    result, _ = run_python_script(cmd)
+    result, _ = run_python_script(cmd, allow_warnings=True)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
@@ -335,7 +348,7 @@ def test_jobs_using_choice_between_dicts(
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
-    result, _ = run_python_script(cmd)
+    result, _ = run_python_script(cmd, allow_warnings=True)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'+polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
@@ -351,6 +364,6 @@ def test_example_app(tmpdir: Path) -> None:
         "banana.y=interval(-5, 10.1)",
         "hydra.sweeper.ax_config.max_trials=2",
     ]
-    result, _ = run_python_script(cmd)
+    result, _ = run_python_script(cmd, allow_warnings=True)
     assert "banana.x: range=[-5, 5]" in result
     assert "banana.y: range=[-5.0, 10.1]" in result

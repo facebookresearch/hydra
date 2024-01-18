@@ -21,15 +21,14 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Operating System :: POSIX :: Linux",
         "Operating System :: MacOS",
         "Development Status :: 4 - Beta",
     ],
     install_requires=[
-        "hydra-core>=1.1.0.dev7",
-        "ax-platform>=0.1.20,<0.2.1",  # https://github.com/facebookresearch/hydra/issues/1767
-        "torch",
-        "gpytorch<=1.8.1",  # avoid deprecation warnings. This can probably be removed when ax-platform is unpinned.
+        "hydra-core>=1.2",
+        "ax-platform>=0.3.4,<0.4",
     ],
     include_package_data=True,
 )

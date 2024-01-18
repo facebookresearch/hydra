@@ -1,25 +1,27 @@
+---
 defaults:
-  - override hydra/sweeper: ax
+    - override hydra/sweeper: ax
 
 polynomial:
-  x: ???
-  y: ???
-  z: ???
+    x: ???
+    y: ???
+    z: ???
 
 hydra:
-  sweeper:
-    ax_config:
-      max_trials: 10
+    sweeper:
+        ax_config:
+            max_trials: 10
 
-      experiment:
-        minimize: true
-        objective_name: result
-        outcome_constraints: ['constraint_metric >= 2.1']  # Optional.
+            experiment:
+                objectives:
+                    result:
+                        minimize: true
+                outcome_constraints: [constraint_metric >= 2.1]  # Optional.
 
-      early_stop:
-        max_epochs_without_improvement: 2
+            early_stop:
+                max_epochs_without_improvement: 2
 
-      params:
-        polynomial.x:
-          type: range
-          bounds: [-1, 1]
+            params:
+                polynomial.x:
+                    type: range
+                    bounds: [-1, 1]

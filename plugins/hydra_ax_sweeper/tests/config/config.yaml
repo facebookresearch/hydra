@@ -17,7 +17,9 @@ hydra:
       max_trials: 5
 
       experiment:
-        minimize: true
+        objectives:
+          result:
+            minimize: true
 
       early_stop:
         max_epochs_without_improvement: 2
