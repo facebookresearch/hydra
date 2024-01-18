@@ -15,7 +15,7 @@ from hydra.core.override_parser.types import (
     Sweep,
 )
 
-ElementType = Union[str, int, bool, float, list, dict]
+ElementType = Union[str, int, bool, float, List[Any], Dict[str, Any]]
 
 
 def apply_to_dict_values(
