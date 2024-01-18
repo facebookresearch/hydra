@@ -270,7 +270,7 @@ assert isinstance(obj_object.foo, Foo)
 assert isinstance(obj_object.bar, dict)
 
 obj_all = instantiate(cfg, _convert_="all")
-assert isinstance(obj_none, MyTarget)
+assert isinstance(obj_all, MyTarget)
 assert isinstance(obj_all.foo, dict)
 assert isinstance(obj_all.bar, dict)
 ```
