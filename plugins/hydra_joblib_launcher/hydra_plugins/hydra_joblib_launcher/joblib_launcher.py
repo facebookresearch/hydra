@@ -4,6 +4,7 @@ from typing import Any, Optional, Sequence
 
 from hydra.core.utils import JobReturn
 from hydra.plugins.launcher import Launcher
+from hydra.plugins.experiment_sequence import ExperimentSequence
 from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig
 
@@ -39,6 +40,15 @@ class JoblibLauncher(Launcher):
 
     def launch(
         self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
+    ) -> Sequence[JobReturn]:
+        from . import _core
+
+        return _core.launch(
+            launcher=self, job_overrides=job_overrides, initial_job_idx=initial_job_idx
+        )
+    
+    def launch_experiment_sequence(
+        self, job_overrides: ExperimentSequence, initial_job_idx: int
     ) -> Sequence[JobReturn]:
         from . import _core
 

@@ -1,3 +1,17 @@
+# Copyright (c) 2022, NVIDIA CORPORATION. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#           http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 import sys
@@ -162,6 +176,48 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         "hydra.job.chdir=True",
         "hydra.sweeper.n_trials=20",
         "hydra.sweeper.n_jobs=1",
+        f"hydra.sweeper.storage={storage}",
+        f"hydra.sweeper.study_name={study_name}",
+        "hydra/sweeper/sampler=tpe",
+        "hydra.sweeper.sampler.seed=123",
+        "~z",
+    ]
+    if with_commandline:
+        cmd += [
+            "x=choice(0, 1, 2)",
+            "y=0",  # Fixed parameter
+        ]
+    run_python_script(cmd)
+    returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
+    study = optuna.load_study(storage=storage, study_name=study_name)
+    best_trial = study.best_trial
+    assert isinstance(returns, DictConfig)
+    assert returns.name == "optuna"
+    assert returns["best_params"]["x"] == best_trial.params["x"]
+    if with_commandline:
+        assert "y" not in returns["best_params"]
+        assert "y" not in best_trial.params
+    else:
+        assert returns["best_params"]["y"] == best_trial.params["y"]
+    assert returns["best_value"] == best_trial.value
+    # Check the search performance of the TPE sampler.
+    # The threshold is the 95th percentile calculated with 1000 different seed values
+    # to make the test robust against the detailed implementation of the sampler.
+    # See https://github.com/facebookresearch/hydra/pull/1746#discussion_r681549830.
+    assert returns["best_value"] <= 2.27
+
+
+@mark.parametrize("with_commandline", (True, False))
+def test_optuna_v2_example(with_commandline: bool, tmpdir: Path) -> None:
+    storage = "sqlite:///" + os.path.join(str(tmpdir), "test.db")
+    study_name = "test-optuna-v2-example"
+    cmd = [
+        "example/sphere_sequence.py",
+        "--multirun",
+        "hydra/sweeper=optuna_v2",
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+        "hydra.sweeper.n_trials=20",
         f"hydra.sweeper.storage={storage}",
         f"hydra.sweeper.study_name={study_name}",
         "hydra/sweeper/sampler=tpe",

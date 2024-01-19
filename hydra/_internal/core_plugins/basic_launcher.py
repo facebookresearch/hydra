@@ -2,7 +2,7 @@
 import logging
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Optional, Sequence
+from typing import List, Optional, Sequence, Union
 
 from omegaconf import DictConfig, open_dict
 
@@ -14,6 +14,7 @@ from hydra.core.utils import (
     run_job,
     setup_globals,
 )
+from hydra.plugins.experiment_sequence import ExperimentSequence
 from hydra.plugins.launcher import Launcher
 from hydra.types import HydraContext, TaskFunction
 
@@ -65,6 +66,7 @@ class BasicLauncher(Launcher):
             idx = initial_job_idx + idx
             lst = " ".join(filter_overrides(overrides))
             log.info(f"\t#{idx} : {lst}")
+
             sweep_config = self.hydra_context.config_loader.load_sweep_config(
                 self.config, list(overrides)
             )
@@ -79,5 +81,42 @@ class BasicLauncher(Launcher):
                 job_subdir_key="hydra.sweep.subdir",
             )
             runs.append(ret)
+            configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
+        return runs
+    
+    def launch_experiment_sequence(
+        self, job_overrides: ExperimentSequence, initial_job_idx: int
+    ) -> Sequence[JobReturn]:
+        setup_globals()
+        assert self.hydra_context is not None
+        assert self.config is not None
+        assert self.task_function is not None
+
+        configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
+        sweep_dir = self.config.hydra.sweep.dir
+        Path(str(sweep_dir)).mkdir(parents=True, exist_ok=True)
+        log.info(f"Launching {len(job_overrides)} jobs locally")
+        runs: List[JobReturn] = []
+        for idx, overrides in enumerate(job_overrides):
+            idx = initial_job_idx + idx
+            lst = " ".join(filter_overrides(overrides))
+            log.info(f"\t#{idx} : {lst}")
+
+            sweep_config = self.hydra_context.config_loader.load_sweep_config(
+                self.config, list(overrides)
+            )
+            with open_dict(sweep_config):
+                sweep_config.hydra.job.id = idx
+                sweep_config.hydra.job.num = idx
+            ret = run_job(
+                hydra_context=self.hydra_context,
+                task_function=self.task_function,
+                config=sweep_config,
+                job_dir_key="hydra.sweep.dir",
+                job_subdir_key="hydra.sweep.subdir",
+            )
+            runs.append(ret)
+            if isinstance(job_overrides, ExperimentSequence):
+                job_overrides.update_sequence((overrides, ret))
             configure_log(self.config.hydra.hydra_logging, self.config.hydra.verbose)
         return runs

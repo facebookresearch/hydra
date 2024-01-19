@@ -144,6 +144,58 @@ defaults = [{"sampler": "tpe"}]
 
 
 @dataclass
+class OptunaSweeperConfV2:
+    _target_: str = "hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper"
+    defaults: List[Any] = field(default_factory=lambda: defaults)
+
+    # Sampling algorithm
+    # Please refer to the reference for further details
+    # https://optuna.readthedocs.io/en/stable/reference/samplers.html
+    sampler: SamplerConfig = MISSING
+
+    # Direction of optimization
+    # Union[Direction, List[Direction]]
+    direction: Any = Direction.minimize
+
+    # Storage URL to persist optimization results
+    # For example, you can use SQLite if you set 'sqlite:///example.db'
+    # Please refer to the reference for further details
+    # https://optuna.readthedocs.io/en/stable/reference/storages.html
+    storage: Optional[Any] = None
+
+    # Name of study to persist optimization results
+    study_name: Optional[str] = None
+
+    # Total number of function evaluations
+    n_trials: int = 20
+
+    # Number of parallel workers unused in optuna_v2 because scheduling is delegeted to launcher
+    n_jobs: Optional[int] = None
+
+    # Maximum authorized failure rate for a batch of parameters
+    max_failure_rate: float = 0.0
+
+    search_space: Optional[Dict[str, Any]] = None
+
+    params: Optional[Dict[str, str]] = None
+
+    # Allow custom trial configuration via Python methods.
+    # If given, `custom_search_space` should be a an instantiate-style dotpath targeting
+    # a callable with signature Callable[[DictConfig, optuna.trial.Trial], None].
+    # https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html
+    custom_search_space: Optional[str] = None
+
+    experiment_sequence: str = "hydra_plugins.hydra_optuna_sweeper._impl.OptunaExperimentSequence"
+
+
+ConfigStore.instance().store(
+    group="hydra/sweeper",
+    name="optuna_v2",
+    node=OptunaSweeperConfV2,
+    provider="optuna_sweeper",
+)
+
+@dataclass
 class OptunaSweeperConf:
     _target_: str = "hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper"
     defaults: List[Any] = field(default_factory=lambda: defaults)
