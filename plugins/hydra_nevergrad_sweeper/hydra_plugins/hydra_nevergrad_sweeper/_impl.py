@@ -76,7 +76,7 @@ def create_nevergrad_parameter_from_override(override: Override) -> Any:
         if "log" in val.tags:
             scalar = ng.p.Log(lower=val.start, upper=val.end)
         else:
-            scalar = ng.p.Scalar(lower=val.start, upper=val.end)  # type: ignore
+            scalar = ng.p.Scalar(lower=val.start, upper=val.end)
         if isinstance(val.start, int):
             scalar.set_integer_casting()
         return scalar

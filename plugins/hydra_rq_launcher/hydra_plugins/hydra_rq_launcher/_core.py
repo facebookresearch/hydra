@@ -19,7 +19,7 @@ from hydra.core.utils import (
 from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf, open_dict
 from redis import Redis
-from rq import Queue  # type: ignore
+from rq import Queue
 
 from .rq_launcher import RQLauncher
 
@@ -130,7 +130,7 @@ def launch(
             sweep_config=sweep_config,
             task_function=launcher.task_function,
             singleton_state=singleton_state,
-            **enqueue_keywords,
+            **enqueue_keywords,  # type: ignore
         )
         jobs.append(job)
 
