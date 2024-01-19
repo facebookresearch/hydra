@@ -71,6 +71,7 @@ study_name: sphere
 n_trials: 20
 n_jobs: 1
 max_failure_rate: 0.0
+load_if_exists: True
 params:
   x: range(-5.5,5.5,step=0.5)
   y: choice(-5,0,5)

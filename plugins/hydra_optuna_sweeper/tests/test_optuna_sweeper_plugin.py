@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, List, Optional
 
 import optuna
+
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
@@ -331,6 +332,7 @@ def test_warnings(
         n_trials=1,
         n_jobs=1,
         max_failure_rate=0.0,
+        load_if_exists=True,
         custom_search_space=None,
     )
     if search_space is not None:
@@ -366,6 +368,46 @@ def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
     out, err = run_process(cmd, print_error=False, raise_exception=False)
     error_string = "RuntimeError: cfg.error is True"
     if max_failure_rate < 1.0:
+        assert error_string in err
+    else:
+        assert error_string not in err
+
+
+@mark.parametrize("load_if_exists", (True, False, None))
+def test_load_if_exists(load_if_exists: Optional[bool], tmpdir: Path) -> None:
+    storage = "sqlite:///" + os.path.join(str(tmpdir), "test.db")
+    study_name = "test-optuna-example"
+
+    # Let the first run fail.
+    cmd = [
+        sys.executable,
+        "example/sphere.py",
+        "--multirun",
+        "hydra.sweep.dir=" + str(tmpdir),
+        "hydra.job.chdir=True",
+        "hydra.sweeper.n_trials=15",
+        "hydra.sweeper.n_jobs=1",
+        f"hydra.sweeper.storage={storage}",
+        f"hydra.sweeper.study_name={study_name}",
+        "hydra/sweeper/sampler=random",
+        "hydra.sweeper.sampler.seed=123",
+    ]
+    _ = run_process(cmd, print_error=False, raise_exception=False)
+
+    cmd.pop(-1)
+    if load_if_exists is True:
+        cmd.append("hydra.sweeper.load_if_exists=True")
+
+    elif load_if_exists is False:
+        cmd.append("hydra.sweeper.load_if_exists=False")
+
+    _, err = run_process(cmd, print_error=False, raise_exception=False)
+
+    error_string = (
+        "optuna.exceptions.DuplicatedStudyError: "
+        "Another study with name 'test-optuna-example' already exists."
+    )
+    if load_if_exists is False:
         assert error_string in err
     else:
         assert error_string not in err

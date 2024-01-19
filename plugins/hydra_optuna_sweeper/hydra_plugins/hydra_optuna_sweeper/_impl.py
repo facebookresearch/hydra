@@ -156,6 +156,7 @@ class OptunaSweeperImpl(Sweeper):
         n_trials: int,
         n_jobs: int,
         max_failure_rate: float,
+        load_if_exists: Optional[bool],
         search_space: Optional[DictConfig],
         custom_search_space: Optional[str],
         params: Optional[DictConfig],
@@ -169,6 +170,7 @@ class OptunaSweeperImpl(Sweeper):
         self.max_failure_rate = max_failure_rate
         assert self.max_failure_rate >= 0.0
         assert self.max_failure_rate <= 1.0
+        self.load_if_exists = load_if_exists
         self.custom_search_space_extender: Optional[
             Callable[[DictConfig, Trial], None]
         ] = None
@@ -330,7 +332,7 @@ class OptunaSweeperImpl(Sweeper):
             storage=self.storage,
             sampler=self.sampler,
             directions=directions,
-            load_if_exists=True,
+            load_if_exists=self.load_if_exists,
         )
         log.info(f"Study name: {study.study_name}")
         log.info(f"Storage: {self.storage}")
@@ -338,7 +340,8 @@ class OptunaSweeperImpl(Sweeper):
         log.info(f"Directions: {directions}")
 
         batch_size = self.n_jobs
-        n_trials_to_go = self.n_trials
+        n_trials_to_go = self.n_trials - len(study.trials)
+        self.job_idx = len(study.trials)
 
         while n_trials_to_go > 0:
             batch_size = min(n_trials_to_go, batch_size)

@@ -175,6 +175,9 @@ class OptunaSweeperConf:
     # Maximum authorized failure rate for a batch of parameters
     max_failure_rate: float = 0.0
 
+    # Load an existing study and resume it.
+    load_if_exists: bool = True
+
     search_space: Optional[Dict[str, Any]] = None
 
     params: Optional[Dict[str, str]] = None
