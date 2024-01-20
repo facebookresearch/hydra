@@ -32,6 +32,8 @@ def launch(
         f"sweep output dir: {sweep_dir}"
     )
 
+    # Avoid allocating too little memory in CI https://github.com/ray-project/ray/issues/11966#issuecomment-1318100747
+    launcher.ray_cfg.init.setdefault("object_store_memory", 78643200)
     start_ray(launcher.ray_cfg.init)
 
     runs = []
