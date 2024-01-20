@@ -130,7 +130,7 @@ def launch(
             sweep_config=sweep_config,
             task_function=launcher.task_function,
             singleton_state=singleton_state,
-            **enqueue_keywords,  # type: ignore
+            **enqueue_keywords,
         )
         jobs.append(job)
 

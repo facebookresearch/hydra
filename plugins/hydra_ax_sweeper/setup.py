@@ -31,6 +31,7 @@ setup(
         "torch",
         "gpytorch<=1.8.1",  # avoid deprecation warnings. This can probably be removed when ax-platform is unpinned.
         "pandas<1.5.0",  # https://github.com/facebook/Ax/issues/1153, unpin when upgrading ax to >=0.2.8
+        "numpy<1.25.0",  # same as above, silences deprecation from np.find_common_type for pandas <1.5
     ],
     include_package_data=True,
 )
