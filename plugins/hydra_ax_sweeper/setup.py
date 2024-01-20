@@ -30,7 +30,7 @@ setup(
         "ax-platform>=0.1.20,<0.2.1",  # https://github.com/facebookresearch/hydra/issues/1767
         "torch",
         "gpytorch<=1.8.1",  # avoid deprecation warnings. This can probably be removed when ax-platform is unpinned.
-        "pandas<1.5.0",  # https://github.com/facebook/Ax/issues/1153, unpin when upgrading ax
+        "pandas<1.5.0",  # https://github.com/facebook/Ax/issues/1153, unpin when upgrading ax to >=0.2.8
     ],
     include_package_data=True,
 )
