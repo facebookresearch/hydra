@@ -58,5 +58,6 @@ def test_example(tmpdir: Path) -> None:
             "-m",
             f"hydra.sweep.dir={tmpdir}",
             "hydra/launcher=submitit_local",
-        ]
+        ],
+        allow_warnings=True,
     )
