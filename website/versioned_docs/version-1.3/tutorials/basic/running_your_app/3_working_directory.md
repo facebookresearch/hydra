@@ -66,6 +66,7 @@ By setting `hydra.job.chdir=True`, you can configure
 Hydra's `@hydra.main` decorator to change python's working directory by calling
 `os.chdir` before passing control to the user's decorated main function.
 As of Hydra v1.2, `hydra.job.chdir` defaults to `False`.
+
 Setting `hydra.job.chdir=True` enables convenient use of the output directory to
 store output for the application (For example, a database dump file).
 
