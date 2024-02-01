@@ -214,3 +214,50 @@ class Tuples:
             and self.t2 == other.t2
             and self.t3 == other.t3
         )
+
+
+class Args:
+    def __init__(self, *args: float, flag: bool = False):
+        self.arg_list = args
+        self.flag = flag
+
+    def __eq__(self, other) -> bool:
+        return (
+            isinstance(other, type(self))
+            and self.arg_list == other.arg_list
+            and self.flag == other.flag
+        )
+
+
+class ArgsNotFirst:
+    def __init__(self, num: int, *args: float):
+        self.num = num
+        self.arg_list = args
+
+    def __eq__(self, other) -> bool:
+        return (
+            isinstance(other, type(self))
+            and self.num == other.num
+            and self.arg_list == other.arg_list
+        )
+
+
+class ArgsNoType:
+    def __init__(self, *args):
+        self.arg_list = args
+
+    def __eq__(self, other) -> bool:
+        return isinstance(other, type(self)) and self.arg_list == other.arg_list
+
+
+class Kwargs:
+    def __init__(self, num: int, **kwargs: str):
+        self.num = num
+        self.arg_dict = kwargs
+
+    def __eq__(self, other) -> bool:
+        return (
+            isinstance(other, type(self))
+            and self.num == other.num
+            and self.arg_dict == other.arg_dict
+        )
