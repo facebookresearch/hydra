@@ -39,7 +39,7 @@ def partial_equal(obj1: Any, obj2: Any) -> bool:
     if isinstance(obj1, list):
         if len(obj1) != len(obj2):
             return False
-        return all([partial_equal(obj1[i], obj2[i]) for i in range(len(obj1))])
+        return all(partial_equal(o1, o2) for o1, o2 in zip(obj1, obj2))
     if not (isinstance(obj1, partial) and isinstance(obj2, partial)):
         return False
     return all(

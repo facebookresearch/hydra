@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 class ZshCompletion(CompletionPlugin):
     def __init__(self, config_loader: ConfigLoader):
-        super(ZshCompletion, self).__init__(config_loader)
+        super().__init__(config_loader)
         from hydra._internal.core_plugins.bash_completion import BashCompletion
 
         self.delegate = BashCompletion(config_loader)

@@ -2,7 +2,7 @@
 # type: ignore
 from setuptools import setup
 
-with open("README.md", "r") as fh:
+with open("README.md") as fh:
     LONG_DESC = fh.read()
 setup(
     name="hydra-example-registered-plugin",
@@ -19,7 +19,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         # Hydra uses Python version and Operating system to determine
         # In which environments to test this plugin
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",

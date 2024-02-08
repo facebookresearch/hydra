@@ -107,7 +107,7 @@ class CompletionPlugin(Plugin):
         if config is None:
             return []
         elif OmegaConf.is_config(config):
-            matches = []
+            matches: List[str] = []
             if word.endswith(".") or word.endswith("="):
                 exact_key = word[0:-1]
                 try:
@@ -127,7 +127,7 @@ class CompletionPlugin(Plugin):
                 else:
                     key_matches = []
 
-                matches.extend([f"{word}{match}" for match in key_matches])
+                matches.extend(f"{word}{match}" for match in key_matches)
             else:
                 last_dot = word.rfind(".")
                 if last_dot != -1:
@@ -135,7 +135,7 @@ class CompletionPlugin(Plugin):
                     partial_key = word[last_dot + 1 :]
                     conf_node = OmegaConf.select(config, base_key)
                     key_matches = CompletionPlugin._get_matches(conf_node, partial_key)
-                    matches.extend([f"{base_key}.{match}" for match in key_matches])
+                    matches.extend(f"{base_key}.{match}" for match in key_matches)
                 else:
                     if isinstance(config, DictConfig):
                         for key, value in config.items_ex(resolve=False):

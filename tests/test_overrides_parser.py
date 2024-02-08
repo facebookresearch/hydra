@@ -2,7 +2,6 @@
 import builtins
 import math
 import re
-from builtins import isinstance
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Union
 

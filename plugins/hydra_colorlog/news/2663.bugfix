@@ -1,0 +1,1 @@
+Fix log file path for colorlog to work correctly if Hydra does not change the current working directory

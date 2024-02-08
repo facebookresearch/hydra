@@ -15,7 +15,7 @@ from nox.logger import logger
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
-DEFAULT_PYTHON_VERSIONS = ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
+DEFAULT_PYTHON_VERSIONS = ["3.7", "3.8", "3.9", "3.10", "3.11"]
 DEFAULT_OS_NAMES = ["Linux", "MacOS", "Windows"]
 
 PYTHON_VERSIONS = os.environ.get(
@@ -210,7 +210,7 @@ def list_plugins(directory: str) -> List[Plugin]:
         setup_py = os.path.join(abspath, "setup.py")
         name_and_classifiers: List[str] = subprocess.check_output(
             [sys.executable, setup_py, "--name", "--classifiers"],
-            universal_newlines=True,
+            text=True,
         ).splitlines()
         name, classifiers = name_and_classifiers[0], name_and_classifiers[1:]
 
@@ -508,7 +508,7 @@ def test_core(session: Session) -> None:
             session,
             "build_helpers",
             "tests",
-            "-W ignore:pkg_resources is deprecated as an API:DeprecationWarning:pkg_resources",
+            "-W ignore:pkg_resources is deprecated as an API:DeprecationWarning",
             *session.posargs,
         )
     else:

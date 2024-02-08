@@ -36,7 +36,7 @@ All 3 can be used as methods or contexts.
 When used as methods, they are initializing Hydra globally and should only be called once.
 When used as contexts, they are initializing Hydra within the context can be used multiple times.
 Like <b>@hydra.main()</b> all three support the [version_base](../upgrades/version_base.md) parameter
-to define the compatability level to use.
+to define the compatibility level to use.
 
 ### Code example
 ```python
@@ -88,7 +88,7 @@ def initialize(
     - Python modules
     - Unit tests
     - Jupyter notebooks.
-    :param version_base: compatability level to use.
+    :param version_base: compatibility level to use.
     :param config_path: path relative to the parent of the caller
     :param job_name: the value for hydra.job.name (By default it is automatically detected based on the caller)
     :param caller_stack_depth: stack depth of the caller, defaults to 1 (direct caller).
@@ -105,7 +105,7 @@ def initialize_config_module(
     Initializes Hydra and add the config_module to the config search path.
     The config module must be importable (an __init__.py must exist at its top level)
     :param config_module: absolute module name, for example "foo.bar.conf".
-    :param version_base: compatability level to use.
+    :param version_base: compatibility level to use.
     :param job_name: the value for hydra.job.name (default is 'app')
     """
 ```
@@ -120,7 +120,7 @@ def initialize_config_dir(
     The config_dir is always a path on the file system and is must be an absolute path.
     Relative paths will result in an error.
     :param config_dir: absolute file system path
-    :param version_base: compatability level to use.
+    :param version_base: compatibility level to use.
     :param job_name: the value for hydra.job.name (default is 'app')
     """
 ```

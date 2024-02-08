@@ -99,6 +99,7 @@ Fields under **hydra.job**:
 - **name** : Job name, defaults to the Python file name without the suffix. can be overridden.
 - **override_dirname** : Pathname derived from the overrides for this job
 - **chdir**: If `True`, Hydra calls `os.chdir(output_dir)` before calling back to the user's main function.
+  See the [Output/Working directory tutorial](tutorials/basic/running_your_app/3_working_directory.md#automatically-change-current-working-dir-to-jobs-output-dir).
 - **id** : Job ID in the underlying jobs system (SLURM etc)
 - **num** : job serial number in sweep
 - **config_name** : The name of the config used by the job (Output only)
