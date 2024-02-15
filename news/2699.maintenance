@@ -1,0 +1,1 @@
+Use OmegaConf's vendored version of `antlr4` runtime to prevent conflicts with other dependencies. See https://github.com/omry/omegaconf/pull/1114 for more details.
