@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import sys
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Optional, Set
 

@@ -87,7 +87,6 @@ def test_generated_code() -> None:
     _assert_expected_output(generated, expected, expected_file)
 
 
-@mark.skipif(sys.version_info < (3, 7), reason="requires Python 3.7")
 def test_generated_code_future_ann() -> None:
     classes = ["ExampleClass"]
     expected_file = (

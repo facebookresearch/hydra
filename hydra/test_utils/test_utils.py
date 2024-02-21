@@ -15,7 +15,7 @@ from contextlib import contextmanager
 from difflib import unified_diff
 from pathlib import Path
 from subprocess import PIPE, Popen
-from typing import Any, Callable, Dict, Iterator, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Iterator, List, Optional, Protocol, Tuple, Union
 
 from omegaconf import Container, DictConfig, OmegaConf
 
@@ -24,11 +24,6 @@ from hydra._internal.utils import detect_task_name
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.utils import JobReturn, validate_config_path
 from hydra.types import TaskFunction
-
-if sys.version_info >= (3, 8, 0):
-    from typing import Protocol
-else:
-    from typing_extensions import Protocol  # type: ignore
 
 
 @contextmanager

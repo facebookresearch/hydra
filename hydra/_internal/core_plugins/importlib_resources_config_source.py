@@ -30,7 +30,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
 
     def _read_config(self, res: Any) -> ConfigResult:
         try:
-            if sys.version_info[0:2] >= (3, 8) and isinstance(res, zipfile.Path):
+            if isinstance(res, zipfile.Path):
                 # zipfile does not support encoding, read() calls returns bytes.
                 f = res.open()
             else:
