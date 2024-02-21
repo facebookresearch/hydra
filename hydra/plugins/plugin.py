@@ -2,5 +2,4 @@
 from abc import ABC
 
 
-class Plugin(ABC):
-    ...
+class Plugin(ABC): ...

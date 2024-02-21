@@ -129,9 +129,9 @@ class NevergradSweeperImpl(Sweeper):
         parsed = parser.parse_overrides(arguments)
 
         for override in parsed:
-            params[
-                override.get_key_element()
-            ] = create_nevergrad_parameter_from_override(override)
+            params[override.get_key_element()] = (
+                create_nevergrad_parameter_from_override(override)
+            )
 
         parametrization = ng.p.Dict(**params)
         parametrization.function.deterministic = not self.opt_config.noisy

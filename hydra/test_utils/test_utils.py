@@ -102,8 +102,7 @@ class TTaskRunner(Protocol):
         config_name: Optional[str],
         overrides: Optional[List[str]] = None,
         configure_logging: bool = False,
-    ) -> TaskTestFunction:
-        ...
+    ) -> TaskTestFunction: ...
 
 
 class SweepTaskFunction:
@@ -184,8 +183,7 @@ class TSweepRunner(Protocol):
         config_name: Optional[str],
         overrides: Optional[List[str]],
         temp_dir: Optional[Path] = None,
-    ) -> SweepTaskFunction:
-        ...
+    ) -> SweepTaskFunction: ...
 
 
 def chdir_hydra_root(subdir: Optional[str] = None) -> None:

@@ -33,8 +33,7 @@ class PosOnlyArgsClass:
 
 # Dummy class to keep mypy happy
 class PosOnlyArgsClass:
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        ...
+    def __init__(self, *args: Any, **kwargs: Any) -> None: ...
 
 
 exec(code)  # nosec
