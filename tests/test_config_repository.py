@@ -200,10 +200,7 @@ def test_restore_singleton_state_hack() -> None:
 def test_importlib_resource_load_zip_path() -> None:
     config_source = ImportlibResourcesConfigSource(provider="foo", path="pkg://bar")
     conf = config_source._read_config(
-        zipfile.Path(  # type: ignore
-            "hydra/test_utils/configs/conf.zip",
-            "config.yaml",
-        )
+        zipfile.Path("hydra/test_utils/configs/conf.zip", "config.yaml")
     )
     assert conf.config == {"foo": "bar"}
     assert conf.header == {"package": None}
