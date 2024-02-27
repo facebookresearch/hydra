@@ -1,1 +1,1 @@
-Python 3.6 and 3.7 are not supported anymore: Hydra now requires Python 3.8+
+Python 3.7 is not supported anymore: Hydra now requires Python 3.8+
