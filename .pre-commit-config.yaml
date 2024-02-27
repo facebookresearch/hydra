@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
+    rev: 5.13.2
     hooks:
       - id: isort
         files: 'hydra/.*'
@@ -10,7 +10,7 @@ repos:
         files: 'tools/.*'
 
   - repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 24.2.0
     hooks:
       - id: black
 
@@ -20,7 +20,7 @@ repos:
       - id: flake8
 
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.30.0
+    rev: v1.35.1
     hooks:
       - id: yamllint
         args: [-c=.yamllint, --strict]
