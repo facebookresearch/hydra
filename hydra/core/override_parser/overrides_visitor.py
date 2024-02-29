@@ -162,7 +162,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):
         if (
             override_type == OverrideType.DEL
             and isinstance(eq_node, TerminalNode)
-            and eq_node.symbol.type == Token.EOF
+            and eq_node.symbol.type == Token.EOF  # type: ignore[attr-defined]
         ):
             value = None
             value_type = None
@@ -244,26 +244,26 @@ class HydraOverrideVisitor(OverrideParserVisitor):
             ) from e
 
     def _createPrimitive(
-        self, ctx: ParserRuleContext
+        self, ctx: ParserRuleContext  # type: ignore[valid-type]
     ) -> Optional[Union[QuotedString, int, bool, float, str]]:
         ret: Optional[Union[int, bool, float, str]]
         first_idx = 0
-        last_idx = ctx.getChildCount()
+        last_idx = ctx.getChildCount()  # type: ignore[attr-defined]
         # skip first if whitespace
-        if self.is_ws(ctx.getChild(0)):
+        if self.is_ws(ctx.getChild(0)):  # type: ignore[attr-defined]
             if last_idx == 1:
                 # Only whitespaces => this is not allowed.
                 raise HydraException(
                     "Trying to parse a primitive that is all whitespaces"
                 )
             first_idx = 1
-        if self.is_ws(ctx.getChild(-1)):
+        if self.is_ws(ctx.getChild(-1)):  # type: ignore[attr-defined]
             last_idx = last_idx - 1
         num = last_idx - first_idx
         if num > 1:
             # Concatenate, while un-escaping as needed.
             tokens = []
-            for i, n in enumerate(ctx.getChildren()):
+            for i, n in enumerate(ctx.getChildren()):  # type: ignore[attr-defined]
                 if n.symbol.type == OverrideLexer.WS and (
                     i < first_idx or i >= last_idx
                 ):
@@ -276,7 +276,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):
                 )
             ret = "".join(tokens)
         else:
-            node = ctx.getChild(first_idx)
+            node = ctx.getChild(first_idx)  # type: ignore[attr-defined]
             if node.symbol.type == OverrideLexer.QUOTED_VALUE:
                 text = node.getText()
                 qc = text[0]

@@ -187,13 +187,14 @@ class Plugins(metaclass=Singleton):
                             assert m is not None
                             loaded_mod = m.load_module(modname)
                         else:
-                            spec = importer.find_spec(modname)
+                            spec = importer.find_spec(modname)  # type: ignore[call-arg]
                             assert spec is not None
                             if modname in sys.modules:
                                 loaded_mod = sys.modules[modname]
                             else:
                                 loaded_mod = importlib.util.module_from_spec(spec)
                             if loaded_mod is not None:
+                                assert spec.loader is not None
                                 spec.loader.exec_module(loaded_mod)
                                 sys.modules[modname] = loaded_mod
 
