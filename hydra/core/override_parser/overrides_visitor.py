@@ -3,7 +3,11 @@ import sys
 import warnings
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from omegaconf.vendor.antlr4 import ParserRuleContext, TerminalNode, Token  # type: ignore[attr-defined]
+from omegaconf.vendor.antlr4 import (  # type: ignore[attr-defined]
+    ParserRuleContext,
+    TerminalNode,
+    Token,
+)
 from omegaconf.vendor.antlr4.error.ErrorListener import ErrorListener
 from omegaconf.vendor.antlr4.tree.Tree import TerminalNodeImpl
 
