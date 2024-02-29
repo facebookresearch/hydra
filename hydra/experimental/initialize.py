@@ -46,6 +46,7 @@ class initialize:
             config_path=config_path,
             job_name=job_name,
             caller_stack_depth=caller_stack_depth + 1,
+            version_base=str(version.getbase()),
         )
 
     def __enter__(self, *args: Any, **kwargs: Any) -> None:
@@ -80,7 +81,9 @@ class initialize_config_module:
         deprecation_warning(message=message)
 
         self.delegate = real_initialize_config_module(
-            config_module=config_module, job_name=job_name
+            config_module=config_module,
+            job_name=job_name,
+            version_base=str(version.getbase()),
         )
 
     def __enter__(self, *args: Any, **kwargs: Any) -> None:
@@ -116,7 +119,9 @@ class initialize_config_dir:
         deprecation_warning(message=message)
 
         self.delegate = real_initialize_config_dir(
-            config_dir=config_dir, job_name=job_name
+            config_dir=config_dir,
+            job_name=job_name,
+            version_base=str(version.getbase()),
         )
 
     def __enter__(self, *args: Any, **kwargs: Any) -> None:

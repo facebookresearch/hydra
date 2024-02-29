@@ -2,12 +2,10 @@
 from typing import Optional, Sequence
 
 
-class HydraException(Exception):
-    ...
+class HydraException(Exception): ...
 
 
-class CompactHydraException(HydraException):
-    ...
+class CompactHydraException(HydraException): ...
 
 
 class OverrideParseException(CompactHydraException):
@@ -17,16 +15,13 @@ class OverrideParseException(CompactHydraException):
         self.message = message
 
 
-class InstantiationException(CompactHydraException):
-    ...
+class InstantiationException(CompactHydraException): ...
 
 
-class ConfigCompositionException(CompactHydraException):
-    ...
+class ConfigCompositionException(CompactHydraException): ...
 
 
-class SearchPathException(CompactHydraException):
-    ...
+class SearchPathException(CompactHydraException): ...
 
 
 class MissingConfigException(IOError, ConfigCompositionException):
@@ -41,5 +36,4 @@ class MissingConfigException(IOError, ConfigCompositionException):
         self.options = options
 
 
-class HydraDeprecationError(HydraException):
-    ...
+class HydraDeprecationError(HydraException): ...

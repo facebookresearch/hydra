@@ -48,5 +48,4 @@ class TestBasicLauncherIntegration(IntegrationTestSuite):
         )
     ],
 )
-class TestBasicSweeperWithBatching(BatchedSweeperTestSuite):
-    ...
+class TestBasicSweeperWithBatching(BatchedSweeperTestSuite): ...

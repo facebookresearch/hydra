@@ -15,7 +15,7 @@ from nox.logger import logger
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
-DEFAULT_PYTHON_VERSIONS = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+DEFAULT_PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11"]
 DEFAULT_OS_NAMES = ["Linux", "MacOS", "Windows"]
 
 PYTHON_VERSIONS = os.environ.get(
@@ -308,7 +308,7 @@ def _isort_cmd() -> List[str]:
     return isort
 
 
-def _mypy_cmd(strict: bool, python_version: Optional[str] = "3.7") -> List[str]:
+def _mypy_cmd(strict: bool, python_version: Optional[str] = "3.8") -> List[str]:
     mypy = [
         "mypy",
         "--install-types",
@@ -325,8 +325,6 @@ def _mypy_cmd(strict: bool, python_version: Optional[str] = "3.7") -> List[str]:
 
 @nox.session(python=PYTHON_VERSIONS)  # type: ignore
 def lint(session: Session) -> None:
-    if session_python_as_tuple(session) <= (3, 6):
-        session.skip(f"Skipping session {session.name} as python >= 3.7 is required")
     _upgrade_basic(session)
     install_dev_deps(session)
     install_hydra(session, ["pip", "install", "-e"])
@@ -416,8 +414,6 @@ def lint_plugins_in_dir(session: Session, directory: str) -> None:
 @nox.session(python=PYTHON_VERSIONS)  # type: ignore
 @nox.parametrize("plugin", list_plugins("plugins"), ids=[p.name for p in list_plugins("plugins")])  # type: ignore
 def lint_plugins(session: Session, plugin: Plugin) -> None:
-    if session_python_as_tuple(session) <= (3, 6):
-        session.skip(f"Skipping session {session.name} as python >= 3.7 is required")
     if not is_plugin_compatible(session, plugin):
         session.skip(f"Skipping session {session.name}")
     _upgrade_basic(session)

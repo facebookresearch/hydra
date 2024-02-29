@@ -28,8 +28,7 @@ class SearchPathQuery:
 
 class ConfigSearchPath(ABC):
     @abstractmethod
-    def get_path(self) -> MutableSequence[SearchPathElement]:
-        ...
+    def get_path(self) -> MutableSequence[SearchPathElement]: ...
 
     @abstractmethod
     def append(

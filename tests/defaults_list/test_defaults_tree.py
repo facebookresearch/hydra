@@ -942,13 +942,15 @@ def test_legacy_override_hydra_version_base_1_1(
     hydra_restore_singletons: Any,
 ) -> None:
     version.setbase("1.1")
-    msg = dedent(
-        """\
-        Invalid overriding of hydra/help:
-        Default list overrides requires 'override' keyword.
-        See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/defaults_list_override for more information."""
+    msg_regex = r"Invalid overriding of hydra/(help|output):" + re.escape(
+        dedent(
+            """
+            Default list overrides requires 'override' keyword.
+            See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/defaults_list_override for more information.
+            """
+        )
     )
-    with warns(expected_warning=UserWarning, match=re.escape(msg)):
+    with warns(expected_warning=UserWarning, match=msg_regex):
         _test_defaults_tree_impl(
             config_name=config_name,
             input_overrides=overrides,

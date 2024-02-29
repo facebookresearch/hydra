@@ -52,8 +52,7 @@ def test_launched_jobs(hydra_sweep_runner: TSweepRunner) -> None:
         )
     ],
 )
-class TestExampleSweeper(LauncherTestSuite):
-    ...
+class TestExampleSweeper(LauncherTestSuite): ...
 
 
 # Many sweepers are batching jobs in groups.
@@ -73,8 +72,7 @@ class TestExampleSweeper(LauncherTestSuite):
         )
     ],
 )
-class TestExampleSweeperWithBatching(BatchedSweeperTestSuite):
-    ...
+class TestExampleSweeperWithBatching(BatchedSweeperTestSuite): ...
 
 
 # Run integration test suite with the basic launcher and this sweeper

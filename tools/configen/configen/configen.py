@@ -22,6 +22,7 @@ from omegaconf._utils import (
     is_list_annotation,
     is_structured_config,
     is_union_annotation,
+    type_str,
 )
 
 from configen.config import Config, ConfigenConf, ModuleConf
@@ -29,7 +30,6 @@ from configen.utils import (
     collect_imports,
     convert_imports,
     is_tuple_annotation,
-    type_str,
 )
 
 # Adding the current working directory to the PYTHONPATH to allow generation of code
