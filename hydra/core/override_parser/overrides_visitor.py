@@ -3,7 +3,7 @@ import sys
 import warnings
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from omegaconf.vendor.antlr4 import ParserRuleContext, TerminalNode, Token
+from omegaconf.vendor.antlr4 import ParserRuleContext, TerminalNode, Token  # type: ignore[attr-defined]
 from omegaconf.vendor.antlr4.error.ErrorListener import ErrorListener
 from omegaconf.vendor.antlr4.tree.Tree import TerminalNodeImpl
 
@@ -360,7 +360,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):
         return "".join(tokens)
 
 
-class HydraErrorListener(ErrorListener):  # type: ignore
+class HydraErrorListener(ErrorListener):
     def syntaxError(
         self,
         recognizer: Any,
