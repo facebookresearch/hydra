@@ -329,7 +329,6 @@ integration_tests_override.extend(common_overrides)
     ],
 )
 class TestRayAWSLauncherIntegration(IntegrationTestSuite):
-
     """
     Run this launcher through the integration test suite.
     """

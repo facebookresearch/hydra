@@ -232,8 +232,7 @@ class UserGroup:
 
 # RECURSIVE
 # Classes
-class Transform:
-    ...
+class Transform: ...
 
 
 class CenterCrop(Transform):
@@ -318,8 +317,7 @@ class Mapping:
 
 # Configs
 @dataclass
-class TransformConf:
-    ...
+class TransformConf: ...
 
 
 @dataclass

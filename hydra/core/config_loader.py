@@ -23,26 +23,21 @@ class ConfigLoader(ABC):
         run_mode: RunMode,
         from_shell: bool = True,
         validate_sweep_overrides: bool = True,
-    ) -> DictConfig:
-        ...
+    ) -> DictConfig: ...
 
     @abstractmethod
     def load_sweep_config(
         self, master_config: DictConfig, sweep_overrides: List[str]
-    ) -> DictConfig:
-        ...
+    ) -> DictConfig: ...
 
     @abstractmethod
-    def get_search_path(self) -> ConfigSearchPath:
-        ...
+    def get_search_path(self) -> ConfigSearchPath: ...
 
     @abstractmethod
-    def get_sources(self) -> List[ConfigSource]:
-        ...
+    def get_sources(self) -> List[ConfigSource]: ...
 
     @abstractmethod
-    def list_groups(self, parent_name: str) -> List[str]:
-        ...
+    def list_groups(self, parent_name: str) -> List[str]: ...
 
     @abstractmethod
     def get_group_options(
@@ -51,8 +46,7 @@ class ConfigLoader(ABC):
         results_filter: Optional[ObjectType] = ObjectType.CONFIG,
         config_name: Optional[str] = None,
         overrides: Optional[List[str]] = None,
-    ) -> List[str]:
-        ...
+    ) -> List[str]: ...
 
     @abstractmethod
     def compute_defaults_list(
@@ -60,5 +54,4 @@ class ConfigLoader(ABC):
         config_name: Optional[str],
         overrides: List[str],
         run_mode: RunMode,
-    ) -> Any:
-        ...
+    ) -> Any: ...

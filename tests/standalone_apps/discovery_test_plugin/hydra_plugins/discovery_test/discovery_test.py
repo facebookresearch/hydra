@@ -9,5 +9,4 @@ if "TMP_FILE" in os.environ:
         f.write("imported\n")
 
 
-class DiscoveryTestPlugin(Plugin):
-    ...
+class DiscoveryTestPlugin(Plugin): ...

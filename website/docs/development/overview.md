@@ -13,7 +13,7 @@ conda create -n hydra38 python=3.8 -qy
 ```
 
 :::info NOTE
-The core Hydra framework supports Python 3.7 or newer. You may need to create additional environments for different Python versions if CI detect issues on a supported version of Python.
+The core Hydra framework supports Python 3.8 or newer. You may need to create additional environments for different Python versions if CI detect issues on a supported version of Python.
 :::
 
 Activate the environment:

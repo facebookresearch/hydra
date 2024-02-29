@@ -31,12 +31,10 @@ class CompletionPlugin(Plugin):
         self.config_loader = config_loader
 
     @abstractmethod
-    def install(self) -> None:
-        ...
+    def install(self) -> None: ...
 
     @abstractmethod
-    def uninstall(self) -> None:
-        ...
+    def uninstall(self) -> None: ...
 
     @staticmethod
     @abstractmethod
@@ -47,8 +45,7 @@ class CompletionPlugin(Plugin):
         ...
 
     @abstractmethod
-    def query(self, config_name: Optional[str]) -> None:
-        ...
+    def query(self, config_name: Optional[str]) -> None: ...
 
     @staticmethod
     @abstractmethod

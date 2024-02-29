@@ -8,5 +8,4 @@ from .plugin import Plugin
 
 class SearchPathPlugin(Plugin):
     @abstractmethod
-    def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
-        ...
+    def manipulate_search_path(self, search_path: ConfigSearchPath) -> None: ...

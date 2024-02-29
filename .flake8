@@ -19,4 +19,4 @@ max-line-length = 119
 copyright-check = True
 select = E,F,W,C
 copyright-regexp=Copyright \(c\) Facebook, Inc. and its affiliates. All Rights Reserved
-ignore=W503,E203
+ignore=W503,E203,E701,E704

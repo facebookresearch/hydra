@@ -727,14 +727,23 @@ def test_deprecated_initialize_config_module(hydra_restore_singletons: Any) -> N
 
 
 def test_initialize_without_config_path(tmpdir: Path) -> None:
-    expected = dedent(
+    expected0 = dedent(
+        f"""
+        The version_base parameter is not specified.
+        Please specify a compatibility version level, or None.
+        Will assume defaults for version {version.__compat_version__}"""
+    )
+    expected1 = dedent(
         """\
         config_path is not specified in hydra.initialize().
         See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information."""
     )
-    with warns(expected_warning=UserWarning, match=re.escape(expected)):
+    with warns(expected_warning=UserWarning) as record:
         with initialize():
             pass
+    assert len(record) == 2
+    assert str(record[0].message) == expected0
+    assert str(record[1].message) == expected1
 
 
 @mark.usefixtures("initialize_hydra_no_path")

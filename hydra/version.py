@@ -60,6 +60,10 @@ def getbase() -> Optional[Version]:
 
 
 def setbase(ver: Any) -> None:
+    """
+    Set the `version_base` parameter, which is used to support backward compatibility
+    with older versions of Hydra.
+    """
     if type(ver) is type(_UNSPECIFIED_):
         deprecation_warning(
             message=dedent(

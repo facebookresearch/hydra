@@ -36,8 +36,7 @@ def test_discover(plugin_type: Type[Plugin], expected: List[str]) -> None:
 
 def test_register_plugin() -> None:
     class MyPlugin(SearchPathPlugin):
-        def manipulate_search_path(self, search_path: ConfigSearchPath) -> None:
-            ...
+        def manipulate_search_path(self, search_path: ConfigSearchPath) -> None: ...
 
     Plugins.instance().register(MyPlugin)
 
@@ -47,8 +46,7 @@ def test_register_plugin() -> None:
 
 
 def test_register_bad_plugin() -> None:
-    class NotAPlugin:
-        ...
+    class NotAPlugin: ...
 
     with raises(ValueError, match="Not a valid Hydra Plugin"):
         Plugins.instance().register(NotAPlugin)  # type: ignore

@@ -47,20 +47,17 @@ class ConfigSource(Plugin):
         ...
 
     @abstractmethod
-    def load_config(self, config_path: str) -> ConfigResult:
-        ...
+    def load_config(self, config_path: str) -> ConfigResult: ...
 
     # subclasses may override to improve performance
     def exists(self, config_path: str) -> bool:
         return self.is_group(config_path) or self.is_config(config_path)
 
     @abstractmethod
-    def is_group(self, config_path: str) -> bool:
-        ...
+    def is_group(self, config_path: str) -> bool: ...
 
     @abstractmethod
-    def is_config(self, config_path: str) -> bool:
-        ...
+    def is_config(self, config_path: str) -> bool: ...
 
     @abstractmethod
     def available(self) -> bool:

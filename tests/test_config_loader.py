@@ -289,13 +289,17 @@ class TestConfigLoader:
             config_search_path=create_config_search_path(path)
         )
 
-        msg = dedent(
-            """\
-          'config' is validated against ConfigStore schema with the same name.
-          This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
-          See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/automatic_schema_matching for migration instructions."""
+        msg = (
+            r"""'(config|db/mysql)' is validated against ConfigStore schema with the same name\."""
+            + re.escape(
+                dedent(
+                    """
+                    This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
+                    See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/automatic_schema_matching for migration instructions."""  # noqa: E501 line too long
+                )
+            )
         )
-        with warns(UserWarning, match=re.escape(msg)):
+        with warns(UserWarning, match=msg):
             cfg = config_loader.load_configuration(
                 config_name="config",
                 overrides=["+db=mysql"],
