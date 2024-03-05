@@ -2,7 +2,10 @@
 import sys
 from typing import Any, List, Optional
 
-from antlr4.error.Errors import LexerNoViableAltException, RecognitionException
+from omegaconf.vendor.antlr4.error.Errors import (
+    LexerNoViableAltException,
+    RecognitionException,
+)
 
 from hydra._internal.grammar import grammar_functions
 from hydra._internal.grammar.functions import Functions
