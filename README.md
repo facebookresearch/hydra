@@ -62,6 +62,8 @@ Hydra is licensed under [MIT License](LICENSE).
 * [lightning-hydra-template](https://github.com/ashleve/lightning-hydra-template): user-friendly template combining Hydra with [Pytorch-Lightning](https://github.com/Lightning-AI/lightning) for ML experimentation.
 * [hydra-torch](https://github.com/pytorch/hydra-torch): [configen](https://github.com/facebookresearch/hydra/tree/main/tools/configen)-generated configuration classes enabling type-safe PyTorch configuration for Hydra apps.
 * NVIDIA's DeepLearningExamples repository contains a Hydra Launcher plugin, the [distributed_launcher](https://github.com/NVIDIA/DeepLearningExamples/tree/9c34e35c218514b8607d7cf381d8a982a01175e9/Tools/PyTorch/TimeSeriesPredictionPlatform/distributed_launcher), which makes use of the pytorch [distributed.launch](https://pytorch.org/docs/stable/distributed.html#launch-utility) API.
+* [Quadra](https://github.com/orobix/quadra): Effortless and reproducible deep learning workflows with configuration files. It uses [Pytorch-Lightning](https://github.com/Lightning-AI/lightning) and Hydra for managing experiments.
+* [SheepRL](https://github.com/Eclectic-Sheep/sheeprl): An easy-to-use framework for distributed reinforcement learning in PyTorch, accelerated with [Lightning Fabric](https://lightning.ai/docs/fabric/stable/).
 
 #### Ask questions in Github Discussions or StackOverflow (Use the tag #fb-hydra or #omegaconf):
 * [Github Discussions](https://github.com/facebookresearch/hydra/discussions)
