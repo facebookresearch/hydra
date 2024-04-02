@@ -145,7 +145,7 @@ def _resolve_target(
     return target
 
 
-def instantiate(config: Any, target_wrapper: Optional[Callable[..., Any]], *args: Any, **kwargs: Any) -> Any:
+def instantiate(config: Any, *args: Any, target_wrapper: Optional[Callable[..., Any]] = None, **kwargs: Any) -> Any:
     """
     :param config: An config object describing what to call and what params to use.
                    In addition to the parameters, the config must contain:
