@@ -282,7 +282,7 @@ def instantiate_node(
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
     partial: bool = False,
-    target_wrapper: Optional[Callable[..., Any]]
+    target_wrapper: Optional[Callable[..., Any]] = None,
 ) -> Any:
     # Return None if config is None
     if node is None or (OmegaConf.is_config(node) and node._is_none()):
