@@ -145,7 +145,12 @@ def _resolve_target(
     return target
 
 
-def instantiate(config: Any, *args: Any, target_wrapper: Optional[Callable[..., Any]] = None, **kwargs: Any) -> Any:
+def instantiate(
+    config: Any,
+    *args: Any,
+    target_wrapper: Optional[Callable[..., Any]] = None,
+    **kwargs: Any,
+) -> Any:
     """
     :param config: An config object describing what to call and what params to use.
                    In addition to the parameters, the config must contain:
@@ -225,7 +230,12 @@ def instantiate(config: Any, *args: Any, target_wrapper: Optional[Callable[..., 
         _partial_ = config.pop(_Keys.PARTIAL, False)
 
         return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_, target_wrapper=target_wrapper,
+            config,
+            *args,
+            recursive=_recursive_,
+            convert=_convert_,
+            partial=_partial_,
+            target_wrapper=target_wrapper,
         )
     elif OmegaConf.is_list(config):
         # Finalize config (convert targets to strings, merge with kwargs)
@@ -248,7 +258,12 @@ def instantiate(config: Any, *args: Any, target_wrapper: Optional[Callable[..., 
             )
 
         return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_, target_wrapper=target_wrapper,
+            config,
+            *args,
+            recursive=_recursive_,
+            convert=_convert_,
+            partial=_partial_,
+            target_wrapper=target_wrapper,
         )
     else:
         raise InstantiationException(
@@ -316,7 +331,12 @@ def instantiate_node(
     # If OmegaConf list, create new list of instances if recursive
     if OmegaConf.is_list(node):
         items = [
-            instantiate_node(item, convert=convert, recursive=recursive, target_wrapper=target_wrapper)
+            instantiate_node(
+                item,
+                convert=convert,
+                recursive=recursive,
+                target_wrapper=target_wrapper,
+            )
             for item in node._iter_ex(resolve=True)
         ]
 
@@ -335,7 +355,7 @@ def instantiate_node(
             _target_ = _resolve_target(node.get(_Keys.TARGET), full_key)
             if target_wrapper:
                 _target_ = target_wrapper(_target_)
-            
+
             kwargs = {}
             is_partial = node.get("_partial_", False) or partial
             for key in node.keys():
@@ -345,7 +365,10 @@ def instantiate_node(
                     value = node[key]
                     if recursive:
                         value = instantiate_node(
-                            value, convert=convert, recursive=recursive, target_wrapper=target_wrapper,
+                            value,
+                            convert=convert,
+                            recursive=recursive,
+                            target_wrapper=target_wrapper,
                         )
                     kwargs[key] = _convert_node(value, convert)
 
