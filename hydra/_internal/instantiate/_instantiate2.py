@@ -4,7 +4,7 @@ import copy
 import functools
 from enum import Enum
 from textwrap import dedent
-from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 
 from omegaconf import OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
@@ -18,6 +18,7 @@ class _Keys(str, Enum):
     """Special keys in configs used by instantiate."""
 
     TARGET = "_target_"
+    SCOPE = "_scope_"
     CONVERT = "_convert_"
     RECURSIVE = "_recursive_"
     ARGS = "_args_"
@@ -29,6 +30,14 @@ def _is_target(x: Any) -> bool:
         return "_target_" in x
     if OmegaConf.is_dict(x):
         return "_target_" in x
+    return False
+
+
+def _is_scope(x: Any) -> bool:
+    if isinstance(x, dict):
+        return "_scope_" in x
+    if OmegaConf.is_dict(x):
+        return "_scope_" in x
     return False
 
 
@@ -278,6 +287,7 @@ def _convert_node(node: Any, convert: Union[ConvertMode, str]) -> Any:
 def instantiate_node(
     node: Any,
     *args: Any,
+    scope: Optional[str] = None,
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
     partial: bool = False,
@@ -328,9 +338,27 @@ def instantiate_node(
             return lst
 
     elif OmegaConf.is_dict(node):
-        exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_"})
+        exclude_keys = set({"_target_", "_scope_", "_convert_", "_recursive_", "_partial_"})
+        if _is_scope(node):
+            scope = node.pop(_Keys.SCOPE, None)
+            if scope is not None:
+                if not isinstance(scope, str):
+                    raise InstantiationException(
+                        f"Scope must be a string, got {type(scope).__name__}"
+                    )
+                if scope == "":
+                    raise InstantiationException("Scope cannot be an empty string")
+            return instantiate_node(
+                node, convert=convert, recursive=recursive, partial=partial, scope=scope
+            )
+
         if _is_target(node):
-            _target_ = _resolve_target(node.get(_Keys.TARGET), full_key)
+            _target_ = node.get(_Keys.TARGET)
+            if scope is not None:
+                _target_ = ".".join([scope, _target_])
+
+            _target_ = _resolve_target(_target_, full_key)
+
             kwargs = {}
             is_partial = node.get("_partial_", False) or partial
             for key in node.keys():
@@ -340,7 +368,7 @@ def instantiate_node(
                     value = node[key]
                     if recursive:
                         value = instantiate_node(
-                            value, convert=convert, recursive=recursive
+                            value, convert=convert, recursive=recursive, scope=scope
                         )
                     kwargs[key] = _convert_node(value, convert)
 
