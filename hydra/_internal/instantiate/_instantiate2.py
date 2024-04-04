@@ -354,8 +354,8 @@ def instantiate_node(
 
         if _is_target(node):
             _target_ = node.get(_Keys.TARGET)
-            if scope is not None:
-                _target_ = ".".join([scope, _target_])
+            if scope is not None and _target_.startswith("."):
+                _target_ = f"{scope}{_target_}"
 
             _target_ = _resolve_target(_target_, full_key)
 
