@@ -22,6 +22,7 @@ class _Keys(str, Enum):
     RECURSIVE = "_recursive_"
     ARGS = "_args_"
     PARTIAL = "_partial_"
+    RESOLVE = "_resolve_"
 
 
 def _is_target(x: Any) -> bool:
@@ -168,6 +169,8 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
                                   are converted to dicts / lists too.
                    _partial_: If True, return functools.partial wrapped method or object
                               False by default. Configure per target.
+                   _resolve_: If to resolve the OmegaConf configuration (bool)
+                              True by default.
     :param args: Optional positional parameters pass-through
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
@@ -217,14 +220,22 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         if kwargs:
             config = OmegaConf.merge(config, kwargs)
 
-        OmegaConf.resolve(config)
+        _resolve_ = config.pop(_Keys.RESOLVE, True)
+
+        if _resolve_:
+            OmegaConf.resolve(config)
 
         _recursive_ = config.pop(_Keys.RECURSIVE, True)
         _convert_ = config.pop(_Keys.CONVERT, ConvertMode.NONE)
         _partial_ = config.pop(_Keys.PARTIAL, False)
 
         return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
+            config,
+            *args,
+            recursive=_recursive_,
+            convert=_convert_,
+            partial=_partial_,
+            resolve=_resolve_,
         )
     elif OmegaConf.is_list(config):
         # Finalize config (convert targets to strings, merge with kwargs)
@@ -240,6 +251,7 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         _recursive_ = kwargs.pop(_Keys.RECURSIVE, True)
         _convert_ = kwargs.pop(_Keys.CONVERT, ConvertMode.NONE)
         _partial_ = kwargs.pop(_Keys.PARTIAL, False)
+        _resolve_ = True
 
         if _partial_:
             raise InstantiationException(
@@ -247,7 +259,12 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
             )
 
         return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
+            config,
+            *args,
+            recursive=_recursive_,
+            convert=_convert_,
+            partial=_partial_,
+            resolve=_resolve_,
         )
     else:
         raise InstantiationException(
@@ -260,13 +277,17 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         )
 
 
-def _convert_node(node: Any, convert: Union[ConvertMode, str]) -> Any:
+def _convert_node(
+    node: Any,
+    convert: Union[ConvertMode, str],
+    resolve: bool = True,
+) -> Any:
     if OmegaConf.is_config(node):
         if convert == ConvertMode.ALL:
-            node = OmegaConf.to_container(node, resolve=True)
+            node = OmegaConf.to_container(node, resolve=resolve)
         elif convert == ConvertMode.PARTIAL:
             node = OmegaConf.to_container(
-                node, resolve=True, structured_config_mode=SCMode.DICT_CONFIG
+                node, resolve=resolve, structured_config_mode=SCMode.DICT_CONFIG
             )
         elif convert == ConvertMode.OBJECT:
             node = OmegaConf.to_container(
@@ -281,6 +302,7 @@ def instantiate_node(
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
     partial: bool = False,
+    resolve: bool = True,
 ) -> Any:
     # Return None if config is None
     if node is None or (OmegaConf.is_config(node) and node._is_none()):
@@ -296,11 +318,18 @@ def instantiate_node(
         convert = node[_Keys.CONVERT] if _Keys.CONVERT in node else convert
         recursive = node[_Keys.RECURSIVE] if _Keys.RECURSIVE in node else recursive
         partial = node[_Keys.PARTIAL] if _Keys.PARTIAL in node else partial
+        convert = node[_Keys.RESOLVE] if _Keys.CONVERT in node else resolve
 
     full_key = node._get_full_key(None)
 
     if not isinstance(recursive, bool):
         msg = f"Instantiation: _recursive_ flag must be a bool, got {type(recursive)}"
+        if full_key:
+            msg += f"\nfull_key: {full_key}"
+        raise TypeError(msg)
+
+    if not isinstance(resolve, bool):
+        msg = f"Instantiation: _resolve_ flag must be a bool, got {type(recursive)}"
         if full_key:
             msg += f"\nfull_key: {full_key}"
         raise TypeError(msg)
@@ -314,8 +343,10 @@ def instantiate_node(
     # If OmegaConf list, create new list of instances if recursive
     if OmegaConf.is_list(node):
         items = [
-            instantiate_node(item, convert=convert, recursive=recursive)
-            for item in node._iter_ex(resolve=True)
+            instantiate_node(
+                item, convert=convert, recursive=recursive, resolve=resolve
+            )
+            for item in node._iter_ex(resolve=resolve)
         ]
 
         if convert in (ConvertMode.ALL, ConvertMode.PARTIAL, ConvertMode.OBJECT):
@@ -328,11 +359,16 @@ def instantiate_node(
             return lst
 
     elif OmegaConf.is_dict(node):
-        exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_"})
+        exclude_keys = set(
+            {"_target_", "_convert_", "_recursive_", "_partial_", "_resolve_"}
+        )
         if _is_target(node):
             _target_ = _resolve_target(node.get(_Keys.TARGET), full_key)
             kwargs = {}
             is_partial = node.get("_partial_", False) or partial
+            is_resolve = (node.get("_resolve_", None) is None and resolve) or node.get(
+                "_resolve_", False
+            )
             for key in node.keys():
                 if key not in exclude_keys:
                     if OmegaConf.is_missing(node, key) and is_partial:
@@ -340,9 +376,12 @@ def instantiate_node(
                     value = node[key]
                     if recursive:
                         value = instantiate_node(
-                            value, convert=convert, recursive=recursive
+                            value,
+                            convert=convert,
+                            recursive=recursive,
+                            resolve=is_resolve,
                         )
-                    kwargs[key] = _convert_node(value, convert)
+                    kwargs[key] = _convert_node(value, convert, resolve=is_resolve)
 
             return _call_target(_target_, partial, args, kwargs, full_key)
         else:
@@ -356,7 +395,10 @@ def instantiate_node(
                 for key, value in node.items():
                     # list items inherits recursive flag from the containing dict.
                     dict_items[key] = instantiate_node(
-                        value, convert=convert, recursive=recursive
+                        value,
+                        convert=convert,
+                        recursive=recursive,
+                        resolve=resolve,
                     )
                 return dict_items
             else:
@@ -364,7 +406,10 @@ def instantiate_node(
                 cfg = OmegaConf.create({}, flags={"allow_objects": True})
                 for key, value in node.items():
                     cfg[key] = instantiate_node(
-                        value, convert=convert, recursive=recursive
+                        value,
+                        convert=convert,
+                        recursive=recursive,
+                        resolve=resolve,
                     )
                 cfg._set_parent(node)
                 cfg._metadata.object_type = node._metadata.object_type
