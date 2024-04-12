@@ -12,6 +12,7 @@ from os.path import splitext
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, Dict, Optional, Sequence, Union, cast
+import traceback
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
