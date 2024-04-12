@@ -6,7 +6,9 @@ import os
 import re
 import shutil
 import subprocess
+from functools import partial
 from os.path import abspath, basename, dirname, exists, isdir, join
+from pathlib import Path
 from typing import List, Optional
 
 from setuptools import Command
@@ -185,7 +187,7 @@ class ANTLRCommand(Command):  # type: ignore
             command = [
                 "java",
                 "-jar",
-                join(root_dir, "bin/antlr-4.9.3-complete.jar"),
+                join(root_dir, "bin/antlr-4.11.1-complete.jar"),
                 "-Dlanguage=Python3",
                 "-o",
                 join(project_root, "hydra/grammar/gen/"),
@@ -198,8 +200,37 @@ class ANTLRCommand(Command):  # type: ignore
 
             subprocess.check_call(command)
 
+            log.info("Replacing imports of antlr4 in generated parsers")
+            self._fix_imports()
+
     def initialize_options(self) -> None:
         pass
 
     def finalize_options(self) -> None:
         pass
+
+    def _fix_imports(self) -> None:
+        """Fix imports from the generated parsers to use the vendored antlr4 instead"""
+        build_dir = Path(__file__).parent.absolute()
+        project_root = build_dir.parent
+        lib = "antlr4"
+        pkgname = 'omegaconf.vendor'
+
+        replacements = [
+            partial(  # import antlr4 -> import omegaconf.vendor.antlr4
+                re.compile(r'(^\s*)import {}\n'.format(lib), flags=re.M).sub,
+                r'\1from {} import {}\n'.format(pkgname, lib)
+            ),
+            partial(  # from antlr4 -> from fomegaconf.vendor.antlr4
+                re.compile(r'(^\s*)from {}(\.|\s+)'.format(lib), flags=re.M).sub,
+                r'\1from {}.{}\2'.format(pkgname, lib)
+            ),
+        ]
+
+        path = project_root / "hydra" / "grammar" / "gen"
+        for item in path.iterdir():
+            if item.is_file() and item.name.endswith(".py"):
+                text = item.read_text('utf8')
+                for replacement in replacements:
+                    text = replacement(text)
+                item.write_text(text, 'utf8')

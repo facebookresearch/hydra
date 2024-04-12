@@ -17,3 +17,4 @@ pip-wheel-metadata
 .ipynb_checkpoints
 /.dmypy.json
 TODO.txt
+/venv
