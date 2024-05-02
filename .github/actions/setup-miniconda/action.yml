@@ -1,0 +1,27 @@
+name: setup-miniconda
+description: 'Setup Miniconda'
+inputs:
+  py_version:
+    description: 'Python version'
+    required: true
+runs:
+  using: composite
+  steps:
+    # use my fork of the conda-incubator/setup-miniconda@v3 action
+    # until this PR is merged: https://github.com/conda-incubator/setup-miniconda/pull/350
+    - uses: robandpdx-org/setup-miniconda@fix-conda-env-var
+      with:
+        activate-environment: hydra
+        python-version: ${{ inputs.py_version }}
+    - name: Get Date
+      shell: bash
+      id: get-date
+      run: echo "today=$(/bin/date -u '+%Y%m%d')" >> $GITHUB_OUTPUT
+    - name: Cache conda
+      uses: actions/cache@v3
+      env:
+        CACHE_NUMBER: 1
+      with:
+        path: ${{ env.CONDA }}/envs
+        key:
+          v${{ env.CACHE_NUMBER }}-conda-${{ runner.os }}-${{ runner.arch }}-${{ steps.get-date.outputs.today }}

@@ -1,0 +1,194 @@
+name: facebookresearch/hydra/tests
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  test_macos:
+    runs-on: macos-12
+    strategy:
+      fail-fast: false
+      matrix:
+        py_version:
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: "./.github/actions/setup-macos"
+      with:
+        py_version: "${{ matrix.py_version }}"
+    - name: Testing Hydra
+      run: |-
+        export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
+        pip install nox dataclasses --progress-bar off
+        if [ -n "${{ github.event.number }}" ]; then
+          nox -s lint test_tools test_core \
+            test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+        else
+          nox -s lint test_tools test_core test_jupyter_notebooks -ts
+        fi
+  test_linux:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        py_version:
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: "./.github/actions/setup-linux"
+      with:
+        py_version: "${{ matrix.py_version }}"
+    - name: Testing Hydra
+      run: |-
+        export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
+        pip install nox dataclasses --progress-bar off
+        if [ -n "${{ github.event.number }}" ]; then
+          nox -s lint test_tools test_core \
+            test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+        else
+          nox -s lint test_tools test_core test_jupyter_notebooks -ts
+        fi
+  test_win:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        py_version:
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+    steps:
+    - uses: actions/checkout@v4
+    - uses: "./.github/actions/setup-windows"
+      with:
+        py_version: "${{ matrix.py_version }}"
+    - name: Testing Hydra
+      run: |-
+        $env:NOX_PYTHON_VERSIONS="${{ matrix.py_version }}"
+        $env:ConEmuDefaultCp=65001
+        $env:PYTHONIOENCODING="utf_8"
+        conda activate hydra
+        If ($env:${{ github.event.number }}) {
+          nox -s lint test_tools test_core test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+        } else {
+          nox -s lint test_tools test_core test_jupyter_notebooks -ts
+        }
+        exit $LASTEXITCODE
+  ## plugin tests
+  test_plugin_linux:
+    # True if PR is not from a fork
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        py_version:
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+        plugin:
+          - hydra_joblib_launcher
+          - hydra_optuna_sweeper
+          - hydra_ax_sweeper
+          - hydra_submitit_launcher
+          - hydra_nevergrad_sweeper
+          - hydra_rq_launcher
+          - hydra_ray_launcher
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: "./.github/actions/setup-linux"
+      with:
+        py_version: "${{ matrix.py_version }}"
+    - name: "${{ matrix.plugin }}"
+      run: |-
+        export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+        export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
+        export PLUGINS=${{ matrix.plugin }}
+        pip install nox dataclasses --progress-bar off
+        nox -s lint_plugins test_plugins test_plugins_vs_core -ts
+  test_plugin_macos:
+    # True if PR is not from a fork
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: macos-12
+    strategy:
+      fail-fast: false
+      matrix:
+        py_version:
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+        plugin:
+          - hydra_joblib_launcher
+          - hydra_optuna_sweeper
+          - hydra_ax_sweeper
+          - hydra_submitit_launcher
+          - hydra_nevergrad_sweeper
+          - hydra_rq_launcher
+          - hydra_ray_launcher
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/setup-macos"
+      with:
+        py_version: "${{ matrix.py_version }}"
+    - name: "${{ matrix.plugin }}"
+      run: |-
+        export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
+        export PLUGINS=${{ matrix.plugin }}
+        conda activate hydra
+        pip install nox dataclasses --progress-bar off
+        nox -s lint_plugins test_plugins test_plugins_vs_core -ts
+  test_plugin_win:
+    # True if PR is not from a fork
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        py_version:
+          - '3.8'
+          - '3.9'
+          - '3.10'
+          - '3.11'
+        test_plugin:
+          - hydra_joblib_launcher
+          - hydra_optuna_sweeper
+          - hydra_ax_sweeper
+          - hydra_submitit_launcher
+          - hydra_nevergrad_sweeper
+          - hydra_rq_launcher
+          - hydra_ray_launcher
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/setup-windows"
+      with:
+        py_version: "${{ matrix.py_version }}"
+    - name: "${{ matrix.plugin }}"
+      run: |-
+        $env:NOX_PYTHON_VERSIONS="${{ matrix.py_version }}"
+        $env:ConEmuDefaultCp=65001
+        $env:PYTHONIOENCODING="utf_8"
+        $env:PLUGINS="${{ matrix.plugin }}"
+        conda activate hydra
+        nox -s lint_plugins test_plugins test_plugins_vs_core -ts
+        exit $LASTEXITCODE
