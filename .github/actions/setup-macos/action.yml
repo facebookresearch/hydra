@@ -1,0 +1,36 @@
+name: setup-macos
+description: Setup macOS environment
+inputs:
+  py_version:
+    description: 'Python version'
+    required: false
+runs:
+  using: composite
+  steps:
+    - uses: maxim-lobanov/setup-xcode@v1.6.0
+      with:
+        xcode-version: 13.4.1
+    - name: Homebrew cache
+      uses: actions/cache@v4.0.2
+      with:
+        key: "v1-macos-sys-${{ github.head_ref }}"
+        path: ~/Library/Caches/Homebrew
+    - uses: "./.github/actions/setup-miniconda"
+      with:
+        py_version: "${{ matrix.py_version }}"
+    - uses: actions/setup-java@v4
+      with:
+        distribution: 'microsoft'
+        java-version: '11'
+    - name: Preparing environment - Brew
+      shell: bash
+      run: |-
+        brew update
+        brew upgrade git
+        brew install fish
+        brew install zsh
+        brew cleanup
+    - name: Preparing environment - Hydra
+      shell: bash -el {0}
+      run: |-
+        conda run -n hydra pip install nox --progress-bar off
