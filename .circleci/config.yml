@@ -167,7 +167,7 @@ jobs:
           py_version: << parameters.py_version >>
       - run:
           name: Testing Hydra
-          no_output_timeout: 10m
+          no_output_timeout: 20m
           command: |
             $env:NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
             $env:ConEmuDefaultCp=65001
