@@ -98,6 +98,7 @@ commands:
           key: -<< pipeline.parameters.cache_key_version >>-win-sys-{{ .Branch }}-<< parameters.py_version >>
       - run:
           name: Preparing environment - system
+          no_output_timeout: 20m
           command: |
             choco install -y --no-progress miniconda3
             choco install -y --no-progress openssl openjdk11jre
@@ -167,7 +168,7 @@ jobs:
           py_version: << parameters.py_version >>
       - run:
           name: Testing Hydra
-          no_output_timeout: 20m
+          no_output_timeout: 10m
           command: |
             $env:NOX_PYTHON_VERSIONS="<< parameters.py_version >>"
             $env:ConEmuDefaultCp=65001
