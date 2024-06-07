@@ -46,6 +46,9 @@ commands:
       - run:
           name: Preparing environment - Brew
           command: |
+            brew --version
+            brew untap Homebrew/homebrew-cask-versions
+            brew untap adoptopenjdk/openjdk
             brew update
             brew upgrade git
             brew install fish
@@ -120,7 +123,7 @@ jobs:
       py_version:
         type: string
     macos:
-      xcode: "13.4.1"
+      xcode: "15.3.0"
     steps:
       - macos:
           py_version: << parameters.py_version >>
