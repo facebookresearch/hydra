@@ -48,11 +48,6 @@ commands:
           command: |
             brew --version
             brew untap Homebrew/homebrew-cask-versions
-            # Adopt JDK issue workaround, may no longer needed in future MacOS base images
-            brew uninstall adoptopenjdk11
-            brew untap adoptopenjdk/openjdk
-            # brew install openjdk
-            # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
             brew update
             brew upgrade git
             brew install fish
