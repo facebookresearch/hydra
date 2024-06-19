@@ -46,6 +46,7 @@ commands:
       - run:
           name: Preparing environment - Brew
           command: |
+            set -x
             brew --version
             brew untap Homebrew/homebrew-cask-versions
             brew update
