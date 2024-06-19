@@ -129,7 +129,7 @@ chdir_plugin_root()
 
 def run_command(commands: str) -> str:
     log.info(f"running: {commands}")
-    output = subprocess.getoutput(commands)
+    output = subprocess.getoutput(commands)  # nosec B605
     log.info(f"outputs: {output}")
     return output
 

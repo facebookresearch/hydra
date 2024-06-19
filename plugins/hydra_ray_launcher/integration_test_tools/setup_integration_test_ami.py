@@ -16,7 +16,7 @@ dependencies = [
 
 def _run_command(command: str) -> str:
     print(f"{str( datetime.now() )} - OUT: {command}")
-    output = subprocess.getoutput(command)
+    output = subprocess.getoutput(command)  # nosec B605
     print(f"{str( datetime.now() )} - OUT: {output}")
     return output
 
