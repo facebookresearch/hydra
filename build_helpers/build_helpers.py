@@ -1,13 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import codecs
-import errno
 import logging
 import os
 import re
 import shutil
 import subprocess
 from functools import partial
-from os.path import abspath, basename, dirname, exists, isdir, join
+from os.path import abspath, dirname, exists, isdir, join
 from pathlib import Path
 from typing import List, Optional
 
@@ -18,7 +17,7 @@ log = logging.getLogger(__name__)
 
 def find_version(*file_paths: str) -> str:
     """Find the version number from the specified file."""
-    with codecs.open(os.path.join(*file_paths), "r") as fp:
+    with codecs.open(os.path.join(*file_paths), "r", "utf-8") as fp:
         version_file = fp.read()
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
     if version_match:
@@ -28,10 +27,7 @@ def find_version(*file_paths: str) -> str:
 def matches(patterns: List[str], string: str) -> bool:
     """Check if the string matches any of the given patterns."""
     string = string.replace("\\", "/")
-    for pattern in patterns:
-        if re.match(pattern, string):
-            return True
-    return False
+    return any(re.match(pattern, string) for pattern in patterns)
 
 def find_files(
     root: str,
@@ -175,7 +171,7 @@ class ANTLRCommand(Command):
     def run(self) -> None:
         """Run the ANTLR command to generate parsers."""
         root_dir = abspath(dirname(__file__))
-        project_root = abspath(dirname(basename(__file__)))
+        project_root = abspath(dirname(root_dir))
         grammars = [
             "hydra/grammar/OverrideLexer.g4",
             "hydra/grammar/OverrideParser.g4",
