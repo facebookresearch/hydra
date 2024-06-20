@@ -16,8 +16,8 @@ from setuptools.command import build_py, develop, sdist
 
 log = logging.getLogger(__name__)
 
-
 def find_version(*file_paths: str) -> str:
+    """Find the version number from the specified file."""
     with codecs.open(os.path.join(*file_paths), "r") as fp:
         version_file = fp.read()
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M)
@@ -25,16 +25,15 @@ def find_version(*file_paths: str) -> str:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
-
 def matches(patterns: List[str], string: str) -> bool:
+    """Check if the string matches any of the given patterns."""
     string = string.replace("\\", "/")
     for pattern in patterns:
         if re.match(pattern, string):
             return True
     return False
 
-
-def find_(
+def find_files(
     root: str,
     rbase: str,
     include_files: List[str],
@@ -42,6 +41,7 @@ def find_(
     excludes: List[str],
     scan_exclude: List[str],
 ) -> List[str]:
+    """Recursively find files and directories matching the given patterns."""
     files = []
     scan_root = os.path.join(root, rbase)
     with os.scandir(scan_root) as it:
@@ -55,7 +55,7 @@ def find_(
                     if not matches(excludes, path):
                         files.append(path)
                 else:
-                    ret = find_(
+                    ret = find_files(
                         root=root,
                         rbase=path,
                         include_files=include_files,
@@ -70,7 +70,6 @@ def find_(
 
     return files
 
-
 def find(
     root: str,
     include_files: List[str],
@@ -78,9 +77,10 @@ def find(
     excludes: List[str],
     scan_exclude: Optional[List[str]] = None,
 ) -> List[str]:
+    """Find all files and directories matching the given patterns starting from the root."""
     if scan_exclude is None:
         scan_exclude = []
-    return find_(
+    return find_files(
         root=root,
         rbase="",
         include_files=include_files,
@@ -89,14 +89,12 @@ def find(
         scan_exclude=scan_exclude,
     )
 
-
-class CleanCommand(Command):  # type: ignore
+class CleanCommand(Command):
     """
-    Our custom command to clean out junk files.
+    Custom command to clean out generated and junk files.
     """
 
     description = "Cleans out generated and junk files we don't want in the repo"
-    dry_run: bool
     user_options: List[str] = []
 
     def run(self) -> None:
@@ -132,8 +130,8 @@ class CleanCommand(Command):  # type: ignore
     def finalize_options(self) -> None:
         pass
 
-
 def run_antlr(cmd: Command) -> None:
+    """Run the ANTLR command to generate parsers."""
     try:
         log.info("Generating parsers with antlr4")
         cmd.run_command("antlr")
@@ -141,11 +139,10 @@ def run_antlr(cmd: Command) -> None:
         if e.errno == errno.ENOENT:
             msg = f"| Unable to generate parsers: {e} |"
             msg = "=" * len(msg) + "\n" + msg + "\n" + "=" * len(msg)
-            log.critical(f"{msg}")
+            log.critical(msg)
             exit(1)
         else:
             raise
-
 
 class BuildPyCommand(build_py.build_py):
     def run(self) -> None:
@@ -154,36 +151,36 @@ class BuildPyCommand(build_py.build_py):
             run_antlr(self)
         build_py.build_py.run(self)
 
-
-class Develop(develop.develop):
-    def run(self) -> None:  # type: ignore
+class DevelopCommand(develop.develop):
+    def run(self) -> None:
         if not self.dry_run:
             run_antlr(self)
         develop.develop.run(self)
 
-
 class SDistCommand(sdist.sdist):
     def run(self) -> None:
-        if not self.dry_run:  # type: ignore
+        if not self.dry_run:
             self.run_command("clean")
             run_antlr(self)
         sdist.sdist.run(self)
 
-
-class ANTLRCommand(Command):  # type: ignore
-    """Generate parsers using ANTLR."""
+class ANTLRCommand(Command):
+    """
+    Generate parsers using ANTLR.
+    """
 
     description = "Run ANTLR"
     user_options: List[str] = []
 
     def run(self) -> None:
-        """Run command."""
+        """Run the ANTLR command to generate parsers."""
         root_dir = abspath(dirname(__file__))
         project_root = abspath(dirname(basename(__file__)))
-        for grammar in [
+        grammars = [
             "hydra/grammar/OverrideLexer.g4",
             "hydra/grammar/OverrideParser.g4",
-        ]:
+        ]
+        for grammar in grammars:
             command = [
                 "java",
                 "-jar",
@@ -210,20 +207,20 @@ class ANTLRCommand(Command):  # type: ignore
         pass
 
     def _fix_imports(self) -> None:
-        """Fix imports from the generated parsers to use the vendored antlr4 instead"""
+        """Fix imports in the generated parsers to use the vendored antlr4."""
         build_dir = Path(__file__).parent.absolute()
         project_root = build_dir.parent
         lib = "antlr4"
         pkgname = 'omegaconf.vendor'
 
         replacements = [
-            partial(  # import antlr4 -> import omegaconf.vendor.antlr4
-                re.compile(r'(^\s*)import {}\n'.format(lib), flags=re.M).sub,
-                r'\1from {} import {}\n'.format(pkgname, lib)
+            partial(
+                re.compile(rf'(^\s*)import {lib}\n', flags=re.M).sub,
+                rf'\1from {pkgname} import {lib}\n'
             ),
-            partial(  # from antlr4 -> from fomegaconf.vendor.antlr4
-                re.compile(r'(^\s*)from {}(\.|\s+)'.format(lib), flags=re.M).sub,
-                r'\1from {}.{}\2'.format(pkgname, lib)
+            partial(
+                re.compile(rf'(^\s*)from {lib}(\.|\s+)', flags=re.M).sub,
+                rf'\1from {pkgname}.{lib}\2'
             ),
         ]
 
