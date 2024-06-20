@@ -49,6 +49,7 @@ commands:
             set -x
             brew --version
             brew untap Homebrew/homebrew-cask-versions
+            rm -rf $(brew --caskroom)/adoptopenjdk11  # https://github.com/Homebrew/homebrew-cask/issues/173201#issuecomment-2101662209
             brew update
             brew upgrade git
             brew install fish
