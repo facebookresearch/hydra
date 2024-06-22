@@ -125,6 +125,7 @@ jobs:
         type: string
     macos:
       xcode: "15.3.0"
+    resource_class: macos.m1.medium.gen1
     steps:
       - macos:
           py_version: << parameters.py_version >>
@@ -203,6 +204,7 @@ jobs:
         type: string
     macos:
       xcode: "13.4.1"
+    resource_class: macos.m1.medium.gen1
     steps:
       - macos:
           py_version: << parameters.py_version >>
