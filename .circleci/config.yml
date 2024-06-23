@@ -36,10 +36,12 @@ commands:
       - run:
           name: Preparing environment - Conda
           command: |
+            set -x
             if [[ -f ~/miniconda3/LICENSE.txt ]] ; then
               echo "miniconda installed already."
             else
               curl -o Miniconda3-latest-MacOSX-arm64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh
+              uname -m
               bash ./Miniconda3-latest-MacOSX-arm64.sh -b
             fi
             ~/miniconda3/bin/conda init bash
