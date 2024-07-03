@@ -16,7 +16,13 @@ dependencies = [
 
 def _run_command(command: str) -> str:
     print(f"{str( datetime.now() )} - OUT: {command}")
-    output = subprocess.getoutput(command)
+    # Do some basic validation to avoid injection but it is not exhaustive,
+    # there is still a security risk here!
+    if ";" in command or "||" in command or "&&" in command or ">" in command:
+        raise ValueError(
+            "To avoid possible injection, command cannot contain ; || or &&"
+        )
+    output = subprocess.getoutput(command)  # nosec B605
     print(f"{str( datetime.now() )} - OUT: {output}")
     return output
 

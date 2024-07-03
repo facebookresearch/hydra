@@ -39,8 +39,8 @@ commands:
             if [[ -f ~/miniconda3/LICENSE.txt ]] ; then
               echo "miniconda installed already."
             else
-              curl -o Miniconda3-py38_4.8.3-MacOSX-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-py38_4.8.3-MacOSX-x86_64.sh
-              bash ./Miniconda3-py38_4.8.3-MacOSX-x86_64.sh -b
+              curl -o Miniconda3-py39_24.5.0-0-MacOSX-arm64.sh https://repo.anaconda.com/miniconda/Miniconda3-py39_24.5.0-0-MacOSX-arm64.sh
+              bash ./Miniconda3-py39_24.5.0-0-MacOSX-arm64.sh -b
             fi
             ~/miniconda3/bin/conda init bash
       - run:
