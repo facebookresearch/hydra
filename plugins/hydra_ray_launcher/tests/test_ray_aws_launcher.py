@@ -133,12 +133,6 @@ chdir_plugin_root()
 
 def run_command(commands: str) -> str:
     log.info(f"running: {commands}")
-    # Do some basic validation to avoid injection but it is not exhaustive,
-    # there is still a security risk here!
-    if ";" in commands or "||" in commands or "&&" in commands or ">" in commands:
-        raise ValueError(
-            "To avoid possible injection, command cannot contain ; || or &&"
-        )
     output = subprocess.getoutput(commands)  # nosec B605
     log.info(f"outputs: {output}")
     return output
