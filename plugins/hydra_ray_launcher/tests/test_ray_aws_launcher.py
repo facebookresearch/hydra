@@ -11,7 +11,11 @@ from typing import Any, Dict, Generator, Optional
 
 import boto3  # type: ignore
 import pkg_resources
-from botocore.exceptions import NoCredentialsError, NoRegionError  # type: ignore
+from botocore.exceptions import (  # type: ignore
+    ClientError,
+    NoCredentialsError,
+    NoRegionError,
+)
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
@@ -49,7 +53,7 @@ try:
     ec2 = boto3.client("ec2")
     ec2.describe_regions()
     aws_not_configured = False
-except (NoCredentialsError, NoRegionError):
+except (ClientError, NoCredentialsError, NoRegionError):
     aws_not_configured = True
 
 
@@ -129,7 +133,7 @@ chdir_plugin_root()
 
 def run_command(commands: str) -> str:
     log.info(f"running: {commands}")
-    output = subprocess.getoutput(commands)
+    output = subprocess.getoutput(commands)  # nosec B605
     log.info(f"outputs: {output}")
     return output
 
@@ -139,7 +143,8 @@ def build_ray_launcher_wheel(tmp_wheel_dir: str) -> str:
     plugin = "hydra_ray_launcher"
     os.chdir(Path("plugins") / plugin)
     log.info(f"Build wheel for {plugin}, save wheel to {tmp_wheel_dir}.")
-    run_command(f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}")
+    run_command("python setup.py sdist bdist_wheel")
+    run_command(f"cp dist/*.whl {tmp_wheel_dir}")
     log.info("Download all plugin dependency wheels.")
     run_command(f"pip download . -d {tmp_wheel_dir}")
     plugin_wheel = run_command("ls dist/*.whl").split("/")[-1]
@@ -149,7 +154,8 @@ def build_ray_launcher_wheel(tmp_wheel_dir: str) -> str:
 
 def build_core_wheel(tmp_wheel_dir: str) -> str:
     chdir_hydra_root()
-    run_command(f"python setup.py sdist bdist_wheel && cp dist/*.whl {tmp_wheel_dir}")
+    run_command("python setup.py sdist bdist_wheel")
+    run_command(f"cp dist/*.whl {tmp_wheel_dir}")
 
     # download dependency wheel for hydra-core
     run_command(f"pip download -r requirements/requirements.txt -d {tmp_wheel_dir}")
