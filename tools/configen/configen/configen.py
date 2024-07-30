@@ -168,8 +168,14 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
         params: List[Parameter] = []
         params = params + default_flags
 
-        for name, p in sig.parameters.items():
-            type_ = original_type = resolved_hints.get(name, sig.empty)
+        for i, (name, p) in enumerate(sig.parameters.items()):
+            if p.kind == p.VAR_KEYWORD:  # `**kwargs` parameter
+                continue
+            elif p.kind == p.VAR_POSITIONAL and i > 0:  # `*args` parameter
+                # hydra supports positional arguments only as the first arg
+                continue
+
+            type_or_empty = original_type = resolved_hints.get(name, sig.empty)
             default_ = p.default
 
             missing_value = default_ == sig.empty
@@ -177,17 +183,20 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
                 type(default_)
             )
 
-            missing_annotation_type = type_ == sig.empty
+            missing_annotation_type = type_or_empty == sig.empty
             incompatible_annotation_type = (
-                not missing_annotation_type and is_incompatible(type_)
+                not missing_annotation_type and is_incompatible(type_or_empty)
             )
 
+            type_: type
             if missing_annotation_type or incompatible_annotation_type:
                 type_ = Any
                 collect_imports(imports, Any)
+            else:
+                type_ = type_or_empty
 
             if not missing_value:
-                if type_ == str or type(default_) == str:
+                if type_ is str or type(default_) == str:
                     default_ = f'"{default_}"'
                 elif isinstance(default_, list):
                     default_ = f"field(default_factory=lambda: {default_})"
@@ -212,6 +221,10 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
                 else:
                     default_ = "MISSING"
                 string_imports.add("from omegaconf import MISSING")
+
+            if p.kind == p.VAR_POSITIONAL:  # `*args` parameter
+                name = "_args_"
+                type_ = List[type_]
 
             params.append(
                 Parameter(

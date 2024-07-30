@@ -31,6 +31,10 @@ from tests.test_modules import (
     DictValues,
     PeskySentinelUsage,
     Tuples,
+    Args,
+    ArgsNotFirst,
+    ArgsNoType,
+    Kwargs,
 )
 
 from tests.test_modules.generated import PeskySentinelUsageConf
@@ -72,6 +76,10 @@ def test_generated_code() -> None:
         "ListValues",
         "DictValues",
         "Tuples",
+        "Args",
+        "ArgsNotFirst",
+        "ArgsNoType",
+        "Kwargs",
         "PeskySentinelUsage",
     ]
     expected_file = Path(MODULE_NAME.replace(".", "/")) / "generated.py"
@@ -270,6 +278,38 @@ def test_generated_code_with_default_flags(
             {"foo": 10.11},
             PeskySentinelUsage(foo=10.11),
             id="PeskySentinelUsage",
+        ),
+        param(
+            "Args",
+            {"_args_": [2.5, 3.6], "flag": True},
+            [],
+            {},
+            Args(2.5, 3.6, flag=True),
+            id="Args",
+        ),
+        param(
+            "ArgsNotFirst",
+            {"num": 3},
+            [],
+            {},
+            ArgsNotFirst(3),
+            id="ArgsNotFirst",
+        ),
+        param(
+            "ArgsNoType",
+            {"_args_": [3, 2, 4]},
+            [],
+            {},
+            ArgsNoType(3, 2, 4),
+            id="ArgsNoType",
+        ),
+        param(
+            "Kwargs",
+            {"num": 3},
+            [],
+            {"arg1": "foo", "arg2": "bar", "arg3": ""},
+            Kwargs(3, arg1="foo", arg2="bar", arg3=""),
+            id="Kwargs",
         ),
     ],
 )
