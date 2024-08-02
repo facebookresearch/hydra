@@ -74,6 +74,25 @@ def test_to_absolute_path_without_hydra(
 
 
 @mark.parametrize(
+    "obj, expected",
+    [
+        ("foo bar", '"foo bar"'),
+        (10, "10"),
+        ({"foo": '\\"bar'}, '{foo: "\\\\\\"bar"}'),
+        ([1, 2, "3", {"a": "xyz"}], '[1, 2, "3", {a: "xyz"}]'),
+        (
+            {"a": 10, "b": "c", "d": {"e": [1, 2, "3"], "f": ["g", {"h": {"i": "j"}}]}},
+            '{a: 10, b: "c", d: {e: [1, 2, "3"], f: ["g", {h: {i: "j"}}]}}',
+        ),
+    ],
+)
+def test_to_hydra_override_value_str(
+    hydra_restore_singletons: Any, obj: Any, expected: str
+) -> None:
+    assert utils.to_hydra_override_value_str(obj) == expected
+
+
+@mark.parametrize(
     "env_setting,expected_error",
     [
         param(None, False, id="env_unset"),
