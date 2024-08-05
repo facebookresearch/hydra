@@ -114,6 +114,7 @@ def create_functions() -> Functions:
     functions.register(name="str", func=grammar_functions.cast_str)
     functions.register(name="bool", func=grammar_functions.cast_bool)
     functions.register(name="float", func=grammar_functions.cast_float)
+    functions.register(name="json_str", func=grammar_functions.cast_json_str)
     # sweeps
     functions.register(name="choice", func=grammar_functions.choice)
     functions.register(name="range", func=grammar_functions.range)

@@ -187,7 +187,8 @@ shuffle([a,b,c]), shuffle(list=[a,b,c])              # shuffled list [a,b,c]
 ```
 
 ## Type casting
-You can cast values and sweeps to `int`, `float`, `bool` or `str`.
+You can cast values and sweeps to `int`, `float`, `bool`, `str` or `json_str`. Note that unlike the 
+others, `json_str` will affect the whole container rather than just the values.
 ```python title="Example"
 int(3.14)                  # 3 (int)
 int(value=3.14)            # 3 (int)
@@ -197,6 +198,7 @@ bool(1)                    # true (bool)
 float(range(1,10))         # range(1.0,10.0)
 str([1,2,3])               # ['1','2','3']
 str({a:10})                # {a:'10'}
+json_str({a:10})           # '{"a":10}'
 ```
 
 Below are pseudo code snippets that illustrates the differences between Python's casting and Hydra's casting.
@@ -346,38 +348,37 @@ Input are grouped by type.
 
 [//]: # (Conversion matrix source: https://docs.google.com/document/d/1JDZGHKk4PrZHqsTTS6ao-DQOu2eVD4ULR6uAxVUR-WI/edit#)
 
-|                    	| int()       	| float()           	| str()             	| bool()                	|
-|--------------------	|-------------	|-------------------	|-------------------	|-----------------------	|
-|         10         	| 10          	| 10.0              	| “10”              	| true                  	|
-|          0         	| 0           	| 0.0               	| “0”               	| false                 	|
-|        10.0        	| 10          	| 10.0              	| “10.0”            	| true                  	|
-|         0.0        	| 0           	| 0.0               	| “0.0”             	| false                 	|
-|         inf        	| error       	| inf               	| ‘inf’             	| true                  	|
-|         nan        	| error       	| nan               	| ‘nan’             	| true                  	|
-|         1e6        	| 1,000,000   	| 1e6               	| ‘1000000.0’       	| true                  	|
-|         foo        	| error       	| error             	| foo               	| error                 	|
-|  “” (empty string) 	| error       	| error             	| “”                	| error                 	|
-|        “10”        	| 10          	| 10.0              	| “10”              	| error                 	|
-|       “10.0”       	| error       	| 10.0              	| “10.0”            	| error                 	|
-|       “true”       	| error       	| error             	| “true”            	| true                  	|
-|       “false”      	| error       	| error             	| “false”           	| false                 	|
-|      “[1,2,3]”     	| error       	| error             	| “[1,2,3]”         	| error                 	|
-|      “{a:10}”      	| error       	| error             	| “{a:10}”          	| error                 	|
-|        true        	| 1           	| 1.0               	| “true”            	| true                  	|
-|        false       	| 0           	| 0.0               	| “false”           	| false                 	|
-|         []         	| []          	| []                	| []                	| []                    	|
-|       [0,1,2]      	| [0,1,2]     	| [0.0,1.0,2.0]     	| [“0”,”1”,”2”]     	| [false,true,true]     	|
-|       [1,[2]]      	| [1,[2]]     	| [1.0,[2.0]]       	| [“1”,[“2”]]       	| [true,[true]]         	|
-|        [a,1]       	| error       	| error             	| [“a”,”1”]         	| error                 	|
-|         {}         	| {}          	| {}                	| {}                	| {}                    	|
-|       {a:10}       	| {a:10}      	| {a:10.0}          	| {a:”10”}          	| {a: true}               	|
-|     {a:[0,1,2]}    	| {a:[0,1,2]} 	| {a:[0.0,1.0,2.-]} 	| {a:[“0”,”1”,”2”]} 	| {a:[false,true,true]} 	|
-|    {a:10,b:xyz}    	| error       	| error             	| {a:”10”,b:”xyz”}  	| error                 	|
-|     choice(0,1)    	| choice(0,1) 	| choice(0.0,1.0)   	| choice(“0”,“1”)   	| choice(false,true)    	|
-|     choice(a,b)    	| error       	| error             	| choice(“a”,”b”)   	| error                 	|
-|     choice(1,a)    	| error       	| error             	| choice(“1”,”a”)   	| error                 	|
-| interval(1.0, 2.0) 	| interval(1, 2)| interval(1.0, 2.0)   	| error             	| error                 	|
-| interval(1, 2)     	| interval(1, 2)| interval(1.0, 2.0)   	| error             	| error                 	|
-|     range(1,10)    	| range(1,10) 	| range(1.0,10.0)   	| error             	| error                 	|
-|  range(1.0, 10.0)  	| range(1,10) 	| range(1.0,10.0)   	| error             	| error                 	|
-
+|                    	| int()       	| float()           	| str()             	| bool()                	| json()                 |
+|--------------------	|-------------	|-------------------	|-------------------	|-----------------------	|--------------------	 |
+|         10         	| 10          	| 10.0              	| “10”              	| true                  	| “10”                   |
+|          0         	| 0           	| 0.0               	| “0”               	| false                 	| “0”                    |
+|        10.0        	| 10          	| 10.0              	| “10.0”            	| true                  	| “10.0”                 |
+|         0.0        	| 0           	| 0.0               	| “0.0”             	| false                 	| “0.0”                  |
+|         inf        	| error       	| inf               	| ‘inf’             	| true                  	| “Infinity”             |
+|         nan        	| error       	| nan               	| ‘nan’             	| true                  	| “NaN”                  |
+|         1e6        	| 1,000,000   	| 1e6               	| ‘1000000.0’       	| true                  	| “1000000.0”            |
+|         foo        	| error       	| error             	| foo               	| error                 	| '“foo”'                |
+|  “” (empty string) 	| error       	| error             	| “”                	| error                 	| '“”'                   |
+|        “10”        	| 10          	| 10.0              	| “10”              	| error                 	| '“10”'                 |
+|       “10.0”       	| error       	| 10.0              	| “10.0”            	| error                 	| '“10.0”'               |
+|       “true”       	| error       	| error             	| “true”            	| true                  	| '“true”'               | 
+|       “false”      	| error       	| error             	| “false”           	| false                 	| '“false”'              |
+|      “[1,2,3]”     	| error       	| error             	| “[1,2,3]”         	| error                 	| '“[1,2,3]”'            |
+|      “{a:10}”      	| error       	| error             	| “{a:10}”          	| error                 	| '“{a:10}”'             |
+|        true        	| 1           	| 1.0               	| “true”            	| true                  	| “true”                 |
+|        false       	| 0           	| 0.0               	| “false”           	| false                 	| “false”                |
+|         []         	| []          	| []                	| []                	| []                    	| “[]”                   |
+|       [0,1,2]      	| [0,1,2]     	| [0.0,1.0,2.0]     	| [“0”,”1”,”2”]     	| [false,true,true]     	| “[1, 2, 3]”            |
+|       [1,[2]]      	| [1,[2]]     	| [1.0,[2.0]]       	| [“1”,[“2”]]       	| [true,[true]]         	| “[1, [2]]”             |
+|        [a,1]       	| error       	| error             	| [“a”,”1”]         	| error                 	| '[“a”, 1]'             |
+|         {}         	| {}          	| {}                	| {}                	| {}                    	| “{}”                   |
+|       {a:10}       	| {a:10}      	| {a:10.0}          	| {a:”10”}          	| {a: true}               	| '{“a”: 10}'            |
+|     {a:[0,1,2]}    	| {a:[0,1,2]} 	| {a:[0.0,1.0,2.-]} 	| {a:[“0”,”1”,”2”]} 	| {a:[false,true,true]} 	| '{“a”: [1, 2, 3]}'     |
+|    {a:10,b:xyz}    	| error       	| error             	| {a:”10”,b:”xyz”}  	| error                 	| '{“a”: 10, “b”: “xyz”}'|
+|     choice(0,1)    	| choice(0,1) 	| choice(0.0,1.0)   	| choice(“0”,“1”)   	| choice(false,true)    	| choice(“0”, “1”)       |
+|     choice(a,b)    	| error       	| error             	| choice(“a”,”b”)   	| error                 	| choice('“a”', '“b”')   |
+|     choice(1,a)    	| error       	| error             	| choice(“1”,”a”)   	| error                 	| choice(“1”, '“a”')     |
+| interval(1.0, 2.0) 	| interval(1, 2)| interval(1.0, 2.0)   	| error             	| error                 	| interval(“1.0”, “2.0”) |
+| interval(1, 2)     	| interval(1, 2)| interval(1.0, 2.0)   	| error             	| error                 	| interval(“1”, “2”)     |
+|     range(1,10)    	| range(1,10) 	| range(1.0,10.0)   	| error             	| error                 	| error                  |
+|  range(1.0, 10.0)  	| range(1,10) 	| range(1.0,10.0)   	| error             	| error                 	| error                  |

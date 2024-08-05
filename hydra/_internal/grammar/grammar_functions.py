@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import builtins
+import json
 import random
 from copy import copy
 from typing import Any, Callable, Dict, List, Optional, Union
@@ -136,6 +137,43 @@ def cast_str(*args: CastType, value: Optional[CastType] = None) -> Any:
         return str(value).lower()
     else:
         return str(value)
+
+
+def extract_text(*args: Any, value: Optional[Any] = None) -> Any:
+    value = _normalize_cast_value(*args, value=value)
+    if isinstance(value, QuotedString):
+        return value.text
+    if isinstance(value, dict):
+        return apply_to_dict_values(value, extract_text)
+    elif isinstance(value, list):
+        return list(map(extract_text, value))
+    elif isinstance(value, ChoiceSweep):
+        return cast_choice(value, extract_text)
+    elif isinstance(value, RangeSweep):
+        return cast_range(value, extract_text)
+    else:
+        return value
+
+
+def cast_json_str(*args: Any, value: Optional[Any] = None) -> Any:
+    value = _normalize_cast_value(*args, value=value)
+    json_val = value
+    if isinstance(value, QuotedString):
+        json_val = value.text
+    if isinstance(value, dict):
+        json_val = apply_to_dict_values(value, extract_text)
+    elif isinstance(value, list):
+        json_val = list(map(extract_text, value))
+    elif isinstance(value, ChoiceSweep):
+        json_choices = cast_choice(value, extract_text)
+        return cast_choice(json_choices, json.dumps)
+    elif isinstance(value, RangeSweep):
+        json_range = cast_range(value, extract_text)
+        return cast_range(json_range, json.dumps)
+    elif isinstance(value, IntervalSweep):
+        raise ValueError("Intervals cannot be cast to json_str")
+
+    return json.dumps(json_val)
 
 
 def cast_bool(*args: CastType, value: Optional[CastType] = None) -> Any:
