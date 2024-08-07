@@ -9,12 +9,10 @@ from hydra.plugins.config_source import ConfigResult, ConfigSource
 
 
 class StructuredConfigSource(ConfigSource):
-    store: ConfigStore
 
     def __init__(self, provider: str, path: str) -> None:
         super().__init__(provider=provider, path=path)
         # Import the module, the __init__ there is expected to register the configs.
-        self.store = ConfigStore.instance()
         if self.path != "":
             try:
                 importlib.import_module(self.path)
@@ -30,7 +28,7 @@ class StructuredConfigSource(ConfigSource):
 
     def load_config(self, config_path: str) -> ConfigResult:
         normalized_config_path = self._normalize_file_name(config_path)
-        ret = self.store.load(config_path=normalized_config_path)
+        ret = ConfigStore.instance().load(config_path=normalized_config_path)
         provider = ret.provider if ret.provider is not None else self.provider
         header = {"package": ret.package}
         return ConfigResult(
@@ -44,17 +42,17 @@ class StructuredConfigSource(ConfigSource):
         return True
 
     def is_group(self, config_path: str) -> bool:
-        type_ = self.store.get_type(config_path.rstrip("/"))
+        type_ = ConfigStore.instance().get_type(config_path.rstrip("/"))
         return type_ == ObjectType.GROUP
 
     def is_config(self, config_path: str) -> bool:
         filename = self._normalize_file_name(config_path.rstrip("/"))
-        type_ = self.store.get_type(filename)
+        type_ = ConfigStore.instance().get_type(filename)
         return type_ == ObjectType.CONFIG
 
     def list(self, config_path: str, results_filter: Optional[ObjectType]) -> List[str]:
         ret: List[str] = []
-        files = self.store.list(config_path)
+        files = ConfigStore.instance().list(config_path)
 
         for file in files:
             self._list_add_result(
