@@ -87,13 +87,13 @@ def print_installed_package_version(session: Session, package_name: str) -> None
     pip_list: str = session.run("pip", "list", silent=True)
     for line in pip_list.split("\n"):
         if package_name in line:
-            print(f"Installed {package_name} version: {line}")
+            logger.info(f"Installed {package_name} version: {line}")
 
 
 def install_hydra(session: Session, cmd: List[str]) -> None:
     # needed for build
     session.install("read-version", silent=SILENT)
-    # clean install hydra
+    # clean-install hydra
     session.chdir(BASE)
     if USE_OMEGACONF_DEV_VERSION:
         session.install("--pre", "omegaconf", silent=SILENT)
