@@ -10,6 +10,7 @@ from hydra.core.override_parser.types import (
     ChoiceSweep,
     Glob,
     IntervalSweep,
+    ListExtensionOverrideValue,
     ParsedElementType,
     QuotedString,
     RangeSweep,
@@ -399,3 +400,7 @@ def glob(
         exclude = [exclude]
 
     return Glob(include=include, exclude=exclude)
+
+
+def extend_list(*args: Any) -> ListExtensionOverrideValue:
+    return ListExtensionOverrideValue(values=list(args))
