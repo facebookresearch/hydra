@@ -403,4 +403,7 @@ def glob(
 
 
 def extend_list(*args: Any) -> ListExtensionOverrideValue:
+    """
+    Extends an existing list in the config with the given values.
+    """
     return ListExtensionOverrideValue(values=list(args))
