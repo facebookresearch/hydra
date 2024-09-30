@@ -1,0 +1,29 @@
+defaults:
+  - config_with_schema
+  - db2/special_mysql
+  - _self_
+
+normal_yaml_config: false
+db:
+  host: localhost
+  port: 3306
+db2:
+  _target_: test_config_loader.SpecialMySQLConfig
+  special_secret: SPECIAL
+  port: 1234
+any_db:
+  _target_: test_config_loader.MySQLConfig
+  host: localhost
+  port: 3306
+backup_dbs:
+  - _target_: test_config_loader.MySQLConfig
+    host: localhost
+    port: 3307
+    user: dummy
+    password: backup
+  - host: 127.0.0.1
+    driver: mysql
+    port: 3308
+    user: dummy
+    password: backup
+backup_nums: [1, 2, 3]

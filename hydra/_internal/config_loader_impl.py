@@ -7,11 +7,19 @@ import warnings
 from textwrap import dedent
 from typing import Any, List, MutableSequence, Optional, Tuple
 
-from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
+from omegaconf import (
+    Container,
+    DictConfig,
+    ListConfig,
+    OmegaConf,
+    flag_override,
+    open_dict,
+)
 from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
     OmegaConfBaseException,
+    ValidationError,
 )
 
 from hydra._internal.config_repository import (
@@ -466,6 +474,10 @@ class ConfigLoaderImpl(ConfigLoader):
                     ):
                         hydra = config.pop("hydra")
 
+                    if schema.config is not None:
+                        # _target_ field is not compatible with structured configs
+                        _remove_target_from_structured_config(config, schema.config)
+
                     merged = OmegaConf.merge(schema.config, config)
                     assert isinstance(merged, DictConfig)
 
@@ -539,6 +551,9 @@ class ConfigLoaderImpl(ConfigLoader):
             for default in defaults:
                 loaded = self._load_single_config(default=default, repo=repo)
                 try:
+                    # Remove _target_ when merging with potentially structured config
+                    _remove_target_from_structured_config(loaded.config, cfg)
+
                     cfg.merge_with(loaded.config)
                 except OmegaConfBaseException as e:
                     raise ConfigCompositionException(
@@ -598,3 +613,43 @@ def get_overrides_dirname(
     lines.sort()
     ret = re.sub(pattern="[=]", repl=kv_sep, string=item_sep.join(lines))
     return ret
+
+
+def _remove_target_from_structured_config(
+    config: Container,
+    schema: Optional[Container],
+) -> None:
+    if schema is None:
+        return
+    if (
+        isinstance(config, DictConfig)
+        and isinstance(schema, DictConfig)
+        and config._content is not None
+        and not config._is_missing()
+    ):
+        if "_target_" not in schema:
+            try:
+                config.pop("_target_", None)
+            except Exception:
+                pass
+
+        for child_key, value in config.items_ex(False):
+            if value == "???":
+                continue
+            try:
+                child_schema = schema.get(child_key)
+            except Exception:
+                continue
+            _remove_target_from_structured_config(value, child_schema)
+    elif (
+        isinstance(config, ListConfig)
+        and isinstance(schema, ListConfig)
+        and config._content is not None
+        and not config._is_missing()
+    ):
+        try:
+            expected_type = OmegaConf.structured(schema._metadata.element_type)
+        except ValidationError:  # Ignore if the element type is a primitive type
+            return
+        for item in config._iter_ex(False):
+            _remove_target_from_structured_config(item, expected_type)
