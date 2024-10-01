@@ -26,7 +26,7 @@ module.exports = {
             "1.0": "https://github.com/facebookresearch/hydra/blob/1.0_branch/",
             current: "https://github.com/facebookresearch/hydra/blob/main/",
         },
-    },    
+    },
     themeConfig: {
         announcementBar: {
             id: 'support_ukraine',
@@ -36,19 +36,16 @@ module.exports = {
             textColor: '#fff',
             isCloseable: false,
         },
-        googleAnalytics: {
-            trackingID: 'UA-149862507-1',
-        },
-        algolia: {
-            apiKey: '8e04f3376c4e6e060f9d8d56734fa67b',
-            indexName: 'hydra',
-            algoliaOptions: {},
-        },
+        // algolia: {
+        //     apiKey: '8e04f3376c4e6e060f9d8d56734fa67b',
+        //     indexName: 'hydra',
+        //     algoliaOptions: {},
+        // },
         // announcementBar: {
         //   id: 'supportus',
         //   content:
         //     '⭐️ If you like Hydra, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/facebookresearch/hydra">GitHub</a>! ⭐️',
-        // },        
+        // },
 		prism: {
 		  additionalLanguages: ['antlr4'],
 		},
@@ -136,6 +133,9 @@ module.exports = {
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
+                },
+                googleAnalytics: {
+                    trackingID: 'UA-149862507-1',
                 },
             },
         ],

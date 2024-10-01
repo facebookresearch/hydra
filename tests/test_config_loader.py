@@ -40,6 +40,12 @@ class TopLevelConfig:
     db: MySQLConfig = field(default_factory=MySQLConfig)
 
 
+@dataclass
+class TopLevelConfigWithLists(TopLevelConfig):
+    backup_dbs: List[MySQLConfig] = field(default_factory=list)
+    backup_nums: List[int] = field(default_factory=list)
+
+
 @mark.parametrize(
     "path",
     [
@@ -318,6 +324,66 @@ class TestConfigLoader:
                 "password": "secret",
             },
         }
+
+    def test_load_config_with_schema_and_targets(
+        self, hydra_restore_singletons: Any, path: str
+    ) -> None:
+        ConfigStore.instance().store(
+            name="config_with_schema", node=TopLevelConfig, provider="this_test"
+        )
+        ConfigStore.instance().store(
+            group="db", name="base_mysql", node=MySQLConfig, provider="this_test"
+        )
+
+        config_loader = ConfigLoaderImpl(
+            config_search_path=create_config_search_path(path)
+        )
+
+        cfg = config_loader.load_configuration(
+            config_name="schema_ignore_target",
+            overrides=["db.user=test"],
+            run_mode=RunMode.RUN,
+        )
+
+        with open_dict(cfg):
+            del cfg["hydra"]
+        assert cfg == {
+            "normal_yaml_config": False,
+            "db": {
+                "driver": "???",
+                "host": "localhost",
+                "port": "3306",
+                "user": "test",
+                "password": "???",
+            },
+            "backup_dbs": [
+                {
+                    "driver": "???",
+                    "host": "localhost",
+                    "port": "3307",
+                    "user": "dummy",
+                    "password": "backup",
+                },
+                {
+                    "driver": "mysql",
+                    "host": "127.0.0.1",
+                    "port": "3308",
+                    "user": "dummy",
+                    "password": "backup",
+                },
+            ],
+            "backup_nums": [1, 2, 3],
+        }
+
+        # verify illegal modification is rejected at runtime
+        with raises(ValidationError):
+            cfg.db.port = "fail"
+
+        # verify illegal override is rejected during load
+        with raises(HydraException):
+            config_loader.load_configuration(
+                config_name="db/mysql", overrides=["db.port=fail"], run_mode=RunMode.RUN
+            )
 
     def test_load_config_with_validation_error(
         self, hydra_restore_singletons: Any, path: str

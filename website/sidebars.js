@@ -1,7 +1,7 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 function FBInternalOnly(elements) {
-    return process.env.FB_INTERNAL ? elements : [];
+    return process.env.FB_INTERNAL ? elements : {};
 }
 
 module.exports = {
@@ -182,13 +182,13 @@ module.exports = {
 
         ],
 
-        'FB Only': FBInternalOnly([
+        ...FBInternalOnly({'FB Only': [
             'fb/intro',
             'fb/fbcode',
             'fb/internal-fb-cluster',
             'fb/fair-cluster',
             'fb/fbcode-configerator-config-source',
             'fb/flow-launcher',
-        ]),
+        ]}),
     }
 }
