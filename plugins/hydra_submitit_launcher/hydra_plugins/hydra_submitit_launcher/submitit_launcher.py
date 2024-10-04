@@ -7,10 +7,10 @@ from typing import Any, Dict, List, Optional, Sequence
 from hydra.core.singleton import Singleton
 from hydra.core.utils import (
     JobReturn,
+    JobStatus,
     filter_overrides,
     run_job,
     setup_globals,
-    JobStatus,
 )
 from hydra.plugins.launcher import Launcher
 from hydra.types import HydraContext, TaskFunction
