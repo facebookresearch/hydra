@@ -5,7 +5,13 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence
 
 from hydra.core.singleton import Singleton
-from hydra.core.utils import JobReturn, filter_overrides, run_job, setup_globals
+from hydra.core.utils import (
+    JobReturn,
+    filter_overrides,
+    run_job,
+    setup_globals,
+    JobStatus,
+)
 from hydra.plugins.launcher import Launcher
 from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf, open_dict
@@ -19,6 +25,7 @@ class BaseSubmititLauncher(Launcher):
     _EXECUTOR = "abstract"
 
     def __init__(self, **params: Any) -> None:
+        self.no_block = params.pop("no_block", False)
         self.params = {}
         for k, v in params.items():
             if OmegaConf.is_config(v):
@@ -142,7 +149,12 @@ class BaseSubmititLauncher(Launcher):
             )
 
         jobs = executor.map_array(self, *zip(*job_params))
-        return [j.results()[0] for j in jobs]
+
+        if self.no_block:
+            sentinal = JobReturn(status=JobStatus.COMPLETED, _return_value=None)
+            return [sentinal] * num_jobs
+        else:
+            return [j.results()[0] for j in jobs]
 
 
 class LocalLauncher(BaseSubmititLauncher):
