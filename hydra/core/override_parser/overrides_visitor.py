@@ -18,6 +18,7 @@ from hydra.core.override_parser.types import (
     Glob,
     IntervalSweep,
     Key,
+    ListExtensionOverrideValue,
     Override,
     OverrideType,
     ParsedElementType,
@@ -190,6 +191,13 @@ class HydraOverrideVisitor(OverrideParserVisitor):
                     value_type = ValueType.RANGE_SWEEP
                 else:
                     value_type = ValueType.ELEMENT
+                    if isinstance(value, ListExtensionOverrideValue):
+                        if not override_type == OverrideType.CHANGE:
+                            raise HydraException(
+                                "Trying to use override symbols when extending a list"
+                            )
+                        override_type = OverrideType.EXTEND_LIST
+                        value = value.values
 
         return Override(
             type=override_type,

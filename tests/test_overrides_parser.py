@@ -21,6 +21,7 @@ from hydra.core.override_parser.types import (
     Glob,
     IntervalSweep,
     Key,
+    ListExtensionOverrideValue,
     Override,
     OverrideType,
     Quote,
@@ -173,6 +174,21 @@ def test_element(value: str, expected: Any) -> None:
             "shuffle(choice(1,2,3))",
             ChoiceSweep(list=[1, 2, 3], shuffle=True),
             id="shuffle(choice(1,2,3))",
+        ),
+        param(
+            "extend_list(1,2,three)",
+            ListExtensionOverrideValue(values=[1, 2, "three"]),
+            id="extend_list(1,2,three)",
+        ),
+        param(
+            "extend_list('5')",
+            ListExtensionOverrideValue(values=["5"]),
+            id="extend_list('5')",
+        ),
+        param(
+            "extend_list([1,2,3], {a:1, b:2})",
+            ListExtensionOverrideValue(values=[[1, 2, 3], {"a": 1, "b": 2}]),
+            id="extend_list([1,2,3], {a:1, b:2})",
         ),
     ],
 )
@@ -522,6 +538,15 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "$foo/bar=foobar",
             raises(HydraException, match=re.escape("mismatched input '/'")),
             id="error:dollar_in_group",
+        ),
+        param(
+            "override",
+            "+key=extend_list(foobar)",
+            raises(
+                HydraException,
+                match=re.escape("Trying to use override symbols when extending a list"),
+            ),
+            id="error:plus_in_extend_list_key",
         ),
     ],
 )
@@ -995,6 +1020,38 @@ def test_override(
         value_type=expected_value_type,
     )
     assert ret == expected
+
+
+@mark.parametrize(
+    "value,expected_key,expected_value",
+    [
+        param(
+            "key=extend_list([1,2])",
+            "key",
+            [[1, 2]],
+            id="extend_list_of_list",
+        ),
+        param(
+            "key=extend_list(1,2,3)",
+            "key",
+            [1, 2, 3],
+            id="extend_list_with_multiple_vals",
+        ),
+    ],
+)
+def test_list_extend_override(
+    value: str,
+    expected_key: str,
+    expected_value: Any,
+) -> None:
+    test_override(
+        "",
+        value,
+        OverrideType.EXTEND_LIST,
+        expected_key,
+        expected_value,
+        ValueType.ELEMENT,
+    )
 
 
 def test_deprecated_name_package(hydra_restore_singletons: Any) -> None:

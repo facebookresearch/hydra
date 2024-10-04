@@ -41,6 +41,17 @@ ValueError while evaluating 'choice()': empty choice is not legal""",
             id="empty choice",
         ),
         param(
+            "+key=extend_list(1, 2, 3)",
+            """Error parsing override '+key=extend_list(1, 2, 3)'
+Trying to use override symbols when extending a list""",
+            id="plus key extend_list",
+        ),
+        param(
+            "key={inner_key=extend_list(1, 2, 3)}",
+            "no viable alternative at input '{inner_key='",
+            id="embedded extend_list",
+        ),
+        param(
             ["+key=choice(choice(a,b))", "-m"],
             """Error parsing override '+key=choice(choice(a,b))'
 ValueError while evaluating 'choice(choice(a,b))': nesting choices is not supported

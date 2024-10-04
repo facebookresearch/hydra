@@ -385,6 +385,15 @@ class ConfigLoaderImpl(ConfigLoader):
                         )
                 elif override.is_force_add():
                     OmegaConf.update(cfg, key, value, merge=True, force_add=True)
+                elif override.is_list_extend():
+                    config_val = OmegaConf.select(cfg, key, throw_on_missing=True)
+                    if not OmegaConf.is_list(config_val):
+                        raise ConfigCompositionException(
+                            "Could not append to config list. The existing value of"
+                            f" '{override.key_or_group}' is {config_val} which is not"
+                            f" a list."
+                        )
+                    config_val.extend(value)
                 else:
                     try:
                         OmegaConf.update(cfg, key, value, merge=True)

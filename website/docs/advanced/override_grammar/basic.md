@@ -236,6 +236,8 @@ foo=[1,2,3]
 nested=[a,[b,[c]]]
 ```
 
+Lists are assigned, not merged. To extend an existing list, use the [`extend_list` function](extended.md#extending-lists).
+
 ### Dictionaries
 ```python
 foo={a:10,b:20}
