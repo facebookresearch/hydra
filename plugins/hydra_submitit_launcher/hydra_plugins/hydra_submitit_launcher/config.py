@@ -28,6 +28,11 @@ class BaseQueueConf:
     # redirect stderr to stdout
     stderr_to_stdout: bool = False
 
+    # If True, the launcher will not wait for the job to finish (useful for very long runs)
+    # This value is not passed to submitit, it is used by the launcher itself. When enabled,
+    # a set of sentinel values are returned to the sweeper to indicate that the job is running.
+    no_block: bool = False
+
 
 @dataclass
 class SlurmQueueConf(BaseQueueConf):
