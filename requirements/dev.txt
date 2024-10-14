@@ -1,6 +1,6 @@
 -r requirements.txt
 bandit
-black==24.2.0
+black==24.3.0
 build
 coverage
 flake8==6.0.0
