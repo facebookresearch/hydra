@@ -124,4 +124,5 @@ def create_functions() -> Functions:
     functions.register(name="sort", func=grammar_functions.sort)
     functions.register(name="shuffle", func=grammar_functions.shuffle)
     functions.register(name="glob", func=grammar_functions.glob)
+    functions.register(name="extend_list", func=grammar_functions.extend_list)
     return functions
