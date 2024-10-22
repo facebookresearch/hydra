@@ -151,8 +151,8 @@ class BaseSubmititLauncher(Launcher):
         jobs = executor.map_array(self, *zip(*job_params))
 
         if self.no_block:
-            sentinal = JobReturn(status=JobStatus.COMPLETED, _return_value=None)
-            return [sentinal] * num_jobs
+            sentinel = JobReturn(status=JobStatus.COMPLETED, _return_value=None)
+            return [sentinel] * num_jobs
         else:
             return [j.results()[0] for j in jobs]
 
