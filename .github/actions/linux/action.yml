@@ -5,7 +5,6 @@ inputs:
 runs:
   using: composite
   steps:
-  - uses: actions/checkout@v4.1.0
   - name: Preparing environment - Conda
     run: |-
       curl -o Miniconda3-py38_4.8.3-Linux-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-py38_4.8.3-Linux-x86_64.sh

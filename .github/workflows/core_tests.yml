@@ -1,35 +1,8 @@
 name: facebookresearch/hydra/core_tests
 on:
-  workflow_dispatch:
-    inputs:
-      plugin_test:
-        required: true
-      test_plugins:
-        required: true
-      cache_key_version:
-        required: false
-        default: v1
-env:
-  AWS_ACCESS_KEY_ID: xxxxXT3Z
-  AWS_DEFAULT_REGION: xxxxst-2
-  AWS_SECRET_ACCESS_KEY: xxxxGsxB
-  CIRCLECI_TOKEN: xxxxed79
-  INSTANCE_ROLE_ARN: xxxxr-v1
+  push
 jobs:
-  trigger_plugin_pipelines:
-    if: ${{ !(${{ inputs.plugin_test }}) }}
-    runs-on: ubuntu-latest
-    container:
-      image: python:3.8
-    steps:
-    - uses: "./.github/actions/early_return_for_forked_pull_requests"
-    - uses: actions/checkout@v4.1.0
-    - name: Kick off Plugin tests
-      run: |-
-        python tools/ci/circleci_pipeline.py
-        echo "Done kicking off plugin tests."
   test_macos:
-    if: ${{ !(${{ inputs.plugin_test }}) }}
     runs-on: macos-latest
     strategy:
       matrix:
@@ -40,28 +13,19 @@ jobs:
         - '3.11'
     steps:
     - uses: actions/checkout@v4.1.0
-    - uses: maxim-lobanov/setup-xcode@v1.6.0
-      with:
-        xcode-version: 13.4.1
     - uses: "./.github/actions/macos"
       with:
         py_version: "${{ matrix.py_version }}"
     - name: Testing Hydra
       run: |-
+        source $HOME/.bash_profile
         export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
         conda activate hydra
         pip install nox dataclasses --progress-bar off
-        if [ -n "${{ github.event.number }}" ]; then
           nox -s lint test_tools test_core \
             test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
-        else
-          nox -s lint test_tools test_core test_jupyter_notebooks -ts
-        fi
   test_linux:
-    if: ${{ !(${{ inputs.plugin_test }}) }}
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu
     strategy:
       matrix:
         py_version:
@@ -79,15 +43,10 @@ jobs:
         export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
         export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
         pip install nox dataclasses --progress-bar off
-        if [ -n "${{ github.event.number }}" ]; then
-          nox -s lint test_tools test_core \
-            test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
-        else
-          nox -s lint test_tools test_core test_jupyter_notebooks -ts
-        fi
+        nox -s lint test_tools test_core \
+          test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
   test_win:
-    if: ${{ !(${{ inputs.plugin_test }}) }}
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     strategy:
       matrix:
         py_version:
@@ -96,25 +55,18 @@ jobs:
         - '3.10'
         - '3.11'
     steps:
-#     # This item has no matching transformer
-#     - circleci_windows_:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/windows"
     - name: Testing Hydra
       run: |-
-        $env:NOX_PYTHON_VERSIONS="${{ matrix.py_version }}"
-        $env:ConEmuDefaultCp=65001
-        $env:PYTHONIOENCODING="utf_8"
-        conda activate hydra
-        If ($env:${{ github.event.number }}) {
-          nox -s lint test_tools test_core test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
-        } else {
-          nox -s lint test_tools test_core test_jupyter_notebooks -ts
-        }
+        conda run -n hydra pip install nox --progress-bar off
+        set NOX_PYTHON_VERSIONS="${{ matrix.py_version }}"
+        set ConEmuDefaultCp=65001
+        set PYTHONIOENCODING="utf_8"
+        nox -s lint test_tools test_core test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
         exit $LASTEXITCODE
   test_linux_omc_dev:
-    if: ${{ !(${{ inputs.plugin_test }}) }}
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu
     strategy:
       matrix:
         py_version:
