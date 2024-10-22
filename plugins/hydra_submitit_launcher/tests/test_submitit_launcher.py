@@ -61,3 +61,16 @@ def test_example(tmpdir: Path) -> None:
         ],
         allow_warnings=True,
     )
+
+
+def test_example_no_block(tmpdir: Path) -> None:
+    run_python_script(
+        [
+            "example/my_app.py",
+            "-m",
+            f"hydra.sweep.dir={tmpdir}",
+            "hydra/launcher=submitit_local",
+            "hydra.launcher.no_block=True",
+        ],
+        allow_warnings=True,
+    )
