@@ -3,17 +3,17 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any, List
 
-from omegaconf import OmegaConf
-from pytest import mark, param
-
 from hydra.test_utils.test_utils import (
-    TTaskRunner,
     assert_text_same,
     chdir_hydra_root,
     run_python_script,
     run_with_error,
+    TTaskRunner,
     verify_dir_outputs,
 )
+
+from omegaconf import OmegaConf
+from pytest import mark, param
 
 chdir_hydra_root()
 
@@ -39,7 +39,7 @@ def test_specializing_config_example(
 def test_write_protect_config_node(tmpdir: Any) -> None:
     cmd = [
         "examples/patterns/write_protect_config_node/frozen.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "data_bits=10",
     ]
@@ -71,7 +71,7 @@ def test_extending_configs(
     monkeypatch.chdir("examples/patterns/extending_configs")
     cmd = [
         "my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)
@@ -112,7 +112,7 @@ def test_configuring_experiments(
     monkeypatch.chdir("examples/patterns/configuring_experiments")
     cmd = [
         "my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)
@@ -183,7 +183,7 @@ def test_multi_select(
     monkeypatch.chdir("examples/patterns/multi-select")
     cmd = [
         "my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)

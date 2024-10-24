@@ -3,14 +3,14 @@ import re
 from pathlib import Path
 from typing import List, Optional
 
-from omegaconf import OmegaConf
-from pytest import mark
-
 from hydra.test_utils.test_utils import (
     chdir_hydra_root,
     run_python_script,
     run_with_error,
 )
+
+from omegaconf import OmegaConf
+from pytest import mark
 
 chdir_hydra_root()
 
@@ -36,7 +36,7 @@ def test_config_search_path(
 ) -> None:
     cmd = [
         "examples/advanced/config_search_path/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     cmd.extend(args)
