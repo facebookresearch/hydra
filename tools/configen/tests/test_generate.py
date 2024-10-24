@@ -1,36 +1,36 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
-from textwrap import dedent
 
 from difflib import unified_diff
 from pathlib import Path
+from textwrap import dedent
 from typing import Any
 
-from pytest import mark, param
-
-from hydra.utils import get_class, instantiate, ConvertMode
-from omegaconf import OmegaConf
-
-from configen.config import ConfigenConf, ModuleConf, Flags
+from configen.config import ConfigenConf, Flags, ModuleConf
 from configen.configen import generate_module
 from hydra.test_utils.test_utils import chdir_hydra_root, run_python_script
+
+from hydra.utils import ConvertMode, get_class, instantiate
+from omegaconf import OmegaConf
+
+from pytest import mark, param
 from tests.test_modules import (
-    User,
     Color,
-    Empty,
-    UntypedArg,
-    IntArg,
-    UnionArg,
-    WithLibraryClassArg,
-    LibraryClass,
-    IncompatibleDataclassArg,
-    IncompatibleDataclass,
-    WithStringDefault,
-    WithUntypedStringDefault,
-    ListValues,
     DictValues,
+    Empty,
+    IncompatibleDataclass,
+    IncompatibleDataclassArg,
+    IntArg,
+    LibraryClass,
+    ListValues,
     PeskySentinelUsage,
     Tuples,
+    UnionArg,
+    UntypedArg,
+    User,
+    WithLibraryClassArg,
+    WithStringDefault,
+    WithUntypedStringDefault,
 )
 
 from tests.test_modules.generated import PeskySentinelUsageConf
@@ -288,7 +288,7 @@ def test_example_application(monkeypatch: Any, tmpdir: Path):
     monkeypatch.chdir("example")
     cmd = [
         "my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
         "user.name=Batman",
     ]

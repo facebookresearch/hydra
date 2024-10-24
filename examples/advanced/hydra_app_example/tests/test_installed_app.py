@@ -16,7 +16,7 @@ class TestAppOutput:
                 [
                     sys.executable,
                     "hydra_app/main.py",
-                    f"hydra.run.dir={tmpdir}",
+                    f'hydra.run.dir="{tmpdir}"',
                     "app.user=test_user",
                 ]
             )
@@ -26,7 +26,7 @@ class TestAppOutput:
     def test_installed_run(self, tmpdir: str) -> None:
         self.verify_output(
             subprocess.check_output(
-                ["hydra_app", f"hydra.run.dir={tmpdir}", "app.user=test_user"]
+                ["hydra_app", f'hydra.run.dir="{tmpdir}"', "app.user=test_user"]
             )
         )
 

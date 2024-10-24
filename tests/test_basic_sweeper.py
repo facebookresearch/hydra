@@ -4,11 +4,11 @@ import sys
 from textwrap import dedent
 from typing import Any, List, Optional
 
-from pytest import mark, param
-
 from hydra._internal.core_plugins.basic_sweeper import BasicSweeper
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.test_utils.test_utils import assert_multiline_regex_search, run_process
+
+from pytest import mark, param
 
 
 @mark.parametrize(
@@ -70,7 +70,7 @@ def test_partial_failure(
         "tests/test_apps/app_can_fail/my_app.py",
         "--multirun",
         "+divisor=1,0",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
     ]
