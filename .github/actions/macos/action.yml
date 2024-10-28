@@ -1,0 +1,49 @@
+name: macos
+inputs:
+  py_version:
+    required: false
+runs:
+  using: composite
+  steps:
+  - name: restore_cache
+    uses: actions/cache@v3.3.2
+    with:
+      key: "-${{ inputs.cache_key_version }}-macos-sys-{{ .Branch }}-${{ inputs.py_version }}"
+      path: |-
+        ~/miniconda3
+        ~/Library/Caches/Homebrew
+  - uses: maxim-lobanov/setup-xcode@v1.6.0
+    with:
+      xcode-version: latest-stable
+  - name: Preparing environment - Conda
+    run: |-
+      if [[ -f ~/miniconda3/LICENSE.txt ]] ; then
+        echo "miniconda installed already."
+      else
+        curl -o Miniconda3-py39_24.5.0-0-MacOSX-arm64.sh https://repo.anaconda.com/miniconda/Miniconda3-py39_24.5.0-0-MacOSX-arm64.sh
+        bash ./Miniconda3-py39_24.5.0-0-MacOSX-arm64.sh -b
+      fi
+      ~/miniconda3/bin/conda init bash
+    shell: bash
+  - name: Preparing environment - Brew
+    run: |-
+      brew update
+      brew upgrade git
+      brew install fish
+      brew install zsh
+      brew cleanup
+    shell: bash
+  - name: Preparing environment - Hydra
+    run: |-
+      source $HOME/.bash_profile
+      echo $PATH
+      conda create -n hydra python=${{ inputs.py_version }} -yqc conda-forge
+      conda run -n hydra pip install nox --progress-bar off
+    shell: bash
+  - name: save_cache
+    uses: actions/cache@v3.3.2
+    with:
+      path: |-
+        ~/miniconda3
+        ~/Library/Caches/Homebrew
+      key: "-${{ inputs.cache_key_version }}-macos-sys-{{ .Branch }}-${{ inputs.py_version }}"

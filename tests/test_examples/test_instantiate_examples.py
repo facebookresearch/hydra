@@ -24,7 +24,7 @@ chdir_hydra_root()
 def test_instantiate_object(tmpdir: Path, overrides: List[str], output: str) -> None:
     cmd = [
         "examples/instantiate/object/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)
@@ -46,7 +46,7 @@ def test_instantiate_object_recursive(
 ) -> None:
     cmd = [
         "examples/instantiate/object_recursive/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)
@@ -56,7 +56,7 @@ def test_instantiate_object_recursive(
 def test_instantiate_object_partial(tmpdir: Path) -> None:
     cmd = [
         "examples/instantiate/partial/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
@@ -73,7 +73,7 @@ def test_instantiate_object_partial(tmpdir: Path) -> None:
 def test_instantiate_schema(tmpdir: Path, overrides: List[str], output: str) -> None:
     cmd = [
         "examples/instantiate/schema/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)
@@ -102,7 +102,7 @@ def test_instantiate_schema_recursive(
 ) -> None:
     cmd = [
         "examples/instantiate/schema_recursive/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)
@@ -141,7 +141,7 @@ def test_instantiate_docs_example(
 ) -> None:
     cmd = [
         "examples/instantiate/docs_example/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ] + overrides
     result, _err = run_python_script(cmd)

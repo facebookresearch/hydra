@@ -69,7 +69,7 @@ class TaskTestFunction:
             self.temp_dir = tempfile.mkdtemp()
             overrides = copy.deepcopy(self.overrides)
             assert overrides is not None
-            overrides.append(f"hydra.run.dir={self.temp_dir}")
+            overrides.append(f'hydra.run.dir="{self.temp_dir}"')
             self.job_ret = self.hydra.run(
                 config_name=self.config_name,
                 task_function=self,

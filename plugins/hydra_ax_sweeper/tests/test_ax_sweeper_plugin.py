@@ -216,7 +216,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
     cmd = [
         "tests/apps/polynomial.py",
         "-m",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "polynomial.x=interval(-5, -2)",
         "polynomial.z=10",
@@ -239,7 +239,7 @@ def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: List[str]) -> 
     cmd = [
         "tests/apps/polynomial.py",
         "-m",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + cmd_args
@@ -260,7 +260,7 @@ def test_search_space_with_constraint_metric(tmpdir: Path, cmd_args: List[str]) 
     cmd = [
         "tests/apps/polynomial_with_constraint.py",
         "-m",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + cmd_args
@@ -294,7 +294,7 @@ def test_jobs_using_choice_between_lists(
     cmd = [
         "tests/apps/polynomial_with_list_coefficients.py",
         "-m",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
@@ -331,7 +331,7 @@ def test_jobs_using_choice_between_dicts(
     cmd = [
         "tests/apps/polynomial_with_dict_coefficients.py",
         "-m",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
@@ -345,7 +345,7 @@ def test_example_app(tmpdir: Path) -> None:
     cmd = [
         "example/banana.py",
         "-m",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "banana.x=int(interval(-5, 5))",
         "banana.y=interval(-5, 10.1)",

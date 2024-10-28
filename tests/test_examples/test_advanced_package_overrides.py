@@ -11,7 +11,7 @@ chdir_hydra_root()
 def test_advanced_package_override_simple(tmpdir: Path) -> None:
     cmd = [
         "examples/advanced/package_overrides/simple.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
@@ -23,7 +23,7 @@ def test_advanced_package_override_simple(tmpdir: Path) -> None:
 def test_advanced_package_override_two_packages(tmpdir: Path) -> None:
     cmd = [
         "examples/advanced/package_overrides/two_packages.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)

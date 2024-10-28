@@ -16,7 +16,7 @@ def test_custom_help(tmpdir: Path) -> None:
     result, _err = run_python_script(
         [
             "examples/configure_hydra/custom_help/my_app.py",
-            "hydra.run.dir=" + str(tmpdir),
+            f'hydra.run.dir="{str(tmpdir)}"',
             "hydra.job.chdir=True",
             "--help",
         ]
@@ -55,7 +55,7 @@ def test_custom_help(tmpdir: Path) -> None:
 def test_job_name_no_config_override(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/job_name/no_config_file_override.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
@@ -65,7 +65,7 @@ def test_job_name_no_config_override(tmpdir: Path) -> None:
 def test_job_name_with_config_override(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/job_name/with_config_file_override.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
@@ -90,7 +90,7 @@ def test_job_override_dirname(tmpdir: Path) -> None:
 def test_logging(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/logging/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
@@ -100,7 +100,7 @@ def test_logging(tmpdir: Path) -> None:
 def test_disabling_logging(tmpdir: Path) -> None:
     cmd = [
         "examples/configure_hydra/logging/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "hydra/job_logging=none",
         "hydra/hydra_logging=none",

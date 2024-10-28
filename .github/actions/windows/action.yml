@@ -1,0 +1,16 @@
+name: windows
+inputs:
+  py_version:
+    required: true
+runs:
+  using: composite
+  steps:
+  - uses: conda-incubator/setup-miniconda@v3
+    with:
+      miniconda-version: "latest"
+      python-version: ${{ inputs.py_version }}
+      activate-environment: hydra
+  - uses: actions/setup-java@v4
+    with:
+      distribution: 'microsoft'
+      java-version: '21'

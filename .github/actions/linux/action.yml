@@ -1,0 +1,22 @@
+name: linux
+inputs:
+  py_version:
+    required: false
+runs:
+  using: composite
+  steps:
+  - name: Preparing environment - Conda
+    run: |-
+      curl -o Miniconda3-py38_4.8.3-Linux-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-py38_4.8.3-Linux-x86_64.sh
+      bash ./Miniconda3-py38_4.8.3-Linux-x86_64.sh -b
+    shell: bash
+  - name: Preparing environment - Other dependency
+    run: |-
+      sudo apt-get update
+      sudo apt-get install -y expect fish zsh openjdk-11-jre rsync
+    shell: bash
+  - name: Preparing environment - Hydra
+    run: |-
+      ~/miniconda3/bin/conda init bash
+      ~/miniconda3/bin/conda create -n hydra python=${{ inputs.py_version }} -yqc conda-forge
+    shell: bash
