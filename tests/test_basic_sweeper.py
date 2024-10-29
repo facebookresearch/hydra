@@ -70,7 +70,7 @@ def test_partial_failure(
         "tests/test_apps/app_can_fail/my_app.py",
         "--multirun",
         "+divisor=1,0",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
     ]

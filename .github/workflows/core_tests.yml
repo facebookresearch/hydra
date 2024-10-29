@@ -1,0 +1,88 @@
+name: facebookresearch/hydra/core_tests
+on:
+  push
+jobs:
+  test_macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        py_version:
+        - '3.8'
+        - '3.9'
+        - '3.10'
+        - '3.11'
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/macos"
+      with:
+        py_version: "${{ matrix.py_version }}"
+    - name: Testing Hydra
+      run: |-
+        source $HOME/.bash_profile
+        export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
+        conda activate hydra
+        pip install nox dataclasses --progress-bar off
+          nox -s lint test_tools test_core \
+            test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+  test_linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        py_version:
+        - '3.8'
+        - '3.9'
+        - '3.10'
+        - '3.11'
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/linux"
+      with:
+        py_version: "${{ matrix.py_version }}"
+    - name: Testing Hydra
+      run: |-
+        export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+        export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
+        pip install nox dataclasses --progress-bar off
+        nox -s lint test_tools test_core \
+          test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+  test_win:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        py_version:
+        - '3.8'
+        - '3.9'
+        - '3.10'
+        - '3.11'
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/windows"
+    - name: Testing Hydra
+      run: |-
+        conda run -n hydra pip install nox --progress-bar off
+        set NOX_PYTHON_VERSIONS="${{ matrix.py_version }}"
+        set ConEmuDefaultCp=65001
+        set PYTHONIOENCODING="utf_8"
+        nox -s lint test_tools test_core test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+        exit $LASTEXITCODE
+  test_linux_omc_dev:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        py_version:
+        - '3.8'
+        - '3.9'
+        - '3.10'
+        - '3.11'
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - uses: "./.github/actions/linux"
+      with:
+        py_version: "${{ matrix.py_version }}"
+    - name: Testing Hydra
+      run: |-
+        export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+        export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
+        export USE_OMEGACONF_DEV_VERSION=1
+        pip install nox dataclasses --progress-bar off
+        nox -s test_core -ts
