@@ -143,6 +143,6 @@ def to_hydra_override_value_str(obj: Any) -> str:
             "[" + ", ".join([to_hydra_override_value_str(value) for value in obj]) + "]"
         )
     elif isinstance(obj, str):
-        new_str = obj.replace('\\"', '\\\\"').replace('"', '\\"')
+        new_str = obj.replace('\\"', '\\\\"').replace('"', '\\"').replace("\\'", "\\'")
         return f'"{new_str}"'
     return json.dumps(obj)

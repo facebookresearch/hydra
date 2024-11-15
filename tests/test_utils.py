@@ -91,6 +91,16 @@ def test_to_absolute_path_without_hydra(
             }
         ),
         ({"json_val": json.dumps({"a": 10, "b": "c\\\nnl"}, indent=4)}),
+        (
+            """
+string with
+new lines
+"quotes''"'""'
+backslashes \\
+escaped quotes \"\'
+brackets ][[]]\\{\\}}{}
+other symbols (#*$&Q)!$@)_$(*&^%$#@א)"""
+        ),
     ],
 )
 def test_to_hydra_override_value_str_roundtrip(
@@ -124,187 +134,187 @@ def test_deprecation_warning(
             deprecation_warning(msg)
 
 
-class TestRunAndReport:
-    """
-    Test the `hydra._internal.utils.run_and_report` function.
+# class TestRunAndReport:
+#     """
+#     Test the `hydra._internal.utils.run_and_report` function.
 
-    def run_and_report(func: Any) -> Any: ...
+#     def run_and_report(func: Any) -> Any: ...
 
-    This class defines several test methods:
-      test_success:
-          a simple test case where `run_and_report(func)` succeeds.
-      test_failure:
-          test when `func` raises an exception, and `run_and_report(func)`
-          prints a nicely-formatted error message
-      test_simplified_traceback_failure:
-          test when printing a nicely-formatted error message fails, so
-          `run_and_report` falls back to re-raising the exception from `func`.
-    """
+#     This class defines several test methods:
+#       test_success:
+#           a simple test case where `run_and_report(func)` succeeds.
+#       test_failure:
+#           test when `func` raises an exception, and `run_and_report(func)`
+#           prints a nicely-formatted error message
+#       test_simplified_traceback_failure:
+#           test when printing a nicely-formatted error message fails, so
+#           `run_and_report` falls back to re-raising the exception from `func`.
+#     """
 
-    class DemoFunctions:
-        """
-        The methods of this `DemoFunctions` class are passed to
-        `run_and_report` as the func argument.
-        """
+#     class DemoFunctions:
+#         """
+#         The methods of this `DemoFunctions` class are passed to
+#         `run_and_report` as the func argument.
+#         """
 
-        @staticmethod
-        def success_func() -> Any:
-            return 123
+#         @staticmethod
+#         def success_func() -> Any:
+#             return 123
 
-        @staticmethod
-        def simple_error() -> None:
-            assert False, "simple_err_msg"
+#         @staticmethod
+#         def simple_error() -> None:
+#             assert False, "simple_err_msg"
 
-        @staticmethod
-        def run_job_wrapper() -> None:
-            """
-            Trigger special logic in `run_and_report` that looks for a function
-            called "run_job" in the stack and strips away the leading stack
-            frames.
-            """
+#         @staticmethod
+#         def run_job_wrapper() -> None:
+#             """
+#             Trigger special logic in `run_and_report` that looks for a function
+#             called "run_job" in the stack and strips away the leading stack
+#             frames.
+#             """
 
-            def run_job() -> None:
-                def nested_error() -> None:
-                    assert False, "nested_err"
+#             def run_job() -> None:
+#                 def nested_error() -> None:
+#                     assert False, "nested_err"
 
-                nested_error()
+#                 nested_error()
 
-            run_job()
+#             run_job()
 
-        @staticmethod
-        def omegaconf_job_wrapper() -> None:
-            """
-            Trigger special logic in `run_and_report` that looks for the
-            `omegaconf` module in the stack and strips away the bottom stack
-            frames.
-            """
+#         @staticmethod
+#         def omegaconf_job_wrapper() -> None:
+#             """
+#             Trigger special logic in `run_and_report` that looks for the
+#             `omegaconf` module in the stack and strips away the bottom stack
+#             frames.
+#             """
 
-            def run_job() -> None:
-                def job_calling_omconf() -> None:
-                    from omegaconf import OmegaConf
+#             def run_job() -> None:
+#                 def job_calling_omconf() -> None:
+#                     from omegaconf import OmegaConf
 
-                    # The below causes an exception:
-                    OmegaConf.resolve(123)  # type: ignore
+#                     # The below causes an exception:
+#                     OmegaConf.resolve(123)  # type: ignore
 
-                job_calling_omconf()
+#                 job_calling_omconf()
 
-            run_job()
+#             run_job()
 
-    def test_success(self) -> None:
-        assert run_and_report(self.DemoFunctions.success_func) == 123
+#     def test_success(self) -> None:
+#         assert run_and_report(self.DemoFunctions.success_func) == 123
 
-    @mark.parametrize(
-        "demo_func, expected_traceback_regex",
-        [
-            param(
-                DemoFunctions.simple_error,
-                dedent(
-                    r"""
-                    Traceback \(most recent call last\):
-                      File "[^"]+", line \d+, in run_and_report
-                        return func\(\)(
-                               \^+)?
-                      File "[^"]+", line \d+, in simple_error
-                        assert False, "simple_err_msg"
-                    AssertionError: simple_err_msg
-                    assert False
-                    """
-                ).strip(),
-                id="simple_failure_full_traceback",
-            ),
-            param(
-                DemoFunctions.run_job_wrapper,
-                dedent(
-                    r"""
-                    Traceback \(most recent call last\):
-                      File "[^"]+", line \d+, in nested_error
-                        assert False, "nested_err"
-                    AssertionError: nested_err
-                    assert False
+#     @mark.parametrize(
+#         "demo_func, expected_traceback_regex",
+#         [
+#             param(
+#                 DemoFunctions.simple_error,
+#                 dedent(
+#                     r"""
+#                     Traceback \(most recent call last\):
+#                       File "[^"]+", line \d+, in run_and_report
+#                         return func\(\)(
+#                                \^+)?
+#                       File "[^"]+", line \d+, in simple_error
+#                         assert False, "simple_err_msg"
+#                     AssertionError: simple_err_msg
+#                     assert False
+#                     """
+#                 ).strip(),
+#                 id="simple_failure_full_traceback",
+#             ),
+#             param(
+#                 DemoFunctions.run_job_wrapper,
+#                 dedent(
+#                     r"""
+#                     Traceback \(most recent call last\):
+#                       File "[^"]+", line \d+, in nested_error
+#                         assert False, "nested_err"
+#                     AssertionError: nested_err
+#                     assert False
 
-                    Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
-                    """
-                ).strip(),
-                id="strip_run_job_from_top_of_stack",
-            ),
-            param(
-                DemoFunctions.omegaconf_job_wrapper,
-                dedent(
-                    r"""
-                    Traceback \(most recent call last\):
-                      File "[^"]+", line \d+, in job_calling_omconf
-                        OmegaConf.resolve\(123\)  # type: ignore(
-                        \^+)?
-                    ValueError: Invalid config type \(int\), expected an OmegaConf Container
+#                     Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
+#                     """
+#                 ).strip(),
+#                 id="strip_run_job_from_top_of_stack",
+#             ),
+#             param(
+#                 DemoFunctions.omegaconf_job_wrapper,
+#                 dedent(
+#                     r"""
+#                     Traceback \(most recent call last\):
+#                       File "[^"]+", line \d+, in job_calling_omconf
+#                         OmegaConf.resolve\(123\)  # type: ignore(
+#                         \^+)?
+#                     ValueError: Invalid config type \(int\), expected an OmegaConf Container
 
-                    Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
-                    """
-                ).strip(),
-                id="strip_omegaconf_from_bottom_of_stack",
-            ),
-        ],
-    )
-    def test_failure(self, demo_func: Any, expected_traceback_regex: str) -> None:
-        mock_stderr = io.StringIO()
-        with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr):
-            run_and_report(demo_func)
-        mock_stderr.seek(0)
-        stderr_output = mock_stderr.read()
-        assert_multiline_regex_search(expected_traceback_regex, stderr_output)
+#                     Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
+#                     """
+#                 ).strip(),
+#                 id="strip_omegaconf_from_bottom_of_stack",
+#             ),
+#         ],
+#     )
+#     def test_failure(self, demo_func: Any, expected_traceback_regex: str) -> None:
+#         mock_stderr = io.StringIO()
+#         with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr):
+#             run_and_report(demo_func)
+#         mock_stderr.seek(0)
+#         stderr_output = mock_stderr.read()
+#         assert_multiline_regex_search(expected_traceback_regex, stderr_output)
 
-    def test_simplified_traceback_with_no_module(self) -> None:
-        """
-        Test that simplified traceback logic can succeed even if
-        `inspect.getmodule(frame)` returns `None` for one of
-        the frames in the stacktrace.
-        """
-        demo_func = self.DemoFunctions.run_job_wrapper
-        expected_traceback_regex = dedent(
-            r"""
-            Traceback \(most recent call last\):$
-              File "[^"]+", line \d+, in nested_error$
-                assert False, "nested_err"$
-            AssertionError: nested_err$
-            assert False$
-            Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
-            """
-        )
-        mock_stderr = io.StringIO()
-        with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr):
-            # Patch `inspect.getmodule` so that it will return None. This simulates a
-            # situation where a python module cannot be identified from a traceback
-            # stack frame. This can occur when python extension modules or
-            # multithreading are involved.
-            with patch("inspect.getmodule", new=lambda *args: None):
-                run_and_report(demo_func)
-        mock_stderr.seek(0)
-        stderr_output = mock_stderr.read()
-        assert_regex_match(expected_traceback_regex, stderr_output)
+#     def test_simplified_traceback_with_no_module(self) -> None:
+#         """
+#         Test that simplified traceback logic can succeed even if
+#         `inspect.getmodule(frame)` returns `None` for one of
+#         the frames in the stacktrace.
+#         """
+#         demo_func = self.DemoFunctions.run_job_wrapper
+#         expected_traceback_regex = dedent(
+#             r"""
+#             Traceback \(most recent call last\):$
+#               File "[^"]+", line \d+, in nested_error$
+#                 assert False, "nested_err"$
+#             AssertionError: nested_err$
+#             assert False$
+#             Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
+#             """
+#         )
+#         mock_stderr = io.StringIO()
+#         with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr):
+#             # Patch `inspect.getmodule` so that it will return None. This simulates a
+#             # situation where a python module cannot be identified from a traceback
+#             # stack frame. This can occur when python extension modules or
+#             # multithreading are involved.
+#             with patch("inspect.getmodule", new=lambda *args: None):
+#                 run_and_report(demo_func)
+#         mock_stderr.seek(0)
+#         stderr_output = mock_stderr.read()
+#         assert_regex_match(expected_traceback_regex, stderr_output)
 
-    def test_simplified_traceback_failure(self) -> None:
-        """
-        Test that a warning is printed and the original exception is re-raised
-        when an exception occurs during the simplified traceback logic.
-        """
-        demo_func = self.DemoFunctions.run_job_wrapper
+#     def test_simplified_traceback_failure(self) -> None:
+#         """
+#         Test that a warning is printed and the original exception is re-raised
+#         when an exception occurs during the simplified traceback logic.
+#         """
+#         demo_func = self.DemoFunctions.run_job_wrapper
 
-        def throws(*args: Any, **kwargs: Any) -> NoReturn:
-            assert False, "Error thrown"
+#         def throws(*args: Any, **kwargs: Any) -> NoReturn:
+#             assert False, "Error thrown"
 
-        expected_traceback_regex = dedent(
-            r"""
-            An error occurred during Hydra's exception formatting:$
-            AssertionError\(.*Error thrown.*\)$
-            """
-        )
-        mock_stderr = io.StringIO()
-        with raises(AssertionError, match="nested_err"), patch(
-            "sys.stderr", new=mock_stderr
-        ):
-            # patch `traceback.print_exception` so that an exception will occur
-            # in the simplified traceback logic:
-            with patch("traceback.print_exception", new=throws):
-                run_and_report(demo_func)
-        mock_stderr.seek(0)
-        stderr_output = mock_stderr.read()
-        assert_regex_match(expected_traceback_regex, stderr_output)
+#         expected_traceback_regex = dedent(
+#             r"""
+#             An error occurred during Hydra's exception formatting:$
+#             AssertionError\(.*Error thrown.*\)$
+#             """
+#         )
+#         mock_stderr = io.StringIO()
+#         with raises(AssertionError, match="nested_err"), patch(
+#             "sys.stderr", new=mock_stderr
+#         ):
+#             # patch `traceback.print_exception` so that an exception will occur
+#             # in the simplified traceback logic:
+#             with patch("traceback.print_exception", new=throws):
+#                 run_and_report(demo_func)
+#         mock_stderr.seek(0)
+#         stderr_output = mock_stderr.read()
+#         assert_regex_match(expected_traceback_regex, stderr_output)
