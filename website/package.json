@@ -30,6 +30,7 @@
     "micromatch": "^4.0.8",
     "path-to-regexp": "^1.9.0",
     "postcss": "^8.4.31",
+    "react-live": "^3.2.0",
     "send": "^0.19.0",
     "serve-static": "^1.16.2",
     "webpack": "^5.94",
