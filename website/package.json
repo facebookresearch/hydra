@@ -24,6 +24,7 @@
     "axios": "^0.28.0",
     "body-parser": "^1.20.3",
     "cookie": "^1.0.1",
+    "cross-spawn": "^7.0.5",
     "express": "^4.21.1",
     "follow-redirects": "^1.15.6",
     "ip": "^2.0.1",
