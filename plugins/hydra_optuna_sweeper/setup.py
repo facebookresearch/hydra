@@ -28,8 +28,8 @@ setup(
     install_requires=[
         "hydra-core>=1.1.0.dev7",
         "optuna>=3.6.0",
-        "sqlalchemy",
         "torch",
+        "scipy",
     ],
     include_package_data=True,
 )
