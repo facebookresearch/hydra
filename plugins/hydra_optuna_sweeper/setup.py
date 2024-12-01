@@ -27,8 +27,9 @@ setup(
     ],
     install_requires=[
         "hydra-core>=1.1.0.dev7",
-        "optuna>=2.10.0,<3.0.0",
-        "sqlalchemy~=1.3.0",  # TODO: Unpin when upgrading to optuna v3.0
+        "optuna>=3.6.0",
+        "sqlalchemy",
+        "torch",
     ],
     include_package_data=True,
 )

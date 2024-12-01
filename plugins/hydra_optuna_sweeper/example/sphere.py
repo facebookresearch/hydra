@@ -2,6 +2,11 @@
 import hydra
 from omegaconf import DictConfig
 
+import warnings
+from optuna.exceptions import ExperimentalWarning
+
+warnings.filterwarnings("ignore", category=ExperimentalWarning)
+
 
 @hydra.main(version_base=None, config_path="conf", config_name="config")
 def sphere(cfg: DictConfig) -> float:
