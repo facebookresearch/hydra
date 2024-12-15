@@ -28,8 +28,7 @@ class ConfigStoreWithProvider:
             group=group, name=name, node=node, package=package, provider=self.provider
         )
 
-    def __exit__(self, exc_type: Any, exc_value: Any, exc_traceback: Any) -> Any:
-        ...
+    def __exit__(self, exc_type: Any, exc_value: Any, exc_traceback: Any) -> Any: ...
 
 
 @dataclass

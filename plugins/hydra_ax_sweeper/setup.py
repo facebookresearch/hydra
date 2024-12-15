@@ -17,7 +17,6 @@ setup(
     packages=find_namespace_packages(include=["hydra_plugins.*"]),
     classifiers=[
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -30,6 +29,8 @@ setup(
         "ax-platform>=0.1.20,<0.2.1",  # https://github.com/facebookresearch/hydra/issues/1767
         "torch",
         "gpytorch<=1.8.1",  # avoid deprecation warnings. This can probably be removed when ax-platform is unpinned.
+        "pandas<1.5.0",  # https://github.com/facebook/Ax/issues/1153, unpin when upgrading ax to >=0.2.8
+        "numpy<1.25.0",  # same as above, silences deprecation from np.find_common_type for pandas <1.5
     ],
     include_package_data=True,
 )

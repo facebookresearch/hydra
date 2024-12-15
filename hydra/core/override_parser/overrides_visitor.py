@@ -3,9 +3,13 @@ import sys
 import warnings
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from antlr4 import ParserRuleContext, TerminalNode, Token
-from antlr4.error.ErrorListener import ErrorListener
-from antlr4.tree.Tree import TerminalNodeImpl
+from omegaconf.vendor.antlr4 import (  # type: ignore[attr-defined]
+    ParserRuleContext,
+    TerminalNode,
+    Token,
+)
+from omegaconf.vendor.antlr4.error.ErrorListener import ErrorListener
+from omegaconf.vendor.antlr4.tree.Tree import TerminalNodeImpl
 
 from hydra._internal.grammar.functions import FunctionCall, Functions
 from hydra._internal.grammar.utils import _ESC_QUOTED_STR
@@ -14,6 +18,7 @@ from hydra.core.override_parser.types import (
     Glob,
     IntervalSweep,
     Key,
+    ListExtensionOverrideValue,
     Override,
     OverrideType,
     ParsedElementType,
@@ -162,7 +167,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):
         if (
             override_type == OverrideType.DEL
             and isinstance(eq_node, TerminalNode)
-            and eq_node.symbol.type == Token.EOF
+            and eq_node.symbol.type == Token.EOF  # type: ignore[attr-defined]
         ):
             value = None
             value_type = None
@@ -186,6 +191,13 @@ class HydraOverrideVisitor(OverrideParserVisitor):
                     value_type = ValueType.RANGE_SWEEP
                 else:
                     value_type = ValueType.ELEMENT
+                    if isinstance(value, ListExtensionOverrideValue):
+                        if not override_type == OverrideType.CHANGE:
+                            raise HydraException(
+                                "Trying to use override symbols when extending a list"
+                            )
+                        override_type = OverrideType.EXTEND_LIST
+                        value = value.values
 
         return Override(
             type=override_type,
@@ -244,26 +256,26 @@ class HydraOverrideVisitor(OverrideParserVisitor):
             ) from e
 
     def _createPrimitive(
-        self, ctx: ParserRuleContext
+        self, ctx: ParserRuleContext  # type: ignore[valid-type]
     ) -> Optional[Union[QuotedString, int, bool, float, str]]:
         ret: Optional[Union[int, bool, float, str]]
         first_idx = 0
-        last_idx = ctx.getChildCount()
+        last_idx = ctx.getChildCount()  # type: ignore[attr-defined]
         # skip first if whitespace
-        if self.is_ws(ctx.getChild(0)):
+        if self.is_ws(ctx.getChild(0)):  # type: ignore[attr-defined]
             if last_idx == 1:
                 # Only whitespaces => this is not allowed.
                 raise HydraException(
                     "Trying to parse a primitive that is all whitespaces"
                 )
             first_idx = 1
-        if self.is_ws(ctx.getChild(-1)):
+        if self.is_ws(ctx.getChild(-1)):  # type: ignore[attr-defined]
             last_idx = last_idx - 1
         num = last_idx - first_idx
         if num > 1:
             # Concatenate, while un-escaping as needed.
             tokens = []
-            for i, n in enumerate(ctx.getChildren()):
+            for i, n in enumerate(ctx.getChildren()):  # type: ignore[attr-defined]
                 if n.symbol.type == OverrideLexer.WS and (
                     i < first_idx or i >= last_idx
                 ):
@@ -276,7 +288,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):
                 )
             ret = "".join(tokens)
         else:
-            node = ctx.getChild(first_idx)
+            node = ctx.getChild(first_idx)  # type: ignore[attr-defined]
             if node.symbol.type == OverrideLexer.QUOTED_VALUE:
                 text = node.getText()
                 qc = text[0]
@@ -360,7 +372,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):
         return "".join(tokens)
 
 
-class HydraErrorListener(ErrorListener):  # type: ignore
+class HydraErrorListener(ErrorListener):
     def syntaxError(
         self,
         recognizer: Any,

@@ -6,8 +6,7 @@ from hydra.utils import instantiate
 
 
 class DBConnection:
-    def connect(self) -> None:
-        ...
+    def connect(self) -> None: ...
 
 
 class MySQLConnection(DBConnection):

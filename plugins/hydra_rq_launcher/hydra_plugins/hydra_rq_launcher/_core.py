@@ -19,7 +19,7 @@ from hydra.core.utils import (
 from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf, open_dict
 from redis import Redis
-from rq import Queue  # type: ignore
+from rq import Queue
 
 from .rq_launcher import RQLauncher
 

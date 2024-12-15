@@ -24,7 +24,7 @@ from omegaconf import DictConfig, OmegaConf
 
 def _run_command(command: str) -> str:
     print(f"{str(datetime.now())} - Running: {command}")
-    output = subprocess.getoutput(command)
+    output = subprocess.getoutput(command)  # nosec B605
     print(f"{str(datetime.now())} - {output}")
     return output
 

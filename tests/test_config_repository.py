@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import re
-import sys
 import zipfile
 from typing import Any, List
 
@@ -198,14 +197,10 @@ def test_restore_singleton_state_hack() -> None:
     Singleton.set_state(state)
 
 
-@mark.skipif(sys.version_info[0:2] < (3, 8), reason="zip.Path available in python 3.8+")
 def test_importlib_resource_load_zip_path() -> None:
     config_source = ImportlibResourcesConfigSource(provider="foo", path="pkg://bar")
     conf = config_source._read_config(
-        zipfile.Path(  # type: ignore
-            "hydra/test_utils/configs/conf.zip",
-            "config.yaml",
-        )
+        zipfile.Path("hydra/test_utils/configs/conf.zip", "config.yaml")
     )
     assert conf.config == {"foo": "bar"}
     assert conf.header == {"package": None}

@@ -1,5 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import sys
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Optional, Set
 
@@ -11,50 +10,6 @@ from omegaconf._utils import (
     is_list_annotation,
     is_primitive_type_annotation,
 )
-
-
-# borrowed from OmegaConf
-def type_str(t: Any) -> str:
-    is_optional, t = _resolve_optional(t)
-    if t is None:
-        return type(t).__name__
-    if t is Any:
-        return "Any"
-    if t is ...:
-        return "..."
-
-    if sys.version_info < (3, 7, 0):  # pragma: no cover
-        # Python 3.6
-        if hasattr(t, "__name__"):
-            name = str(t.__name__)
-        else:
-            if t.__origin__ is not None:
-                name = type_str(t.__origin__)
-            else:
-                name = str(t)
-                if name.startswith("typing."):
-                    name = name[len("typing.") :]
-    else:  # pragma: no cover
-        # Python >= 3.7
-        if hasattr(t, "__name__"):
-            name = str(t.__name__)
-        else:
-            if t._name is None:
-                if t.__origin__ is not None:
-                    name = type_str(t.__origin__)
-            else:
-                name = str(t._name)
-
-    args = getattr(t, "__args__", None)
-    if args is not None:
-        args = ", ".join(type_str(t) for t in t.__args__)
-        ret = f"{name}[{args}]"
-    else:
-        ret = name
-    if is_optional:
-        return f"Optional[{ret}]"
-    else:
-        return ret
 
 
 def is_tuple_annotation(type_: Any) -> bool:

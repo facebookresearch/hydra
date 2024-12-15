@@ -23,7 +23,11 @@ from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.config_store import ConfigStore
 from hydra.core.global_hydra import GlobalHydra
-from hydra.errors import ConfigCompositionException, HydraException
+from hydra.errors import (
+    ConfigCompositionException,
+    HydraException,
+    OverrideParseException,
+)
 from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
@@ -429,6 +433,49 @@ def test_adding_to_sc_dict(
             compose(config_name="config", overrides=overrides)
 
 
+@mark.usefixtures("initialize_hydra_no_path")
+@mark.parametrize(
+    ("overrides", "expected"),
+    [
+        param(
+            ["list_key=extend_list(d, e)"],
+            {"list_key": ["a", "b", "c", "d", "e"]},
+            id="extend_list_with_str",
+        ),
+        param(
+            ["list_key=extend_list([d1, d2])"],
+            {"list_key": ["a", "b", "c", ["d1", "d2"]]},
+            id="extend_list_with_list",
+        ),
+        param(
+            ["list_key=extend_list(d, [e1])", "list_key=extend_list(f)"],
+            {"list_key": ["a", "b", "c", "d", ["e1"], "f"]},
+            id="extend_list_twice",
+        ),
+        param(
+            ["+list_key=extend_list([d1, d2])"],
+            raises(OverrideParseException),
+            id="extend_list_with_append_key",
+        ),
+    ],
+)
+def test_extending_list(
+    hydra_restore_singletons: Any, overrides: List[str], expected: Any
+) -> None:
+    @dataclass
+    class Config:
+        list_key: Any = field(default_factory=lambda: ["a", "b", "c"])
+
+    ConfigStore.instance().store(name="config", node=Config)
+
+    if isinstance(expected, dict):
+        cfg = compose(config_name="config", overrides=overrides)
+        assert cfg == expected
+    else:
+        with expected:
+            compose(config_name="config", overrides=overrides)
+
+
 @mark.parametrize("override", ["hydra.foo=bar", "hydra.job_logging.foo=bar"])
 def test_hydra_node_validated(initialize_hydra_no_path: Any, override: str) -> None:
     with raises(ConfigCompositionException):
@@ -727,14 +774,23 @@ def test_deprecated_initialize_config_module(hydra_restore_singletons: Any) -> N
 
 
 def test_initialize_without_config_path(tmpdir: Path) -> None:
-    expected = dedent(
+    expected0 = dedent(
+        f"""
+        The version_base parameter is not specified.
+        Please specify a compatibility version level, or None.
+        Will assume defaults for version {version.__compat_version__}"""
+    )
+    expected1 = dedent(
         """\
         config_path is not specified in hydra.initialize().
         See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information."""
     )
-    with warns(expected_warning=UserWarning, match=re.escape(expected)):
+    with warns(expected_warning=UserWarning) as record:
         with initialize():
             pass
+    assert len(record) == 2
+    assert str(record[0].message) == expected0
+    assert str(record[1].message) == expected1
 
 
 @mark.usefixtures("initialize_hydra_no_path")

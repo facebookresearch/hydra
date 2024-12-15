@@ -2,7 +2,10 @@
 import sys
 from typing import Any, List, Optional
 
-from antlr4.error.Errors import LexerNoViableAltException, RecognitionException
+from omegaconf.vendor.antlr4.error.Errors import (
+    LexerNoViableAltException,
+    RecognitionException,
+)
 
 from hydra._internal.grammar import grammar_functions
 from hydra._internal.grammar.functions import Functions
@@ -111,6 +114,7 @@ def create_functions() -> Functions:
     functions.register(name="str", func=grammar_functions.cast_str)
     functions.register(name="bool", func=grammar_functions.cast_bool)
     functions.register(name="float", func=grammar_functions.cast_float)
+    functions.register(name="json_str", func=grammar_functions.cast_json_str)
     # sweeps
     functions.register(name="choice", func=grammar_functions.choice)
     functions.register(name="range", func=grammar_functions.range)
@@ -120,4 +124,5 @@ def create_functions() -> Functions:
     functions.register(name="sort", func=grammar_functions.sort)
     functions.register(name="shuffle", func=grammar_functions.shuffle)
     functions.register(name="glob", func=grammar_functions.glob)
+    functions.register(name="extend_list", func=grammar_functions.extend_list)
     return functions

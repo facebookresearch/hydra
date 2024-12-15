@@ -21,6 +21,7 @@ from hydra.core.override_parser.types import (
     Glob,
     IntervalSweep,
     Key,
+    ListExtensionOverrideValue,
     Override,
     OverrideType,
     Quote,
@@ -173,6 +174,21 @@ def test_element(value: str, expected: Any) -> None:
             "shuffle(choice(1,2,3))",
             ChoiceSweep(list=[1, 2, 3], shuffle=True),
             id="shuffle(choice(1,2,3))",
+        ),
+        param(
+            "extend_list(1,2,three)",
+            ListExtensionOverrideValue(values=[1, 2, "three"]),
+            id="extend_list(1,2,three)",
+        ),
+        param(
+            "extend_list('5')",
+            ListExtensionOverrideValue(values=["5"]),
+            id="extend_list('5')",
+        ),
+        param(
+            "extend_list([1,2,3], {a:1, b:2})",
+            ListExtensionOverrideValue(values=[[1, 2, 3], {"a": 1, "b": 2}]),
+            id="extend_list([1,2,3], {a:1, b:2})",
         ),
     ],
 )
@@ -522,6 +538,15 @@ def test_interval_sweep(value: str, expected: Any) -> None:
             "$foo/bar=foobar",
             raises(HydraException, match=re.escape("mismatched input '/'")),
             id="error:dollar_in_group",
+        ),
+        param(
+            "override",
+            "+key=extend_list(foobar)",
+            raises(
+                HydraException,
+                match=re.escape("Trying to use override symbols when extending a list"),
+            ),
+            id="error:plus_in_extend_list_key",
         ),
     ],
 )
@@ -997,6 +1022,38 @@ def test_override(
     assert ret == expected
 
 
+@mark.parametrize(
+    "value,expected_key,expected_value",
+    [
+        param(
+            "key=extend_list([1,2])",
+            "key",
+            [[1, 2]],
+            id="extend_list_of_list",
+        ),
+        param(
+            "key=extend_list(1,2,3)",
+            "key",
+            [1, 2, 3],
+            id="extend_list_with_multiple_vals",
+        ),
+    ],
+)
+def test_list_extend_override(
+    value: str,
+    expected_key: str,
+    expected_value: Any,
+) -> None:
+    test_override(
+        "",
+        value,
+        OverrideType.EXTEND_LIST,
+        expected_key,
+        expected_value,
+        ValueType.ELEMENT,
+    )
+
+
 def test_deprecated_name_package(hydra_restore_singletons: Any) -> None:
     msg = (
         "In override key@_name_=value: _name_ keyword is deprecated in packages, "
@@ -1408,6 +1465,11 @@ def test_sweep_shuffle(value: str, expected: str) -> None:
 
 @dataclass
 class CastResults:
+    json_str: Union[
+        str,
+        Sweep,
+        RaisesContext[HydraException],
+    ]
     int: Union[
         int,
         List[Union[int, List[int]]],
@@ -1446,11 +1508,25 @@ class CastResults:
     "value,expected_value",
     [
         # int
-        param(10, CastResults(int=10, float=10.0, str="10", bool=True), id="10"),
-        param(0, CastResults(int=0, float=0.0, str="0", bool=False), id="0"),
+        param(
+            10,
+            CastResults(int=10, float=10.0, str="10", bool=True, json_str="10"),
+            id="10",
+        ),
+        param(
+            0, CastResults(int=0, float=0.0, str="0", bool=False, json_str="0"), id="0"
+        ),
         # float
-        param(10.0, CastResults(int=10, float=10.0, str="10.0", bool=True), id="10.0"),
-        param(0.0, CastResults(int=0, float=0.0, str="0.0", bool=False), id="0.0"),
+        param(
+            10.0,
+            CastResults(int=10, float=10.0, str="10.0", bool=True, json_str="10.0"),
+            id="10.0",
+        ),
+        param(
+            0.0,
+            CastResults(int=0, float=0.0, str="0.0", bool=False, json_str="0.0"),
+            id="0.0",
+        ),
         param(
             "inf",
             CastResults(
@@ -1460,6 +1536,7 @@ class CastResults:
                 float=math.inf,
                 str="inf",
                 bool=True,
+                json_str="Infinity",
             ),
             id="inf",
         ),
@@ -1472,12 +1549,15 @@ class CastResults:
                 float=math.nan,
                 str="nan",
                 bool=True,
+                json_str="NaN",
             ),
             id="nan",
         ),
         param(
             "1e6",
-            CastResults(int=1000000, float=1e6, str="1000000.0", bool=True),
+            CastResults(
+                int=1000000, float=1e6, str="1000000.0", bool=True, json_str="1000000.0"
+            ),
             id="1e6",
         ),
         param(
@@ -1493,6 +1573,7 @@ class CastResults:
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool('')': Cannot cast '' to bool"
                 ),
+                json_str='""',
             ),
             id="''",
         ),
@@ -1506,6 +1587,7 @@ class CastResults:
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool('10')': Cannot cast '10' to bool"
                 ),
+                json_str='"10"',
             ),
             id="'10'",
         ),
@@ -1520,6 +1602,7 @@ class CastResults:
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool('10.0')': Cannot cast '10.0' to bool"
                 ),
+                json_str='"10.0"',
             ),
             id="'10.0'",
         ),
@@ -1534,6 +1617,7 @@ class CastResults:
                 ),
                 str="true",
                 bool=True,
+                json_str='"true"',
             ),
             id="'true'",
         ),
@@ -1548,6 +1632,7 @@ class CastResults:
                 ),
                 str="false",
                 bool=False,
+                json_str='"false"',
             ),
             id="'false'",
         ),
@@ -1564,6 +1649,7 @@ class CastResults:
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool('[1,2,3]')': Cannot cast '[1,2,3]' to bool"
                 ),
+                json_str='"[1,2,3]"',
             ),
             id="'[1,2,3]'",
         ),
@@ -1580,16 +1666,25 @@ class CastResults:
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool('{a:10}')': Cannot cast '{a:10}' to bool"
                 ),
+                json_str='"{a:10}"',
             ),
             id="'{a:10}'",
         ),
         # bool
-        param("true", CastResults(int=1, float=1.0, str="true", bool=True), id="true"),
         param(
-            "false", CastResults(int=0, float=0.0, str="false", bool=False), id="false"
+            "true",
+            CastResults(int=1, float=1.0, str="true", bool=True, json_str="true"),
+            id="true",
+        ),
+        param(
+            "false",
+            CastResults(int=0, float=0.0, str="false", bool=False, json_str="false"),
+            id="false",
         ),
         # list
-        param("[]", CastResults(int=[], float=[], str=[], bool=[]), id="[]"),
+        param(
+            "[]", CastResults(int=[], float=[], str=[], bool=[], json_str="[]"), id="[]"
+        ),
         param(
             "[0,1,2]",
             CastResults(
@@ -1597,13 +1692,18 @@ class CastResults:
                 float=[0.0, 1.0, 2.0],
                 str=["0", "1", "2"],
                 bool=[False, True, True],
+                json_str="[0, 1, 2]",
             ),
             id="[1,2,3]",
         ),
         param(
             "[1,[2]]",
             CastResults(
-                int=[1, [2]], float=[1.0, [2.0]], str=["1", ["2"]], bool=[True, [True]]
+                int=[1, [2]],
+                float=[1.0, [2.0]],
+                str=["1", ["2"]],
+                bool=[True, [True]],
+                json_str="[1, [2]]",
             ),
             id="[1,[2]]",
         ),
@@ -1620,15 +1720,22 @@ class CastResults:
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool([a,1])': Cannot cast 'a' to bool"
                 ),
+                json_str='["a", 1]',
             ),
             id="[a,1]",
         ),
         # dicts
-        param("{}", CastResults(int={}, float={}, str={}, bool={}), id="{}"),
+        param(
+            "{}", CastResults(int={}, float={}, str={}, bool={}, json_str="{}"), id="{}"
+        ),
         param(
             "{a:10}",
             CastResults(
-                int={"a": 10}, float={"a": 10.0}, str={"a": "10"}, bool={"a": True}
+                int={"a": 10},
+                float={"a": 10.0},
+                str={"a": "10"},
+                bool={"a": True},
+                json_str='{"a": 10}',
             ),
             id="{a:10}",
         ),
@@ -1639,6 +1746,7 @@ class CastResults:
                 float={"a": [0.0, 1.0, 2.0]},
                 str={"a": ["0", "1", "2"]},
                 bool={"a": [False, True, True]},
+                json_str='{"a": [0, 1, 2]}',
             ),
             id="{a:[0,1,2]}",
         ),
@@ -1655,8 +1763,33 @@ class CastResults:
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool({a:10,b:xyz})': Cannot cast 'xyz' to bool"
                 ),
+                json_str='{"a": 10, "b": "xyz"}',
             ),
             id="{a:10,b:xyz}",
+        ),
+        param(
+            "{a:10,b:xyz,c:{d:foo,f:[1,2,{g:0}]}}",
+            CastResults(
+                int=CastResults.error(
+                    "ValueError while evaluating 'int({a:10,b:xyz,c:{d:foo,f:[1,2,{g:0}]}})': "
+                    "invalid literal for int() with base 10: 'xyz'"
+                ),
+                float=CastResults.error(
+                    "ValueError while evaluating 'float({a:10,b:xyz,c:{d:foo,f:[1,2,{g:0}]}})': "
+                    "could not convert string to float: 'xyz'"
+                ),
+                str={
+                    "a": "10",
+                    "b": "xyz",
+                    "c": {"d": "foo", "f": ["1", "2", {"g": "0"}]},
+                },
+                bool=CastResults.error(
+                    "ValueError while evaluating 'bool({a:10,b:xyz,c:{d:foo,f:[1,2,{g:0}]}})': "
+                    "Cannot cast 'xyz' to bool"
+                ),
+                json_str='{"a": 10, "b": "xyz", "c": {"d": "foo", "f": [1, 2, {"g": 0}]}}',
+            ),
+            id="{a:10,b:xyz,c:{d:foo,f:[1,2,{g:0}]}}",
         ),
         # choice
         param(
@@ -1666,6 +1799,7 @@ class CastResults:
                 float=ChoiceSweep(list=[0.0, 1.0]),
                 str=ChoiceSweep(list=["0", "1"]),
                 bool=ChoiceSweep(list=[False, True]),
+                json_str=ChoiceSweep(list=["0", "1"]),
             ),
             id="choice(0,1)",
         ),
@@ -1676,6 +1810,7 @@ class CastResults:
                 float=ChoiceSweep(list=[2.0, 1.0, 0.0], simple_form=True),
                 str=ChoiceSweep(list=["2", "1", "0"], simple_form=True),
                 bool=ChoiceSweep(list=[True, True, False], simple_form=True),
+                json_str=ChoiceSweep(list=["2", "1", "0"], simple_form=True),
             ),
             id="simple_choice:ints",
         ),
@@ -1697,6 +1832,10 @@ class CastResults:
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool(a,'b',1,1.0,true,[a,b],{a:10})': Cannot cast 'a' to bool"
                 ),
+                json_str=ChoiceSweep(
+                    list=['"a"', '"b"', "1", "1.0", "true", '["a", "b"]', '{"a": 10}'],
+                    simple_form=True,
+                ),
             ),
             id="simple_choice:types",
         ),
@@ -1713,6 +1852,7 @@ class CastResults:
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool(choice(a,b))': Cannot cast 'a' to bool"
                 ),
+                json_str=ChoiceSweep(list=['"a"', '"b"']),
             ),
             id="choice(a,b)",
         ),
@@ -1729,6 +1869,7 @@ class CastResults:
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool(choice(1,a))': Cannot cast 'a' to bool"
                 ),
+                json_str=ChoiceSweep(list=["1", '"a"']),
             ),
             id="choice(1,a)",
         ),
@@ -1743,6 +1884,9 @@ class CastResults:
                 ),
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool(interval(1.0, 2.0))': Intervals cannot be cast to bool"
+                ),
+                json_str=CastResults.error(
+                    "ValueError while evaluating 'json_str(interval(1.0, 2.0))': Intervals cannot be cast to json_str"
                 ),
             ),
             id="interval(1.0, 2.0)",
@@ -1759,6 +1903,9 @@ class CastResults:
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool(range(1,10))': Range can only be cast to int or float"
                 ),
+                json_str=CastResults.error(
+                    "ValueError while evaluating 'json_str(range(1,10))': Range can only be cast to int or float"
+                ),
             ),
             id="range(1,10)",
         ),
@@ -1773,13 +1920,16 @@ class CastResults:
                 bool=CastResults.error(
                     "ValueError while evaluating 'bool(range(1.0,10.0))': Range can only be cast to int or float"
                 ),
+                json_str=CastResults.error(
+                    "ValueError while evaluating 'json_str(range(1.0,10.0))': Range can only be cast to int or float"
+                ),
             ),
             id="range(1.0,10.0)",
         ),
     ],
 )
 def test_cast_conversions(value: Any, expected_value: Any) -> None:
-    for field in ("int", "float", "bool", "str"):
+    for field in ("int", "float", "bool", "str", "json_str"):
         cast_str = f"{field}({value})"
         expected = getattr(expected_value, field)
         if isinstance(expected, RaisesContext):

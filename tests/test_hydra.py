@@ -374,7 +374,7 @@ def test_app_with_sweep_cfg__override_to_basic_launcher(
 def test_short_module_name(tmpdir: Path) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     out, _err = run_python_script(cmd)
@@ -404,7 +404,7 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
     """
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     modified_env = os.environ.copy()
@@ -421,7 +421,7 @@ def test_module_env_override(tmpdir: Path, env_name: str) -> None:
 def test_cfg(tmpdir: Path, flag: str, resolve: bool, expected_keys: List[str]) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/5_defaults/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         flag,
     ]
@@ -481,7 +481,7 @@ def test_cfg_with_package(
 ) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/5_defaults/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ] + flags
     if resolve:
@@ -539,7 +539,7 @@ def test_cfg_resolve_interpolation(
 ) -> None:
     cmd = [
         script,
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "--cfg=job",
     ] + flags
@@ -570,7 +570,7 @@ def test_pass_callable_class_to_hydra_main(
 ) -> None:
     cmd = [
         script,
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
 
@@ -585,7 +585,7 @@ def test_pass_callable_class_to_hydra_main(
 def test_resolve_flag_errmsg(tmpdir: Path, other_flag: Optional[str]) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/3_using_config/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "--resolve",
     ]
@@ -834,7 +834,7 @@ for details.
 def test_help(
     tmpdir: Path, script: str, flags: List[str], overrides: List[str], expected: Any
 ) -> None:
-    cmd = [script, "hydra.run.dir=" + str(tmpdir), "hydra.job.chdir=True"]
+    cmd = [script, f'hydra.run.dir="{str(tmpdir)}"', "hydra.job.chdir=True"]
     cmd.extend(overrides)
     cmd.extend(flags)
     result, _err = run_python_script(cmd)
@@ -864,7 +864,7 @@ def test_help(
 def test_searchpath_config(tmpdir: Path, overrides: List[str], expected: str) -> None:
     cmd = ["examples/advanced/config_search_path/my_app.py"]
     cmd.extend(overrides)
-    cmd.extend(["hydra.run.dir=" + str(tmpdir), "hydra.job.chdir=True"])
+    cmd.extend([f'hydra.run.dir="{str(tmpdir)}"', "hydra.job.chdir=True"])
     result, _err = run_python_script(cmd)
     assert re.match(expected, result, re.DOTALL)
 
@@ -900,7 +900,7 @@ def test_sys_exit(tmpdir: Path) -> None:
         sys.executable,
         "-Werror",
         "tests/test_apps/sys_exit/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     assert subprocess.run(cmd).returncode == 42
@@ -1047,7 +1047,7 @@ def test_config_name_and_path_overrides(
 ) -> None:
     cmd = [
         "tests/test_apps/app_with_multiple_config_dirs/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         f"--config-name={config_name}",
         f"--config-path={config_path}",
@@ -1113,7 +1113,7 @@ def test_module_run(
 ) -> None:
     cmd = [
         directory + "/" + file,
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     modified_env = os.environ.copy()
@@ -1340,7 +1340,7 @@ def test_config_dir_argument(
     monkeypatch.chdir("tests/test_apps/user-config-dir")
     cmd = [
         "my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     cmd.extend(overrides)
@@ -1352,7 +1352,7 @@ def test_schema_overrides_hydra(monkeypatch: Any, tmpdir: Path) -> None:
     monkeypatch.chdir("tests/test_apps/schema_overrides_hydra")
     cmd = [
         "my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
@@ -1363,7 +1363,7 @@ def test_defaults_pkg_with_dot(monkeypatch: Any, tmpdir: Path) -> None:
     monkeypatch.chdir("tests/test_apps/defaults_pkg_with_dot")
     cmd = [
         "my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
@@ -1414,7 +1414,7 @@ def test_job_exception(
     ret = run_with_error(
         [
             "tests/test_apps/app_exception/my_app.py",
-            f"hydra.run.dir={tmpdir}",
+            f'hydra.run.dir="{tmpdir}"',
             "hydra.job.chdir=True",
         ]
     )
@@ -1425,7 +1425,7 @@ def test_job_exception_full_error(tmpdir: Any) -> None:
     ret = run_with_error(
         [
             "tests/test_apps/app_exception/my_app.py",
-            f"hydra.run.dir={tmpdir}",
+            f'hydra.run.dir="{tmpdir}"',
             "hydra.job.chdir=True",
         ],
         env={**os.environ, "HYDRA_FULL_ERROR": "1"},
@@ -1439,7 +1439,7 @@ def test_structured_with_none_list(monkeypatch: Any, tmpdir: Path) -> None:
     monkeypatch.chdir("tests/test_apps/structured_with_none_list")
     cmd = [
         "my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
@@ -1471,7 +1471,7 @@ def test_job_id_and_num_in_sweep(tmpdir: Path) -> None:
 def test_hydra_main_without_config_path(tmpdir: Path) -> None:
     cmd = [
         "tests/test_apps/hydra_main_without_config_path/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ]
     _, err = run_python_script(cmd, allow_warnings=True)
@@ -1500,7 +1500,7 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
 def test_job_chdir_not_specified(tmpdir: Path) -> None:
     cmd = [
         "tests/test_apps/app_with_no_chdir_override/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
     ]
     out, err = run_python_script(cmd, allow_warnings=True)
 
@@ -1522,7 +1522,7 @@ def test_job_chdir_not_specified(tmpdir: Path) -> None:
 def test_app_with_unicode_config(tmpdir: Path) -> None:
     cmd = [
         "tests/test_apps/app_with_unicode_in_config/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ]
     out, _ = run_python_script(cmd)
@@ -1546,7 +1546,7 @@ def test_frozen_primary_config(
 ) -> None:
     cmd = [
         "examples/patterns/write_protect_config_node/frozen.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ]
     cmd.extend(overrides)
@@ -1586,7 +1586,7 @@ def test_hydra_deprecation_warning(
 ) -> None:
     cmd = [
         "tests/test_apps/deprecation_warning/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ]
     env = os.environ.copy()
@@ -1608,7 +1608,7 @@ def test_hydra_deprecation_warning(
 def test_disable_chdir(tmpdir: Path, multirun: bool, expected: List[str]) -> None:
     cmd = [
         "examples/tutorials/basic/running_your_hydra_app/3_working_directory/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         f"hydra.sweep.dir={tmpdir}",
         "hydra.job.chdir=False",
     ]
@@ -1628,7 +1628,7 @@ def test_disable_chdir(tmpdir: Path, multirun: bool, expected: List[str]) -> Non
 def test_disable_chdir_with_app_chdir(tmpdir: Path, chdir: bool) -> None:
     cmd = [
         "tests/test_apps/app_change_dir/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         f"hydra.job.chdir={chdir}",
     ]
     result, _err = run_python_script(cmd)
@@ -1643,7 +1643,7 @@ def test_disable_chdir_with_app_chdir(tmpdir: Path, chdir: bool) -> None:
 def test_hydra_verbose_1897(tmpdir: Path, multirun: bool) -> None:
     cmd = [
         "tests/test_apps/hydra_verbose/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=False",
     ]
     if multirun:

@@ -21,21 +21,19 @@ def hydra_restore_singletons() -> Generator[None, None, None]:
 
 
 @fixture(scope="function")
-def hydra_sweep_runner() -> (
-    Callable[
-        [
-            Optional[str],
-            Optional[str],
-            Optional[TaskFunction],
-            Optional[str],
-            Optional[str],
-            Optional[List[str]],
-            Optional[Path],
-            bool,
-        ],
-        SweepTaskFunction,
-    ]
-):
+def hydra_sweep_runner() -> Callable[
+    [
+        Optional[str],
+        Optional[str],
+        Optional[TaskFunction],
+        Optional[str],
+        Optional[str],
+        Optional[List[str]],
+        Optional[Path],
+        bool,
+    ],
+    SweepTaskFunction,
+]:
     def _(
         calling_file: Optional[str],
         calling_module: Optional[str],
@@ -61,19 +59,17 @@ def hydra_sweep_runner() -> (
 
 
 @fixture(scope="function")
-def hydra_task_runner() -> (
-    Callable[
-        [
-            Optional[str],
-            Optional[str],
-            Optional[str],
-            Optional[str],
-            Optional[List[str]],
-            bool,
-        ],
-        TaskTestFunction,
-    ]
-):
+def hydra_task_runner() -> Callable[
+    [
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[str],
+        Optional[List[str]],
+        bool,
+    ],
+    TaskTestFunction,
+]:
     def _(
         calling_file: Optional[str],
         calling_module: Optional[str],

@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
+import json
 import logging.config
 import os
 from pathlib import Path
@@ -115,3 +116,33 @@ def to_absolute_path(path: str) -> str:
     else:
         ret = base / p
     return str(ret)
+
+
+def to_hydra_override_value_str(obj: Any) -> str:
+    """
+    Basic conversion of an object to a string that can be used in a Hydra override.
+    Does not explicitly support all types but should work for basic structures.
+
+    >>> obj = {"foo": 1, "bar": "baz"}
+    >>> compose(config_name="config", overrides=[f"a={to_hydra_override_value_str(obj)}", "x=1"])
+
+    :param obj: object to convert
+    :return: string representation of the object that can be used in a Hydra override
+    """
+    if isinstance(obj, dict):
+        return (
+            "{"
+            + ", ".join(
+                f"{key}: {to_hydra_override_value_str(value)}"
+                for key, value in obj.items()
+            )
+            + "}"
+        )
+    elif isinstance(obj, list):
+        return (
+            "[" + ", ".join([to_hydra_override_value_str(value) for value in obj]) + "]"
+        )
+    elif isinstance(obj, str):
+        new_str = obj.replace('\\"', '\\\\"').replace('"', '\\"')
+        return f'"{new_str}"'
+    return json.dumps(obj)

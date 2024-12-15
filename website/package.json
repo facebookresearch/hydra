@@ -14,14 +14,29 @@
     "@docusaurus/preset-classic": "^2.0.0-beta.14",
     "classnames": "^2.2.6",
     "docusaurus-plugin-internaldocs-fb": "0.10.4",
-    "is-svg": "4.3.1",
     "node-fetch": "^2.6.7",
-    "prism-react-renderer": "1.2.1",
+    "prism-react-renderer": "^1.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "resolutions": {
-    "prism-react-renderer": "1.1.0"
+    "@babel/traverse": "^7.25.7",
+    "axios": "^0.28.0",
+    "body-parser": "^1.20.3",
+    "cookie": "^1.0.1",
+    "cross-spawn": "^7.0.5",
+    "express": "^4.21.1",
+    "follow-redirects": "^1.15.6",
+    "ip": "^2.0.1",
+    "micromatch": "^4.0.8",
+    "path-to-regexp": "^1.9.0",
+    "postcss": "^8.4.31",
+    "react-live": "^3.2.0",
+    "send": "^0.19.0",
+    "serve-static": "^1.16.2",
+    "webpack": "^5.94",
+    "webpack-dev-middleware": "^7.4.2",
+    "webpack-dev-server": "^4.5.0"
   },
   "browserslist": {
     "production": [

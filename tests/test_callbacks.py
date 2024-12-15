@@ -98,7 +98,7 @@ def test_app_with_callbacks(
 ) -> None:
     cmd = [
         app_path,
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
         "hydra.job_logging.formatters.simple.format='[JOB] %(message)s'",
@@ -120,7 +120,7 @@ def test_experimental_save_job_info_callback(tmpdir: Path, multirun: bool) -> No
 
     cmd = [
         app_path,
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.job.chdir=True",
     ]
@@ -167,7 +167,7 @@ def test_save_job_return_callback(tmpdir: Path, multirun: bool) -> None:
     cmd = [
         sys.executable,
         app_path,
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.job.chdir=True",
     ]
@@ -202,7 +202,7 @@ def test_experimental_rerun(
 
     cmd = [
         app_path,
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.job.chdir=False",
         "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",

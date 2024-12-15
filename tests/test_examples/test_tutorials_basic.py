@@ -38,7 +38,7 @@ def test_tutorial_simple_cli_app(
 ) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/1_simple_cli/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     cmd.extend(args)
@@ -49,7 +49,7 @@ def test_tutorial_simple_cli_app(
 def test_tutorial_working_directory(tmpdir: Path) -> None:
     cmd = [
         "examples/tutorials/basic/running_your_hydra_app/3_working_directory/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
@@ -60,7 +60,7 @@ def test_tutorial_working_directory(tmpdir: Path) -> None:
 def test_tutorial_working_directory_original_cwd(tmpdir: Path) -> None:
     cmd = [
         "examples/tutorials/basic/running_your_hydra_app/3_working_directory/original_cwd.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
@@ -87,7 +87,7 @@ def test_tutorial_working_directory_original_cwd(tmpdir: Path) -> None:
 def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) -> None:
     cmd = [
         "examples/tutorials/basic/running_your_hydra_app/4_logging/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ]
     cmd.extend(args)
@@ -112,7 +112,7 @@ def test_tutorial_logging(tmpdir: Path, args: List[str], expected: List[str]) ->
 def test_tutorial_config_file(tmpdir: Path, args: List[str], output_conf: Any) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     cmd.extend(args)
@@ -139,7 +139,7 @@ def test_tutorial_config_file_bad_key(
 
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/2_config_file/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     cmd.extend(args)
@@ -175,7 +175,7 @@ def test_tutorial_config_groups(
 ) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/4_config_groups/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     cmd.extend(args)
@@ -214,7 +214,7 @@ def test_tutorial_config_groups(
 def test_tutorial_defaults(tmpdir: Path, args: List[str], expected: DictConfig) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/5_defaults/my_app.py",
-        "hydra.run.dir=" + str(tmpdir),
+        f'hydra.run.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
     ]
     cmd.extend(args)
@@ -316,7 +316,7 @@ def test_advanced_ad_hoc_composition(
     monkeypatch.setenv("USER", "test_user")
     cmd = [
         "examples/advanced/ad_hoc_composition/hydra_compose_example.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
@@ -326,7 +326,7 @@ def test_advanced_ad_hoc_composition(
 def test_examples_using_the_config_object(tmpdir: Path) -> None:
     cmd = [
         "examples/tutorials/basic/your_first_hydra_app/3_using_config/my_app.py",
-        f"hydra.run.dir={tmpdir}",
+        f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ]
 

@@ -1,17 +1,14 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-def foo() -> None:
-    ...
+def foo() -> None: ...
 
 
-def foo_main_module() -> None:
-    ...
+def foo_main_module() -> None: ...
 
 
 foo_main_module.__module__ = "__main__"
 
 
-class Bar:
-    ...
+class Bar: ...
 
 
 bar_instance = Bar()

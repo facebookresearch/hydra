@@ -31,8 +31,7 @@ class LibraryClass:
 
 
 class Empty:
-    def __init__(self):
-        ...
+    def __init__(self): ...
 
     def __eq__(self, other):
         return isinstance(other, type(self))
