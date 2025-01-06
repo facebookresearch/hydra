@@ -1,0 +1,1 @@
+Fix unexpected resolution side-effect that caused modifications to the input config parent in `hydra.utils.instantiate`

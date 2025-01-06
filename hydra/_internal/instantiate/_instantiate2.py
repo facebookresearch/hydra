@@ -145,6 +145,24 @@ def _resolve_target(
     return target
 
 
+def _deep_copy_full_config(subconfig: Any) -> Any:
+    """Deep copy full config from root to leaf and return the copied subconfig"""
+    if not OmegaConf.is_config(subconfig):
+        return copy.deepcopy(subconfig)
+
+    full_key = subconfig._get_full_key(None)
+    if full_key:
+        full_config_copy = copy.deepcopy(subconfig._get_root())
+        if OmegaConf.is_list(subconfig._get_parent()):
+            # OmegaConf has a bug where _get_full_key doesn't add [] if the parent
+            # is a list, eg. instead of foo[0], it'll return foo0
+            index = subconfig._key()
+            full_key = full_key[: -len(str(index))] + f"[{index}]"
+        return OmegaConf.select(full_config_copy, full_key)
+    else:
+        return copy.deepcopy(subconfig)
+
+
 def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
     """
     :param config: An config object describing what to call and what params to use.
@@ -207,11 +225,11 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
 
     if OmegaConf.is_dict(config):
         # Finalize config (convert targets to strings, merge with kwargs)
-        config_copy = copy.deepcopy(config)
+        # Create full copy to avoid mutating original
+        config_copy = _deep_copy_full_config(config)
         config_copy._set_flag(
             flags=["allow_objects", "struct", "readonly"], values=[True, False, False]
         )
-        config_copy._set_parent(config._get_parent())
         config = config_copy
 
         if kwargs:
@@ -228,11 +246,11 @@ def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
         )
     elif OmegaConf.is_list(config):
         # Finalize config (convert targets to strings, merge with kwargs)
-        config_copy = copy.deepcopy(config)
+        # Create full copy to avoid mutating original
+        config_copy = _deep_copy_full_config(config)
         config_copy._set_flag(
             flags=["allow_objects", "struct", "readonly"], values=[True, False, False]
         )
-        config_copy._set_parent(config._get_parent())
         config = config_copy
 
         OmegaConf.resolve(config)
