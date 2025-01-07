@@ -485,6 +485,7 @@ def test_none_cases(
     assert str(cfg) == original_config_str
 
 
+@mark.parametrize("skip_deepcopy", [True, False])
 @mark.parametrize("convert_to_list", [True, False])
 @mark.parametrize(
     "input_conf, passthrough, expected",
@@ -578,6 +579,7 @@ def test_interpolation_accessing_parent(
     passthrough: Dict[str, Any],
     expected: Any,
     convert_to_list: bool,
+    skip_deepcopy: bool,
 ) -> Any:
     if convert_to_list:
         input_conf = copy.deepcopy(input_conf)
@@ -586,15 +588,24 @@ def test_interpolation_accessing_parent(
     input_conf = OmegaConf.create(input_conf)
     original_config_str = str(input_conf)
     if convert_to_list:
-        obj = instantiate_func(input_conf.node[0], **passthrough)
+        obj = instantiate_func(
+            input_conf.node[0],
+            _skip_instantiate_full_deepcopy_=skip_deepcopy,
+            **passthrough,
+        )
     else:
-        obj = instantiate_func(input_conf.node, **passthrough)
+        obj = instantiate_func(
+            input_conf.node,
+            _skip_instantiate_full_deepcopy_=skip_deepcopy,
+            **passthrough,
+        )
     if isinstance(expected, partial):
         assert partial_equal(obj, expected)
     else:
         assert obj == expected
     assert input_conf == cfg_copy
-    assert str(input_conf) == original_config_str
+    if not skip_deepcopy:
+        assert str(input_conf) == original_config_str
 
 
 @mark.parametrize(
