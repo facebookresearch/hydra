@@ -33,6 +33,7 @@ from tests.instantiate import (
     Mapping,
     MappingConf,
     NestedConf,
+    NestedConfNoTarget,
     NestingClass,
     OuterClass,
     Parameters,
@@ -2148,3 +2149,13 @@ def test_dict_as_none(instantiate_func: Any) -> None:
     cfg = OmegaConf.structured(DictValuesConf)
     obj = instantiate_func(config=cfg)
     assert obj.d is None
+
+
+
+def test_non_target_recursive(instantiate_func: Any) -> None:
+    cfg = OmegaConf.structured(NestedConfNoTarget)
+    obj = instantiate_func(config=cfg, _recursive_=False)
+    assert isinstance(obj.a, DictConfig)
+
+    obj = instantiate_func(config=cfg, _recursive_=True)
+    assert isinstance(obj.a, SimpleClass)

@@ -389,18 +389,24 @@ def instantiate_node(
             ):
                 dict_items = {}
                 for key, value in node.items():
-                    # list items inherits recursive flag from the containing dict.
-                    dict_items[key] = instantiate_node(
-                        value, convert=convert, recursive=recursive
-                    )
+                    if recursive:
+                        # list items inherits recursive flag from the containing dict.
+                        dict_items[key] = instantiate_node(
+                            value, convert=convert, recursive=recursive
+                        )
+                    else:
+                        dict_items[key] = value
                 return dict_items
             else:
                 # Otherwise use DictConfig and resolve interpolations lazily.
                 cfg = OmegaConf.create({}, flags={"allow_objects": True})
                 for key, value in node.items():
-                    cfg[key] = instantiate_node(
-                        value, convert=convert, recursive=recursive
-                    )
+                    if recursive:
+                        cfg[key] = instantiate_node(
+                            value, convert=convert, recursive=recursive
+                        )
+                    else:
+                        cfg[key] = value
                 cfg._set_parent(node)
                 cfg._metadata.object_type = node._metadata.object_type
                 if convert == ConvertMode.OBJECT:
