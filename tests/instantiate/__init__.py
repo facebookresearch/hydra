@@ -8,6 +8,7 @@ from typing import Any, Dict, List, NoReturn, Optional, Tuple
 from omegaconf import MISSING, DictConfig, ListConfig
 
 from hydra.types import TargetConf
+from hydra.utils import instantiate
 from tests.instantiate.module_shadowed_by_function import a_function
 
 module_shadowed_by_function = a_function
@@ -416,6 +417,19 @@ class NestedConf:
     _target_: str = "tests.instantiate.SimpleClass"
     a: Any = field(default_factory=lambda: User(name="a", age=1))
     b: Any = field(default_factory=lambda: User(name="b", age=2))
+
+
+class TargetWithInstantiateInInit:
+    def __init__(
+        self, user_config: Optional[DictConfig], user: Optional[User] = None
+    ) -> None:
+        if user:
+            self.user = user
+        else:
+            self.user = instantiate(user_config)
+
+    def __eq__(self, other: Any) -> bool:
+        return self.user.__eq__(other.user)
 
 
 def recisinstance(got: Any, expected: Any) -> bool:
