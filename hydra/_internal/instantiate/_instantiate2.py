@@ -151,16 +151,23 @@ def _deep_copy_full_config(subconfig: Any) -> Any:
         return copy.deepcopy(subconfig)
 
     full_key = subconfig._get_full_key(None)
-    if full_key:
-        full_config_copy = copy.deepcopy(subconfig._get_root())
-        if OmegaConf.is_list(subconfig._get_parent()):
-            # OmegaConf has a bug where _get_full_key doesn't add [] if the parent
-            # is a list, eg. instead of foo[0], it'll return foo0
-            index = subconfig._key()
-            full_key = full_key[: -len(str(index))] + f"[{index}]"
-        return OmegaConf.select(full_config_copy, full_key)
-    else:
+    if not full_key:
         return copy.deepcopy(subconfig)
+
+    if OmegaConf.is_list(subconfig._get_parent()):
+        # OmegaConf has a bug where _get_full_key doesn't add [] if the parent
+        # is a list, eg. instead of foo[0], it'll return foo0
+        index = subconfig._key()
+        full_key = full_key[: -len(str(index))] + f"[{index}]"
+    root = subconfig._get_root()
+    full_key = full_key.replace(root._get_full_key(None) or "", "", 1)
+    if OmegaConf.select(root, full_key) is not subconfig:
+        # The parent chain and full key are not consistent so don't
+        # try to copy the full config
+        return copy.deepcopy(subconfig)
+
+    full_config_copy = copy.deepcopy(root)
+    return OmegaConf.select(full_config_copy, full_key)
 
 
 def instantiate(

@@ -43,6 +43,7 @@ from tests.instantiate import (
     SimpleClassNonPrimitiveConf,
     SimpleClassPrimitiveConf,
     SimpleDataClass,
+    TargetWithInstantiateInInit,
     Tree,
     TreeConf,
     UntypedPassthroughClass,
@@ -570,6 +571,30 @@ def test_none_cases(
             {},
             OmegaConf.create({"unique_id": 5}),
             id="interpolation_from_parent_with_interpolation",
+        ),
+        param(
+            DictConfig(
+                {
+                    "username": "test_user",
+                    "node": {
+                        "_target_": "tests.instantiate.TargetWithInstantiateInInit",
+                        "_recursive_": False,
+                        "user_config": {
+                            "_target_": "tests.instantiate.User",
+                            "name": "${foo_b.username}",
+                            "age": 40,
+                        },
+                    },
+                    "foo_b": {
+                        "username": "${username}",
+                    },
+                }
+            ),
+            {},
+            TargetWithInstantiateInInit(
+                user_config=None, user=User(name="test_user", age=40)
+            ),
+            id="target_with_instantiate_in_init",
         ),
     ],
 )
