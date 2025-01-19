@@ -28,8 +28,8 @@ setup(
     install_requires=[
         "hydra-core>=1.1.0.dev7",
         "optuna>=3.6.0",
-        "torch",
-        "scipy",
+        "torch",  # Required for `optuna.samplers.GPSampler
+        "scipy",  # Required for `optuna.samplers.GPSampler
     ],
     include_package_data=True,
 )
