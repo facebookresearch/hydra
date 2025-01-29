@@ -142,7 +142,12 @@ class BaseSubmititLauncher(Launcher):
             )
 
         jobs = executor.map_array(self, *zip(*job_params))
-        return [j.results()[0] for j in jobs]
+
+        return [asyncLauncher() for j in jobs]
+
+class asyncLauncher:
+    def __init__(self):
+        self.return_value = 0
 
 
 class LocalLauncher(BaseSubmititLauncher):
