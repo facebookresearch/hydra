@@ -151,8 +151,9 @@ def _deep_copy_full_config(subconfig: Any) -> Any:
         return copy.deepcopy(subconfig)
 
     full_key = subconfig._get_full_key(None)
-    if not full_key:
+    if full_key == "" or full_key is None:  # Do not exit early if full_key is 0
         return copy.deepcopy(subconfig)
+    full_key = str(full_key)
 
     if OmegaConf.is_list(subconfig._get_parent()):
         # OmegaConf has a bug where _get_full_key doesn't add [] if the parent

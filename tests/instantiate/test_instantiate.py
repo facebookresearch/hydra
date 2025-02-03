@@ -651,6 +651,28 @@ def test_class_instantiate_omegaconf_node(instantiate_func: Any, config: Any) ->
     assert OmegaConf.is_config(obj.c)
 
 
+@mark.parametrize(
+    "src",
+    [
+        (
+            ListConfig(
+                [
+                    {
+                        "_target_": "tests.instantiate.AClass",
+                        "b": 200,
+                        "c": {"x": 10, "y": "${0.b}"},
+                    }
+                ]
+            )
+        )
+    ],
+)
+def test_class_instantiate_list_item(instantiate_func: Any, config: Any) -> Any:
+    obj = instantiate_func(config[0], a=10, d=AnotherClass(99))
+    assert obj == AClass(a=10, b=200, c={"x": 10, "y": 200}, d=AnotherClass(99))
+    assert OmegaConf.is_config(obj.c)
+
+
 @mark.parametrize("src", [{"_target_": "tests.instantiate.Adam"}])
 def test_instantiate_adam(instantiate_func: Any, config: Any) -> None:
     with raises(
