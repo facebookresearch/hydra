@@ -4,7 +4,8 @@ on:
   push:
     branches: [ "main", "0.11_branch", "1.0_branch", "1.1_branch", "1.2_branch", "gh-pages" ]
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
   schedule:
     - cron: "33 9 * * 0"
 
