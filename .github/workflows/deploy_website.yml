@@ -5,6 +5,9 @@ on:
     branches:
       - main
       - deploy_website_hydra
+  pull_request:
+    branches:
+      - main
 
 jobs:
   deploy:
