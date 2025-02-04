@@ -1,7 +1,7 @@
 name: Deploy website
 
 on:
-   push:
+  push:
     branches:
       - main
       - deploy_website_hydra
