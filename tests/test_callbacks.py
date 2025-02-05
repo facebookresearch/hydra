@@ -88,6 +88,28 @@ chdir_hydra_root()
             r"\[JOB\] on_job_start task_function: <function my_app at 0x[0-9a-fA-F]+>",
             id="on_job_start_task_function",
         ),
+        param(
+            "tests/test_apps/app_with_callbacks/app_with_log_compose_callback/my_app.py",
+            ["age=10"],
+            dedent(
+                """\
+                [HYDRA] 
+                ====
+                Composed config .*tests/test_apps/app_with_callbacks/app_with_log_compose_callback/config
+                age: 10
+                name: James Bond
+                group:
+                  name: a
+                
+                ----
+                Includes overrides \\[.*'age=10'.*\\]
+                Used defaults \\['config_schema', 'config', 'group/a'\\]
+                ====
+                job_name: test, name: James Bond, age: 10, group: a
+                """
+            ),
+            id="on_compose_callback",
+        ),
     ],
 )
 def test_app_with_callbacks(
