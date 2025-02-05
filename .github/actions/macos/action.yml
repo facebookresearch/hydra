@@ -41,7 +41,7 @@ runs:
       conda run -n hydra pip install nox --progress-bar off
     shell: bash
   - name: save_cache
-    uses: actions/cache@v3.3.2
+    uses: actions/cache@v4.0.0
     with:
       path: |-
         ~/miniconda3
