@@ -6,7 +6,7 @@ import pickle
 from pathlib import Path
 from typing import Any, List, Optional
 
-from omegaconf import DictConfig, flag_override, OmegaConf
+from omegaconf import DictConfig, OmegaConf, flag_override
 
 from hydra.core.global_hydra import GlobalHydra
 from hydra.core.utils import JobReturn, JobStatus
@@ -97,8 +97,7 @@ class LogComposeCallback(Callback):
             if not d.package.startswith("hydra")
         ]
         self.log.info(
-            f"""
-====
+            f"""====
 Composed config {config_dir}/{str(config_name)}
 {OmegaConf.to_yaml(config)}
 ----

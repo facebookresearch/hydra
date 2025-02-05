@@ -2,10 +2,10 @@
 import logging
 from typing import Any, List, Optional
 
+from omegaconf import DictConfig
+
 from hydra.core.utils import JobReturn
 from hydra.types import TaskFunction
-
-from omegaconf import DictConfig
 
 logger = logging.getLogger(__name__)
 

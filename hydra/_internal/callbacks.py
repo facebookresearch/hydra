@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import warnings
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from omegaconf import DictConfig, OmegaConf
 
@@ -28,6 +28,8 @@ class CallbacksCache(metaclass=Singleton):
 
 
 class Callbacks:
+    callbacks: List[Any]
+
     def __init__(
         self, config: Optional[DictConfig] = None, check_cache: bool = True
     ) -> None:

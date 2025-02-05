@@ -93,14 +93,13 @@ chdir_hydra_root()
             ["age=10"],
             dedent(
                 """\
-                [HYDRA] 
-                ====
-                Composed config .*tests/test_apps/app_with_callbacks/app_with_log_compose_callback/config
+                [HYDRA] ====
+                Composed config .*tests.test_apps.app_with_callbacks.app_with_log_compose_callback.config
                 age: 10
                 name: James Bond
                 group:
                   name: a
-                
+
                 ----
                 Includes overrides \\[.*'age=10'.*\\]
                 Used defaults \\['config_schema', 'config', 'group/a'\\]
