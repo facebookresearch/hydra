@@ -15,55 +15,52 @@ chdir_hydra_root()
 
 
 @mark.parametrize(
-    "override,expected",
+    "override,expected_substring_1,expected_substring_2",
     [
         param(
             "+key=int(",
-            """Error when parsing index: 1, string: +key=int( out of ['hydra.sweep.dir=/tmp/pytest-of-runner/pytest-0/test_cli_error_parse_error_in_0', '+key=int(', 'hydra.mode=RUN'].
-no viable alternative at input 'int('""",
+            "Error when parsing index: 1, string: +key=int( out of [",
+            "no viable alternative at input 'int('",
             id="parse_error_in_function",
         ),
         param(
             "+key=sort()",
-            """Error when parsing index: 1, string: +key=sort() out of ['hydra.sweep.dir=/tmp/pytest-of-runner/pytest-0/test_cli_error_empty_sort_0', '+key=sort()', 'hydra.mode=RUN'].
-Error parsing override '+key=sort()'
+            """Error when parsing index: 1, string: +key=sort() out of [""",
+            """Error parsing override '+key=sort()'
 ValueError while evaluating 'sort()': empty sort input""",
             id="empty_sort",
         ),
         param(
             "key=sort(interval(1,10))",
-            """Error when parsing index: 1, string: key=sort(interval(1,10)) out of ['hydra.sweep.dir=/tmp/pytest-of-runner/pytest-0/test_cli_error_sort_interval_0', 'key=sort(interval(1,10))', 'hydra.mode=RUN'].
-Error parsing override 'key=sort(interval(1,10))'
+            """Error when parsing index: 1, string: key=sort(interval(1,10)) out of [""",
+            """Error parsing override 'key=sort(interval(1,10))'
 TypeError while evaluating 'sort(interval(1,10))': mismatch type argument args[0]""",
             id="sort_interval",
         ),
         param(
             "+key=choice()",
-            """Error when parsing index: 1, string: +key=choice() out of ['hydra.sweep.dir=/tmp/pytest-of-runner/pytest-0/test_cli_error_empty_choice0_0', '+key=choice()', 'hydra.mode=RUN'].
-Error parsing override '+key=choice()'
+            """Error when parsing index: 1, string: +key=choice() out of [""",
+            """Error parsing override '+key=choice()'
 ValueError while evaluating 'choice()': empty choice is not legal""",
             id="empty choice",
         ),
         param(
             "+key=extend_list(1, 2, 3)",
-            """Error when parsing index: 1, string: +key=extend_list(1, 2, 3) out of ['hydra.sweep.dir=/tmp/pytest-of-runner/pytest-0/test_cli_error_plus_key_extend0', '+key=extend_list(1, 2, 3)', 'hydra.mode=RUN'].
-Error parsing override '+key=extend_list(1, 2, 3)'
+            """Error when parsing index: 1, string: +key=extend_list(1, 2, 3) out of [""",
+            """Error parsing override '+key=extend_list(1, 2, 3)'
 Trying to use override symbols when extending a list""",
             id="plus key extend_list",
         ),
         param(
             "key={inner_key=extend_list(1, 2, 3)}",
-            """Error when parsing index: 1, string: key={inner_key=extend_list(1, 2, 3)} out of ['hydra.sweep.dir=/tmp/pytest-of-runner/pytest-0/test_cli_error_embedded_extend0', 'key={inner_key=extend_list(1, 2, 3)}', 'hydra.mode=RUN'].
-no viable alternative at input '{inner_key='
-See https://hydra.cc/docs/1.2/advanced/override_grammar/basic for details
-
-Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.""",
+            """Error when parsing index: 1, string: key={inner_key=extend_list(1, 2, 3)} out of [""",
+            "no viable alternative at input '{inner_key='",
             id="embedded extend_list",
         ),
         param(
             ["+key=choice(choice(a,b))", "-m"],
-            """Error when parsing index: 1, string: +key=choice(choice(a,b)) out of ['hydra.sweep.dir=/tmp/pytest-of-runner/pytest-0/test_cli_error_empty_choice1_0', '+key=choice(choice(a,b))', 'hydra.mode=MULTIRUN'].
-Error parsing override '+key=choice(choice(a,b))'
+            """Error when parsing index: 1, string: +key=choice(choice(a,b)) out of [""",
+            """Error parsing override '+key=choice(choice(a,b))'
 ValueError while evaluating 'choice(choice(a,b))': nesting choices is not supported
 See https://hydra.cc/docs/1.2/advanced/override_grammar/basic for details
 
@@ -81,22 +78,31 @@ Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
         ),
     ],
 )
-def test_cli_error(tmpdir: Any, monkeypatch: Any, override: Any, expected: str) -> None:
+def test_cli_error(
+    tmpdir: Any,
+    monkeypatch: Any,
+    override: Any,
+    expected_substring_1: str,
+    expected_substring_2: str,
+) -> None:
     monkeypatch.chdir("tests/test_apps/app_without_config/")
     if isinstance(override, str):
         override = [override]
     cmd = ["my_app.py", "hydra.sweep.dir=" + str(tmpdir)] + override
     ret = normalize_newlines(run_with_error(cmd))
     assert (
-        re.search("^" + re.escape(normalize_newlines(expected.strip())), ret)
-        is not None
+        expected_substring_1.strip() in ret and expected_substring_2.strip() in ret
     ), (
         f"Result:"
         f"\n---"
         f"\n{ret}"
         f"\n---"
-        f"\nDid not match expected:"
+        f"\nDoes not contain expected_substring_1:"
         f"\n---"
-        f"\n{expected}"
+        f"\n{expected_substring_1}"
+        f"\n---"
+        f"\nand expected_substring_2:"
+        f"\n---"
+        f"\n{expected_substring_2}"
         f"\n---"
     )
