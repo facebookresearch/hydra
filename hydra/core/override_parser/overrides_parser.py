@@ -2,11 +2,6 @@
 import sys
 from typing import Any, List, Optional
 
-from omegaconf.vendor.antlr4.error.Errors import (
-    LexerNoViableAltException,
-    RecognitionException,
-)
-
 from hydra._internal.grammar import grammar_functions
 from hydra._internal.grammar.functions import Functions
 from hydra.core.config_loader import ConfigLoader
@@ -16,6 +11,11 @@ from hydra.core.override_parser.overrides_visitor import (
 )
 from hydra.core.override_parser.types import Override
 from hydra.errors import HydraException, OverrideParseException
+
+from omegaconf.vendor.antlr4.error.Errors import (
+    LexerNoViableAltException,
+    RecognitionException,
+)
 
 try:
     from hydra.grammar.gen.OverrideLexer import (  # type: ignore[attr-defined]
@@ -98,7 +98,8 @@ class OverridesParser:
                     msg = f"Error parsing override '{override}'" f"\n{e}"
                 raise OverrideParseException(
                     override=override,
-                    message=f"Error when parsing index: {idx}, string: {override} out of {overrides}. {msg}"
+                    message=f"Error when parsing index: {idx}, string: {override} out of {overrides}."
+                    f"\n{msg}"
                     f"\nSee https://hydra.cc/docs/1.2/advanced/override_grammar/basic for details",
                 ) from e.__cause__
             assert isinstance(parsed, Override)
