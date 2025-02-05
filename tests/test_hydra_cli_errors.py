@@ -3,13 +3,13 @@ import re
 from pathlib import Path
 from typing import Any
 
+from pytest import mark, param
+
 from hydra.test_utils.test_utils import (
     chdir_hydra_root,
     normalize_newlines,
     run_with_error,
 )
-
-from pytest import mark, param
 
 chdir_hydra_root()
 

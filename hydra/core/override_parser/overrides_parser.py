@@ -2,6 +2,11 @@
 import sys
 from typing import Any, List, Optional
 
+from omegaconf.vendor.antlr4.error.Errors import (
+    LexerNoViableAltException,
+    RecognitionException,
+)
+
 from hydra._internal.grammar import grammar_functions
 from hydra._internal.grammar.functions import Functions
 from hydra.core.config_loader import ConfigLoader
@@ -11,11 +16,6 @@ from hydra.core.override_parser.overrides_visitor import (
 )
 from hydra.core.override_parser.types import Override
 from hydra.errors import HydraException, OverrideParseException
-
-from omegaconf.vendor.antlr4.error.Errors import (
-    LexerNoViableAltException,
-    RecognitionException,
-)
 
 try:
     from hydra.grammar.gen.OverrideLexer import (  # type: ignore[attr-defined]
