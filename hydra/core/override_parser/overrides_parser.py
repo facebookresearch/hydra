@@ -80,7 +80,7 @@ class OverridesParser:
 
     def parse_overrides(self, overrides: List[str]) -> List[Override]:
         ret: List[Override] = []
-        for override in overrides:
+        for idx, override in enumerate(overrides):
             try:
                 parsed = self.parse_rule(override, "override")
             except HydraException as e:
@@ -98,7 +98,8 @@ class OverridesParser:
                     msg = f"Error parsing override '{override}'" f"\n{e}"
                 raise OverrideParseException(
                     override=override,
-                    message=f"{msg}"
+                    message=f"Error when parsing index: {idx}, string: {override} out of {overrides}."
+                    f"\n{msg}"
                     f"\nSee https://hydra.cc/docs/1.2/advanced/override_grammar/basic for details",
                 ) from e.__cause__
             assert isinstance(parsed, Override)
