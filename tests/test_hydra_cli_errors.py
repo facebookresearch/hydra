@@ -53,8 +53,7 @@ Trying to use override symbols when extending a list""",
         ),
         param(
             "key={inner_key=extend_list(1, 2, 3)}",
-            """Error when parsing index: 1, string: key={inner_key=extend_list(1, 2, 3)}
-out of ['hydra.sweep.dir=/tmp/pytest-of-runner/pytest-0/test_cli_error_embedded_extend0', 'key={inner_key=extend_list(1, 2, 3)}', 'hydra.mode=RUN']. 
+            """Error when parsing index: 1, string: key={inner_key=extend_list(1, 2, 3)} out of ['hydra.sweep.dir=/tmp/pytest-of-runner/pytest-0/test_cli_error_embedded_extend0', 'key={inner_key=extend_list(1, 2, 3)}', 'hydra.mode=RUN']. 
 no viable alternative at input '{inner_key='""",
             id="embedded extend_list",
         ),
