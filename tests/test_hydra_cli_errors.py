@@ -74,6 +74,7 @@ Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
 
 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
 """,
+            "",
             id="config_dir_not_found",
         ),
     ],
