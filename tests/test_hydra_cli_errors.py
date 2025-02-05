@@ -57,8 +57,7 @@ Trying to use override symbols when extending a list""",
 no viable alternative at input '{inner_key='
 See https://hydra.cc/docs/1.2/advanced/override_grammar/basic for details
 
-Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
-""",
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.""",
             id="embedded extend_list",
         ),
         param(
