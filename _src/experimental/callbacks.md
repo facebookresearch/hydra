@@ -79,6 +79,18 @@ class Callback:
         See hydra.core.utils.JobReturn for more.
         """
         ...
+
+    def on_compose_config(
+        self,
+        config: DictConfig,
+        config_name: Optional[str],
+        overrides: List[str],
+    ) -> None:
+        """
+        Called during the compose phase and before the config is returned to the user.
+        config is the composed config with overrides applied.
+        """
+        ...
 ```
 </details>
 
@@ -109,7 +121,7 @@ def my_app(cfg: DictConfig) -> None:
 
 if __name__ == "__main__":
     my_app()
-``` 
+```
 </div>
 <div className="col col--3" >
 
@@ -134,7 +146,7 @@ Job ended,uploading...
 </div>
 </div>
 
-Now let's take a look at the configurations. 
+Now let's take a look at the configurations.
 
 <div className="row">
 <div className="col col--4">
@@ -177,10 +189,13 @@ hydra:
 
 
 ### Callback ordering
-The `on_run_start` or `on_multirun_start` method will get called first,
-followed by `on_job_start` (called once for each job).
+The `on_compose_config` method will be called first, followed by
+`on_run_start` or `on_multirun_start` method will get called first,
+and then `on_job_start` (called once for each job).
 After each job `on_job_end` is called, and finally either `on_run_end` or
 `on_multirun_end` is called one time before the application exits.
+
+When using the `compose` function directly, only `on_compose_config` will be called.
 
 In the `hydra.callbacks` section of your config, you can use a list to register multiple callbacks. They will be called in the final composed order for `start` events and
 in reversed order for `end` events. So, for example, suppose we have the following composed config:
@@ -202,5 +217,6 @@ followed by `MyCallback1.on_job_end`.
 ### Example callbacks
 
 We've included some example callbacks  <GithubLink to="hydra/experimental/callbacks.py">here</GithubLink>:
-- `LogJobReturnCallback` is especially useful for logging errors when running on a remote cluster (e.g. slurm.) 
+- `LogJobReturnCallback` is especially useful for logging errors when running on a remote cluster (e.g. slurm.)
 - `PickleJobInfoCallback` can be used to reproduce a Hydra job. See [here](/experimental/rerun.md) for more.
+- `LogComposeCallback` is useful for logging whenever a new config is composed and the overrides and context used.
