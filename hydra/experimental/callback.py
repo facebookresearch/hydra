@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Any
+from typing import Any, List, Optional
 
 from omegaconf import DictConfig
 
@@ -61,5 +61,17 @@ class Callback:
 
         `job_return` contains info that could be useful for logging or post-processing.
         See hydra.core.utils.JobReturn for more.
+        """
+        ...
+
+    def on_compose_config(
+        self,
+        config: DictConfig,
+        config_name: Optional[str],
+        overrides: List[str],
+    ) -> None:
+        """
+        Called during the compose phase and before the config is returned to the user.
+        config is the composed config with overrides applied.
         """
         ...

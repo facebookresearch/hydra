@@ -1,0 +1,14 @@
+age: 7
+name: James Bond
+
+hydra:
+  job:
+    name: test
+  callbacks:
+    log_compose:
+      _target_: hydra.experimental.callbacks.LogComposeCallback
+
+defaults:
+  - config_schema
+  - _self_
+  - group: a
