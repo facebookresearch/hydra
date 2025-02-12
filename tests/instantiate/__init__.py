@@ -85,6 +85,21 @@ class OuterClass:
             return "OuterClass.Nested.method return"
 
 
+class ChainClass:
+    def __init__(self, a) -> None:
+        self.a = a
+
+    def set_b(self, b) -> "ChainClass":
+        self.b = b
+        return self
+
+    def __eq__(self, other: Any) -> bool:
+        if isinstance(other, ChainClass):
+            return self.a == other.a and self.b == other.b
+        else:
+            return False
+
+
 def add_values(a: int, b: int) -> int:
     return a + b
 
