@@ -6,7 +6,7 @@ runs:
   using: composite
   steps:
   - name: restore_cache
-    uses: actions/cache@v3.3.2
+    uses: actions/cache@v4.2.0
     with:
       key: "-${{ inputs.cache_key_version }}-macos-sys-{{ .Branch }}-${{ inputs.py_version }}"
       path: |-
@@ -41,7 +41,7 @@ runs:
       conda run -n hydra pip install nox --progress-bar off
     shell: bash
   - name: save_cache
-    uses: actions/cache@v4.0.0
+    uses: actions/cache@v4.2.0
     with:
       path: |-
         ~/miniconda3

@@ -17,4 +17,5 @@ read-version
 setuptools
 towncrier
 twine
+types-setuptools
 yamllint
