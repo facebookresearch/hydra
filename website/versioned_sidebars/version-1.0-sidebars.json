@@ -1,5 +1,5 @@
 {
-  "version-1.0/docs": [
+  "docs": [
     {
       "collapsed": true,
       "type": "category",
@@ -7,11 +7,11 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-1.0/intro"
+          "id": "intro"
         },
         {
           "type": "doc",
-          "id": "version-1.0/terminology"
+          "id": "terminology"
         }
       ]
     },
@@ -22,7 +22,7 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-1.0/tutorials/intro"
+          "id": "tutorials/intro"
         },
         {
           "collapsed": true,
@@ -36,27 +36,27 @@
               "items": [
                 {
                   "type": "doc",
-                  "id": "version-1.0/tutorials/basic/your_first_app/simple_cli"
+                  "id": "tutorials/basic/your_first_app/simple_cli"
                 },
                 {
                   "type": "doc",
-                  "id": "version-1.0/tutorials/basic/your_first_app/config_file"
+                  "id": "tutorials/basic/your_first_app/config_file"
                 },
                 {
                   "type": "doc",
-                  "id": "version-1.0/tutorials/basic/your_first_app/using_config"
+                  "id": "tutorials/basic/your_first_app/using_config"
                 },
                 {
                   "type": "doc",
-                  "id": "version-1.0/tutorials/basic/your_first_app/config_groups"
+                  "id": "tutorials/basic/your_first_app/config_groups"
                 },
                 {
                   "type": "doc",
-                  "id": "version-1.0/tutorials/basic/your_first_app/defaults"
+                  "id": "tutorials/basic/your_first_app/defaults"
                 },
                 {
                   "type": "doc",
-                  "id": "version-1.0/tutorials/basic/your_first_app/composition"
+                  "id": "tutorials/basic/your_first_app/composition"
                 }
               ]
             },
@@ -67,23 +67,23 @@
               "items": [
                 {
                   "type": "doc",
-                  "id": "version-1.0/tutorials/basic/running_your_app/multi-run"
+                  "id": "tutorials/basic/running_your_app/multi-run"
                 },
                 {
                   "type": "doc",
-                  "id": "version-1.0/tutorials/basic/running_your_app/working_directory"
+                  "id": "tutorials/basic/running_your_app/working_directory"
                 },
                 {
                   "type": "doc",
-                  "id": "version-1.0/tutorials/basic/running_your_app/logging"
+                  "id": "tutorials/basic/running_your_app/logging"
                 },
                 {
                   "type": "doc",
-                  "id": "version-1.0/tutorials/basic/running_your_app/debugging"
+                  "id": "tutorials/basic/running_your_app/debugging"
                 },
                 {
                   "type": "doc",
-                  "id": "version-1.0/tutorials/basic/running_your_app/tab_completion"
+                  "id": "tutorials/basic/running_your_app/tab_completion"
                 }
               ]
             }
@@ -96,39 +96,39 @@
           "items": [
             {
               "type": "doc",
-              "id": "version-1.0/tutorials/structured_config/intro"
+              "id": "tutorials/structured_config/intro"
             },
             {
               "type": "doc",
-              "id": "version-1.0/tutorials/structured_config/minimal_example"
+              "id": "tutorials/structured_config/minimal_example"
             },
             {
               "type": "doc",
-              "id": "version-1.0/tutorials/structured_config/hierarchical_static_config"
+              "id": "tutorials/structured_config/hierarchical_static_config"
             },
             {
               "type": "doc",
-              "id": "version-1.0/tutorials/structured_config/config_groups"
+              "id": "tutorials/structured_config/config_groups"
             },
             {
               "type": "doc",
-              "id": "version-1.0/tutorials/structured_config/defaults"
+              "id": "tutorials/structured_config/defaults"
             },
             {
               "type": "doc",
-              "id": "version-1.0/tutorials/structured_config/schema"
+              "id": "tutorials/structured_config/schema"
             },
             {
               "type": "doc",
-              "id": "version-1.0/tutorials/structured_config/static_schema"
+              "id": "tutorials/structured_config/static_schema"
             },
             {
               "type": "doc",
-              "id": "version-1.0/tutorials/structured_config/dynamic_schema"
+              "id": "tutorials/structured_config/dynamic_schema"
             },
             {
               "type": "doc",
-              "id": "version-1.0/tutorials/structured_config/config_store"
+              "id": "tutorials/structured_config/config_store"
             }
           ]
         }
@@ -146,25 +146,25 @@
           "items": [
             {
               "type": "doc",
-              "id": "version-1.0/patterns/instantiate_objects/overview"
+              "id": "patterns/instantiate_objects/overview"
             },
             {
               "type": "doc",
-              "id": "version-1.0/patterns/instantiate_objects/config_files"
+              "id": "patterns/instantiate_objects/config_files"
             },
             {
               "type": "doc",
-              "id": "version-1.0/patterns/instantiate_objects/structured_config"
+              "id": "patterns/instantiate_objects/structured_config"
             }
           ]
         },
         {
           "type": "doc",
-          "id": "version-1.0/patterns/specializing_config"
+          "id": "patterns/specializing_config"
         },
         {
           "type": "doc",
-          "id": "version-1.0/patterns/write_protect_config_node"
+          "id": "patterns/write_protect_config_node"
         }
       ]
     },
@@ -175,23 +175,23 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-1.0/configure_hydra/intro"
+          "id": "configure_hydra/intro"
         },
         {
           "type": "doc",
-          "id": "version-1.0/configure_hydra/job"
+          "id": "configure_hydra/job"
         },
         {
           "type": "doc",
-          "id": "version-1.0/configure_hydra/logging"
+          "id": "configure_hydra/logging"
         },
         {
           "type": "doc",
-          "id": "version-1.0/configure_hydra/workdir"
+          "id": "configure_hydra/workdir"
         },
         {
           "type": "doc",
-          "id": "version-1.0/configure_hydra/app_help"
+          "id": "configure_hydra/app_help"
         }
       ]
     },
@@ -202,7 +202,7 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-1.0/plugins/colorlog"
+          "id": "plugins/colorlog"
         },
         {
           "collapsed": true,
@@ -211,19 +211,19 @@
           "items": [
             {
               "type": "doc",
-              "id": "version-1.0/plugins/joblib_launcher"
+              "id": "plugins/joblib_launcher"
             },
             {
               "type": "doc",
-              "id": "version-1.0/plugins/ray_launcher"
+              "id": "plugins/ray_launcher"
             },
             {
               "type": "doc",
-              "id": "version-1.0/plugins/rq_launcher"
+              "id": "plugins/rq_launcher"
             },
             {
               "type": "doc",
-              "id": "version-1.0/plugins/submitit_launcher"
+              "id": "plugins/submitit_launcher"
             }
           ]
         },
@@ -234,11 +234,11 @@
           "items": [
             {
               "type": "doc",
-              "id": "version-1.0/plugins/ax_sweeper"
+              "id": "plugins/ax_sweeper"
             },
             {
               "type": "doc",
-              "id": "version-1.0/plugins/nevergrad_sweeper"
+              "id": "plugins/nevergrad_sweeper"
             }
           ]
         }
@@ -251,7 +251,7 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-1.0/advanced/hydra-command-line-flags"
+          "id": "advanced/hydra-command-line-flags"
         },
         {
           "collapsed": true,
@@ -260,37 +260,37 @@
           "items": [
             {
               "type": "doc",
-              "id": "version-1.0/advanced/override_grammar/basic"
+              "id": "advanced/override_grammar/basic"
             },
             {
               "type": "doc",
-              "id": "version-1.0/advanced/override_grammar/extended"
+              "id": "advanced/override_grammar/extended"
             }
           ]
         },
         {
           "type": "doc",
-          "id": "version-1.0/advanced/overriding_packages"
+          "id": "advanced/overriding_packages"
         },
         {
           "type": "doc",
-          "id": "version-1.0/advanced/search_path"
+          "id": "advanced/search_path"
         },
         {
           "type": "doc",
-          "id": "version-1.0/advanced/plugins"
+          "id": "advanced/plugins"
         },
         {
           "type": "doc",
-          "id": "version-1.0/advanced/app_packaging"
+          "id": "advanced/app_packaging"
         },
         {
           "type": "doc",
-          "id": "version-1.0/advanced/jupyter_notebooks"
+          "id": "advanced/jupyter_notebooks"
         },
         {
           "type": "doc",
-          "id": "version-1.0/advanced/unit_testing"
+          "id": "advanced/unit_testing"
         }
       ]
     },
@@ -301,11 +301,11 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-1.0/experimental/intro"
+          "id": "experimental/intro"
         },
         {
           "type": "doc",
-          "id": "version-1.0/experimental/compose_api"
+          "id": "experimental/compose_api"
         }
       ]
     },
@@ -316,23 +316,23 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-1.0/development/overview"
+          "id": "development/overview"
         },
         {
           "type": "doc",
-          "id": "version-1.0/development/testing"
+          "id": "development/testing"
         },
         {
           "type": "doc",
-          "id": "version-1.0/development/style_guide"
+          "id": "development/style_guide"
         },
         {
           "type": "doc",
-          "id": "version-1.0/development/documentation"
+          "id": "development/documentation"
         },
         {
           "type": "doc",
-          "id": "version-1.0/development/release"
+          "id": "development/release"
         }
       ]
     },
@@ -348,29 +348,23 @@
           "items": [
             {
               "type": "doc",
-              "id": "version-1.0/upgrades/0.11_to_1.0/config_path_changes"
+              "id": "upgrades/0.11_to_1.0/config_path_changes"
             },
             {
               "type": "doc",
-              "id": "version-1.0/upgrades/0.11_to_1.0/adding_a_package_directive"
+              "id": "upgrades/0.11_to_1.0/adding_a_package_directive"
             },
             {
               "type": "doc",
-              "id": "version-1.0/upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
+              "id": "upgrades/0.11_to_1.0/strict_mode_flag_deprecated"
             },
             {
               "type": "doc",
-              "id": "version-1.0/upgrades/0.11_to_1.0/object_instantiation_changes"
+              "id": "upgrades/0.11_to_1.0/object_instantiation_changes"
             }
           ]
         }
       ]
-    },
-    {
-      "collapsed": true,
-      "type": "category",
-      "label": "FB Only",
-      "items": []
     }
   ]
 }

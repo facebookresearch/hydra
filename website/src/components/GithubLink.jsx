@@ -6,7 +6,7 @@ import React from "react";
 import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 
-import {useActiveVersion} from "@theme/hooks/useDocs";
+import {useActiveVersion} from "@docusaurus/plugin-content-docs/client";
 
 function createGitHubUrl(to) {
     const activeVersion = useActiveVersion();
@@ -30,7 +30,7 @@ export default function GithubLink(props) {
 }
 
 export function ExampleGithubLink(props) {
-    const text = props.text ?? "Example (Click Here)" 
+    const text = props.text ?? "Example (Click Here)"
     return (
         <GithubLink {...props}>
             <span>&nbsp;</span><img
