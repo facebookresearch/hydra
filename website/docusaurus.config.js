@@ -37,8 +37,8 @@ module.exports = {
             isCloseable: false,
         },
         algolia: {
-            appId: '7J87T2XWQE',
-            apiKey: '0eef8c2cde4d26206b70a3d6de40e74e',
+            appId: 'KVTVP1D78C',
+            apiKey: '9585f41bc128c5a99dd9f22827e1e836',
             indexName: 'hydra',
             algoliaOptions: {},
         },
