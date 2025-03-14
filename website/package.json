@@ -10,10 +10,10 @@
     "deploy": "docusaurus deploy"
   },
   "dependencies": {
-    "@docusaurus/core": "^2.0.0-beta.14",
-    "@docusaurus/preset-classic": "^2.0.0-beta.14",
+    "@docusaurus/core": "^2.4.3",
+    "@docusaurus/preset-classic": "^2.4.3",
     "classnames": "^2.2.6",
-    "docusaurus-plugin-internaldocs-fb": "0.10.4",
+    "docusaurus-plugin-internaldocs-fb": "1.19.1",
     "node-fetch": "^2.6.7",
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.2",
@@ -34,6 +34,8 @@
     "react-live": "^3.2.0",
     "send": "^0.19.0",
     "serve-static": "^1.16.2",
+    "string-width": "4.2.0",
+    "strip-ansi": "6.0.0",
     "webpack": "^5.94",
     "webpack-dev-middleware": "^7.4.2",
     "webpack-dev-server": "^4.5.0"
