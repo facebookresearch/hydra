@@ -25,6 +25,7 @@
     "body-parser": "^1.20.3",
     "cookie": "^1.0.1",
     "cross-spawn": "^7.0.5",
+    "dompurify": "^3.2.4",
     "express": "^4.21.1",
     "follow-redirects": "^1.15.6",
     "ip": "^2.0.1",
