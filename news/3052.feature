@@ -1,0 +1,1 @@
+Support Hydra plugins via Python Entry Points
