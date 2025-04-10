@@ -1,36 +1,63 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List, Tuple, TypeAlias, Union, Callable
+from pathlib import Path
 
 from hydra.core.config_store import ConfigStore
 
 
+CheapConstraintFn: TypeAlias = Any
+"""A cheap function that can be used to prune bad candidates early.
+See https://facebookresearch.github.io/nevergrad/\
+    optimization.html#optimization-with-constraints for more details.
+Actual type: Callable[[Dict[str, Any]], Union[bool, float]]
+"""
+
+
 @dataclass
-class ScalarConfigSpec:
+class ScalarOrArrayConfigSpec:
     """Representation of all the options to define
     a scalar.
     """
 
     # lower bound if any
-    lower: Optional[float] = None
+    lower: Optional[float | List[float]] = None
 
     # upper bound if any
-    upper: Optional[float] = None
+    upper: Optional[float | List[float]] = None
 
     # initial value
     # default to the middle point if completely bounded
-    init: Optional[float] = None
+    # ng.p.Array used if init is set
+    init: Optional[float | List[float]] = None
 
     # step size for an update
     # defaults to 1 if unbounded
     # or 1/6 of the range if completely bounded
-    step: Optional[float] = None
+    step: Optional[float | List[float]] = None
 
     # cast to integer
     integer: bool = False
 
     # logarithmically distributed
+    # unused for array types
     log: bool = False
+
+    # shape of the array
+    # if set, ng.p.Array is used
+    shape: Optional[Tuple[int]] = None
+
+
+@dataclass
+class CallbackConfigSpec:
+    """Representation of all the options to define a callback."""
+
+    # name of the callback. either "ask" or "tell"
+    name: str
+
+    # callback function
+    # Actual type: Callable[[ng.optimizers.base.Optimizers], None]
+    callback: Any
 
 
 @dataclass
@@ -64,6 +91,22 @@ class OptimConf:
 
     # maximum authorized failure rate for a batch of parameters
     max_failure_rate: float = 0.0
+
+    # Define cheap constraints configuration via Python methods.
+    # If given, `cheap_constraints` should be a dict of callables with the signature
+    # Callable[[Dict[str, Any]], float | bool]. The input dict is the parameterization
+    # of the trial.
+    # https://facebookresearch.github.io/nevergrad/optimization.html#optimization-with-constraints
+    cheap_constraints: Dict[str, CheapConstraintFn] = field(default_factory=dict)
+
+    # These are callbacks that are passed to the optimizer via the `register_callback`
+    # method. See the Nevergrad documentation for more information.
+    # https://facebookresearch.github.io/nevergrad/optimizers_ref.html#nevergrad.optimizers.base.Optimizer.register_callback
+    callbacks: Dict[str, CallbackConfigSpec] = field(default_factory=dict)
+
+    # Load an existing study and resume it. This is the path to the saved optimizer
+    # pickle. You can pickle the optimizer via the OptimizerDump callback.
+    load_if_exists: Optional[Path] = None
 
 
 @dataclass
