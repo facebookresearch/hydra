@@ -8,8 +8,8 @@ import warnings
 from collections import defaultdict
 from dataclasses import dataclass, field
 from timeit import default_timer as timer
+from types import ModuleType
 from typing import Any, Dict, List, Optional, Tuple, Type
-
 from omegaconf import DictConfig
 
 from hydra._internal.sources_registry import SourcesRegistry
@@ -22,6 +22,12 @@ from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import HydraContext, TaskFunction
 from hydra.utils import instantiate
+
+if sys.version_info < (3, 10):
+    from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
+
 
 PLUGIN_TYPES: List[Type[Plugin]] = [
     Plugin,
@@ -54,21 +60,28 @@ class Plugins(metaclass=Singleton):
         self._initialize()
 
     def _initialize(self) -> None:
-        top_level: List[Any] = []
+        modules: List[str] = []
         core_plugins = importlib.import_module("hydra._internal.core_plugins")
-        top_level.append(core_plugins)
+        modules.extend(self._get_all_submodules_from_toplevel(core_plugins))
 
+        # Plugins in the hydra_plugins namespace.
         try:
             hydra_plugins = importlib.import_module("hydra_plugins")
-            top_level.append(hydra_plugins)
+            modules.extend(self._get_all_submodules_from_toplevel(hydra_plugins))
         except ImportError:
             # If no plugins are installed the hydra_plugins package does not exist.
             pass
 
+        # Plugins specified via entry points: https://packaging.python.org/en/latest/specifications/entry-points/
+        # The entry points are registered in the hydra.plugins namespace.
+        discovered_plugins = entry_points(group="hydra.plugins")
+        for entry_point in discovered_plugins:
+            modules.append(entry_point.value)
+
         self.plugin_type_to_subclass_list = defaultdict(list)
         self.class_name_to_class = {}
 
-        scanned_plugins, self.stats = self._scan_all_plugins(modules=top_level)
+        scanned_plugins, self.stats = self._scan_all_plugins(modules=modules)
         for clazz in scanned_plugins:
             self._register(clazz)
 
@@ -160,77 +173,95 @@ class Plugins(metaclass=Singleton):
         return launcher
 
     @staticmethod
+    def _get_all_submodules_from_toplevel(
+        module: ModuleType,
+    ) -> List[str]:
+        submodules: List[str] = []
+        for importer, modname, ispkg in pkgutil.walk_packages(
+            path=module.__path__, prefix=module.__name__ + ".", onerror=lambda x: None
+        ):
+            module_name = modname.rsplit(".", 1)[-1]
+            # If module's name starts with "_", do not load the module.
+            # But if the module's name starts with a "__", then load the
+            # module.
+            if module_name.startswith("_") and not module_name.startswith("__"):
+                continue
+            submodules.append(modname)
+        return submodules
+
+    @staticmethod
     def _scan_all_plugins(
-        modules: List[Any],
+        modules: List[str],
     ) -> Tuple[List[Type[Plugin]], ScanStats]:
+        """
+        Scan all plugins in the given namespace modules and other modules.
+        """
         stats = ScanStats()
         stats.total_time = timer()
 
         scanned_plugins: List[Type[Plugin]] = []
+        for modname in modules:
+            try:
+                import_time = timer()
 
-        for mdl in modules:
-            for importer, modname, ispkg in pkgutil.walk_packages(
-                path=mdl.__path__, prefix=mdl.__name__ + ".", onerror=lambda x: None
-            ):
-                try:
-                    module_name = modname.rsplit(".", 1)[-1]
-                    # If module's name starts with "_", do not load the module.
-                    # But if the module's name starts with a "__", then load the
-                    # module.
-                    if module_name.startswith("_") and not module_name.startswith("__"):
-                        continue
-                    import_time = timer()
-
-                    with warnings.catch_warnings(record=True) as recorded_warnings:
-                        if sys.version_info < (3, 10):
-                            m = importer.find_module(modname)  # type: ignore
-                            assert m is not None
-                            loaded_mod = m.load_module(modname)
-                        else:
-                            spec = importer.find_spec(modname)  # type: ignore[call-arg]
-                            assert spec is not None
-                            if modname in sys.modules:
-                                loaded_mod = sys.modules[modname]
-                            else:
-                                loaded_mod = importlib.util.module_from_spec(spec)
-                            if loaded_mod is not None:
-                                assert spec.loader is not None
-                                spec.loader.exec_module(loaded_mod)
-                                sys.modules[modname] = loaded_mod
-
-                    import_time = timer() - import_time
-                    if len(recorded_warnings) > 0:
-                        sys.stderr.write(
-                            f"[Hydra plugins scanner] : warnings from '{modname}'. Please report to plugin author.\n"
-                        )
-                        for w in recorded_warnings:
-                            warnings.showwarning(
-                                message=w.message,
-                                category=w.category,
-                                filename=w.filename,
-                                lineno=w.lineno,
-                                file=w.file,
-                                line=w.line,
+                with warnings.catch_warnings(record=True) as recorded_warnings:
+                    spec = importlib.util.find_spec(modname)  # type: ignore[call-arg]
+                    if spec is None:
+                        # assume this is not a namespace package, but rather
+                        # a submodule of another package registered via
+                        # entry points
+                        spec = importlib.util.find_spec(modname.split(".", 1)[0])  # type: ignore[call-arg]
+                        if spec is None:
+                            # if spec is still none, must be a problem
+                            sys.stderr.write(
+                                f"[Hydra plugins scanner] : failed loading module '{modname}'. Please report to plugin author.\n"
                             )
+                            continue
+                        else:
+                            # import the submod, will resolve in sys.modules
+                            importlib.import_module(modname)
+                    if modname in sys.modules:
+                        loaded_mod = sys.modules[modname]
+                    else:
+                         loaded_mod = importlib.util.module_from_spec(spec)
+                         if loaded_mod is not None:
+                            assert spec.loader is not None
+                            spec.loader.exec_module(loaded_mod)
+                            sys.modules[modname] = loaded_mod
 
-                    stats.total_modules_import_time += import_time
-
-                    assert modname not in stats.modules_import_time
-                    stats.modules_import_time[modname] = import_time
-
-                    if loaded_mod is not None:
-                        for name, obj in inspect.getmembers(loaded_mod):
-                            if _is_concrete_plugin_type(obj):
-                                scanned_plugins.append(obj)
-                except ImportError as e:
-                    warnings.warn(
-                        message=f"\n"
-                        f"\tError importing '{modname}'.\n"
-                        f"\tPlugin is incompatible with this Hydra version or buggy.\n"
-                        f"\tRecommended to uninstall or upgrade plugin.\n"
-                        f"\t\t{type(e).__name__} : {e}",
-                        category=UserWarning,
+                import_time = timer() - import_time
+                if len(recorded_warnings) > 0:
+                    sys.stderr.write(
+                        f"[Hydra plugins scanner] : warnings from '{modname}'. Please report to plugin author.\n"
                     )
+                    for w in recorded_warnings:
+                        warnings.showwarning(
+                            message=w.message,
+                            category=w.category,
+                            filename=w.filename,
+                            lineno=w.lineno,
+                            file=w.file,
+                            line=w.line,
+                        )
+
+                stats.total_modules_import_time += import_time
+
+                assert modname not in stats.modules_import_time
+                stats.modules_import_time[modname] = import_time
+
+                if loaded_mod is not None:
+                    for name, obj in inspect.getmembers(loaded_mod):
+                        if _is_concrete_plugin_type(obj):
+                            scanned_plugins.append(obj)
+            except ImportError as e:
+                warnings.warn(
+                    message=f"\n"
+                    f"\tError importing '{modname}'.\n"
+                    f"\tPlugin is incompatible with this Hydra version or buggy.\n"
+                    f"\tRecommended to uninstall or upgrade plugin.\n"
+                    f"\t\t{type(e).__name__} : {e}",
+                    category=UserWarning,
+                )
 
         stats.total_time = timer() - stats.total_time
         return scanned_plugins, stats

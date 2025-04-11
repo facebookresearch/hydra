@@ -11,21 +11,46 @@ If you develop plugins, please join the <a href="https://hydra-framework.zulipch
 
 import GithubLink from "@site/src/components/GithubLink"
 
-Hydra plugins must be registered before they can be used. There are two ways to register a plugin:
+Hydra plugins must be registered before they can be used. There are three ways to register a plugin:
 - via the automatic plugin discovery process, which discovers plugins located in the `hydra_plugins` namespace package
+- via Python's [entry points](https://packaging.python.org/en/latest/specifications/entry-points/) mechanism under the `hydra.plugins` group
 - by calling the `register` method on Hydra's `Plugins` singleton class
 
 ## Automatic Plugin discovery process
 
 If you create a Plugin and want it to be discovered automatically by Hydra, keep the following things in mind:
-- Hydra plugins can be either a standalone Python package, or a part of your existing Python package. 
-  In both cases - They should be in the namespace module `hydra_plugins` (This is a top level module, Your plugin will __NOT__ be discovered if you place it in `mylib.hydra_plugins`).
+- Hydra plugins can be either a standalone Python package, or a part of your existing Python package.
+  When using the automatic namespace package registration mechanism, they should be in the namespace module `hydra_plugins` (This is a top level module, Your plugin will __NOT__ be discovered if you place it in `mylib.hydra_plugins`).
 - Do __NOT__ place an `__init__.py` file in `hydra_plugins` (doing so may break other installed Hydra plugins).
-  
+
 The plugin discovery process runs whenever Hydra starts. During plugin discovery, Hydra scans for plugins in all the submodules of `hydra_plugins`. Hydra will import each module and look for plugins defined in that module.
 Any module under `hydra_plugins` that is slow to import will slow down the startup of __ALL__ Hydra applications.
 Plugins with expensive imports can exclude individual files from Hydra's plugin discovery process by prefixing them with `_` (but not `__`).
 For example, the file `_my_plugin_lib.py` would not be imported and scanned, while `my_plugin_lib.py` would be.
+
+## Plugin registration via Entry points
+
+When using [entry points](https://packaging.python.org/en/latest/specifications/entry-points/), ensure you provide the path to your plugin module.
+For example, given a plugin in module `my_module.my_plugin_lib`:
+
+**setup.py**
+```python
+setup(
+  ...
+  entry_points={
+    'hydra.plugins': [
+      'my-plugin-lib = my_module.my_plugin_lib',
+    ],
+  },
+  ...
+)
+```
+
+**pyproject.toml**
+```toml
+[project.entry-points."hydra.plugins"]
+my-plugin-lib = "my_module.my_plugin_lib"
+```
 
 ## Plugin registration via the `Plugins.register` method
 
@@ -60,7 +85,7 @@ Installed Hydra Plugins
         ...
 ```
 - Run the example application to see that that your plugin is doing something.
-- *[Optional]* If you want the plugin be embedded in your existing application/library, move the `hydra_plugins` directory 
-   and make sure that it's included as a namespace module in your final Python package. See the `setup.py` 
+- *[Optional]* If you want the plugin be embedded in your existing application/library, move the `hydra_plugins` directory
+   and make sure that it's included as a namespace module in your final Python package. See the `setup.py`
    file included with the example plugin for hints (typically this involves using `find_namespace_packages(include=["hydra_plugins.*"])`).
 - Hack on your plugin, Ensure that the recommended tests and any tests you want to add are passing.
