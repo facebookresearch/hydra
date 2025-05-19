@@ -183,11 +183,33 @@ def clear_instantiate_cache():
     _ONCE_STORAGE.clear()
 
 
+def _once_storage_swap(func):
+    @wraps(func)
+    def wrapper(*args, cache=None, **kwargs):
+        global _ONCE_STORAGE
+
+        if cache is None:
+            cache = _ONCE_STORAGE
+
+        OLD = _ONCE_STORAGE
+        _ONCE_STORAGE = cache
+        try:
+            # Call the original function
+            result = func(*args, **kwargs)
+        finally:
+            # Restore the original _ONCE_STORAGE
+            _ONCE_STORAGE = OLD
+        # Return the result of the original function
+        return result
+
+    return wrapper
+
+@_once_storage_swap
 def instantiate(
     config: Any,
     *args: Any,
     _skip_instantiate_full_deepcopy_: bool = False,
-    cache: Dict[str, Any] = None,
+    cache: Union[Dict[str, Any], None] = None, #implemented in decorator
     **kwargs: Any,
 ) -> Any:
     """
@@ -236,9 +258,6 @@ def instantiate(
     if config is None:
         return None
 
-    if cache is None:
-        cache = _ONCE_STORAGE
-
     # TargetConf edge case
     if isinstance(config, TargetConf) and config._target_ == "???":
         # Specific check to give a good warning about failure to annotate _target_ as a string.
@@ -285,12 +304,7 @@ def instantiate(
         _partial_ = config.pop(_Keys.PARTIAL, False)
 
         return instantiate_node(
-            config,
-            *args,
-            recursive=_recursive_,
-            convert=_convert_,
-            partial=_partial_,
-            cache=cache,
+            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
         )
     elif OmegaConf.is_list(config):
         # Finalize config (convert targets to strings, merge with kwargs)
@@ -317,12 +331,7 @@ def instantiate(
             )
 
         return instantiate_node(
-            config,
-            *args,
-            recursive=_recursive_,
-            convert=_convert_,
-            partial=_partial_,
-            cache=cache,
+            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
         )
     else:
         raise InstantiationException(
@@ -349,31 +358,6 @@ def _convert_node(node: Any, convert: Union[ConvertMode, str]) -> Any:
             )
     return node
 
-
-def _once_storage_swap(func):
-    @wraps(func)
-    def wrapper(*args, cache=None, **kwargs):
-        global _ONCE_STORAGE
-
-        if cache is None:
-            cache = _ONCE_STORAGE
-
-        OLD = _ONCE_STORAGE
-        _ONCE_STORAGE = cache
-        try:
-            # Call the original function
-            result = func(*args, **kwargs)
-        finally:
-            # Restore the original _ONCE_STORAGE
-            _ONCE_STORAGE = OLD
-        # Return the result of the original function
-        return result
-
-    # Decorate the function with the wrapper
-
-    return wrapper
-
-
 @_once_storage_swap
 def instantiate_node(
     node: Any,
@@ -381,7 +365,7 @@ def instantiate_node(
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
     partial: bool = False,
-    cache : Dict[str, Any] = None, # optional parameter implemented in decorator 
+    cache: Union[Dict[str, Any], None] = None,  # implemented in decorator
 ) -> Any:
     # Return None if config is None
     if node is None or (OmegaConf.is_config(node) and node._is_none()):
