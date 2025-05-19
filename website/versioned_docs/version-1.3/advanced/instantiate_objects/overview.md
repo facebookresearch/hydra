@@ -393,6 +393,42 @@ from hydra.utils import instantiate
 instantiate({"_target_": "builtins.len"}, [1,2,3])  # this works, returns the number 3
 ```
 
+### Once-only instantiation
+
+If you want to ensure that a given object is instantiated only once and reused, 
+set the `_once_` key to `True` in the config. Hydra will cache the object based
+on an md5 hash of the config yaml. 
+```yaml
+# config.yaml 
+foo:
+  _target_: my_app.Foo
+  _once_: true
+
+bar:
+  foo1: ${foo}
+  foo2: ${foo}
+```
+Now, instantiate will render `foo`, `bar.foo1` and `bar.foo2` as the same object,
+even when calling instantiate multiple times or in nested invocations.
+
+To use a manaully specified key, set the `_key_` to a unique string value.
+This usually should not be necessary.
+
+```yaml
+# config.yaml 
+foo:
+  _target_: my_app.Foo
+  _once_: true
+  _key_: my_unique_key
+bar:
+  foo1: ${foo}
+  foo2: ${foo}
+```
+
+Here also, 
+All the other instantiation parameters are still valid, including `_recursive_`,
+ `_partial_`, and `_convert_`.
+
 ### Dotpath lookup machinery
 
 Hydra looks up a given `_target_` by attempting to find a module that

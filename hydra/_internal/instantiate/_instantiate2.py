@@ -2,6 +2,7 @@
 
 import copy
 import functools
+import hashlib
 from enum import Enum
 from textwrap import dedent
 from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
@@ -22,6 +23,8 @@ class _Keys(str, Enum):
     RECURSIVE = "_recursive_"
     ARGS = "_args_"
     PARTIAL = "_partial_"
+    ONCE = "_once_"
+    KEY = "_key_"
 
 
 def _is_target(x: Any) -> bool:
@@ -199,6 +202,10 @@ def instantiate(
                                   are converted to dicts / lists too.
                    _partial_: If True, return functools.partial wrapped method or object
                               False by default. Configure per target.
+                   _once_: If True, instantiate the target only once and return the same
+                           instance on subsequent calls.
+                   _key_: If set, this used to identify the target in the 'once' cache.
+                          Note required in most cases.
     :param _skip_instantiate_full_deepcopy_: If True, deep copy just the input config instead
                     of full config before resolving omegaconf interpolations, which may
                     potentially modify the config's parent/sibling configs in place.
@@ -261,9 +268,12 @@ def instantiate(
         _recursive_ = config.pop(_Keys.RECURSIVE, True)
         _convert_ = config.pop(_Keys.CONVERT, ConvertMode.NONE)
         _partial_ = config.pop(_Keys.PARTIAL, False)
+        _once_ = config.pop(_Keys.ONCE, False)
+        _key_ = config.pop(_Keys.KEY, None)
 
         return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
+            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_,
+            once=_once_, once_key=_key_
         )
     elif OmegaConf.is_list(config):
         # Finalize config (convert targets to strings, merge with kwargs)
@@ -283,6 +293,8 @@ def instantiate(
         _recursive_ = kwargs.pop(_Keys.RECURSIVE, True)
         _convert_ = kwargs.pop(_Keys.CONVERT, ConvertMode.NONE)
         _partial_ = kwargs.pop(_Keys.PARTIAL, False)
+        _once_ = kwargs.pop(_Keys.ONCE, False)
+        _key_ = kwargs.pop(_Keys.KEY, None)
 
         if _partial_:
             raise InstantiationException(
@@ -290,7 +302,8 @@ def instantiate(
             )
 
         return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
+            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_,
+            once=_once_, once_key=_key_
         )
     else:
         raise InstantiationException(
@@ -318,12 +331,20 @@ def _convert_node(node: Any, convert: Union[ConvertMode, str]) -> Any:
     return node
 
 
+_ONCE_STORAGE: Dict[str, Any] = {}
+
+# could be exposed in public API if useful
+def clear_instantiate_cache():
+    _ONCE_STORAGE.clear()
+
 def instantiate_node(
     node: Any,
     *args: Any,
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
     partial: bool = False,
+    once: bool = False,
+    once_key: Union[str, None] = None,
 ) -> Any:
     # Return None if config is None
     if node is None or (OmegaConf.is_config(node) and node._is_none()):
@@ -348,6 +369,26 @@ def instantiate_node(
             msg += f"\nfull_key: {full_key}"
         raise TypeError(msg)
 
+    # Use cached return if once is True and it exists in the cache.
+    if once:
+        if once_key is None:
+            once_key = OmegaConf.to_yaml(node)
+            if recursive != True:
+                once_key = f"recursive: ${recursive}\n\n{once_key}"
+            if convert != ConvertMode.NONE:
+                once_key = f"convert: ${convert}\n\n{once_key}"                
+            if partial != True:
+                once_key = f"partial: ${partial}\n\n{once_key}"
+            once_key = hashlib.md5(once_key.encode()).hexdigest()
+
+        if once_key in _ONCE_STORAGE:
+            return _ONCE_STORAGE[once_key]
+        else:
+            _ONCE_STORAGE[once_key] = instantiate_node(
+                node, *args, convert=convert, recursive=recursive, partial=partial, once=False
+            )
+            return _ONCE_STORAGE[once_key]
+
     if not isinstance(partial, bool):
         msg = f"Instantiation: _partial_ flag must be a bool, got {type( partial )}"
         if node and full_key:
@@ -371,7 +412,7 @@ def instantiate_node(
             return lst
 
     elif OmegaConf.is_dict(node):
-        exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_"})
+        exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_", "_once_", "_key_"})
         if _is_target(node):
             _target_ = _resolve_target(node.get(_Keys.TARGET), full_key)
             kwargs = {}

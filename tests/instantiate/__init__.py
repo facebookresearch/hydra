@@ -451,3 +451,14 @@ def recisinstance(got: Any, expected: Any) -> bool:
 
 
 an_object = object()
+
+_counts = {}
+
+def counter_function(key = None):
+    _counts[key] = _counts.get(key, 0) + 1
+    return _counts[key], key
+
+
+def counter_function2(key=None):
+    _counts[key] = _counts.get(key, 0) + 1
+    return _counts[key], key, "counter_function2"

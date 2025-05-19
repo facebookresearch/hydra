@@ -2195,3 +2195,149 @@ def test_dict_as_none(instantiate_func: Any) -> None:
     cfg = OmegaConf.structured(DictValuesConf)
     obj = instantiate_func(config=cfg)
     assert obj.d is None
+
+
+def test_instantiated_once_standard(
+    instantiate_func: Any,
+) -> None:
+    
+    # standard behiavior calls target every time
+    cfg = {
+        "_target_": "tests.instantiate.counter_function",
+        "key": "test1", # key is pass through as second return by counter_function
+    }
+    assert instantiate_func(cfg) == (1, "test1")
+    assert instantiate_func(cfg) == (2, "test1")
+
+
+def test_instantiated_once_keyword(
+    instantiate_func: Any,
+) -> None:
+    # once behavior calls target only once
+    cfg = {
+        "_target_": "tests.instantiate.counter_function",
+        "_once_": True,
+        "key": "test2",
+    }
+
+    assert instantiate_func(cfg) == (1, "test2")
+    assert instantiate_func(cfg) == (1, "test2")
+
+
+def test_instantiated_once_manual_key(
+    instantiate_func: Any,
+) -> None:
+    # With manual key, gives same value, even if config changes. 
+    cfg = {
+        "_target_": "tests.instantiate.counter_function",
+        "_once_": True,
+        "_key_": "key1",
+        "key": "test3",  # reusing key does not
+    }
+    assert instantiate_func(cfg) == (1, "test3")
+    assert instantiate_func(cfg) == (1, "test3")
+
+    cfg["key"] = "test3-changed"
+    cfg["disallowed_arg"] = "broken"
+    assert instantiate_func(cfg) == (1, "test3")
+    assert instantiate_func(cfg) == (1, "test3")
+
+def test_instantiated_once_auto_key(
+    instantiate_func: Any,
+) -> None:
+    # With auto key, change to the config makes new call.
+    cfg = {
+        "_target_": "tests.instantiate.counter_function",
+        "_once_": True,
+        "key": "test4",  # reusing key does not
+    }
+    assert instantiate_func(cfg) == (1, "test4")
+    assert instantiate_func(cfg) == (1, "test4")
+
+    cfg["key"] = "test4-changed"
+    assert instantiate_func(cfg) == (1, "test4-changed")
+    assert instantiate_func(cfg) == (1, "test4-changed")
+
+
+def test_instantiated_once_partial_change(
+    instantiate_func: Any,
+) -> None:
+    # Changing _partial_ makes new signature for auto key.
+    cfg = {
+        "_target_": "tests.instantiate.counter_function",
+        "_once_": True,
+        "key": "test5",
+    }
+    instance = instantiate_func(cfg)
+    assert instantiate_func(cfg) == (1, 'test5')
+
+    # setting as default does nothing
+    # this behaivior can be removed in the future if code base changes.
+    cfg["_partial_"] = False
+    assert instantiate_func(cfg) is instance
+    
+    # changing busts the key
+    cfg["_partial_"] = True
+    assert instantiate_func(cfg) is not instance 
+
+    instance = instantiate_func(cfg)
+    assert instance() == (2, "test5")  # return is being called now!
+    assert instance() == (3, "test5")
+
+def test_instantiated_once_recursive_change(
+    instantiate_func: Any,
+) -> None:
+    # Changing _recursive_ makes new signature for auto key.
+    cfg = {
+        "_target_": "tests.instantiate.counter_function",
+        "_once_": True,
+        "key": "test6",
+    }
+    instance = instantiate_func(cfg)
+    assert instance is instantiate_func(cfg)
+
+    # setting as default does nothing
+    # this behaivior can be removed in the future if code base changes.
+    cfg["_recursive_"] = True 
+    assert instance is instantiate_func(cfg) 
+
+    # changing busts the key
+    cfg["_recursive_"] = False  
+    assert instance is not instantiate_func(cfg) 
+
+def test_instantiated_once_convert_change(
+    instantiate_func: Any,
+) -> None:
+    # Changing _convert_ makes new signature for auto key.
+    cfg = {
+        "_target_": "tests.instantiate.counter_function",
+        "_once_": True,
+        "key": "test7",
+    }
+    instance = instantiate_func(cfg)
+    assert instance is instantiate_func(cfg)
+
+    # setting as default does nothing
+    # this behaivior can be removed in the future if code base changes.
+    cfg["_convert_"] = "none"
+    assert instance is instantiate_func(cfg)
+
+    # changing busts the key
+    cfg["_convert_"] = "partial"
+    assert instance is not instantiate_func(cfg)
+
+
+def test_instantiated_once_target_change(
+    instantiate_func: Any,
+) -> None:
+    # Changing _recursive_ makes new signature for auto key.
+    cfg = {
+        "_target_": "tests.instantiate.counter_function",
+        "_once_": True,
+        "key": "test8",
+    }
+    assert instantiate_func(cfg) == (1, "test8")
+
+    cfg["_target_"] = "tests.instantiate.counter_function2"
+    assert instantiate_func(cfg) == (2, "test8", "counter_function2")
+    assert instantiate_func(cfg) == (2, "test8", "counter_function2")
