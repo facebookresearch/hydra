@@ -2387,7 +2387,7 @@ def test_instantiated_once_nested(
     assert x.ref2 == (1, "test9")
 
 
-def test_instantiated_once_clear_cache(
+def test_instantiated_once_custom_cache(
     instantiate_func: Any,
 ) -> None:
     # Changing _recursive_ makes new signature for auto key.
@@ -2395,17 +2395,31 @@ def test_instantiated_once_clear_cache(
         "base": {
             "_target_": "tests.instantiate.counter_function",
             "_once_": True,
-            "key": "test9",
+            "key": "test10",
         },
         "ref1": "${base}",
         "ref2": "${base}",
     }
-    x = instantiate_func(cfg)
-    assert x.base == (1, "test9")
-    assert x.ref1 == (1, "test9")
-    assert x.ref2 == (1, "test9")
 
-    x = instantiate_func(cfg)
-    assert x.base == (1, "test9")
-    assert x.ref1 == (1, "test9")
-    assert x.ref2 == (1, "test9")
+    # you can specify a custom cache too.
+    cache = {}
+    x = instantiate_func(cfg, cache=cache)
+    assert x.base == (1, "test10")
+    assert x.ref1 == (1, "test10")
+    assert x.ref2 == (1, "test10")
+
+    x = instantiate_func(cfg, cache=cache)
+    assert x.base == (1, "test10")
+    assert x.ref1 == (1, "test10")
+    assert x.ref2 == (1, "test10")
+
+    # this way, the is cache is ephermeral.
+    x = instantiate_func(cfg, cache={})
+    assert x.base == (2, "test10")
+    assert x.ref1 == (2, "test10")
+    assert x.ref2 == (2, "test10")
+
+    x = instantiate_func(cfg, cache={})
+    assert x.base == (3, "test10")
+    assert x.ref1 == (3, "test10")
+    assert x.ref2 == (3, "test10")

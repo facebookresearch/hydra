@@ -6,6 +6,7 @@ import hashlib
 from enum import Enum
 from textwrap import dedent
 from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
+from functools import wraps
 
 from omegaconf import OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
@@ -174,10 +175,19 @@ def _deep_copy_full_config(subconfig: Any) -> Any:
     return OmegaConf.select(full_config_copy, full_key)
 
 
+_ONCE_STORAGE: Dict[str, Any] = {}
+
+
+# could be exposed in public API if useful
+def clear_instantiate_cache():
+    _ONCE_STORAGE.clear()
+
+
 def instantiate(
     config: Any,
     *args: Any,
     _skip_instantiate_full_deepcopy_: bool = False,
+    cache: Dict[str, Any] = None,
     **kwargs: Any,
 ) -> Any:
     """
@@ -210,6 +220,8 @@ def instantiate(
                     of full config before resolving omegaconf interpolations, which may
                     potentially modify the config's parent/sibling configs in place.
                     False by default.
+    :param cache: Optional cache to use for once storage. Pass '{}' to discard the cache
+                  between different calls to instantiate.
     :param args: Optional positional parameters pass-through
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
@@ -223,6 +235,9 @@ def instantiate(
     # Return None if config is None
     if config is None:
         return None
+
+    if cache is None:
+        cache = _ONCE_STORAGE
 
     # TargetConf edge case
     if isinstance(config, TargetConf) and config._target_ == "???":
@@ -269,7 +284,14 @@ def instantiate(
         _convert_ = config.pop(_Keys.CONVERT, ConvertMode.NONE)
         _partial_ = config.pop(_Keys.PARTIAL, False)
 
-        return instantiate_node(config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_)
+        return instantiate_node(
+            config,
+            *args,
+            recursive=_recursive_,
+            convert=_convert_,
+            partial=_partial_,
+            cache=cache,
+        )
     elif OmegaConf.is_list(config):
         # Finalize config (convert targets to strings, merge with kwargs)
         # Create copy to avoid mutating original
@@ -294,7 +316,14 @@ def instantiate(
                 "The _partial_ keyword is not compatible with top-level list instantiation"
             )
 
-        return instantiate_node(config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_)
+        return instantiate_node(
+            config,
+            *args,
+            recursive=_recursive_,
+            convert=_convert_,
+            partial=_partial_,
+            cache=cache,
+        )
     else:
         raise InstantiationException(
             dedent(
@@ -321,18 +350,38 @@ def _convert_node(node: Any, convert: Union[ConvertMode, str]) -> Any:
     return node
 
 
-_ONCE_STORAGE: Dict[str, Any] = {}
+def _once_storage_swap(func):
+    @wraps(func)
+    def wrapper(*args, cache=None, **kwargs):
+        global _ONCE_STORAGE
 
-# could be exposed in public API if useful
-def clear_instantiate_cache():
-    _ONCE_STORAGE.clear()
+        if cache is None:
+            cache = _ONCE_STORAGE
 
+        OLD = _ONCE_STORAGE
+        _ONCE_STORAGE = cache
+        try:
+            # Call the original function
+            result = func(*args, **kwargs)
+        finally:
+            # Restore the original _ONCE_STORAGE
+            _ONCE_STORAGE = OLD
+        # Return the result of the original function
+        return result
+
+    # Decorate the function with the wrapper
+
+    return wrapper
+
+
+@_once_storage_swap
 def instantiate_node(
     node: Any,
     *args: Any,
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
     partial: bool = False,
+    cache : Dict[str, Any] = None, # optional parameter implemented in decorator 
 ) -> Any:
     # Return None if config is None
     if node is None or (OmegaConf.is_config(node) and node._is_none()):
@@ -348,7 +397,6 @@ def instantiate_node(
         convert = node[_Keys.CONVERT] if _Keys.CONVERT in node else convert
         recursive = node[_Keys.RECURSIVE] if _Keys.RECURSIVE in node else recursive
         partial = node[_Keys.PARTIAL] if _Keys.PARTIAL in node else partial
-        
 
     full_key = node._get_full_key(None)
 
@@ -359,7 +407,7 @@ def instantiate_node(
         raise TypeError(msg)
 
     if not isinstance(partial, bool):
-        msg = f"Instantiation: _partial_ flag must be a bool, got {type( partial )}"
+        msg = f"Instantiation: _partial_ flag must be a bool, got {type(partial)}"
         if node and full_key:
             msg += f"\nfull_key: {full_key}"
         raise TypeError(msg)
@@ -385,7 +433,7 @@ def instantiate_node(
         if "_once_" in node:
             once = node.pop(_Keys.ONCE)
             if _Keys.KEY in node:
-              once_key = node.pop(_Keys.KEY)
+                once_key = node.pop(_Keys.KEY)
             elif once is not True:
                 once_key = once
             else:
@@ -393,7 +441,7 @@ def instantiate_node(
                 if recursive != True:
                     once_key = f"recursive: ${recursive}\n\n{once_key}"
                 if convert != ConvertMode.NONE:
-                    once_key = f"convert: ${convert}\n\n{once_key}"                
+                    once_key = f"convert: ${convert}\n\n{once_key}"
                 if partial != True:
                     once_key = f"partial: ${partial}\n\n{once_key}"
                 once_key = hashlib.md5(once_key.encode()).hexdigest()
@@ -406,7 +454,9 @@ def instantiate_node(
                 )
             return _ONCE_STORAGE[once_key]
 
-        exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_", "_once_", "_key_"})
+        exclude_keys = set(
+            {"_target_", "_convert_", "_recursive_", "_partial_", "_once_", "_key_"}
+        )
         if _is_target(node):
             _target_ = _resolve_target(node.get(_Keys.TARGET), full_key)
             kwargs = {}
