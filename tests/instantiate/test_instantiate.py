@@ -2200,11 +2200,10 @@ def test_dict_as_none(instantiate_func: Any) -> None:
 def test_instantiated_once_standard(
     instantiate_func: Any,
 ) -> None:
-    
     # standard behiavior calls target every time
     cfg = {
         "_target_": "tests.instantiate.counter_function",
-        "key": "test1", # key is pass through as second return by counter_function
+        "key": "test1",  # key is pass through as second return by counter_function
     }
     assert instantiate_func(cfg) == (1, "test1")
     assert instantiate_func(cfg) == (2, "test1")
@@ -2224,10 +2223,10 @@ def test_instantiated_once_keyword(
     assert instantiate_func(cfg) == (1, "test2")
 
 
-def test_instantiated_once_manual_key(
+def test_instantiated_once_manual_key1(
     instantiate_func: Any,
 ) -> None:
-    # With manual key, gives same value, even if config changes. 
+    # With manual key, gives same value, even if config changes.
     cfg = {
         "_target_": "tests.instantiate.counter_function",
         "_once_": True,
@@ -2241,6 +2240,25 @@ def test_instantiated_once_manual_key(
     cfg["disallowed_arg"] = "broken"
     assert instantiate_func(cfg) == (1, "test3")
     assert instantiate_func(cfg) == (1, "test3")
+
+
+def test_instantiated_once_manual_key2(
+    instantiate_func: Any,
+) -> None:
+    # With manual key, gives same value, even if config changes.
+    cfg = {
+        "_target_": "tests.instantiate.counter_function",
+        "_once_": "key_in_once_variable",
+        "key": "test3.1",  # reusing key does not
+    }
+    assert instantiate_func(cfg) == (1, "test3.1")
+    assert instantiate_func(cfg) == (1, "test3.1")
+
+    cfg["key"] = "test3-changed"
+    cfg["disallowed_arg"] = "broken"
+    assert instantiate_func(cfg) == (1, "test3.1")
+    assert instantiate_func(cfg) == (1, "test3.1")
+
 
 def test_instantiated_once_auto_key(
     instantiate_func: Any,
@@ -2269,20 +2287,21 @@ def test_instantiated_once_partial_change(
         "key": "test5",
     }
     instance = instantiate_func(cfg)
-    assert instantiate_func(cfg) == (1, 'test5')
+    assert instantiate_func(cfg) == (1, "test5")
 
     # setting as default does nothing
     # this behaivior can be removed in the future if code base changes.
     cfg["_partial_"] = False
     assert instantiate_func(cfg) is instance
-    
+
     # changing busts the key
     cfg["_partial_"] = True
-    assert instantiate_func(cfg) is not instance 
+    assert instantiate_func(cfg) is not instance
 
     instance = instantiate_func(cfg)
     assert instance() == (2, "test5")  # return is being called now!
     assert instance() == (3, "test5")
+
 
 def test_instantiated_once_recursive_change(
     instantiate_func: Any,
@@ -2298,12 +2317,13 @@ def test_instantiated_once_recursive_change(
 
     # setting as default does nothing
     # this behaivior can be removed in the future if code base changes.
-    cfg["_recursive_"] = True 
-    assert instance is instantiate_func(cfg) 
+    cfg["_recursive_"] = True
+    assert instance is instantiate_func(cfg)
 
     # changing busts the key
-    cfg["_recursive_"] = False  
-    assert instance is not instantiate_func(cfg) 
+    cfg["_recursive_"] = False
+    assert instance is not instantiate_func(cfg)
+
 
 def test_instantiated_once_convert_change(
     instantiate_func: Any,
@@ -2341,3 +2361,51 @@ def test_instantiated_once_target_change(
     cfg["_target_"] = "tests.instantiate.counter_function2"
     assert instantiate_func(cfg) == (2, "test8", "counter_function2")
     assert instantiate_func(cfg) == (2, "test8", "counter_function2")
+
+
+def test_instantiated_once_nested(
+    instantiate_func: Any,
+) -> None:
+    # Changing _recursive_ makes new signature for auto key.
+    cfg = {
+        "base": {
+            "_target_": "tests.instantiate.counter_function",
+            "_once_": True,
+            "key": "test9",
+        },
+        "ref1": "${base}",
+        "ref2": "${base}",
+    }
+    x = instantiate_func(cfg)
+    assert x.base == (1, "test9")
+    assert x.ref1 == (1, "test9")
+    assert x.ref2 == (1, "test9")
+
+    x = instantiate_func(cfg)
+    assert x.base == (1, "test9")
+    assert x.ref1 == (1, "test9")
+    assert x.ref2 == (1, "test9")
+
+
+def test_instantiated_once_clear_cache(
+    instantiate_func: Any,
+) -> None:
+    # Changing _recursive_ makes new signature for auto key.
+    cfg = {
+        "base": {
+            "_target_": "tests.instantiate.counter_function",
+            "_once_": True,
+            "key": "test9",
+        },
+        "ref1": "${base}",
+        "ref2": "${base}",
+    }
+    x = instantiate_func(cfg)
+    assert x.base == (1, "test9")
+    assert x.ref1 == (1, "test9")
+    assert x.ref2 == (1, "test9")
+
+    x = instantiate_func(cfg)
+    assert x.base == (1, "test9")
+    assert x.ref1 == (1, "test9")
+    assert x.ref2 == (1, "test9")

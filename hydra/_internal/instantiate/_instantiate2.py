@@ -268,13 +268,8 @@ def instantiate(
         _recursive_ = config.pop(_Keys.RECURSIVE, True)
         _convert_ = config.pop(_Keys.CONVERT, ConvertMode.NONE)
         _partial_ = config.pop(_Keys.PARTIAL, False)
-        _once_ = config.pop(_Keys.ONCE, False)
-        _key_ = config.pop(_Keys.KEY, None)
 
-        return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_,
-            once=_once_, once_key=_key_
-        )
+        return instantiate_node(config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_)
     elif OmegaConf.is_list(config):
         # Finalize config (convert targets to strings, merge with kwargs)
         # Create copy to avoid mutating original
@@ -293,18 +288,13 @@ def instantiate(
         _recursive_ = kwargs.pop(_Keys.RECURSIVE, True)
         _convert_ = kwargs.pop(_Keys.CONVERT, ConvertMode.NONE)
         _partial_ = kwargs.pop(_Keys.PARTIAL, False)
-        _once_ = kwargs.pop(_Keys.ONCE, False)
-        _key_ = kwargs.pop(_Keys.KEY, None)
 
         if _partial_:
             raise InstantiationException(
                 "The _partial_ keyword is not compatible with top-level list instantiation"
             )
 
-        return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_,
-            once=_once_, once_key=_key_
-        )
+        return instantiate_node(config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_)
     else:
         raise InstantiationException(
             dedent(
@@ -343,8 +333,6 @@ def instantiate_node(
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
     partial: bool = False,
-    once: bool = False,
-    once_key: Union[str, None] = None,
 ) -> Any:
     # Return None if config is None
     if node is None or (OmegaConf.is_config(node) and node._is_none()):
@@ -360,6 +348,7 @@ def instantiate_node(
         convert = node[_Keys.CONVERT] if _Keys.CONVERT in node else convert
         recursive = node[_Keys.RECURSIVE] if _Keys.RECURSIVE in node else recursive
         partial = node[_Keys.PARTIAL] if _Keys.PARTIAL in node else partial
+        
 
     full_key = node._get_full_key(None)
 
@@ -368,26 +357,6 @@ def instantiate_node(
         if full_key:
             msg += f"\nfull_key: {full_key}"
         raise TypeError(msg)
-
-    # Use cached return if once is True and it exists in the cache.
-    if once:
-        if once_key is None:
-            once_key = OmegaConf.to_yaml(node)
-            if recursive != True:
-                once_key = f"recursive: ${recursive}\n\n{once_key}"
-            if convert != ConvertMode.NONE:
-                once_key = f"convert: ${convert}\n\n{once_key}"                
-            if partial != True:
-                once_key = f"partial: ${partial}\n\n{once_key}"
-            once_key = hashlib.md5(once_key.encode()).hexdigest()
-
-        if once_key in _ONCE_STORAGE:
-            return _ONCE_STORAGE[once_key]
-        else:
-            _ONCE_STORAGE[once_key] = instantiate_node(
-                node, *args, convert=convert, recursive=recursive, partial=partial, once=False
-            )
-            return _ONCE_STORAGE[once_key]
 
     if not isinstance(partial, bool):
         msg = f"Instantiation: _partial_ flag must be a bool, got {type( partial )}"
@@ -412,6 +381,31 @@ def instantiate_node(
             return lst
 
     elif OmegaConf.is_dict(node):
+        # Use cached return if once is True and it exists in the cache.
+        if "_once_" in node:
+            once = node.pop(_Keys.ONCE)
+            if _Keys.KEY in node:
+              once_key = node.pop(_Keys.KEY)
+            elif once is not True:
+                once_key = once
+            else:
+                once_key = OmegaConf.to_yaml(node)
+                if recursive != True:
+                    once_key = f"recursive: ${recursive}\n\n{once_key}"
+                if convert != ConvertMode.NONE:
+                    once_key = f"convert: ${convert}\n\n{once_key}"                
+                if partial != True:
+                    once_key = f"partial: ${partial}\n\n{once_key}"
+                once_key = hashlib.md5(once_key.encode()).hexdigest()
+
+            if once_key in _ONCE_STORAGE:
+                return _ONCE_STORAGE[once_key]
+            else:
+                _ONCE_STORAGE[once_key] = instantiate_node(
+                    node, *args, convert=convert, recursive=recursive, partial=partial
+                )
+            return _ONCE_STORAGE[once_key]
+
         exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_", "_once_", "_key_"})
         if _is_target(node):
             _target_ = _resolve_target(node.get(_Keys.TARGET), full_key)
