@@ -37,9 +37,10 @@
     "serve-static": "^1.16.2",
     "string-width": "4.2.0",
     "strip-ansi": "6.0.0",
+    "undici": "^6.21.2",
     "webpack": "^5.94",
     "webpack-dev-middleware": "^7.4.2",
-    "webpack-dev-server": "^4.5.0"
+    "webpack-dev-server": "^5.2.1"
   },
   "browserslist": {
     "production": [
