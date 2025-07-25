@@ -4,8 +4,11 @@ import re
 from textwrap import dedent
 from typing import Any
 
-from _pytest.python_api import RaisesContext, raises
-from pytest import mark, param
+try:
+    from _pytest.python_api import RaisesContext
+except ImportError:
+    from _pytest.raises import RaisesExc as RaisesContext  # type: ignore
+from pytest import mark, param, raises
 
 from hydra._internal.utils import _locate
 from hydra.utils import get_class, get_method, get_object

@@ -6,7 +6,10 @@ from pathlib import Path
 from textwrap import dedent
 from typing import Any, List
 
-from _pytest.python_api import RaisesContext
+try:
+    from _pytest.python_api import RaisesContext
+except ImportError:
+    from _pytest.raises import RaisesExc as RaisesContext  # type: ignore
 from omegaconf import DictConfig, OmegaConf
 from pytest import mark, raises
 
