@@ -5,7 +5,10 @@ import re
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Union
 
-from _pytest.python_api import RaisesContext
+try:
+    from _pytest.python_api import RaisesContext
+except ImportError:
+    from _pytest.raises import RaisesExc as RaisesContext  # type: ignore
 from pytest import mark, param, raises, warns
 
 from hydra import version

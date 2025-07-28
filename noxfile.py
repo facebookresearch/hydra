@@ -15,7 +15,7 @@ from nox.logger import logger
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
-DEFAULT_PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11"]
+DEFAULT_PYTHON_VERSIONS = ["3.9", "3.10", "3.11"]
 DEFAULT_OS_NAMES = ["Linux", "MacOS", "Windows"]
 
 PYTHON_VERSIONS = os.environ.get(
@@ -357,7 +357,7 @@ def lint(session: Session) -> None:
     session.run(*isort, silent=SILENT)
 
     session.run(
-        *_mypy_cmd(strict=True),
+        *_mypy_cmd(python_version=session.python, strict=True),
         ".",
         "--exclude=^examples/",
         "--exclude=^tests/standalone_apps/",
