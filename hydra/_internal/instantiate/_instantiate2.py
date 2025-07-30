@@ -2,9 +2,11 @@
 
 import copy
 import functools
+import hashlib
 from enum import Enum
 from textwrap import dedent
 from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
+from functools import wraps
 
 from omegaconf import OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
@@ -22,6 +24,8 @@ class _Keys(str, Enum):
     RECURSIVE = "_recursive_"
     ARGS = "_args_"
     PARTIAL = "_partial_"
+    ONCE = "_once_"
+    KEY = "_key_"
 
 
 def _is_target(x: Any) -> bool:
@@ -171,10 +175,41 @@ def _deep_copy_full_config(subconfig: Any) -> Any:
     return OmegaConf.select(full_config_copy, full_key)
 
 
+_ONCE_STORAGE: Dict[str, Any] = {}
+
+
+# could be exposed in public API if useful
+def clear_instantiate_cache():
+    _ONCE_STORAGE.clear()
+
+
+def _once_storage_swap(func):
+    @wraps(func)
+    def wrapper(*args, cache=None, **kwargs):
+        global _ONCE_STORAGE
+
+        if cache is None:
+            cache = _ONCE_STORAGE
+
+        OLD = _ONCE_STORAGE
+        _ONCE_STORAGE = cache
+        try:
+            # Call the original function
+            result = func(*args, **kwargs)
+        finally:
+            # Restore the original _ONCE_STORAGE
+            _ONCE_STORAGE = OLD
+        # Return the result of the original function
+        return result
+
+    return wrapper
+
+@_once_storage_swap
 def instantiate(
     config: Any,
     *args: Any,
     _skip_instantiate_full_deepcopy_: bool = False,
+    cache: Union[Dict[str, Any], None] = None, #implemented in decorator
     **kwargs: Any,
 ) -> Any:
     """
@@ -199,10 +234,16 @@ def instantiate(
                                   are converted to dicts / lists too.
                    _partial_: If True, return functools.partial wrapped method or object
                               False by default. Configure per target.
+                   _once_: If True, instantiate the target only once and return the same
+                           instance on subsequent calls.
+                   _key_: If set, this used to identify the target in the 'once' cache.
+                          Note required in most cases.
     :param _skip_instantiate_full_deepcopy_: If True, deep copy just the input config instead
                     of full config before resolving omegaconf interpolations, which may
                     potentially modify the config's parent/sibling configs in place.
                     False by default.
+    :param cache: Optional cache to use for once storage. Pass '{}' to discard the cache
+                  between different calls to instantiate.
     :param args: Optional positional parameters pass-through
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
@@ -317,13 +358,14 @@ def _convert_node(node: Any, convert: Union[ConvertMode, str]) -> Any:
             )
     return node
 
-
+@_once_storage_swap
 def instantiate_node(
     node: Any,
     *args: Any,
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
     partial: bool = False,
+    cache: Union[Dict[str, Any], None] = None,  # implemented in decorator
 ) -> Any:
     # Return None if config is None
     if node is None or (OmegaConf.is_config(node) and node._is_none()):
@@ -349,7 +391,7 @@ def instantiate_node(
         raise TypeError(msg)
 
     if not isinstance(partial, bool):
-        msg = f"Instantiation: _partial_ flag must be a bool, got {type( partial )}"
+        msg = f"Instantiation: _partial_ flag must be a bool, got {type(partial)}"
         if node and full_key:
             msg += f"\nfull_key: {full_key}"
         raise TypeError(msg)
@@ -371,7 +413,34 @@ def instantiate_node(
             return lst
 
     elif OmegaConf.is_dict(node):
-        exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_"})
+        # Use cached return if once is True and it exists in the cache.
+        if "_once_" in node:
+            once = node.pop(_Keys.ONCE)
+            if _Keys.KEY in node:
+                once_key = node.pop(_Keys.KEY)
+            elif once is not True:
+                once_key = once
+            else:
+                once_key = OmegaConf.to_yaml(node)
+                if recursive != True:
+                    once_key = f"recursive: ${recursive}\n\n{once_key}"
+                if convert != ConvertMode.NONE:
+                    once_key = f"convert: ${convert}\n\n{once_key}"
+                if partial != True:
+                    once_key = f"partial: ${partial}\n\n{once_key}"
+                once_key = hashlib.md5(once_key.encode()).hexdigest()
+
+            if once_key in _ONCE_STORAGE:
+                return _ONCE_STORAGE[once_key]
+            else:
+                _ONCE_STORAGE[once_key] = instantiate_node(
+                    node, *args, convert=convert, recursive=recursive, partial=partial
+                )
+            return _ONCE_STORAGE[once_key]
+
+        exclude_keys = set(
+            {"_target_", "_convert_", "_recursive_", "_partial_", "_once_", "_key_"}
+        )
         if _is_target(node):
             _target_ = _resolve_target(node.get(_Keys.TARGET), full_key)
             kwargs = {}
