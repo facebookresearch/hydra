@@ -6,6 +6,8 @@ from dataclasses import dataclass
 from functools import partial
 from textwrap import dedent
 from typing import Any, Callable, Dict, List, Optional, Tuple
+import sys
+
 
 from omegaconf import MISSING, DictConfig, ListConfig, MissingMandatoryValue, OmegaConf
 from pytest import fixture, mark, param, raises, warns
@@ -15,6 +17,7 @@ from hydra import version
 from hydra.errors import InstantiationException
 from hydra.test_utils.test_utils import assert_multiline_regex_search
 from hydra.types import ConvertMode, TargetConf
+sys.path.insert(0, "/Users/jszhang/hydra")
 from tests.instantiate import (
     AClass,
     Adam,
@@ -1597,6 +1600,33 @@ def test_cannot_locate_target(instantiate_func: Any) -> None:
         chained.args[0],
     )
 
+def test_blocklisted_target_fails(instantiate_func: Any) -> None:
+    cfg = OmegaConf.create({"foo": {"_target_": "os.getcwd"}})
+    with raises(
+        InstantiationException,
+        match=re.escape(
+            dedent(
+                """\
+                Target 'os.getcwd' is blocklisted and cannot be instantiated from config 
+                to prevent security vulnerabilities, set env var 
+                HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE=os.getcwd:<other allowlisted targets> to bypass
+                full_key: foo"""
+            )
+        ),
+    ) as exc_info:
+        instantiate_func(cfg)
+    err = exc_info.value
+    assert hasattr(err, "__cause__")
+    chained = err.__cause__
+    assert chained is None
+
+
+def test_allowlist_works(instantiate_func: Any, monkeypatch: Any) -> None:
+    cfg = OmegaConf.create({"foo": {"_target_": "builtins.exec", "_args_": ["5+8"]}, "bar": {"_target_": "builtins.eval", "_args_": ["1+2"]}})
+    monkeypatch.setenv("HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE", "builtins.exec:builtins.eval")
+    res = instantiate_func(cfg)
+    assert res.foo is None
+    assert res.bar == 3
 
 @mark.parametrize(
     "primitive,expected_primitive",
