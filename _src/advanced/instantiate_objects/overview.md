@@ -18,6 +18,16 @@ Call/instantiate supports:
 - Constructing an object by calling the `__init__` method
 - Calling functions, static functions, class methods and other callable global objects
 
+
+:::warning
+This may pose a security risk since the config can be used to execute arbitrary code. Make
+sure to use this only with trusted configs.
+
+There is a default list of blocklisted modules. To bypass it, set the env var
+HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE with a colon-separated list of modules to allowlist,
+eg. `HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE=os.rename:shutil.move`
+:::
+
 <details><summary>Instantiate API (Expand for details)</summary>
 
 ```python
@@ -178,7 +188,7 @@ Similarly, positional arguments of nested objects can be overridden:
 obj = instantiate(
     cfg.object,
     # pass 1 and 2 as positional arguments to the target object
-    1, 2,  
+    1, 2,
     # pass 3 and 4 as positional arguments to a nested child object
     child={"_args_": [3, 4]},
 )
@@ -295,7 +305,7 @@ obj_all = instantiate(cfg_all)
 
 ### Partial Instantiation
 Sometimes you may not set all parameters needed to instantiate an object from the configuration, in this case you can set
-`_partial_` to be `True` to get a `functools.partial` wrapped object or method, then complete initializing the object in 
+`_partial_` to be `True` to get a `functools.partial` wrapped object or method, then complete initializing the object in
 the application code. Here is an example:
 
 ```python title="Example classes"
