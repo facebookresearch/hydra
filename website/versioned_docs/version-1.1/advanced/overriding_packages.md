@@ -66,7 +66,7 @@ name: sqlite
 
 
 ### An example using only default packages
-The default package of *config.yaml* is the global package, of *server/apache.yaml* is *server* and of *server/db/mysql.yaml* is *server.db*. 
+The default package of *config.yaml* is the global package, of *server/apache.yaml* is *server* and of *server/db/mysql.yaml* is *server.db*.
 <div className="row">
 <div className="col col--6">
 
@@ -80,8 +80,8 @@ debug: false
 </div></div>
 
 ### Overriding packages using the Defaults List
-By default, packages specified in the Defaults List are relative to the package of containing config. 
-As a consequence, overriding a package relocates the entire subtree. 
+By default, packages specified in the Defaults List are relative to the package of containing config.
+As a consequence, overriding a package relocates the entire subtree.
 
 <div className="row">
 <div className="col col--4">
@@ -119,17 +119,17 @@ Note that content of *server/apache.yaml* is relocated to *admin*
 and the content of *server/db/mysql.yaml* to *admin.backup*.
 
 #### Default List package keywords
-We will use this example, replacing *<@PACKAGE>* to demonstrate different cases:
+We will use this example, replacing *\<\@PACKAGE>* to demonstrate different cases:
 ```yaml title="config_group/config.yaml"
 defaults:
   - /server/db<@PACKAGE>: mysql
 ```
 
-Without a package override, the resulting package is `config_group.server.db`.  
-With the **@\_here\_** keyword, The resulting package is the same as the containing config (`config_group`). 
+Without a package override, the resulting package is `config_group.server.db`.
+With the **@\_here\_** keyword, The resulting package is the same as the containing config (`config_group`).
 ##### Absolute keywords:
 * **@\_group\_**: \_group\_ is the absolute default package of the config (`server.db`)
-* **@\_global\_**: The global package. Anything following \_global\_ is absolute.  
+* **@\_global\_**: The global package. Anything following \_global\_ is absolute.
   e.g. **@\_global\_.foo** becomes `foo`.
 
 ### Overriding the package via the package directive
@@ -172,4 +172,3 @@ src:
 dst:
   name: mysql
 ```
-

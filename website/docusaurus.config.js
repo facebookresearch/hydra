@@ -71,7 +71,7 @@ module.exports = {
                     items: [
                         {
                             label: 'Blog',
-                            to: 'Blog'
+                            to: 'blog'
                         },
                         {
                             label: 'Docs',
