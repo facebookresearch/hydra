@@ -26,19 +26,19 @@ OPTION                 : CONFIG_NAME|CONFIG_NAMES|null
 
 *GROUP_DEFAULT* : An *overridable* config. e.g. `db: mysql`, `db@backup: mysql`.
 - ***override*** : Overrides the option of a previously defined GROUP_DEFAULT.
-- ***optional*** : By default, an OPTION that do not exist causes an error; optional suppresses the error. 
+- ***optional*** : By default, an OPTION that do not exist causes an error; optional suppresses the error.
 - ***null*** : A place-holder for a future override. If it is not overridden the entry is ignored.
 
 *CONFIG_NAME*: The name of a config, without the file system extension. e.g. `mysql` and not `mysql.yaml`.
 
 *CONFIG_NAMES* : A list of config names. e.g. `[mysql, sqlite]`
 
-*CONFIG_GROUP* : A path to a set of configs.   
-The path is relative to the containing config. 
-It can be made absolute by prefixing it with a `/`.  
+*CONFIG_GROUP* : A path to a set of configs.
+The path is relative to the containing config.
+It can be made absolute by prefixing it with a `/`.
 The path separator is `/` regardless of the operating system.
 
-*OPTION*: The currently selected *CONFIG_NAME* or *CONFIG_NAMES* from a *CONFIG_GROUP*. 
+*OPTION*: The currently selected *CONFIG_NAME* or *CONFIG_NAMES* from a *CONFIG_GROUP*.
 
 *PACKAGE* : Where to place the content of the config within the output config.
 It is relative to the Package of the containing config by default. See [Packages](overriding_packages.md).
@@ -130,7 +130,7 @@ debug: false
 </div>
 </div>
 
-A Config Group's option can also be overridden via the command line. e.g:  
+A Config Group's option can also be overridden via the command line. e.g:
 ```
 $ python my_app.py server/db=sqlite
 ```
@@ -147,7 +147,7 @@ By default, the content of a config is overriding the content of configs in the 
 
 ```yaml title="config.yaml" {5}
 defaults:
-  - db: mysql  
+  - db: mysql
 
 db:
   host: backup
@@ -168,7 +168,7 @@ db:
 </div>
 </div>
 
-The `_self_` entry determines the relative position of **this** config in the Defaults List. 
+The `_self_` entry determines the relative position of **this** config in the Defaults List.
 If it is not specified, it is added automatically as the last item.
 
 <div className="row">
@@ -177,7 +177,7 @@ If it is not specified, it is added automatically as the last item.
 ```yaml title="config.yaml" {2,6}
 defaults:
   - _self_
-  - db: mysql # Overrides this config 
+  - db: mysql # Overrides this config
 
 db:
   host: backup
@@ -196,7 +196,7 @@ db:
 </div>
 </div>
 
-With `_self_` at the top of the Defaults List, the host field defined in *config.yaml* now precedes the host field defined 
+With `_self_` at the top of the Defaults List, the host field defined in *config.yaml* now precedes the host field defined
 in *db/mysql.yaml*, and as a result is overridden.
 
 ## Interpolation in the Defaults List
@@ -208,10 +208,10 @@ defaults:
   - db: mysql
   - combination_specific_config: ${server}_${db}  # apache_mysql
 ```
-Interpolation keys can be config groups with any @package overrides.  
+Interpolation keys can be config groups with any @package overrides.
 For example: `${db/engine}`, `${db@backup}`
 
-The selected option for *combination_specific_config* depends on the final selected options for *db* and *server*.  
+The selected option for *combination_specific_config* depends on the final selected options for *db* and *server*.
 e.g., If *db* is overridden to *sqlite*, *combination_specific_config* will become *apache_sqlite*.
 
 #### Restrictions:
@@ -236,56 +236,59 @@ You can inspect these artifacts via command line flags:
 - `--cfg job|hydra|all` Shows the Output Config.
 
 Example outputs:
-<details><summary>python my_app.py <b>--info defaults-tree</b></summary>
 
-```yaml title=""
-<root>:
-  hydra/config:
-    hydra/hydra_logging: default
-    hydra/job_logging: default
-    hydra/launcher: basic
-    hydra/sweeper: basic
-    hydra/output: default
-    hydra/help: default
-    hydra/hydra_help: default
-    _self_
-  config:
-    server/apache:
-      server/db: mysql
+<details>
+  <summary>python my_app.py <b>--info defaults-tree</b></summary>
+  ```yaml title=""
+  <root>:
+    hydra/config:
+      hydra/hydra_logging: default
+      hydra/job_logging: default
+      hydra/launcher: basic
+      hydra/sweeper: basic
+      hydra/output: default
+      hydra/help: default
+      hydra/hydra_help: default
       _self_
-    _self_
-```
+    config:
+      server/apache:
+        server/db: mysql
+        _self_
+      _self_
+  ```
 </details>
-<details><summary>python my_app.py <b>--info defaults</b></summary>
+<details>
+  <summary>python my_app.py <b>--info defaults</b></summary>
 
-```text
-Defaults List
-*************
-| Config path                 | Package             | _self_ | Parent        | 
--------------------------------------------------------------------------------
-| hydra/hydra_logging/default | hydra.hydra_logging | False  | hydra/config  |
-| hydra/job_logging/default   | hydra.job_logging   | False  | hydra/config  |
-| hydra/launcher/basic        | hydra.launcher      | False  | hydra/config  |
-| hydra/sweeper/basic         | hydra.sweeper       | False  | hydra/config  |
-| hydra/output/default        | hydra               | False  | hydra/config  |
-| hydra/help/default          | hydra.help          | False  | hydra/config  |
-| hydra/hydra_help/default    | hydra.hydra_help    | False  | hydra/config  |
-| hydra/config                | hydra               | True   | <root>        |
-| server/db/mysql             | server.db           | False  | server/apache |
-| server/apache               | server              | True   | config        |
-| config                      |                     | True   | <root>        |
--------------------------------------------------------------------------------
-```
+  ```text
+  Defaults List
+  *************
+  | Config path                 | Package             | _self_ | Parent        |
+  -------------------------------------------------------------------------------
+  | hydra/hydra_logging/default | hydra.hydra_logging | False  | hydra/config  |
+  | hydra/job_logging/default   | hydra.job_logging   | False  | hydra/config  |
+  | hydra/launcher/basic        | hydra.launcher      | False  | hydra/config  |
+  | hydra/sweeper/basic         | hydra.sweeper       | False  | hydra/config  |
+  | hydra/output/default        | hydra               | False  | hydra/config  |
+  | hydra/help/default          | hydra.help          | False  | hydra/config  |
+  | hydra/hydra_help/default    | hydra.hydra_help    | False  | hydra/config  |
+  | hydra/config                | hydra               | True   | <root>        |
+  | server/db/mysql             | server.db           | False  | server/apache |
+  | server/apache               | server              | True   | config        |
+  | config                      |                     | True   | <root>        |
+  -------------------------------------------------------------------------------
+  ```
 </details>
-<details><summary>python my_app.py <b>--cfg job</b></summary>
+<details>
+  <summary>python my_app.py <b>--cfg job</b></summary>
 
-```yaml
-server:
-  db:
-    name: mysql
-  name: apache
-debug: false
-```
+  ```yaml
+  server:
+    db:
+      name: mysql
+    name: apache
+  debug: false
+  ```
 </details>
 
 ## Related topics
@@ -293,4 +296,3 @@ debug: false
 - [Common Patterns/Extending Configs](patterns/extending_configs.md)
 - [Common Patterns/Configuring Experiments](patterns/configuring_experiments.md)
 - [Selecting multiple configs from a Config Group](patterns/select_multiple_configs_from_config_group.md)
-

@@ -48,7 +48,7 @@ module.exports = {
         //     '⭐️ If you like Hydra, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/facebookresearch/hydra">GitHub</a>! ⭐️',
         // },
 		prism: {
-		  additionalLanguages: ['antlr4'],
+		  additionalLanguages: ['antlr4', 'shell'],
 		},
         navbar: {
             title: 'Hydra',
@@ -71,7 +71,7 @@ module.exports = {
                     items: [
                         {
                             label: 'Blog',
-                            to: 'Blog'
+                            to: 'blog'
                         },
                         {
                             label: 'Docs',
