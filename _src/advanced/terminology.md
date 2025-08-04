@@ -20,7 +20,7 @@ user:
 
 ### Structured Config
 This term has two common meanings:
-1. A class decorated with [@dataclass](https://docs.python.org/3/library/dataclasses.html) or [@attr.s](https://www.attrs.org/en/stable/), or an instance of such a class which is intended to be used as config.  
+1. A class decorated with [@dataclass](https://docs.python.org/3/library/dataclasses.html) or [@attr.s](https://www.attrs.org/en/stable/), or an instance of such a class which is intended to be used as config.
 2. A Config object initialized from a class or object as defined in 1. Structured Configs provide additional type information that enables static and runtime type checking.
 
 The two primary patterns for using Structured Configs are:
@@ -35,14 +35,14 @@ class User:
 ```
 
 ## Other configs
-**Primary Config**: The input config named in [**@hydra.main()**](../tutorials/basic/your_first_app/2_config_file.md) or in the [**Compose API**](compose_api.md).  
+**Primary Config**: The input config named in [**@hydra.main()**](../tutorials/basic/your_first_app/2_config_file.md) or in the [**Compose API**](compose_api.md).
 **Output Config**: A config composed from the [Input Configs](#input-configs) and [Overrides](#overrides) by **@hydra.main()**, or the Compose API.
 
 ## Overrides
 [Overrides](override_grammar/basic.md) are strings that can be used to manipulate the config composition process.
-This includes updating, adding and deleting config values and [Defaults List](#defaults-list) options.  
+This includes updating, adding and deleting config values and [Defaults List](#defaults-list) options.
 
-Overrides can be used in the command line and in the [Compose API](compose_api.md).  
+Overrides can be used in the command line and in the [Compose API](compose_api.md).
 In the examples below, `key=value` is an override:
 <div className="row">
 <div className="col col--6">
@@ -56,7 +56,7 @@ $ python my_app.py key=value
 <div className="col col--6">
 
 ```python title="Override used in the Compose API"
-cfg = compose(config_name, 
+cfg = compose(config_name,
               overrides=["key=value"])
 ```
 
@@ -64,7 +64,7 @@ cfg = compose(config_name,
 </div>
 
 ## Defaults List
-A list in an [Input Config](#input-configs) that instructs Hydra how compose the config. 
+A list in an [Input Config](#input-configs) that instructs Hydra how compose the config.
 ```yaml title="Defaults List in a YAML config"
 defaults:
   - db: mysql      # An overridable defaults list entry
@@ -76,7 +76,7 @@ A Config Group is a directory in the [Config Search Path](#config-search-path) t
 Config Groups can be nested, and in that case the path elements are separated by a forward slash ('/') regardless of the operating system.
 
 ## Config Group Option
-An Input Config in a Config Group. When used in a Defaults List, a Config Group Option can be a single Input Config, or a list of Input Configs from the same Config Group. 
+An Input Config in a Config Group. When used in a Defaults List, a Config Group Option can be a single Input Config, or a list of Input Configs from the same Config Group.
 
 ## Package
 A Package is the path to node in a config. By default, the Package of a Config Group Option is derived from the Config Group.
@@ -120,8 +120,8 @@ bond:
 - [Input Configs](#input-configs): **config.yaml**, **mi6/agent/james_bond.yaml**
 - [Config Group](#config-group): mi6/agent
 - [Config Group Option](#config-group-option): james_bond
-- [Packages](#package): **<empty\>**, **mi6**, **mi6.agent**, **mi6.agent.codename**
-- [Package directive](#package-directive): **# @package bond.james**, overriding the default Package for the containing Input Config 
+- [Packages](#package): **\<empty>**, **mi6**, **mi6.agent**, **mi6.agent.codename**
+- [Package directive](#package-directive): **# @package bond.james**, overriding the default Package for the containing Input Config
 
 ## Config Search Path
 The [Config Search Path](search_path.md) is a list of paths that are searched in order to find configs. It is similar to
