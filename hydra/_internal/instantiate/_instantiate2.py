@@ -2,6 +2,7 @@
 
 import copy
 import functools
+import os
 from enum import Enum
 from textwrap import dedent
 from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
@@ -12,6 +13,52 @@ from omegaconf._utils import is_structured_config
 from hydra._internal.utils import _locate
 from hydra.errors import InstantiationException
 from hydra.types import ConvertMode, TargetConf
+
+DEFAULT_BLOCKLISTED_MODULES = {
+    "builtins.exec",
+    "builtins.eval",
+    "builtins.__import__",
+    "builtins.exit",
+    "builtins.quit",
+    "os.environ.OMP_NUM_THREADS",
+    "os.kill",
+    "os.system",
+    "os.putenv",
+    "os.remove",
+    "os.removedirs",
+    "os.rmdir",
+    "os.fchdir",
+    "os.setuid",
+    "os.fork",
+    "os.forkpty",
+    "os.killpg",
+    "os.rename",
+    "os.renames",
+    "os.truncate",
+    "os.replace",
+    "os.unlink",
+    "os.fchmod",
+    "os.fchown",
+    "os.chmod",
+    "os.chown",
+    "os.chroot",
+    "os.fchdir",
+    "os.lchflags",
+    "os.lchmod",
+    "os.lchown",
+    "os.getcwd",
+    "os.chdir",
+    "shutil.rmtree",
+    "shutil.move",
+    "shutil.chown",
+    "subprocess.Popen",
+    "builtins.help",
+    "sys.modules.ipdb",
+    "sys.modules.joblib",
+    "sys.modules.resource",
+    "sys.modules.psutil",
+    "sys.modules.tkinter",
+}
 
 
 class _Keys(str, Enum):
@@ -130,6 +177,19 @@ def _resolve_target(
 ) -> Union[type, Callable[..., Any]]:
     """Resolve target string, type or callable into type or callable."""
     if isinstance(target, str):
+        if target in DEFAULT_BLOCKLISTED_MODULES:
+            allowlist = os.environ.get("HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE", "")
+            if target not in allowlist.split(":"):
+                msg = dedent(
+                    f"""\
+                    Target '{target}' is blocklisted and cannot be instantiated from config
+                    to prevent security vulnerabilities, set env var
+                    HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE={target}:<other allowlisted targets> to bypass"""
+                )
+                if full_key:
+                    msg += f"\nfull_key: {full_key}"
+                raise InstantiationException(msg)
+
         try:
             target = _locate(target)
         except Exception as e:
@@ -181,6 +241,9 @@ def instantiate(
     :param config: An config object describing what to call and what params to use.
                    In addition to the parameters, the config must contain:
                    _target_ : target class or callable name (str)
+                              IMPORTANT: This may pose a security risk since the config
+                              can be used to execute arbitrary code. Make sure to use this only
+                              with trusted configs or configure the allowlist/blocklist.
                    And may contain:
                    _args_: List-like of positional arguments to pass to the target
                    _recursive_: Construct nested objects as well (bool).

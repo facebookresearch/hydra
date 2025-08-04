@@ -1,0 +1,1 @@
+Certain modules that may introduce a security vulnerability can no longer be instantiated by default. This is not exhaustive, do not rely on this to prevent configs from executing dangerous code.
