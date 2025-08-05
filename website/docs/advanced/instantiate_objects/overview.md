@@ -28,45 +28,46 @@ HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE with a colon-separated list of modules to a
 eg. `HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE=os.rename:shutil.move`
 :::
 
-<details><summary>Instantiate API (Expand for details)</summary>
+<details>
+    <summary>Instantiate API (Expand for details)</summary>
 
-```python
-def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
-    """
-    :param config: An config object describing what to call and what params to use.
-                   In addition to the parameters, the config must contain:
-                   _target_ : target class or callable name (str)
-                   And may contain:
-                   _args_: List-like of positional arguments to pass to the target
-                   _recursive_: Construct nested objects as well (bool).
-                                True by default.
-                                may be overridden via a _recursive_ key in
-                                the kwargs
-                   _convert_: Conversion strategy
-                        none    : Passed objects are DictConfig and ListConfig, default
-                        partial : Passed objects are converted to dict and list, with
-                                  the exception of Structured Configs (and their fields).
-                        object  : Passed objects are converted to dict and list.
-                                  Structured Configs are converted to instances of the
-                                  backing dataclass / attr class.
-                        all     : Passed objects are dicts, lists and primitives without
-                                  a trace of OmegaConf containers. Structured configs
-                                  are converted to dicts / lists too.
-                   _partial_: If True, return functools.partial wrapped method or object
-                              False by default. Configure per target.
-    :param args: Optional positional parameters pass-through
-    :param kwargs: Optional named parameters to override
-                   parameters in the config object. Parameters not present
-                   in the config objects are being passed as is to the target.
-                   IMPORTANT: dataclasses instances in kwargs are interpreted as config
-                              and cannot be used as passthrough
-    :return: if _target_ is a class name: the instantiated object
-             if _target_ is a callable: the return value of the call
-    """
+    ```python
+    def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
+        """
+        :param config: An config object describing what to call and what params to use.
+                       In addition to the parameters, the config must contain:
+                       _target_ : target class or callable name (str)
+                       And may contain:
+                       _args_: List-like of positional arguments to pass to the target
+                       _recursive_: Construct nested objects as well (bool).
+                                    True by default.
+                                    may be overridden via a _recursive_ key in
+                                    the kwargs
+                       _convert_: Conversion strategy
+                            none    : Passed objects are DictConfig and ListConfig, default
+                            partial : Passed objects are converted to dict and list, with
+                                      the exception of Structured Configs (and their fields).
+                            object  : Passed objects are converted to dict and list.
+                                      Structured Configs are converted to instances of the
+                                      backing dataclass / attr class.
+                            all     : Passed objects are dicts, lists and primitives without
+                                      a trace of OmegaConf containers. Structured configs
+                                      are converted to dicts / lists too.
+                       _partial_: If True, return functools.partial wrapped method or object
+                                  False by default. Configure per target.
+        :param args: Optional positional parameters pass-through
+        :param kwargs: Optional named parameters to override
+                       parameters in the config object. Parameters not present
+                       in the config objects are being passed as is to the target.
+                       IMPORTANT: dataclasses instances in kwargs are interpreted as config
+                                  and cannot be used as passthrough
+        :return: if _target_ is a class name: the instantiated object
+                 if _target_ is a callable: the return value of the call
+        """
 
-# Alias for instantiate
-call = instantiate
-```
+    # Alias for instantiate
+    call = instantiate
+    ```
 
 </details><br/>
 

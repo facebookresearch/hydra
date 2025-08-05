@@ -215,7 +215,7 @@ $ python my_app.py 'dir=A\[B'   # ok
 - `float`: 3.14, -10e6, inf, -inf, nan.
 - `bool`: true, false
 - `dot_path`: foo.bar
-- `interpolation`: ${foo.bar}, ${oc.env:USER,me}
+- `interpolation`: $\{foo.bar}, $\{oc.env:USER,me}
 
 Constants (null, true, false, inf, nan) are case-insensitive.
 
