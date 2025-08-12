@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const {fbContent} = require('docusaurus-plugin-internaldocs-fb/internal');
+
 module.exports = {
     title: 'Hydra',
     tagline: 'A framework for elegantly configuring complex applications',
@@ -127,8 +129,14 @@ module.exports = {
             {
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
-                    showLastUpdateAuthor: true,
-                    showLastUpdateTime: true,
+                    showLastUpdateAuthor: fbContent({
+                        internal: false,
+                        external: true,
+                    }),
+                    showLastUpdateTime: fbContent({
+                        internal: false,
+                        external: true,
+                    }),
                     editUrl: 'https://github.com/facebookresearch/hydra/edit/main/website/',
                     lastVersion: 'current',
                 },
