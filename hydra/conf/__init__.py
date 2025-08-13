@@ -94,6 +94,13 @@ class ConfigSourceInfo:
 
 
 @dataclass
+class ConfigFieldSourceInfo:
+    path: str
+    config_path: str
+    schema_class: Optional[str]
+
+
+@dataclass
 class RuntimeConf:
     version: str = MISSING
     version_base: str = MISSING
@@ -136,6 +143,9 @@ class HydraConf:
     hydra_logging: Dict[str, Any] = MISSING
     # Logging configuration for the job
     job_logging: Dict[str, Any] = MISSING
+    # Directory to save the config source debug info. Will skip if None
+    # This is an experimental feature. Config composition is slower when this is enabled.
+    save_config_debug_info: Optional[str] = "testtest"  # None
 
     # Sweeper configuration
     sweeper: Any = MISSING

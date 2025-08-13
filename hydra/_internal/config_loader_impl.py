@@ -7,20 +7,29 @@ import warnings
 from textwrap import dedent
 from typing import Any, List, MutableSequence, Optional, Tuple
 
-from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
+from omegaconf import (
+    Container,
+    DictConfig,
+    flag_override,
+    ListConfig,
+    Node,
+    OmegaConf,
+    open_dict,
+)
 from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
     OmegaConfBaseException,
 )
+from omegaconf.omegaconf import split_key
 
 from hydra._internal.config_repository import (
     CachingConfigRepository,
     ConfigRepository,
     IConfigRepository,
 )
-from hydra._internal.defaults_list import DefaultsList, create_defaults_list
-from hydra.conf import ConfigSourceInfo
+from hydra._internal.defaults_list import create_defaults_list, DefaultsList
+from hydra.conf import ConfigFieldSourceInfo, ConfigSourceInfo
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.default_element import ResultDefault
@@ -307,6 +316,19 @@ class ConfigLoaderImpl(ConfigLoader):
         )
         cfg.hydra.job.config_name = config_name
 
+        if cfg.hydra.save_config_debug_info:
+            new_caching_repo = CachingConfigRepository(self.repository)
+            self._process_config_searchpath(config_name, parsed_overrides, caching_repo)
+            cfg_sources = self._compose_config_from_defaults_list(
+                defaults=defaults_list.defaults, repo=new_caching_repo, sources_only=True
+            )
+            ConfigLoaderImpl._apply_overrides_to_config(config_overrides, cfg_sources, sources_only=True)
+
+            os.makedirs(cfg.hydra.save_config_debug_info, exist_ok=True)
+            filename = config_name.replace('/', '_').replace('\\', '_') if config_name else 'none'
+            with open(os.path.join(cfg.hydra.save_config_debug_info, filename + ".yaml"), "w") as f:
+                f.write(OmegaConf.to_yaml(cfg_sources))
+
         return cfg
 
     def load_sweep_config(
@@ -333,7 +355,7 @@ class ConfigLoaderImpl(ConfigLoader):
         return self.config_search_path
 
     @staticmethod
-    def _apply_overrides_to_config(overrides: List[Override], cfg: DictConfig) -> None:
+    def _apply_overrides_to_config(overrides: List[Override], cfg: DictConfig, sources_only: bool=False) -> None:
         for override in overrides:
             if override.package is not None:
                 raise ConfigCompositionException(
@@ -344,6 +366,13 @@ class ConfigLoaderImpl(ConfigLoader):
 
             key = override.key_or_group
             value = override.value()
+            if sources_only:
+                value = ConfigLoaderImpl._map_config_vals(value, ConfigFieldSourceInfo(
+                    path="cli",
+                    config_path=override.input_line or "unknown_override_input",
+                    schema_class=None,
+                ))
+                key = "val." + ".val.".join(split_key(key))
             try:
                 if override.is_delete():
                     config_val = OmegaConf.select(cfg, key, throw_on_missing=False)
@@ -386,6 +415,9 @@ class ConfigLoaderImpl(ConfigLoader):
                 elif override.is_force_add():
                     OmegaConf.update(cfg, key, value, merge=True, force_add=True)
                 elif override.is_list_extend():
+                    if sources_only and isinstance(value, DictConfig):
+                        key = key + ".val"
+                        value = value.val
                     config_val = OmegaConf.select(cfg, key, throw_on_missing=True)
                     if not OmegaConf.is_list(config_val):
                         raise ConfigCompositionException(
@@ -407,8 +439,18 @@ class ConfigLoaderImpl(ConfigLoader):
                     f"Error merging override {override.input_line}"
                 ).with_traceback(sys.exc_info()[2]) from ex
 
+    def _format_source(self, path: str, config_path: Optional[str], schema_class: Any) -> ConfigFieldSourceInfo:
+        custom_schema_class = None
+        if schema_class is not None and not issubclass(schema_class, Container):
+            custom_schema_class = schema_class
+        return ConfigFieldSourceInfo(
+            path=path,
+            config_path=config_path or "unknown_config_path",
+            schema_class=str(custom_schema_class) if custom_schema_class else custom_schema_class,
+        )
+
     def _load_single_config(
-        self, default: ResultDefault, repo: IConfigRepository
+        self, default: ResultDefault, repo: IConfigRepository, sources_only: bool=False
     ) -> ConfigResult:
         config_path = default.config_path
 
@@ -422,12 +464,24 @@ class ConfigLoaderImpl(ConfigLoader):
                 f" {type(ret.config).__name__}"
             )
 
+        if (sources_only):
+            source_info = self._format_source(
+                ret.path, default.config_path, OmegaConf.get_type(ret.config) if ret.is_schema_source else None,
+            )
+            ret = copy.copy(ret)  # shallow copy to replace ret.config
+            ret.config = ConfigLoaderImpl._map_config_vals(ret.config, source_info)
+
         if not ret.is_schema_source:
             schema = None
             try:
                 schema_source = repo.get_schema_source()
                 cname = ConfigSource._normalize_file_name(filename=config_path)
                 schema = schema_source.load_config(cname)
+                if (sources_only):
+                    source_info = self._format_source(
+                        schema.path, default.config_path, OmegaConf.get_type(schema.config),
+                    )
+                    schema.config = ConfigLoaderImpl._map_config_vals(schema.config, source_info)
             except ConfigLoadError:
                 # schema not found, ignore
                 pass
@@ -489,12 +543,13 @@ class ConfigLoaderImpl(ConfigLoader):
 
                 assert isinstance(merged, DictConfig)
 
-        res = self._embed_result_config(ret, default.package)
+        res = self._embed_result_config(ret, default.package, sources_only=sources_only)
         if (
             not default.primary
             and config_path != "hydra/config"
             and isinstance(res.config, DictConfig)
             and OmegaConf.select(res.config, "hydra.searchpath") is not None
+            and not sources_only
         ):
             raise ConfigCompositionException(
                 f"In '{config_path}': Overriding hydra.searchpath is only supported"
@@ -505,13 +560,15 @@ class ConfigLoaderImpl(ConfigLoader):
 
     @staticmethod
     def _embed_result_config(
-        ret: ConfigResult, package_override: Optional[str]
+        ret: ConfigResult, package_override: Optional[str], sources_only: bool = False,
     ) -> ConfigResult:
         package = ret.header["package"]
         if package_override is not None:
             package = package_override
 
         if package is not None and package != "":
+            if sources_only:
+                package = "val." + ".val.".join(split_key(package))
             cfg = OmegaConf.create()
             OmegaConf.update(cfg, package, ret.config, merge=False)
             ret = copy.copy(ret)
@@ -538,15 +595,40 @@ class ConfigLoaderImpl(ConfigLoader):
         )
         return caching_repo.get_group_options(group_name, results_filter)
 
+    @staticmethod
+    def _map_config_vals(node: Any, source_info: ConfigFieldSourceInfo) -> DictConfig:
+        if isinstance(node, DictConfig) and node._content is not None and not node._is_missing():
+            mapped_dict = DictConfig({
+                key: ConfigLoaderImpl._map_config_vals(value, source_info) for key, value in node.items_ex(False) if value != "???"
+            })
+            return DictConfig({
+                "val": mapped_dict,
+                "debug_info": source_info
+            })
+        elif isinstance(node, ListConfig) and node._content is not None and not node._is_missing():
+            mapped_list = ListConfig([
+                ConfigLoaderImpl._map_config_vals(item, source_info) for item in node._iter_ex(False)
+            ])
+            return DictConfig({
+                "val": mapped_list,
+                "debug_info": source_info
+            })
+        else:
+            return DictConfig({
+                "val": node._content if isinstance(node, Node) else node,
+                "debug_info": source_info
+            })
+
     def _compose_config_from_defaults_list(
         self,
         defaults: List[ResultDefault],
         repo: IConfigRepository,
+        sources_only: bool = False
     ) -> DictConfig:
         cfg = OmegaConf.create()
         with flag_override(cfg, "no_deepcopy_set_nodes", True):
             for default in defaults:
-                loaded = self._load_single_config(default=default, repo=repo)
+                loaded = self._load_single_config(default=default, repo=repo, sources_only=sources_only)
                 try:
                     cfg.merge_with(loaded.config)
                 except OmegaConfBaseException as e:

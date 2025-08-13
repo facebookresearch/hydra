@@ -4,7 +4,9 @@ import subprocess
 import sys
 from dataclasses import dataclass, field
 from enum import Enum
+import os
 from pathlib import Path
+import tempfile
 from textwrap import dedent
 from typing import Any, Dict, List, Optional
 
@@ -269,6 +271,32 @@ class TestComposeInits:
             ret = compose(config_file, overrides)
             assert ret == expected
 
+    def test_debug_config_source_mode(
+        self, config_file: str, overrides: List[str], expected: Any
+    ) -> None:
+        with initialize_config_module(
+            config_module="examples.jupyter_notebooks.cloud_app.conf",
+            version_base=None,
+            job_name="job_name",
+        ):
+            with tempfile.TemporaryDirectory() as tmpdir:
+                ret = compose(config_file, overrides + [f"++hydra.save_config_debug_info={tmpdir}", "++db.driver=override"])
+                # update expected to match test-specific override
+                if 'db' not in expected:
+                    del ret.db
+                elif 'driver' not in expected['db']:
+                    del ret.db.driver
+                else:
+                    ret.db.driver = expected['db'].get('driver')
+                assert ret == expected
+                filename = config_file.replace('/', '_').replace('\\', '_') if config_file else 'none'
+                with open(os.path.join(tmpdir, filename + ".yaml"), "r") as f:
+                    debug_output = OmegaConf.load(f)
+                cloud_debug_info = {'path': 'pkg://examples.jupyter_notebooks.cloud_app.conf', 'config_path': 'cloud_provider/local', 'schema_class': None}
+                assert debug_output.val.cloud.debug_info == cloud_debug_info
+                assert debug_output.val.cloud.val.name.debug_info == cloud_debug_info
+                assert debug_output.val.hydra.val.job.debug_info == {'path': 'structured://', 'config_path': 'hydra/config', 'schema_class': "<class 'hydra.conf.HydraConf'>"}
+                assert debug_output.val.db.val.driver.debug_info == {'path': 'cli', 'config_path': '++db.driver=override', 'schema_class': None}
 
 def test_initialize_ctx_with_absolute_dir(
     hydra_restore_singletons: Any, tmpdir: Any
