@@ -197,6 +197,8 @@ def _resolve_target(
             if full_key:
                 msg += f"\nfull_key: {full_key}"
             raise InstantiationException(msg) from e
+    elif _is_target(target):  # Recursive target resolve
+        target = instantiate_node(target)
     if not callable(target):
         msg = f"Expected a callable target, got '{target}' of type '{type(target).__name__}'"
         if full_key:
