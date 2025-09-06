@@ -41,6 +41,24 @@ class ClientConfig:
 
 
 @dataclass
+class GenerationStepConfig:
+    """Configuration for a single step in a generation strategy."""
+    model: str = "SOBOL"  # e.g., "SOBOL", "GPEI", "MOO"
+    num_trials: int = 5  # -1 means unlimited trials
+    max_parallelism: int = 1
+    model_kwargs: Dict[str, Any] = field(default_factory=dict)
+    model_gen_kwargs: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class GenerationStrategyConfig:
+    """Configuration for the generation strategy"""
+    steps: List[GenerationStepConfig] = field(default_factory=lambda: [GenerationStepConfig()])
+    name: Optional[str] = "default_strategy"
+
+
+
+@dataclass
 class AxConfig:
     # max_trials is application-specific. Tune it for your use case
     max_trials: int = 10
@@ -51,6 +69,8 @@ class AxConfig:
     # is_noisy = True indicates measurements have unknown uncertainty
     # is_noisy = False indicates measurements have an uncertainty of zero
     is_noisy: bool = True
+    generation_strategy: GenerationStrategyConfig = field(default_factory=GenerationStrategyConfig)
+
 
 
 @dataclass
