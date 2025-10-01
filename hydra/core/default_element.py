@@ -330,6 +330,9 @@ class ConfigDefault(InputDefault):
             raise ValueError("_self_@PACKAGE is not supported")
         if self.package == "_here_":
             self.package = ""
+        if self.package is not None:
+            # Deep copy is required to avoid mutating the original config so this mode is turned off if this condition is found
+            OmegaConf.default_flags["no_deepcopy_set_nodes"] = False
 
     def is_self(self) -> bool:
         return self.path == "_self_"
