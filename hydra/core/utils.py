@@ -185,7 +185,7 @@ def run_job(
             try:
                 ret.return_value = task_function(task_cfg)
                 ret.status = JobStatus.COMPLETED
-            ## fix for keyboard inerrrupt 
+           ## fix for keyboard interrupt
             except KeyboardInterrupt:
                 import warnings
                 from hydra._internal.callbacks import safe_invoke_on_interrupt
