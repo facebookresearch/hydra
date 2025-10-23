@@ -124,7 +124,7 @@ def run_job(
     with read_write(config.hydra.runtime):
         with open_dict(config.hydra.runtime):
             config.hydra.runtime.output_dir = os.path.abspath(output_dir)
-
+    
     # update Hydra config
     HydraConfig.instance().set_config(config)
     _chdir = None
@@ -143,10 +143,10 @@ def run_job(
         assert isinstance(overrides, list)
         ret.overrides = overrides
         # handle output directories here
+        
         Path(str(output_dir)).mkdir(parents=True, exist_ok=True)
 
         _chdir = hydra_cfg.hydra.job.chdir
-
         if _chdir is None:
             if version.base_at_least("1.2"):
                 _chdir = False
@@ -185,16 +185,23 @@ def run_job(
             try:
                 ret.return_value = task_function(task_cfg)
                 ret.status = JobStatus.COMPLETED
+            ## fix for keyboard inerrrupt 
+            except KeyboardInterrupt:
+                import warnings
+                from hydra._internal.callbacks import safe_invoke_on_interrupt
+
+                ret.return_value = KeyboardInterrupt("Job interrupted by user (Ctrl+C)")
+                ret.status = JobStatus.FAILED
+                safe_invoke_on_interrupt(callbacks, config, ret)
+                raise
+
             except Exception as e:
                 ret.return_value = e
                 ret.status = JobStatus.FAILED
 
         ret.task_name = JobRuntime.instance().get("name")
-
         _flush_loggers()
-
         callbacks.on_job_end(config=config, job_return=ret)
-
         return ret
     finally:
         HydraConfig.instance().cfg = orig_hydra_cfg
