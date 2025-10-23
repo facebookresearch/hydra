@@ -107,3 +107,14 @@ class Callbacks:
             config_name=config_name,
             overrides=overrides,
         )
+    ## added helper for keyboard interrupt
+    def safe_invoke_on_interrupt(callbacks: "Callbacks", cfg: DictConfig, job_return: Optional["JobReturn"] = None) -> None:
+        """
+        Safely invoke on_job_end and on_run_end callbacks when KeyboardInterrupt occurs.
+        Does not raise further exceptions.
+        """
+        try:
+            callbacks.on_job_end(config=cfg, job_return=job_return)
+            callbacks.on_run_end(config=cfg, job_return=job_return)
+        except Exception as e:
+            warnings.warn(f"Interrupt callbacks failed: {e}")
