@@ -85,7 +85,7 @@ class Callbacks:
         )
 
     def on_job_end(
-        self, config: DictConfig, job_return: "JobReturn", **kwargs: Any
+        self, config: DictConfig, job_return: Optional["JobReturn"], **kwargs: Any
     ) -> None:
         self._notify(
             function_name="on_job_end",
@@ -108,7 +108,7 @@ class Callbacks:
             overrides=overrides,
         )
 
-    ## added helper for keyboard interrupt
+    # added helper for keyboard interrupt
     def safe_invoke_on_interrupt(
         callbacks: "Callbacks",
         cfg: DictConfig,

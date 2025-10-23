@@ -16,6 +16,7 @@ from typing import Any, Dict, Optional, Sequence, Union, cast
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
 from hydra import version
+from hydra._internal.callbacks import Callbacks
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
@@ -185,15 +186,11 @@ def run_job(
             try:
                 ret.return_value = task_function(task_cfg)
                 ret.status = JobStatus.COMPLETED
-            ## fix for keyboard interrupt
+            # fix for keyboard interrupt
             except KeyboardInterrupt:
-                import warnings
-
-                from hydra._internal.callbacks import safe_invoke_on_interrupt
-
                 ret.return_value = KeyboardInterrupt("Job interrupted by user (Ctrl+C)")
                 ret.status = JobStatus.FAILED
-                safe_invoke_on_interrupt(callbacks, config, ret)
+                Callbacks.safe_invoke_on_interrupt(callbacks, config, ret)
                 raise
 
             except Exception as e:
