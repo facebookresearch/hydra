@@ -298,8 +298,9 @@ class TestRunAndReport:
             """
         )
         mock_stderr = io.StringIO()
-        with raises(AssertionError, match="nested_err"), patch(
-            "sys.stderr", new=mock_stderr
+        with (
+            raises(AssertionError, match="nested_err"),
+            patch("sys.stderr", new=mock_stderr),
         ):
             # patch `traceback.print_exception` so that an exception will occur
             # in the simplified traceback logic:
