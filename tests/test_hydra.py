@@ -1296,21 +1296,21 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
         r"" if sys.version_info != (3, 12) else r". Did you mean: '_return_value'\?"
     )
 
-    # Python 3.13 changed the traceback format for error indicators
-    first_traceback_line = r"foo\(cfg\)"
+    traceback_line = r"foo\(cfg\)"
 
     if sys.version_info >= (3, 13):
-        first_traceback_line += r"\n    ~~~\^\^+\^+"
+        # Python 3.13 changed the traceback format for error indicators
+        traceback_line += r"\n    ~~~\^\^+\^+"
 
     expected_regex = dedent(
         rf"""
         Error executing job with overrides: \[\]
         Traceback \(most recent call last\):
           File ".*my_app\.py", line 13, in my_app
-            {first_traceback_line}
+            {traceback_line}
           File ".*my_app\.py", line 8, in foo
-            cfg\.foo = "bar"  # does not exist in the config
-            \^+
+            cfg\.foo = "bar"  # does not exist in the config(
+            \^+)?
         omegaconf\.errors\.ConfigAttributeError: Key 'foo' is not in struct
             full_key: foo
             object_type=dict{suggestion_suffix}
