@@ -26,6 +26,9 @@ jobs:
           - '3.9'
           - '3.10'
           - '3.11'
+          - '3.12'
+          - '3.13'
+          - '3.14'
     steps:
       - uses: actions/checkout@v4.1.0
       - uses: "./.github/actions/macos"
@@ -47,6 +50,9 @@ jobs:
           - '3.9'
           - '3.10'
           - '3.11'
+          - '3.12'
+          - '3.13'
+          - '3.14'
     steps:
       - uses: actions/checkout@v4.1.0
       - uses: "./.github/actions/linux"
@@ -67,6 +73,9 @@ jobs:
           - '3.9'
           - '3.10'
           - '3.11'
+          - '3.12'
+          - '3.13'
+          - '3.14'
     steps:
       - uses: actions/checkout@v4.1.0
       - uses: "./.github/actions/windows"
@@ -86,6 +95,9 @@ jobs:
           - '3.9'
           - '3.10'
           - '3.11'
+          - '3.12'
+          - '3.13'
+          - '3.14'
     steps:
       - uses: actions/checkout@v4.1.0
       - uses: "./.github/actions/linux"
