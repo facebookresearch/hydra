@@ -1287,8 +1287,18 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
         f"hydra.sweep.dir={tmpdir}",
         "hydra.job.chdir=True",
     ]
+
+    # Python 3.12 introduced enhanced error messages that suggest similar attribute
+    # names for AttributeError. Unfortunately, it suggests private attributes like
+    # '_return_value'
+    # Python 3.13+ fixes this by not suggesting private attributes.
+    if sys.version_info >= (3, 12) and sys.version_info < (3, 13):
+        suggestion_suffix = r". Did you mean: '_return_value'\?"
+    else:
+        suggestion_suffix = r""
+
     expected_regex = dedent(
-        r"""
+        rf"""
         Error executing job with overrides: \[\]
         Traceback \(most recent call last\):
           File ".*my_app\.py", line 13, in my_app
@@ -1298,7 +1308,7 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
             \^+)?
         omegaconf\.errors\.ConfigAttributeError: Key 'foo' is not in struct
             full_key: foo
-            object_type=dict
+            object_type=dict{suggestion_suffix}
 
         Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
         """
