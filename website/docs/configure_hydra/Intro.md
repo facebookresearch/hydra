@@ -148,10 +148,10 @@ e.g. for formatting the time you can use something like`${now:%H-%M-%S}`.
 Takes an optional argument of a string with the values major, minor or macro.
 e.g:
 ```yaml
-default: ${python_version:}          # 3.8
+default: ${python_version:}          # 3.9
 major:   ${python_version:major}     # 3
-minor:   ${python_version:minor}     # 3.8
-micro:   ${python_version:micro}     # 3.8.2
+minor:   ${python_version:minor}     # 3.9
+micro:   ${python_version:micro}     # 3.9.1
 ```
 
 Additionally hydra supports OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/custom_resolvers.html#custom-resolvers" target="_blank">custom resolvers</a>
