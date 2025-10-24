@@ -16,7 +16,7 @@ jobs:
         run: |-
           export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
           export NOX_PYTHON_VERSIONS=3.9
-          pip install nox dataclasses --progress-bar off
+          pip install nox --progress-bar off
           nox -s lint lint_plugins -ts
   test_macos:
     runs-on: macos-latest
@@ -36,7 +36,7 @@ jobs:
           source $HOME/.bash_profile
           export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
           conda activate hydra
-          pip install nox dataclasses --progress-bar off
+          pip install nox --progress-bar off
             nox -s test_tools test_core \
               test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
   test_linux:
@@ -56,7 +56,7 @@ jobs:
         run: |-
           export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
           export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
-          pip install nox dataclasses --progress-bar off
+          pip install nox --progress-bar off
           nox -s test_tools test_core \
            test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
   test_win:
@@ -96,5 +96,5 @@ jobs:
           export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
           export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
           export USE_OMEGACONF_DEV_VERSION=1
-          pip install nox dataclasses --progress-bar off
+          pip install nox --progress-bar off
           nox -s test_core -ts
