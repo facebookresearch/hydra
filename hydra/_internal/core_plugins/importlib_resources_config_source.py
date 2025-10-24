@@ -9,9 +9,6 @@ from omegaconf import OmegaConf
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
-# Relevant issue: https://github.com/python/mypy/issues/1153
-# Python 3.9+ has importlib.resources in the standard library
-
 
 class ImportlibResourcesConfigSource(ConfigSource):
     def __init__(self, provider: str, path: str) -> None:
@@ -51,7 +48,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
     def load_config(self, config_path: str) -> ConfigResult:
         normalized_config_path = self._normalize_file_name(config_path)
         res = resources.files(self.path).joinpath(normalized_config_path)
-        if not res.exists():
+        if not (res.is_file() or res.is_dir()):
             raise ConfigLoadError(f"Config not found : {normalized_config_path}")
 
         return self._read_config(res)
@@ -70,7 +67,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
             return False
 
         res = files.joinpath(config_path)
-        ret = res.exists() and res.is_dir()
+        ret = res.is_dir()
         assert isinstance(ret, bool)
         return ret
 
@@ -81,7 +78,7 @@ class ImportlibResourcesConfigSource(ConfigSource):
         except (ValueError, ModuleNotFoundError, TypeError):
             return False
         res = files.joinpath(config_path)
-        ret = res.exists() and res.is_file()
+        ret = res.is_file()
         assert isinstance(ret, bool)
         return ret
 
