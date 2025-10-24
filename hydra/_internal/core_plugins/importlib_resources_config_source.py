@@ -1,21 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
-import sys
 import zipfile
-from typing import TYPE_CHECKING, Any, List, Optional
+from importlib import resources
+from typing import Any, List, Optional
 
 from omegaconf import OmegaConf
 
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
 
-if TYPE_CHECKING or (sys.version_info < (3, 9)):
-    import importlib_resources as resources
-else:
-    from importlib import resources
-
-    # Relevant issue: https://github.com/python/mypy/issues/1153
-    # Use importlib backport for Python older than 3.9
+# Relevant issue: https://github.com/python/mypy/issues/1153
+# Python 3.9+ has importlib.resources in the standard library
 
 
 class ImportlibResourcesConfigSource(ConfigSource):

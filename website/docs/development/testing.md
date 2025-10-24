@@ -19,20 +19,20 @@ Some plugins support fewer versions of Python than the Hydra core.
 ## Testing with nox
 See `nox -l`. a few examples:
 * `nox -s test_core` will test Hydra core on all supported Python versions
-* `nox -s "test_plugins-3.8"` will test plugins on Python 3.8.
-* `nox -s "test_plugins-3.8"` will test plugins on Python 3.8.
+* `nox -s "test_plugins-3.9"` will test plugins on Python 3.9.
+* `nox -s "test_plugins-3.9"` will test plugins on Python 3.9.
 
 The `noxfile.py` is checking some environment variables to decide what to run. For example,
 to test a single plugin:
 ```shell {4}
-$ PLUGINS=hydra_colorlog nox -s test_plugins-3.8
+$ PLUGINS=hydra_colorlog nox -s test_plugins-3.9
 Operating system        :       Linux
-NOX_PYTHON_VERSIONS     :       ['3.8', '3.9', '3.10', '3.11']
+NOX_PYTHON_VERSIONS     :       ['3.9', '3.10', '3.11']
 PLUGINS                 :       ['hydra_colorlog']
 SKIP_CORE_TESTS         :       False
 FIX                     :       False
 VERBOSE                 :       0
 INSTALL_EDITABLE_MODE   :       0
-nox > Running session test_plugins-3.8
+nox > Running session test_plugins-3.9
 ...
 ```
