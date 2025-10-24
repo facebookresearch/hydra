@@ -5,6 +5,19 @@ on:
     branches:
       - main
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.0
+      - uses: "./.github/actions/linux"
+        with:
+          py_version: "3.9"
+      - name: Linting Hydra
+        run: |-
+          export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+          export NOX_PYTHON_VERSIONS=3.9
+          pip install nox dataclasses --progress-bar off
+          nox -s lint lint_plugins -ts
   test_macos:
     runs-on: macos-latest
     strategy:
@@ -24,8 +37,8 @@ jobs:
           export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
           conda activate hydra
           pip install nox dataclasses --progress-bar off
-            nox -s lint test_tools test_core \
-              test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+            nox -s test_tools test_core \
+              test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
   test_linux:
     runs-on: ubuntu-latest
     strategy:
@@ -44,8 +57,8 @@ jobs:
           export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
           export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
           pip install nox dataclasses --progress-bar off
-          nox -s lint test_tools test_core \
-           test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+          nox -s test_tools test_core \
+           test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
   test_win:
     runs-on: windows-latest
     strategy:
@@ -63,7 +76,7 @@ jobs:
           set NOX_PYTHON_VERSIONS="${{ matrix.py_version }}"
           set ConEmuDefaultCp=65001
           set PYTHONIOENCODING="utf_8"
-          nox -s lint test_tools test_core test_jupyter_notebooks lint_plugins test_plugins test_plugins_vs_core -ts
+          nox -s test_tools test_core test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
           exit $LASTEXITCODE
   test_linux_omc_dev:
     runs-on: ubuntu-latest
