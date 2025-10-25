@@ -1293,7 +1293,7 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
     # '_return_value'
     # Python 3.13+ fixes this by not suggesting private attributes.
     suggestion_suffix = (
-        r"" if sys.version_info != (3, 12) else r". Did you mean: '_return_value'\?"
+        r"" if sys.version_info != (3, 12) else r". Did you mean: '_return_value'\?"  # type: ignore
     )
 
     traceback_line = r"foo\(cfg\)"
