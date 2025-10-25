@@ -366,14 +366,20 @@ def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
 
 
 def test_missing_bad_config_dir_error(hydra_restore_singletons: Any) -> None:
+    # Use a platform-appropriate absolute path that doesn't exist
+    if sys.platform == "win32":
+        bad_dir = "C:\\no_way_in_hell_1234567890"
+    else:
+        bad_dir = "/no_way_in_hell_1234567890"
+
     expected = (
         "Primary config directory not found."
-        "\nCheck that the config directory '/no_way_in_hell_1234567890' exists and readable"
+        f"\nCheck that the config directory '{bad_dir}' exists and readable"
     )
 
     with raises(Exception, match=re.escape(expected)):
         with initialize_config_dir(
-            config_dir="/no_way_in_hell_1234567890",
+            config_dir=bad_dir,
             version_base=None,
         ):
             hydra = GlobalHydra.instance().hydra
