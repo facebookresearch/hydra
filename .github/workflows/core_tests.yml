@@ -45,6 +45,8 @@ jobs:
   test_linux:
     runs-on: ubuntu-latest
     strategy:
+      # TODO: Re-enable fail-fast before merging - currently disabled to see all test failures
+      fail-fast: false
       matrix:
         py_version:
           - '3.9'
@@ -90,6 +92,8 @@ jobs:
   test_linux_omc_dev:
     runs-on: ubuntu-latest
     strategy:
+      # TODO: Re-enable fail-fast before merging - currently disabled to see all test failures
+      fail-fast: false
       matrix:
         py_version:
           - '3.9'
