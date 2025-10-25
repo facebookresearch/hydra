@@ -233,7 +233,7 @@ class TestRunAndReport:
                     r"""
                     Traceback \(most recent call last\):
                       File "[^"]+", line \d+, in job_calling_omconf
-                        OmegaConf.resolve\(123\)  # type: ignore(\n    ~~~+\^+)?
+                        OmegaConf.resolve\(123\)  # type: ignore(\n    [~\^]+)?
                     ValueError: Invalid config type \(int\), expected an OmegaConf Container
 
                     Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
