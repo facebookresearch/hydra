@@ -544,12 +544,28 @@ def get_args_parser() -> argparse.ArgumentParser:
         def __repr__(self) -> str:
             return f"Install or Uninstall shell completion:\n{_get_completion_help()}"
 
-    parser.add_argument(
-        "--shell-completion",
-        "-sc",
-        action="store_true",
-        help=LazyCompletionHelp(),  # type: ignore
-    )
+    if sys.version_info >= (3, 14):
+        original_check_help = argparse.ArgumentParser._check_help  # type: ignore
+        argparse.ArgumentParser._check_help = (  # type: ignore
+            lambda self, action: None
+        )
+        try:
+            parser.add_argument(
+                "--shell-completion",
+                "-sc",
+                action="store_true",
+                help=LazyCompletionHelp(),  # type: ignore
+            )
+        finally:
+            # Immediately restore normal validation
+            argparse.ArgumentParser._check_help = original_check_help  # type: ignore
+    else:
+        parser.add_argument(
+            "--shell-completion",
+            "-sc",
+            action="store_true",
+            help=LazyCompletionHelp(),  # type: ignore
+        )
 
     parser.add_argument(
         "--config-path",
