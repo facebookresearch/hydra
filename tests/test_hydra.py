@@ -1292,7 +1292,7 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
     # names for AttributeError. Unfortunately, it suggests private attributes like
     # '_return_value'
     # Python 3.13+ fixes this by not suggesting private attributes.
-    if sys.version_info >= (3, 12) and sys.version_info < (3, 13):
+    if sys.version_info[:2] == (3, 12):
         suggestion_suffix = r". Did you mean: '_return_value'\?"
     else:
         suggestion_suffix = r""
