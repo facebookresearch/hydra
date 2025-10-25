@@ -1292,9 +1292,10 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
     # names for AttributeError. Unfortunately, it suggests private attributes like
     # '_return_value'
     # Python 3.13+ fixes this by not suggesting private attributes.
-    suggestion_suffix = (
-        r"" if sys.version_info != (3, 12) else r". Did you mean: '_return_value'\?"  # type: ignore
-    )
+    if sys.version_info >= (3, 12) and sys.version_info < (3, 13):
+        suggestion_suffix = r". Did you mean: '_return_value'\?"
+    else:
+        suggestion_suffix = r""
 
     traceback_line = r"foo\(cfg\)"
 
@@ -1302,22 +1303,25 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
         # Python 3.13 changed the traceback format for error indicators
         traceback_line += r"\n    ~~~\^\^+\^+"
 
-    expected_regex = dedent(
-        rf"""
+    expected_regex = (
+        dedent(
+            r"""
         Error executing job with overrides: \[\]
         Traceback \(most recent call last\):
           File ".*my_app\.py", line 13, in my_app
             {traceback_line}
           File ".*my_app\.py", line 8, in foo
-            cfg\.foo = "bar"  # does not exist in the config(
-            \^+)?
+            cfg\.foo = "bar"  # does not exist in the config(\n    \^+)?
         omegaconf\.errors\.ConfigAttributeError: Key 'foo' is not in struct
             full_key: foo
             object_type=dict{suggestion_suffix}
 
         Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
         """
-    ).strip()
+        )
+        .strip()
+        .format(traceback_line=traceback_line, suggestion_suffix=suggestion_suffix)
+    )
 
     ret = run_with_error(cmd)
     assert_multiline_regex_search(expected_regex, ret)
