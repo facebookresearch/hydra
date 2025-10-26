@@ -841,6 +841,24 @@ def test_help(
     assert_text_same(result, expected.format(script=script))
 
 
+def test_shell_completion_help(tmpdir: Path) -> None:
+    """Test that --shell-completion --help works (regression test for Python 3.14+ argparse)."""
+    # This test ensures that the LazyCompletionHelp workaround in utils.py works correctly
+    # In Python 3.14+, argparse validates that help is a string, but we use a lazy callable
+    # The workaround temporarily disables _check_help validation
+    cmd = [
+        "examples/tutorials/basic/your_first_hydra_app/1_simple_cli/my_app.py",
+        f'hydra.run.dir="{str(tmpdir)}"',
+        "hydra.job.chdir=True",
+        "--shell-completion",
+        "--help",
+    ]
+    result, _err = run_python_script(cmd)
+    # When both flags are present, --help takes precedence and shows help text
+    assert "powered by hydra" in result.lower()
+    assert not _err
+
+
 @mark.parametrize(
     "overrides,expected",
     [

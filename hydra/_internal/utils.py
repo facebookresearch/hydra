@@ -545,6 +545,13 @@ def get_args_parser() -> argparse.ArgumentParser:
             return f"Install or Uninstall shell completion:\n{_get_completion_help()}"
 
     if sys.version_info >= (3, 14):
+        # Python 3.14+ adds help message validation via ArgumentParser._check_help,
+        # which calls formatter._expand_help(action) to validate that action.help
+        # is a string that can be used in string formatting (e.g., "text %(prog)s").
+        # This breaks our LazyCompletionHelp because `_expand_help` expects an actual
+        # string.
+        # It is safe to disable this validation temporarily because LazyCompletionHelp.
+        # __repr__() returns a plain string (no % formatting)
         original_check_help = argparse.ArgumentParser._check_help  # type: ignore
         argparse.ArgumentParser._check_help = (  # type: ignore
             lambda self, action: None
