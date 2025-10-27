@@ -19,11 +19,8 @@ from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
     CategoricalDistribution,
-    DiscreteUniformDistribution,
-    IntLogUniformDistribution,
-    IntUniformDistribution,
-    LogUniformDistribution,
-    UniformDistribution,
+    IntDistribution,
+    FloatDistribution,
 )
 from optuna.samplers import RandomSampler
 from pytest import mark, warns
@@ -59,24 +56,24 @@ def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> 
             {"type": "categorical", "choices": [1, 2, 3]},
             CategoricalDistribution([1, 2, 3]),
         ),
-        ({"type": "int", "low": 0, "high": 10}, IntUniformDistribution(0, 10)),
+        ({"type": "int", "low": 0, "high": 10}, IntDistribution(0, 10)),
         (
             {"type": "int", "low": 0, "high": 10, "step": 2},
-            IntUniformDistribution(0, 10, step=2),
+            IntDistribution(0, 10, step=2),
         ),
-        ({"type": "int", "low": 0, "high": 5}, IntUniformDistribution(0, 5)),
+        ({"type": "int", "low": 0, "high": 5}, IntDistribution(0, 5)),
         (
             {"type": "int", "low": 1, "high": 100, "log": True},
-            IntLogUniformDistribution(1, 100),
+            IntDistribution(1, 100, log=True),
         ),
-        ({"type": "float", "low": 0, "high": 1}, UniformDistribution(0, 1)),
+        ({"type": "float", "low": 0, "high": 1}, FloatDistribution(0, 1)),
         (
             {"type": "float", "low": 0, "high": 10, "step": 2},
-            DiscreteUniformDistribution(0, 10, 2),
+            FloatDistribution(0, 10, step=2),
         ),
         (
             {"type": "float", "low": 1, "high": 100, "log": True},
-            LogUniformDistribution(1, 100),
+            FloatDistribution(1, 100, log=True),
         ),
     ],
 )
@@ -92,12 +89,12 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
         ("key=choice(true, false)", CategoricalDistribution([True, False])),
         ("key=choice('hello', 'world')", CategoricalDistribution(["hello", "world"])),
         ("key=shuffle(range(1,3))", CategoricalDistribution((1, 2))),
-        ("key=range(1,3)", IntUniformDistribution(1, 3)),
-        ("key=interval(1, 5)", UniformDistribution(1, 5)),
-        ("key=int(interval(1, 5))", IntUniformDistribution(1, 5)),
-        ("key=tag(log, interval(1, 5))", LogUniformDistribution(1, 5)),
-        ("key=tag(log, int(interval(1, 5)))", IntLogUniformDistribution(1, 5)),
-        ("key=range(0.5, 5.5, step=1)", DiscreteUniformDistribution(0.5, 5.5, 1)),
+        ("key=range(1,3)", IntDistribution(1, 3)),
+        ("key=interval(1, 5)", FloatDistribution(1, 5)),
+        ("key=int(interval(1, 5))", IntDistribution(1, 5)),
+        ("key=tag(log, interval(1, 5))", FloatDistribution(1, 5, log=True)),
+        ("key=tag(log, int(interval(1, 5)))", IntDistribution(1, 5, log=True)),
+        ("key=range(0.5, 5.5, step=1)", FloatDistribution(0.5, 5.5, step=1)),
     ],
 )
 def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> None:
@@ -121,7 +118,7 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
             (
                 {
                     "key1": CategoricalDistribution([1, 2]),
-                    "key3": IntUniformDistribution(1, 3),
+                    "key3": IntDistribution(1, 3),
                 },
                 {"key2": "5"},
             ),
@@ -152,7 +149,8 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
 
 
 @mark.parametrize("with_commandline", (True, False))
-def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
+@mark.parametrize("sampler", ("tpe", "gp"))
+def test_optuna_example(with_commandline: bool, sampler: str, tmpdir: Path) -> None:
     storage = "sqlite:///" + os.path.join(str(tmpdir), "test.db")
     study_name = "test-optuna-example"
     cmd = [
@@ -164,7 +162,7 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
         "hydra.sweeper.n_jobs=1",
         f"hydra.sweeper.storage={storage}",
         f"hydra.sweeper.study_name={study_name}",
-        "hydra/sweeper/sampler=tpe",
+        f"hydra/sweeper/sampler={sampler}",
         "hydra.sweeper.sampler.seed=123",
         "~z",
     ]
