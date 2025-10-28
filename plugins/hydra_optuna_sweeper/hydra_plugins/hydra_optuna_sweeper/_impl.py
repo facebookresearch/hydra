@@ -411,6 +411,7 @@ class OptunaSweeperImpl(Sweeper):
             best_trial = study.best_trial
             results_to_serialize = {
                 "name": "optuna",
+                "best_trial": best_trial.number,
                 "best_params": best_trial.params,
                 "best_value": best_trial.value,
             }
