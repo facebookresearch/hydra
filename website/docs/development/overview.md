@@ -9,16 +9,16 @@ It is recommended that you install Hydra in a virtual environment like [conda](h
 ## Environment setup
 Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and create an empty Conda environment with:
 ```
-conda create -n hydra38 python=3.8 -qy
+conda create -n hydra39 python=3.9 -qy
 ```
 
 :::info NOTE
-The core Hydra framework supports Python 3.8 or newer. You may need to create additional environments for different Python versions if CI detect issues on a supported version of Python.
+The core Hydra framework supports Python 3.9 or newer. You may need to create additional environments for different Python versions if CI detect issues on a supported version of Python.
 :::
 
 Activate the environment:
 ```
-conda activate hydra38
+conda activate hydra39
 ```
 From the source tree, install Hydra in development mode with the following commands:
 ```bash

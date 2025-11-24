@@ -15,7 +15,7 @@ from nox.logger import logger
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
-DEFAULT_PYTHON_VERSIONS = ["3.9", "3.10", "3.11"]
+DEFAULT_PYTHON_VERSIONS = ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
 DEFAULT_OS_NAMES = ["Linux", "MacOS", "Windows"]
 
 PYTHON_VERSIONS = os.environ.get(
@@ -308,7 +308,7 @@ def _isort_cmd() -> List[str]:
     return isort
 
 
-def _mypy_cmd(strict: bool, python_version: Optional[str] = "3.8") -> List[str]:
+def _mypy_cmd(strict: bool, python_version: Optional[str] = "3.9") -> List[str]:
     mypy = [
         "mypy",
         "--install-types",
@@ -577,7 +577,7 @@ def test_selected_plugins(session: Session, selected_plugins: List[Plugin]) -> N
         run_pytest(session)
 
 
-@nox.session(python="3.8")  # type: ignore
+@nox.session(python="3.9")  # type: ignore
 def coverage(session: Session) -> None:
     _upgrade_basic(session)
     coverage_env = {

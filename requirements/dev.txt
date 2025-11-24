@@ -12,7 +12,6 @@ packaging
 pre-commit
 pytest==8.3.5
 pytest-benchmark
-pytest-snail
 read-version
 setuptools
 towncrier

@@ -17,13 +17,13 @@ setup(
     packages=find_namespace_packages(include=["hydra_plugins.*"]),
     classifiers=[
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Operating System :: OS Independent",
         "Development Status :: 4 - Beta",
     ],
+    python_requires=">=3.9",
     install_requires=[
         "hydra-core>=1.1.0.dev7",
         "nevergrad>=0.4.3.post9",

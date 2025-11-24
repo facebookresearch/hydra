@@ -17,20 +17,19 @@ setup(
     packages=find_namespace_packages(include=["hydra_plugins.*"]),
     classifiers=[
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Operating System :: MacOS",
         "Operating System :: POSIX :: Linux",
     ],
+    python_requires=">=3.9",
     install_requires=[
         "boto3",
         "hydra-core>=1.1.2",
         "ray[default]<3",
         "aiohttp<4",
         "cloudpickle<3",
-        "pickle5==0.0.12; python_version < '3.8'",
     ],
     include_package_data=True,
 )

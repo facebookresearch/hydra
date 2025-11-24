@@ -233,8 +233,7 @@ class TestRunAndReport:
                     r"""
                     Traceback \(most recent call last\):
                       File "[^"]+", line \d+, in job_calling_omconf
-                        OmegaConf.resolve\(123\)  # type: ignore(
-                        \^+)?
+                        OmegaConf.resolve\(123\)  # type: ignore(\n    [~\^]+)?
                     ValueError: Invalid config type \(int\), expected an OmegaConf Container
 
                     Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
@@ -298,8 +297,9 @@ class TestRunAndReport:
             """
         )
         mock_stderr = io.StringIO()
-        with raises(AssertionError, match="nested_err"), patch(
-            "sys.stderr", new=mock_stderr
+        with (
+            raises(AssertionError, match="nested_err"),
+            patch("sys.stderr", new=mock_stderr),
         ):
             # patch `traceback.print_exception` so that an exception will occur
             # in the simplified traceback logic:

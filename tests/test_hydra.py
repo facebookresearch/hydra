@@ -841,6 +841,24 @@ def test_help(
     assert_text_same(result, expected.format(script=script))
 
 
+def test_shell_completion_help(tmpdir: Path) -> None:
+    """Test that --shell-completion --help works (regression test for Python 3.14+ argparse)."""
+    # This test ensures that the LazyCompletionHelp workaround in utils.py works correctly
+    # In Python 3.14+, argparse validates that help is a string, but we use a lazy callable
+    # The workaround temporarily disables _check_help validation
+    cmd = [
+        "examples/tutorials/basic/your_first_hydra_app/1_simple_cli/my_app.py",
+        f'hydra.run.dir="{str(tmpdir)}"',
+        "hydra.job.chdir=True",
+        "--shell-completion",
+        "--help",
+    ]
+    result, _err = run_python_script(cmd)
+    # When both flags are present, --help takes precedence and shows help text
+    assert "powered by hydra" in result.lower()
+    assert not _err
+
+
 @mark.parametrize(
     "overrides,expected",
     [
@@ -1287,22 +1305,41 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
         f"hydra.sweep.dir={tmpdir}",
         "hydra.job.chdir=True",
     ]
-    expected_regex = dedent(
-        r"""
+
+    # Python 3.12 introduced enhanced error messages that suggest similar attribute
+    # names for AttributeError. Unfortunately, it suggests private attributes like
+    # '_return_value'
+    # Python 3.13+ fixes this by not suggesting private attributes.
+    if sys.version_info[:2] == (3, 12):
+        suggestion_suffix = r". Did you mean: '_return_value'\?"
+    else:
+        suggestion_suffix = r""
+
+    traceback_line = r"foo\(cfg\)"
+
+    if sys.version_info >= (3, 13):
+        # Python 3.13 changed the traceback format for error indicators
+        traceback_line += r"\n    ~~~\^\^+\^+"
+
+    expected_regex = (
+        dedent(
+            r"""
         Error executing job with overrides: \[\]
         Traceback \(most recent call last\):
           File ".*my_app\.py", line 13, in my_app
-            foo\(cfg\)
+            {traceback_line}
           File ".*my_app\.py", line 8, in foo
-            cfg\.foo = "bar"  # does not exist in the config(
-            \^+)?
+            cfg\.foo = "bar"  # does not exist in the config(\n    \^+)?
         omegaconf\.errors\.ConfigAttributeError: Key 'foo' is not in struct
             full_key: foo
-            object_type=dict
+            object_type=dict{suggestion_suffix}
 
         Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
         """
-    ).strip()
+        )
+        .strip()
+        .format(traceback_line=traceback_line, suggestion_suffix=suggestion_suffix)
+    )
 
     ret = run_with_error(cmd)
     assert_multiline_regex_search(expected_regex, ret)
@@ -1569,7 +1606,7 @@ def test_frozen_primary_config(
                 ^Error executing job with overrides: \[\]\n?
                 Traceback \(most recent call last\):
                   File "\S*[/\\]my_app.py", line 10, in my_app
-                    deprecation_warning\("Feature FooBar is deprecated"\)
+                    deprecation_warning\("Feature FooBar is deprecated"\)(\n    [~\^]+)?
                   File "\S*\.py", line 11, in deprecation_warning
                     raise HydraDeprecationError\(.*\)
                 hydra\.errors\.HydraDeprecationError: Feature FooBar is deprecated
