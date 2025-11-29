@@ -1,0 +1,71 @@
+# This workflow uploads Hydra to PyPI using Trusted Publishers
+# Basics: https://docs.pypi.org/trusted-publishers/adding-a-publisher/
+# Security model: https://docs.pypi.org/trusted-publishers/security-model/
+name: Publish to PyPI
+
+on:
+  release:
+    types: [created]
+
+# Use separate jobs for building and publishing so that write
+# permissions are only accessible minimally.
+#
+# Both jobs are run under the pypi-publish environment,
+# which is configured to require review and approval from authorized
+# maintainers.
+jobs:
+  build-artifacts:
+    name: Build distribution artifacts
+    runs-on: ubuntu-latest
+    environment: pypi-publish
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+
+    - name: Set up Java
+      uses: actions/setup-java@v5
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build
+
+    - name: Build distribution
+      run: python -m build
+
+    - name: Verify build artifacts
+      run: |
+        ls -lah dist/
+        python -m pip install twine
+        twine check dist/*
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist/
+        retention-days: 0
+
+  pypi-publish:
+    needs: build-artifacts
+    name: Upload release to PyPI
+    runs-on: ubuntu-latest
+    environment: pypi-publish
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v5
+      with:
+        name: dist
+        path: dist/
+
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
