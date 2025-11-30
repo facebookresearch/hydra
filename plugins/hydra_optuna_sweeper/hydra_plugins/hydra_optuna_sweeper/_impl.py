@@ -35,11 +35,8 @@ from optuna.distributions import (
     BaseDistribution,
     CategoricalChoiceType,
     CategoricalDistribution,
-    DiscreteUniformDistribution,
-    IntLogUniformDistribution,
-    IntUniformDistribution,
-    LogUniformDistribution,
-    UniformDistribution,
+    IntDistribution,
+    FloatDistribution,
 )
 from optuna.trial import Trial
 
@@ -62,17 +59,17 @@ def create_optuna_distribution_from_config(
         assert param.low is not None
         assert param.high is not None
         if param.log:
-            return IntLogUniformDistribution(int(param.low), int(param.high))
+            return IntDistribution(int(param.low), int(param.high), log=True)
         step = int(param.step) if param.step is not None else 1
-        return IntUniformDistribution(int(param.low), int(param.high), step=step)
+        return IntDistribution(int(param.low), int(param.high), step=step)
     if param.type == DistributionType.float:
         assert param.low is not None
         assert param.high is not None
         if param.log:
-            return LogUniformDistribution(param.low, param.high)
+            return FloatDistribution(param.low, param.high, log=True)
         if param.step is not None:
-            return DiscreteUniformDistribution(param.low, param.high, param.step)
-        return UniformDistribution(param.low, param.high)
+            return FloatDistribution(param.low, param.high, step=param.step)
+        return FloatDistribution(param.low, param.high)
     raise NotImplementedError(f"{param.type} is not supported by Optuna sweeper.")
 
 
@@ -107,10 +104,8 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
             or isinstance(value.stop, float)
             or isinstance(value.step, float)
         ):
-            return DiscreteUniformDistribution(value.start, value.stop, value.step)
-        return IntUniformDistribution(
-            int(value.start), int(value.stop), step=int(value.step)
-        )
+            return FloatDistribution(value.start, value.stop, step=value.step)
+        return IntDistribution(int(value.start), int(value.stop), step=int(value.step))
 
     if override.is_interval_sweep():
         assert isinstance(value, IntervalSweep)
@@ -118,12 +113,12 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
         assert value.end is not None
         if "log" in value.tags:
             if isinstance(value.start, int) and isinstance(value.end, int):
-                return IntLogUniformDistribution(int(value.start), int(value.end))
-            return LogUniformDistribution(value.start, value.end)
+                return IntDistribution(int(value.start), int(value.end), log=True)
+            return FloatDistribution(value.start, value.end, log=True)
         else:
             if isinstance(value.start, int) and isinstance(value.end, int):
-                return IntUniformDistribution(value.start, value.end)
-            return UniformDistribution(value.start, value.end)
+                return IntDistribution(value.start, value.end)
+            return FloatDistribution(value.start, value.end)
 
     raise NotImplementedError(f"{override} is not supported by Optuna sweeper.")
 
@@ -266,13 +261,13 @@ class OptunaSweeperImpl(Sweeper):
     def _to_grid_sampler_choices(self, distribution: BaseDistribution) -> Any:
         if isinstance(distribution, CategoricalDistribution):
             return distribution.choices
-        elif isinstance(distribution, IntUniformDistribution):
+        elif isinstance(distribution, IntDistribution):
             assert (
                 distribution.step is not None
-            ), "`step` of IntUniformDistribution must be a positive integer."
+            ), "`step` of IntDistribution must be a positive integer."
             n_items = (distribution.high - distribution.low) // distribution.step
             return [distribution.low + i * distribution.step for i in range(n_items)]
-        elif isinstance(distribution, DiscreteUniformDistribution):
+        elif isinstance(distribution, FloatDistribution):
             n_items = int((distribution.high - distribution.low) // distribution.q)
             return [distribution.low + i * distribution.q for i in range(n_items)]
         else:
