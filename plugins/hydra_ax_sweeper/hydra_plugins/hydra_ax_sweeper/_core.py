@@ -6,6 +6,8 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
 from ax.core import types as ax_types  # type: ignore
 from ax.exceptions.core import SearchSpaceExhausted  # type: ignore
 from ax.service.ax_client import AxClient  # type: ignore
+from ax.modelbridge.generation_strategy import GenerationStrategy, GenerationStep  # type: ignore
+from ax.modelbridge.registry import Models  # type: ignore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import IntervalSweep, Override, Transformer
 from hydra.core.plugins import Plugins
@@ -15,7 +17,7 @@ from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf
 
 from ._earlystopper import EarlyStopper
-from .config import AxConfig, ClientConfig, ExperimentConfig
+from .config import AxConfig, ClientConfig, ExperimentConfig, GenerationStrategyConfig
 
 log = logging.getLogger(__name__)
 
@@ -117,6 +119,7 @@ class CoreAxSweeper(Sweeper):
             epsilon=ax_config.early_stop.epsilon,
             minimize=ax_config.early_stop.minimize,
         )
+        self.generation_strategy: GenerationStrategyConfig = ax_config.generation_strategy
         self.ax_client_config: ClientConfig = ax_config.client
         self.max_trials = ax_config.max_trials
         self.ax_params: DictConfig = OmegaConf.create({})
@@ -238,6 +241,30 @@ class CoreAxSweeper(Sweeper):
                     trial_index=batch[idx].trial_index, raw_data=val
                 )
 
+    def _create_generation_strategy(self) -> GenerationStrategy:
+        """Create an Ax GenerationStrategy from configuration."""
+        steps = []
+        for step_config in self.generation_strategy.steps:
+            # Convert string model name to Models enum if necessary
+            model = step_config.model
+            if isinstance(model, str):
+                model = getattr(Models, model.upper())
+
+            step = GenerationStep(
+                model=model,
+                num_trials=step_config.num_trials,
+                max_parallelism=step_config.max_parallelism,
+                model_kwargs=step_config.model_kwargs,
+                model_gen_kwargs=step_config.model_gen_kwargs,
+            )
+            steps.append(step)
+
+        return GenerationStrategy(
+            steps=steps,
+            name=self.generation_strategy.name,
+        )
+
+
     def setup_ax_client(self, arguments: List[str]) -> AxClient:
         """Method to setup the Ax Client"""
         parameters: List[Dict[Any, Any]] = []
@@ -265,9 +292,14 @@ class CoreAxSweeper(Sweeper):
         log.info(
             f"AxSweeper is optimizing the following parameters: {encoder_parameters_into_string(parameters)}"
         )
+        
+        generation_strategy = self._create_generation_strategy()
+        log.info(f"AxSweeper is optimizing the following generation strategy: {generation_strategy}")
+
         ax_client = AxClient(
             verbose_logging=self.ax_client_config.verbose_logging,
             random_seed=self.ax_client_config.random_seed,
+            generation_strategy=generation_strategy,
         )
         ax_client.create_experiment(parameters=parameters, **self.experiment)
 
