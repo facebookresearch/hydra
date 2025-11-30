@@ -1,0 +1,39 @@
+defaults:
+  - override hydra/sweeper: orion
+
+hydra:
+  sweeper:
+    orion:
+      name: 'experiment'
+      version: '1'
+
+    algorithm:
+      type: random
+      config:
+        seed: 1
+
+    worker:
+      n_workers: -1
+      max_broken: 3
+      max_trials: 100
+
+    storage:
+      type: pickledb
+      host: 'database.pkl'
+
+    # default parametrization of the search space
+    parametrization:
+      lr: "uniform(0, 1)"
+      opt: "choices(['Adam', 'SGD'])"
+      dropout: "uniform(0, 1)"
+      batch_size: "uniform(4, 16, discrete=True)"
+
+opt: Adam
+lr: 0.01
+dropout: 0.6
+batch_size: 8
+
+# if true, simulate a failure by raising an exception
+error: false
+return_type: float
+
