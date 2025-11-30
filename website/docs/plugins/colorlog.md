@@ -4,7 +4,8 @@ title: Colorlog plugin
 sidebar_label: Colorlog plugin
 ---
 
-import {ExampleGithubLink} from "@site/src/components/GithubLink"
+import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
+
 
 [![PyPI](https://img.shields.io/pypi/v/hydra-colorlog)](https://pypi.org/project/hydra-colorlog/)
 ![PyPI - License](https://img.shields.io/pypi/l/hydra-colorlog)
