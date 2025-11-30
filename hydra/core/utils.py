@@ -12,6 +12,7 @@ from os.path import splitext
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, Dict, Optional, Sequence, Union, cast
+import traceback
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
@@ -186,7 +187,7 @@ def run_job(
                 ret.return_value = task_function(task_cfg)
                 ret.status = JobStatus.COMPLETED
             except Exception as e:
-                ret.return_value = e
+                ret.return_value = traceback.TracebackException(*sys.exc_info())
                 ret.status = JobStatus.FAILED
 
         ret.task_name = JobRuntime.instance().get("name")
@@ -237,6 +238,14 @@ class JobStatus(Enum):
     COMPLETED = 1
     FAILED = 2
 
+class JobException(Exception):
+    def __init__(self, traceback_exception: traceback.TracebackException) -> None:
+        super().__init__()
+        self.traceback_exception = traceback_exception
+
+    def __str__(self) -> str:
+        body = "".join(self.traceback_exception.format())
+        return f"JobException(\n{body})\n"
 
 @dataclass
 class JobReturn:
@@ -257,7 +266,7 @@ class JobReturn:
             sys.stderr.write(
                 f"Error executing job with overrides: {self.overrides}" + os.linesep
             )
-            raise self._return_value
+            raise JobException(self._return_value)
 
     @return_value.setter
     def return_value(self, value: Any) -> None:
