@@ -27,8 +27,9 @@ setup(
     python_requires=">=3.9",
     install_requires=[
         "hydra-core>=1.1.0.dev7",
-        "optuna>=2.10.0,<3.0.0",
-        "sqlalchemy~=1.3.0",  # TODO: Unpin when upgrading to optuna v3.0
+        "optuna>=3.6.0",
+        "torch",  # Required for `optuna.samplers.GPSampler`
+        "scipy",  # Required for `optuna.samplers.GPSampler`
     ],
     include_package_data=True,
 )
