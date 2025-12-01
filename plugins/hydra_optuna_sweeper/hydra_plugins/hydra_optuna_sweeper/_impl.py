@@ -35,11 +35,8 @@ from optuna.distributions import (
     BaseDistribution,
     CategoricalChoiceType,
     CategoricalDistribution,
-    DiscreteUniformDistribution,
-    IntLogUniformDistribution,
-    IntUniformDistribution,
-    LogUniformDistribution,
-    UniformDistribution,
+    FloatDistribution,
+    IntDistribution,
 )
 from optuna.trial import Trial
 
@@ -61,18 +58,16 @@ def create_optuna_distribution_from_config(
     if param.type == DistributionType.int:
         assert param.low is not None
         assert param.high is not None
-        if param.log:
-            return IntLogUniformDistribution(int(param.low), int(param.high))
         step = int(param.step) if param.step is not None else 1
-        return IntUniformDistribution(int(param.low), int(param.high), step=step)
+        return IntDistribution(
+            low=int(param.low), high=int(param.high), step=step, log=param.log
+        )
     if param.type == DistributionType.float:
         assert param.low is not None
         assert param.high is not None
-        if param.log:
-            return LogUniformDistribution(param.low, param.high)
-        if param.step is not None:
-            return DiscreteUniformDistribution(param.low, param.high, param.step)
-        return UniformDistribution(param.low, param.high)
+        return FloatDistribution(
+            low=param.low, high=param.high, step=param.step, log=param.log
+        )
     raise NotImplementedError(f"{param.type} is not supported by Optuna sweeper.")
 
 
@@ -107,23 +102,22 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
             or isinstance(value.stop, float)
             or isinstance(value.step, float)
         ):
-            return DiscreteUniformDistribution(value.start, value.stop, value.step)
-        return IntUniformDistribution(
-            int(value.start), int(value.stop), step=int(value.step)
+            return FloatDistribution(low=value.start, high=value.stop, step=value.step)
+        return IntDistribution(
+            low=int(value.start), high=int(value.stop), step=int(value.step)
         )
 
     if override.is_interval_sweep():
         assert isinstance(value, IntervalSweep)
         assert value.start is not None
         assert value.end is not None
-        if "log" in value.tags:
-            if isinstance(value.start, int) and isinstance(value.end, int):
-                return IntLogUniformDistribution(int(value.start), int(value.end))
-            return LogUniformDistribution(value.start, value.end)
-        else:
-            if isinstance(value.start, int) and isinstance(value.end, int):
-                return IntUniformDistribution(value.start, value.end)
-            return UniformDistribution(value.start, value.end)
+        if isinstance(value.start, int) and isinstance(value.end, int):
+            return IntDistribution(
+                low=value.start, high=value.end, log="log" in value.tags
+            )
+        return FloatDistribution(
+            low=value.start, high=value.end, log="log" in value.tags
+        )
 
     raise NotImplementedError(f"{override} is not supported by Optuna sweeper.")
 
@@ -237,7 +231,30 @@ class OptunaSweeperImpl(Sweeper):
         for trial in trials:
             for param_name, distribution in search_space_distributions.items():
                 assert type(param_name) is str
-                trial._suggest(param_name, distribution)
+                # Replace _suggest with public API methods
+                if isinstance(distribution, CategoricalDistribution):
+                    trial.suggest_categorical(param_name, distribution.choices)
+                elif isinstance(distribution, IntDistribution):
+                    trial.suggest_int(
+                        param_name,
+                        distribution.low,
+                        distribution.high,
+                        step=distribution.step,
+                        log=distribution.log,
+                    )
+                elif isinstance(distribution, FloatDistribution):
+                    trial.suggest_float(
+                        param_name,
+                        distribution.low,
+                        distribution.high,
+                        step=distribution.step,
+                        log=distribution.log,
+                    )
+                else:
+                    raise NotImplementedError(
+                        f"Distribution {distribution} not supported"
+                    )
+
             for param_name, value in fixed_params.items():
                 trial.set_user_attr(param_name, value)
 
@@ -266,15 +283,20 @@ class OptunaSweeperImpl(Sweeper):
     def _to_grid_sampler_choices(self, distribution: BaseDistribution) -> Any:
         if isinstance(distribution, CategoricalDistribution):
             return distribution.choices
-        elif isinstance(distribution, IntUniformDistribution):
+        elif isinstance(distribution, IntDistribution):
             assert (
                 distribution.step is not None
-            ), "`step` of IntUniformDistribution must be a positive integer."
-            n_items = (distribution.high - distribution.low) // distribution.step
+            ), "`step` of IntDistribution must be a positive integer."
+            n_items = (distribution.high - distribution.low) // distribution.step + 1
             return [distribution.low + i * distribution.step for i in range(n_items)]
-        elif isinstance(distribution, DiscreteUniformDistribution):
-            n_items = int((distribution.high - distribution.low) // distribution.q)
-            return [distribution.low + i * distribution.q for i in range(n_items)]
+        elif (
+            isinstance(distribution, FloatDistribution)
+            and distribution.step is not None
+        ):
+            n_items = (
+                int((distribution.high - distribution.low) / distribution.step) + 1
+            )
+            return [distribution.low + i * distribution.step for i in range(n_items)]
         else:
             raise ValueError("GridSampler only supports discrete distributions.")
 

@@ -27,8 +27,13 @@ setup(
     python_requires=">=3.9",
     install_requires=[
         "hydra-core>=1.1.0.dev7",
-        "optuna>=2.10.0,<3.0.0",
-        "sqlalchemy~=1.3.0",  # TODO: Unpin when upgrading to optuna v3.0
+        "optuna>=4.2.1",
+        "sqlalchemy>=2.0.0",  # Updated for optuna v4.2.1 compatibility
     ],
     include_package_data=True,
+    entry_points={
+        "hydra_plugins": [
+            "optuna_sweeper = hydra_plugins.hydra_optuna_sweeper",
+        ],
+    },
 )
