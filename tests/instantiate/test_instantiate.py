@@ -26,6 +26,7 @@ from tests.instantiate import (
     BClass,
     CenterCrop,
     CenterCropConf,
+    ChainClass,
     Compose,
     ComposeConf,
     IllegalType,
@@ -253,6 +254,22 @@ def config(request: Any, src: Any) -> Any:
             {},
             43,
             id="static_method",
+        ),
+        # Check recursive
+        param(
+            {
+                "_target_":{
+                    "_target_": "builtins.getattr",
+                    "_args_":[{
+                        "_target_": "tests.instantiate.ChainClass",
+                        "a": 1
+                    }, "set_b"],
+                },
+                'b':2
+            },
+            {},
+            ChainClass(1).set_b(2),
+            id="recursive_target",
         ),
         # Check nested types and static methods
         param(
