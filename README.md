@@ -7,7 +7,7 @@
   <a href="https://circleci.com/gh/facebookresearch/hydra">
     <img src="https://img.shields.io/circleci/build/github/facebookresearch/hydra?token=af199cd2deca9e70e53776f9ded96284b10687e9" alt="CircleCI" />
   </a>
-  <a href="#">
+  <a href="https://github.com/facebookresearch/hydra/blob/main/LICENSE">
     <img src="https://img.shields.io/pypi/l/hydra-core" alt="PyPI - License" />
   </a>
   <a href="#">
