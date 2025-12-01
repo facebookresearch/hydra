@@ -3,7 +3,9 @@ import sys
 import warnings
 from pathlib import Path
 from typing import Any
+import operator
 
+import numpy as np
 import nevergrad as ng
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
@@ -28,6 +30,11 @@ def test_discovery() -> None:
         x.__name__ for x in Plugins.instance().discover(Sweeper)
     ]
 
+def assert_maybe_array_equals(expected: Any, actual: Any) -> None:
+    try:
+        assert np.array_equal(expected, actual)
+    except TypeError:
+        assert expected == actual 
 
 def assert_ng_param_equals(expected: Any, actual: Any) -> None:
     assert type(expected) == type(actual)
@@ -35,6 +42,10 @@ def assert_ng_param_equals(expected: Any, actual: Any) -> None:
         assert sorted(expected.choices.value) == sorted(actual.choices.value)
     elif isinstance(actual, ng.p.Log) or isinstance(actual, ng.p.Scalar):
         assert expected.bounds == actual.bounds
+        assert expected.integer == actual.integer
+    elif isinstance(actual, ng.p.Array):
+        assert_maybe_array_equals(expected.bounds, actual.bounds)
+        assert_maybe_array_equals(expected.value, actual.value)
         assert expected.integer == actual.integer
     elif isinstance(actual, str):
         assert expected == actual
@@ -63,6 +74,15 @@ def get_scalar_with_integer_bounds(lower: int, upper: int, type: Any) -> ng.p.Sc
         (
             {"lower": 1, "upper": 12, "log": True, "integer": True},
             get_scalar_with_integer_bounds(1, 12, ng.p.Log),
+        ),
+        (
+            {"lower": 1, "upper": 12, "log": True, "shape": [2]},
+            ng.p.Array(lower=1, upper=12, shape=(2,)),
+        ),
+        ({"init": [1, 2, 3]}, ng.p.Array(init=[1, 2, 3])),
+        (
+            {"init": [1, 2, 3], "lower": [1, 2, 3], "upper": [4, 5, 6]},
+            ng.p.Array(init=[1, 2, 3], lower=[1, 2, 3], upper=[4, 5, 6]),
         ),
     ],
 )
@@ -104,6 +124,7 @@ def test_create_nevergrad_parameter_from_config(
         ("key=0", "0"),
         ("key=true", "True"),
         ("key=null", "null"),
+        ("key=[1,2,3]", "[1,2,3]"),
     ],
 )
 def test_create_nevergrad_parameter_from_override(
@@ -164,6 +185,7 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
             "batch_size=4,8,12,16",
             "lr=tag(log, interval(0.001, 1.0))",
             "dropout=interval(0,1)",
+            "arr=[1,2,3],[4,5,6]",
         ]
     run_python_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
@@ -176,6 +198,9 @@ def test_nevergrad_example(with_commandline: bool, tmpdir: Path) -> None:
         assert best_parameters.batch_size == 4  # this argument should be easy to find
     # check that all job folders are created
     last_job = max(int(fp.name) for fp in Path(tmpdir).iterdir() if fp.name.isdigit())
+    # check that the callbacks ran correctly
+    assert (Path(tmpdir) / f"nevergrad.pkl").exists()
+    assert (Path(tmpdir) / f"nevergrad.log").exists()
     assert last_job == budget - 1
 
 

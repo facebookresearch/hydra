@@ -12,6 +12,43 @@ hydra:
       # number of parallel workers for performing function evaluations
       num_workers: 10
       # maximize: true  # comment out for maximization
+
+      # Uncomment to load the dump and resume a failed run.
+      # load_if_exists: nevergrad.pkl
+
+      callbacks:
+        # Add a parameters logger callback. 
+        parameters_logger:
+          name: tell
+          callback:
+            _target_: nevergrad.callbacks.ParametersLogger
+
+            # NOTE: logs will always overwrite the previous logs.
+            filepath: ${hydra.sweep.dir}/nevergrad.log
+            append: False
+
+        # Add a optimizer dump callback. We can load the dump to resume a failed run using `load_if_exists`.
+        optimizer_dump:
+          name: tell
+          callback:
+            _target_: nevergrad.callbacks.OptimizerDump
+
+            # Note, dumps will always overwrite the previous dumps.
+            filepath: ${hydra.sweep.dir}/nevergrad.pkl
+
+        # Add a progress bar callback. 
+        progress_bar:
+          name: tell
+          callback:
+            _target_: nevergrad.callbacks.ProgressBar
+
+      # Cheap constraints prune the search space _before_ a parameterization is evaluated.
+      cheap_constraints:
+        lr_constraint:
+          _target_: __main__.lr_constraint_fn
+          _partial_: true
+          max_lr: 2.0
+
     # default parametrization of the search space
     parametrization:
       # either one or the other
@@ -35,11 +72,19 @@ hydra:
         lower: 4
         upper: 16
         integer: true
+      # an array which has optimizable values
+      # Can also set shape: [3] to optimize 3 values
+      arr:
+        init: [0.1, 0.2, 0.3]
+        lower: 0.0
+        upper: 1.0
+    
 
 db: cifar
 lr: 0.01
 dropout: 0.6
 batch_size: 8
+arr: [0.1, 0.2, 0.3]
 
 # if true, simulate a failure by raising an exception
 error: false
