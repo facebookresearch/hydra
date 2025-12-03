@@ -10,7 +10,7 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 Structured Configs can be used to implement config groups. Special care needs to be taken when specifying a 
 default value for fields populated by a config group. We will look at why below.
 
-```python title="Defining a config group for database" {18-19,24-25}
+```python title="Defining a config group for database" {24}
 from typing import Any
 from omegaconf import OmegaConf
 from dataclasses import dataclass
