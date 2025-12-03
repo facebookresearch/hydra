@@ -14,8 +14,9 @@ The example below extends the previous example by adding a defaults list that wi
 NOTE: You can still place your defaults list in your primary (YAML) config file (Example in next page).
 </div><br/>
 
-```python {11-14,19,25}
-from dataclasses import dataclass
+```python {19-22,26-27}
+from dataclasses import dataclass, field
+from typing import Any, List
 
 import hydra
 from hydra.core.config_store import ConfigStore
@@ -23,11 +24,14 @@ from omegaconf import MISSING, OmegaConf
 
 @dataclass
 class MySQLConfig:
-    ...
+    driver: str = "mysql"
+    port: int = 3306
 
 @dataclass
 class PostGreSQLConfig:
-    ...
+    driver: str = "postgresql"
+    port: int = 5432
+    timeout: int = 10
 
 defaults = [
     # Load the config "mysql" from the config group "db"
