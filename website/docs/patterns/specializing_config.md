@@ -52,8 +52,7 @@ the keyword `optional` tells Hydra to just continue if it can't find this file.
 When specializing config, you usually want to only specify what's different, and not the whole thing.
 We want the model for alexnet, when trained on cifar - to have 5 layers.
 
-### dataset_model/cifar10_alexnet.yaml
-```yaml
+```yaml title="dataset_model/cifar10_alexnet.yaml"
 # @package _global_
 
 model:

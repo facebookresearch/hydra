@@ -233,7 +233,7 @@ if __name__ == "__main__":
 </div>
 <div className="col col--6">
 
-```python title="database_lib.py" {17,22}
+```python title="database_lib.py" {21}
 from dataclasses import dataclass
 
 from hydra.core.config_store import ConfigStore
