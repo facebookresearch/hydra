@@ -9,7 +9,6 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
 In some cases the desired configuration should depend on other configuration choices.
 For example, You may want to use only 5 layers in your Alexnet model if the dataset of choice is cifar10, and the default 7 otherwise.
-
 We can start with a config that looks like this:
 ### initial config.yaml
 ```yaml

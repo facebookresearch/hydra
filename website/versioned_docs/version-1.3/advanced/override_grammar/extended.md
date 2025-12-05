@@ -108,7 +108,6 @@ num=range(-5,step=-1)                 # 0,-1,-2,-3,-4
 ### Interval sweep
 An interval sweep represents all the floating point value between two values.
 This is used by optimizing sweepers like Ax and Nevergrad. The basic sweeper does not support interval.
-
 ```python title="Signature"
 def interval(start: Union[int, float], end: Union[int, float]) -> IntervalSweep:
     """
