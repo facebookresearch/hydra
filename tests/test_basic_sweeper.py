@@ -48,6 +48,26 @@ from hydra.test_utils.test_utils import assert_multiline_regex_search, run_proce
         ),
         param(["a=range(0,3)"], None, [[["a=0"], ["a=1"], ["a=2"]]], id="range"),
         param(["a=range(3)"], None, [[["a=0"], ["a=1"], ["a=2"]]], id="range_no_start"),
+        param(["a=1,2,3", "a=20"], None, [[["a=20"]]], id="override_same_key1"),
+        param(["a=2", "a=10,20"], None, [[["a=10"], ["a=20"]]], id="override_same_key2"),
+        param(["a=1,2,3", "a=10,20"], None, [[["a=10"], ["a=20"]]], id="override_same_key3"),
+        param(["a={x:1},{x:2}"], None, [[["a={x:1}"], ["a={x:2}"]]], id="dicts"),
+        param(
+            ["a={x:1},{x:2}", "+a={y:10},{y:20}"],
+            None,
+            [[["a={x:1}", "+a={y:10}"], ["a={x:1}", "+a={y:20}"], ["a={x:2}", "+a={y:10}"], ["a={x:2}", "+a={y:20}"]]],
+            id="dicts_multiple_with_plus",
+        ),
+        param(
+            ["a={x:1},{x:2}", "a={y:10},{y:20}"],
+            None,
+            [[["a={x:1}", "a={y:10}"], ["a={x:1}", "a={y:20}"], ["a={x:2}", "a={y:10}"], ["a={x:2}", "a={y:20}"]]],
+            id="dicts_multiple",
+        ),
+        param(["a=1,2,3", "a={x:1}"], None, [[["a={x:1}"]]], id="override_with_dict1"),
+        param(["a=1,2,3", "a={x:1},{x:2}"], None, [[["a={x:1}"], ["a={x:2}"]]], id="override_with_dict2"),
+        param(["a={x:1}", "a=1,2,3"], None, [[["a=1"], ["a=2"], ["a=3"]]], id="override_with_dict3"),
+        param(["a={x:1},{x:2}", "a=1"], None, [[["a=1"]]], id="override_with_dict4"),
     ],
 )
 def test_split(
