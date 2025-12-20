@@ -125,7 +125,9 @@ class BasicSweeper(Sweeper):
         for i, override in enumerate(overrides):
             if override.config_loader is None:
                 continue
-            is_group = len(override.config_loader.get_group_options(override.key_or_group)) > 0
+            is_group = (
+                len(override.config_loader.get_group_options(override.key_or_group)) > 0
+            )
 
             key = override.get_key_element()
             _write = False

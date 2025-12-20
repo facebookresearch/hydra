@@ -138,9 +138,7 @@ def test_split(
             id="override_mixed",
         ),
         param(["a=1,2", "a={x:10},{y:20}", "a=3,4"], ["a=3,4"], id="override_mixed"),
-        param(
-            ["+a=xx,yy", "+a=[zz]"], ["+a=[zz]"], id="override_plus_list"
-        ),
+        param(["+a=xx,yy", "+a=[zz]"], ["+a=[zz]"], id="override_plus_list"),
     ],
 )
 def test_simplify(args: List[str], expected: List[str]) -> None:
