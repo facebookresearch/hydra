@@ -6,7 +6,9 @@ from typing import Any, List, Optional
 
 from pytest import mark, param
 
+from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.core_plugins.basic_sweeper import BasicSweeper
+from hydra._internal.utils import create_config_search_path
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.test_utils.test_utils import assert_multiline_regex_search, run_process
 
@@ -104,7 +106,9 @@ from hydra.test_utils.test_utils import assert_multiline_regex_search, run_proce
 def test_split(
     args: List[str], max_batch_size: Optional[int], expected: List[List[List[str]]]
 ) -> None:
-    parser = OverridesParser.create()
+
+    config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
+    parser = OverridesParser.create(config_loader)
     ret = BasicSweeper.split_arguments(
         parser.parse_overrides(args), max_batch_size=max_batch_size
     )
@@ -135,12 +139,13 @@ def test_split(
         ),
         param(["a=1,2", "a={x:10},{y:20}", "a=3,4"], ["a=3,4"], id="override_mixed"),
         param(
-            ["+a=xx,yy", "+a=[zz]"], ["+a=xx,yy", "+a=[zz]"], id="override_plus_list"
+            ["+a=xx,yy", "+a=[zz]"], ["+a=[zz]"], id="override_plus_list"
         ),
     ],
 )
 def test_simplify(args: List[str], expected: List[str]) -> None:
-    parser = OverridesParser.create()
+    config_loader = ConfigLoaderImpl(config_search_path=create_config_search_path(None))
+    parser = OverridesParser.create(config_loader)
     overrides = parser.parse_overrides(args)
     simplified = BasicSweeper.simplify_overrides(overrides)
     expected_overrides = parser.parse_overrides(expected)
