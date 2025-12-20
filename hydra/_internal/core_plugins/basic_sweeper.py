@@ -108,12 +108,15 @@ class BasicSweeper(Sweeper):
 
         def check_primitive(x: Any) -> bool:
             return isinstance(x, (int, float, bool)) or isinstance(x, QuotedString)
+
         for i, override in enumerate(overrides):
             if override.is_sweep_override():
                 if override.is_discrete_sweep():
                     key = override.get_key_element()
                     is_primitive[i] = all(override.sweep_iterator(check_primitive))
-                    is_dict[i] = any(override.sweep_iterator(lambda x: isinstance(x, dict)))
+                    is_dict[i] = any(
+                        override.sweep_iterator(lambda x: isinstance(x, dict))
+                    )
                     if is_primitive[i]:
                         last_primitive[key] = i
                     if is_dict[i]:
@@ -129,7 +132,9 @@ class BasicSweeper(Sweeper):
 
         for i, override in enumerate(overrides):
             key = override.get_key_element()
-            if is_primitive.get(i, False) and (last_primitive.get(key, -1) != i or last_dict.get(key, -1) > i):
+            if is_primitive.get(i, False) and (
+                last_primitive.get(key, -1) != i or last_dict.get(key, -1) > i
+            ):
                 continue
             if is_dict.get(i, False) and last_primitive.get(key, -1) > i:
                 continue
