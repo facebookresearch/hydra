@@ -28,7 +28,7 @@ from omegaconf import DictConfig, OmegaConf
 
 from hydra.core.config_store import ConfigStore
 from hydra.core.override_parser.overrides_parser import OverridesParser
-from hydra.core.override_parser.types import Override
+from hydra.core.override_parser.types import Override, QuotedString
 from hydra.core.utils import JobReturn
 from hydra.errors import HydraException
 from hydra.plugins.launcher import Launcher
@@ -94,6 +94,50 @@ class BasicSweeper(Sweeper):
         )
 
     @staticmethod
+    def simplify_overrides(
+        overrides: List[Override],
+    ) -> List[Override]:
+        lists = []
+        # NOTE: key -> index of last override with no dict value. (e.g. a=1,2,3)
+        # any override for key before this would be skipped.
+        last_primitive = {}
+        last_dict = {}
+        # track if a key ends up to be a dict override
+        is_primitive = {}
+        is_dict = {}
+
+        def check_primitive(x: Any) -> bool:
+            return isinstance(x, (int, float, bool)) or isinstance(x, QuotedString)
+        for i, override in enumerate(overrides):
+            if override.is_sweep_override():
+                if override.is_discrete_sweep():
+                    key = override.get_key_element()
+                    is_primitive[i] = all(override.sweep_iterator(check_primitive))
+                    is_dict[i] = any(override.sweep_iterator(lambda x: isinstance(x, dict)))
+                    if is_primitive[i]:
+                        last_primitive[key] = i
+                    if is_dict[i]:
+                        last_dict[key] = i
+            else:
+                key = override.get_key_element()
+                is_primitive[i] = check_primitive(override.value())
+                is_dict[i] = isinstance(override.value(), dict)
+                if is_primitive[i]:
+                    last_primitive[key] = i
+                if is_dict[i]:
+                    last_dict[key] = i
+
+        for i, override in enumerate(overrides):
+            key = override.get_key_element()
+            if is_primitive.get(i, False) and (last_primitive.get(key, -1) != i or last_dict.get(key, -1) > i):
+                continue
+            if is_dict.get(i, False) and last_primitive.get(key, -1) > i:
+                continue
+            lists.append(override)
+
+        return lists
+
+    @staticmethod
     def split_overrides_to_chunks(
         lst: List[List[str]], n: Optional[int]
     ) -> Iterable[List[List[str]]]:
@@ -108,22 +152,13 @@ class BasicSweeper(Sweeper):
         overrides: List[Override], max_batch_size: Optional[int]
     ) -> List[List[List[str]]]:
         lists = []
-        # NOTE: key -> index of last override with no dict value. (e.g. a=1,2,3)
-        # any override for key before this would be skipped.
-        skip_to = {}
-        # track if a key ends up to be a dict override
-        contains_dict = {}
-        list_overrides = []
-        for i, override in enumerate(overrides):
+        overrides = BasicSweeper.simplify_overrides(overrides)
+        for override in overrides:
             if override.is_sweep_override():
                 if override.is_discrete_sweep():
                     key = override.get_key_element()
                     sweep = [f"{key}={val}" for val in override.sweep_string_iterator()]
-                    has_dict = any(override.sweep_iterator(lambda x: isinstance(x, dict)))
-                    if not has_dict:
-                        skip_to[key] = i
-                    contains_dict[key] = has_dict
-                    list_overrides.append((key, sweep))
+                    lists.append(sweep)
                 else:
                     assert override.value_type is not None
                     raise HydraException(
@@ -132,16 +167,8 @@ class BasicSweeper(Sweeper):
             else:
                 key = override.get_key_element()
                 value = override.get_value_element_as_str()
-                has_dict = isinstance(override.value(), dict)
-                if not has_dict:
-                    skip_to[key] = i
-                contains_dict[key] = has_dict
-                list_overrides.append((key, [f"{key}={value}"]))
+                lists.append([f"{key}={value}"])
 
-        for i, (k, v) in enumerate(list_overrides):
-            s = skip_to.get(k, -1)
-            if i > s or (i == s and not contains_dict[k]):
-                lists.append(v)
         all_batches = [list(x) for x in itertools.product(*lists)]
         assert max_batch_size is None or max_batch_size > 0
         if max_batch_size is None:
