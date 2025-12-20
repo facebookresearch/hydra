@@ -80,6 +80,28 @@ def test_split(
     lret = [list(x) for x in ret]
     assert lret == expected
 
+@mark.parametrize(
+    "args,expected",
+    [
+        param(["a=1", "b=2", "a=3"], ["b=2", "a=3"], id="simple_override"),
+        param(["a=1,2", "a=3,4"], ["a=3,4"], id="override_split"),
+        param(["a=1", "b=2", "+a={x:10}", "+a={y:20}"], ["a=1", "b=2", "+a={x:10}", "+a={y:20}"], id="override_plus"),
+        param(["a=1", "b=2", "a={x:10}", "a={y:20}"], ["b=2", "a={x:10}", "a={y:20}"], id="override_plus"),
+        param(["a={x:1}", "a={y:2}"], ["a={x:1}", "a={y:2}"], id="override_dict"),
+        param(["a=1,2", "+a={x:10},{y:20}", "a=3,4"], ["+a={x:10},{y:20}", "a=3,4"], id="override_mixed"),
+        param(["a=1,2", "a={x:10},{y:20}", "a=3,4"], ["a=3,4"], id="override_mixed"),
+        param(["+a=xx,yy", "+a=[zz]"], ["+a=xx,yy", "+a=[zz]"], id="override_plus_list"),
+    ]
+)
+def test_simplify(
+    args: List[str], expected: List[str]
+) -> None:
+    parser = OverridesParser.create()
+    overrides = parser.parse_overrides(args)
+    simplified = BasicSweeper.simplify_overrides(overrides)
+    expected_overrides = parser.parse_overrides(expected)
+    assert simplified == expected_overrides
+
 
 def test_partial_failure(
     tmpdir: Any,
