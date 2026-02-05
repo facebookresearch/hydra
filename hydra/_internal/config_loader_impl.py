@@ -5,7 +5,16 @@ import re
 import sys
 import warnings
 from textwrap import dedent
-from typing import Any, List, MutableSequence, Optional, Tuple
+from typing import (
+    Any,
+    List,
+    MutableSequence,
+    Optional,
+    Tuple,
+    Union,
+    get_args,
+    get_origin,
+)
 
 from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
 from omegaconf.errors import (
@@ -548,6 +557,11 @@ class ConfigLoaderImpl(ConfigLoader):
             for default in defaults:
                 loaded = self._load_single_config(default=default, repo=repo)
                 try:
+                    if isinstance(cfg, DictConfig) and isinstance(
+                        loaded.config, DictConfig
+                    ):
+                        self._materialize_structures(cfg, loaded.config)
+
                     cfg.merge_with(loaded.config)
                 except OmegaConfBaseException as e:
                     raise ConfigCompositionException(
@@ -571,6 +585,52 @@ class ConfigLoaderImpl(ConfigLoader):
         strip_defaults(cfg)
 
         return cfg
+
+    def _materialize_structures(self, dest: DictConfig, src: DictConfig) -> None:
+        """
+        Recursively materialize None-valued DictConfig nodes in dest if src has a corresponding DictConfig override.
+        Uses _metadata.ref_type (internal API) to inspect the underlying structured type of a None node.
+        """
+        if not isinstance(dest, DictConfig) or not isinstance(src, DictConfig):
+            return
+
+        for key in src:
+            try:
+                dest_node = dest._get_node(key)
+            except (ConfigKeyError, ConfigAttributeError):
+                continue
+            except AttributeError:
+                # AttributeError observed in Hydra tests when dest contains unresolved interpolation nodes;
+                # skipping materialization avoids raising during compose.
+                continue
+
+            if not isinstance(dest_node, DictConfig):
+                continue
+
+            if dest_node._is_none():
+                src_node = src._get_node(key)
+                if not isinstance(src_node, DictConfig):
+                    continue
+
+                ref_type = dest_node._metadata.ref_type
+                if ref_type is not Any:
+                    if get_origin(ref_type) is Union:
+                        args = [a for a in get_args(ref_type) if a is not type(None)]
+                        if len(args) == 1:
+                            ref_type = args[0]
+
+                try:
+                    if ref_type is not Any:
+                        dest[key] = OmegaConf.structured(ref_type)
+                    else:
+                        dest[key] = {}
+                except Exception:
+                    dest[key] = {}
+
+            else:
+                src_node = src._get_node(key)
+                if isinstance(src_node, DictConfig):
+                    self._materialize_structures(dest_node, src_node)
 
     def get_sources(self) -> List[ConfigSource]:
         return self.repository.get_sources()
