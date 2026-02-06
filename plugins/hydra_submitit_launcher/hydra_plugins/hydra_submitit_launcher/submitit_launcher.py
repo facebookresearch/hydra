@@ -16,6 +16,7 @@ log = logging.getLogger(__name__)
 
 
 class BaseSubmititLauncher(Launcher):
+
     _EXECUTOR = "abstract"
 
     def __init__(self, **params: Any) -> None:
@@ -89,7 +90,12 @@ class BaseSubmititLauncher(Launcher):
         import submitit
 
         assert self.config is not None
-
+        
+        # ___________________________ NEW wait_for_completion logic ___________________________ #
+        # I pop it out of the params dict to avoid passing it to the executor, which would cause
+        # an error.
+        wait_for_completion = self.params.pop("wait_for_completion")
+        # _____________________________________________________________________________________ #
         num_jobs = len(job_overrides)
         assert num_jobs > 0
         params = self.params
@@ -142,6 +148,31 @@ class BaseSubmititLauncher(Launcher):
             )
 
         jobs = executor.map_array(self, *zip(*job_params))
+        
+        # ___________________________ NEW wait_for_completion logic ___________________________ #
+        if not wait_for_completion:
+            # I'm lazy importing these, though there's no real reason to avoid importing them at
+            # the top level since they don't have any heavy dependencies. I just want to avoid
+            # importing them if we're waiting for completion, since we won't be using them in
+            # that case.
+            from hydra.core.utils import JobReturn, JobStatus
+            results = []
+            for idx, (job, overrides) in enumerate(zip(jobs, job_overrides)):
+                log.info(f"Submitted job {job.job_id}")
+                log.info(f"  stdout: {job.paths.stdout}")
+                log.info(f"  stderr: {job.paths.stderr}")
+                results.append(JobReturn(
+                    overrides=list(overrides),
+                    # We don't have the actual job status or return value at this point,
+                    # so this is a bit of a lie. We could define a new JobStatus like SUBMITTED.
+                    # For simplicity I'll just use COMPLETED placeholders for now.
+                    # NOTE: JobStatus.UNKNOWN throws an error. See the JobReturn class in
+                    # hydra/core/utils.py.
+                    status=JobStatus.COMPLETED,
+                    _return_value={"job_id": job.job_id},
+                ))
+            return results
+        # _____________________________________________________________________________________ #
         return [j.results()[0] for j in jobs]
 
 
