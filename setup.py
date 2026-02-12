@@ -1,8 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 # type: ignore
-import pathlib
 
-import pkg_resources
 from setuptools import find_namespace_packages, setup
 
 from build_helpers.build_helpers import (
@@ -14,11 +12,11 @@ from build_helpers.build_helpers import (
     find_version,
 )
 
-with pathlib.Path("requirements/requirements.txt").open() as requirements_txt:
-    install_requires = [
-        str(requirement)
-        for requirement in pkg_resources.parse_requirements(requirements_txt)
-    ]
+install_requires = [
+    "omegaconf>=2.4.0.dev4",
+    "importlib-resources;python_version<'3.9'",
+    "packaging",
+]
 
 
 with open("README.md") as fh:
