@@ -42,7 +42,6 @@ with open("README.md") as fh:
         packages=find_namespace_packages(include=["hydra", "hydra.*"]),
         include_package_data=True,
         classifiers=[
-            "License :: OSI Approved :: MIT License",
             "Development Status :: 4 - Beta",
             "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",
