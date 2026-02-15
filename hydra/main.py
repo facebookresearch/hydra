@@ -11,7 +11,7 @@ from omegaconf import DictConfig, open_dict, read_write
 
 from . import version
 from ._internal.deprecation_warning import deprecation_warning
-from ._internal.utils import _run_hydra, get_args_parser
+from ._internal.utils import _parse_args, _run_hydra, get_args_parser
 from .core.hydra_config import HydraConfig
 from .core.utils import _flush_loggers, configure_log
 from .types import TaskFunction
@@ -83,7 +83,7 @@ def main(
                 return task_function(cfg_passthrough)
             else:
                 args_parser = get_args_parser()
-                args = args_parser.parse_args()
+                args = _parse_args(args_parser)
                 if args.experimental_rerun is not None:
                     cfg = _get_rerun_conf(args.experimental_rerun, args.overrides)
                     task_function(cfg)
