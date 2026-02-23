@@ -126,6 +126,7 @@ module.exports = AddFBInternalOnly({
                     'advanced/instantiate_objects/structured_config',
                 ]
             },
+            'advanced/hydra_main',
             'advanced/compose_api',
             'advanced/search_path',
             {
