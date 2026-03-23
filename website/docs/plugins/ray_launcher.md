@@ -1,4 +1,4 @@
----
+-jasmi_ne0703--
 id: ray_launcher
 title: Ray Launcher plugin
 sidebar_label: Ray Launcher plugin
@@ -335,4 +335,4 @@ INFO worker.py:633 -- Connecting to existing Ray cluster at address: 10.30.99.17
 Ray launcher is built on top of [`ray.init()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-init)
 and [`ray.remote()`](https://docs.ray.io/en/master/package-ref.html?highlight=ray.remote#ray-remote).
 You can configure `ray` by overriding `hydra.launcher.ray.init` and `hydra.launcher.ray.remote`.
-Check out an <GithubLink to="plugins/hydra_ray_launcher/examples/simple/config.yaml">example config</GithubLink>.
+Check out an <GithubLink to="plgins/hydra_ray_launcher/examples/simple/config.yaml">example config</GithubLink>.
