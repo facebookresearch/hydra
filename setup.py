@@ -45,14 +45,13 @@ with open("README.md") as fh:
         classifiers=[
             "License :: OSI Approved :: MIT License",
             "Development Status :: 4 - Beta",
-            "Programming Language :: Python :: 3.9",
             "Programming Language :: Python :: 3.10",
             "Programming Language :: Python :: 3.11",
             "Operating System :: POSIX :: Linux",
             "Operating System :: MacOS",
             "Operating System :: Microsoft :: Windows",
         ],
-        python_requires=">=3.9",
+        python_requires=">=3.10",
         install_requires=install_requires,
         entry_points={"pytest11": ["hydra_pytest = hydra.extra.pytest_plugin"]},
         # Install development dependencies with
