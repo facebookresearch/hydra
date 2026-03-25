@@ -6,11 +6,11 @@ import string
 import subprocess
 import sys
 import tempfile
+from importlib.metadata import version as get_version
 from pathlib import Path
 from typing import Any, Dict, Generator, Optional
 
 import boto3  # type: ignore
-from importlib.metadata import version as get_version
 from botocore.exceptions import (  # type: ignore
     ClientError,
     NoCredentialsError,
