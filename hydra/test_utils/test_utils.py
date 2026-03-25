@@ -361,7 +361,14 @@ def run_python_script(
     if allow_warnings:
         cmd = [sys.executable] + cmd
     else:
-        cmd = [sys.executable, "-Werror"] + cmd
+        cmd = [
+            sys.executable,
+            # torch 2.11+ deprecated torch.jit.script, triggered during
+            # ax/botorch import — suppress before -Werror promotes it.
+            "-W",
+            "ignore::DeprecationWarning:torch",
+            "-Werror",
+        ] + cmd
     return run_process(cmd, env, print_error, raise_exception)
 
 
