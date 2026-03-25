@@ -363,10 +363,13 @@ def run_python_script(
     else:
         cmd = [
             sys.executable,
-            # torch 2.11+ deprecated torch.jit.script, triggered during
-            # ax/botorch import — suppress before -Werror promotes it.
+            # Ignore DeprecationWarnings from third-party packages
+            # (e.g. torch 2.11+ deprecated torch.jit.script, triggered
+            # during ax/botorch import). -W filters are ordered: the
+            # first match wins, so this ignore takes precedence over
+            # the -Werror that follows for DeprecationWarning only.
             "-W",
-            "ignore::DeprecationWarning:torch",
+            "ignore::DeprecationWarning",
             "-Werror",
         ] + cmd
     return run_process(cmd, env, print_error, raise_exception)
