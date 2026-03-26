@@ -361,7 +361,21 @@ def run_python_script(
     if allow_warnings:
         cmd = [sys.executable] + cmd
     else:
-        cmd = [sys.executable, "-Werror"] + cmd
+        cmd = [
+            sys.executable,
+            # Each -W flag is inserted at the *front* of the filter
+            # list, so the last -W on the command line has highest
+            # priority. We put -Werror first so it ends up lowest
+            # priority, then -W ignore::DeprecationWarning last so it
+            # takes precedence — allowing us to ignore
+            # DeprecationWarnings from third-party packages (e.g.
+            # torch 2.11+ deprecated torch.jit.script, triggered
+            # during ax/botorch import) while still treating all other
+            # warnings as errors.
+            "-Werror",
+            "-W",
+            "ignore::DeprecationWarning",
+        ] + cmd
     return run_process(cmd, env, print_error, raise_exception)
 
 

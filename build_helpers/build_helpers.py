@@ -164,7 +164,7 @@ class Develop(develop.develop):
 
 class SDistCommand(sdist.sdist):
     def run(self) -> None:
-        if not self.dry_run:
+        if not self.dry_run:  # type: ignore[attr-defined]
             self.run_command("clean")
             run_antlr(self)
         sdist.sdist.run(self)
