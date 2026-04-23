@@ -1,0 +1,1 @@
+Fix TypeError when deleting a ListConfig item by index via CLI override (e.g. `~config.x.0`)
