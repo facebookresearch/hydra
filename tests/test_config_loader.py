@@ -736,6 +736,8 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
         param({"x": {"y": 10}}, ["~x.y=10"], {"x": {}}, id="delete_strict"),
         param({"x": [1, 2, 3]}, ["~x"], {}, id="delete:list"),
         param({"x": [1, 2, 3]}, ["~x=[1,2,3]"], {}, id="delete:list"),
+        param({"x": [1, 2, 3]}, ["~x.0"], {"x": [2, 3]}, id="delete:list_item"),
+        param({"x": [1, 2, 3]}, ["~x.1"], {"x": [1, 3]}, id="delete:list_item_middle"),
         param(
             {"x": 20},
             ["~z"],

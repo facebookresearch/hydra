@@ -5,9 +5,9 @@ import re
 import sys
 import warnings
 from textwrap import dedent
-from typing import Any, List, MutableSequence, Optional, Tuple
+from typing import Any, List, MutableSequence, Optional, Tuple, Union
 
-from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
+from omegaconf import Container, DictConfig, ListConfig, OmegaConf, flag_override, open_dict
 from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
@@ -365,7 +365,10 @@ class ConfigLoaderImpl(ConfigLoader):
                             del cfg[key]
                         else:
                             node = OmegaConf.select(cfg, key[0:last_dot])
-                            del node[key[last_dot + 1 :]]
+                            node_key: Union[str, int] = key[last_dot + 1 :]
+                            if isinstance(node, ListConfig):
+                                node_key = int(node_key)
+                            del node[node_key]
 
                 elif override.is_add():
                     if OmegaConf.select(
