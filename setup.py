@@ -2,7 +2,6 @@
 # type: ignore
 import pathlib
 
-import pkg_resources
 from setuptools import find_namespace_packages, setup
 
 from build_helpers.build_helpers import (
@@ -16,8 +15,9 @@ from build_helpers.build_helpers import (
 
 with pathlib.Path("requirements/requirements.txt").open() as requirements_txt:
     install_requires = [
-        str(requirement)
-        for requirement in pkg_resources.parse_requirements(requirements_txt)
+        line.strip()
+        for line in requirements_txt
+        if line.strip() and not line.strip().startswith("#")
     ]
 
 
