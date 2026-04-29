@@ -15,9 +15,9 @@ from build_helpers.build_helpers import (
 
 with pathlib.Path("requirements/requirements.txt").open() as requirements_txt:
     install_requires = [
-        line.strip()
+        stripped
         for line in requirements_txt
-        if line.strip() and not line.strip().startswith("#")
+        if (stripped := line.strip()) and not stripped.startswith("#")
     ]
 
 
