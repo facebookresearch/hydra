@@ -75,4 +75,3 @@ If you use Hydra in your research please use the following BibTeX entry:
   url =          {https://github.com/facebookresearch/hydra}
 }
 ```
-
