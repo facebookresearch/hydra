@@ -310,7 +310,6 @@ detect whether to use pretty-print and color mode
 
 `ray` launcher lets you launch application on your ray cluster or local machine. You can easily config how your jobs are executed by changing `ray` launcher's configuration here
  `~/hydra/plugins/hydra_ray_launcher/hydra_plugins/hydra_ray_launcher/conf/hydra/launcher/ray.yaml`
-
  The <GithubLink to="plugins/hydra_ray_launcher/examples/simple">example application</GithubLink> starts a new ray cluster.
 ```commandline
 $ python my_app.py  --multirun hydra/launcher=ray
