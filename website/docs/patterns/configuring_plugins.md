@@ -58,8 +58,6 @@ We can directly override Launcher config in primary config.
 <div className="col col--4">
 
 ```yaml title="config.yaml" 
-a: 1
-
 hydra:
   launcher:
     ton_fuel: 2
@@ -140,7 +138,7 @@ ton_fuel: 2
 </div>
 <div className="col col--6">
 
-```yaml title="hydra/sweeper/my_sim.yaml" {5}
+```yaml title="hydra/launcher/my_sim.yaml" {5}
 defaults:
   - sim
 
