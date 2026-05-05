@@ -352,23 +352,33 @@ class OptunaSweeperImpl(Sweeper):
             self.job_idx += len(returns)
             failures = []
             for trial, ret in zip(trials, returns):
-                values: Optional[List[float]] = None
+                return_value = ret.return_value
+                if isinstance(return_value, dict):
+                    if "result" not in return_value:
+                        raise KeyError("'result' key must be present in the return_value dictionary.")
+                    result = return_value.pop("result")
+                    user_attrs = return_value
+                    for attr, attr_value in user_attrs.items():
+                        trial.set_user_attr(attr, attr_value)
+                else:
+                    result = return_value
                 state: optuna.trial.TrialState = optuna.trial.TrialState.COMPLETE
+                values: Optional[List[float]] = None
                 try:
                     if len(directions) == 1:
                         try:
-                            values = [float(ret.return_value)]
+                            values = [float(result)]
                         except (ValueError, TypeError):
                             raise ValueError(
-                                f"Return value must be float-castable. Got '{ret.return_value}'."
+                                f"Return value must be float-castable. Got '{result}'."
                             ).with_traceback(sys.exc_info()[2])
                     else:
                         try:
-                            values = [float(v) for v in ret.return_value]
+                            values = [float(v) for v in result]
                         except (ValueError, TypeError):
                             raise ValueError(
                                 "Return value must be a list or tuple of float-castable values."
-                                f" Got '{ret.return_value}'."
+                                f" Got '{result}'."
                             ).with_traceback(sys.exc_info()[2])
                         if len(values) != len(directions):
                             raise ValueError(
