@@ -274,6 +274,12 @@ class Override:
     # Configs repo
     config_loader: Optional[ConfigLoader] = None
 
+    def is_change(self) -> bool:
+        """
+        :return: True if this override represents a change of a config value or config group option
+        """
+        return self.type == OverrideType.CHANGE
+
     def is_delete(self) -> bool:
         """
         :return: True if this override represents a deletion of a config value or config group option
