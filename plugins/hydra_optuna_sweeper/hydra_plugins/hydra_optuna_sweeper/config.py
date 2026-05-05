@@ -117,6 +117,19 @@ class MOTPESamplerConfig(SamplerConfig):
 
 
 @dataclass
+class GPSamplerConfig(SamplerConfig):
+    """
+    https://optuna.readthedocs.io/en/stable/reference/samplers/generated/optuna.samplers.GPSampler.html
+    """
+
+    _target_: str = "optuna.samplers.GPSampler"
+    seed: Optional[int] = None
+
+    n_startup_trials: int = 10
+    deterministic_objective = False
+
+
+@dataclass
 class DistributionConfig:
     # Type of distribution. "int", "float" or "categorical"
     type: DistributionType
@@ -232,5 +245,12 @@ ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="grid",
     node=GridSamplerConfig,
+    provider="optuna_sweeper",
+)
+
+ConfigStore.instance().store(
+    group="hydra/sweeper/sampler",
+    name="gp",
+    node=GPSamplerConfig,
     provider="optuna_sweeper",
 )
