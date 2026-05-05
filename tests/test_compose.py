@@ -894,3 +894,23 @@ def test_enum_with_removed_defaults_list(hydra_restore_singletons: Any) -> None:
 
     cfg = compose("conf")
     assert cfg == {"enum_dict": {}, "int_dict": {}, "str_dict": {}}
+
+
+def test_compose_merge_into_none_structured_node(hydra_restore_singletons: Any) -> None:
+    @dataclass
+    class Child:
+        pass
+
+    @dataclass
+    class Config:
+        child: Optional[Child] = None
+
+    ConfigStore.instance().store(name="config_2502", node=Config)
+    ConfigStore.instance().store(
+        group="group_2502", name="option", node={"child": {}}, package="_global_"
+    )
+
+    with initialize(version_base=None):
+        cfg = compose(config_name="config_2502", overrides=["+group_2502=option"])
+        assert cfg.child is not None
+        assert OmegaConf.get_type(cfg.child) is Child
