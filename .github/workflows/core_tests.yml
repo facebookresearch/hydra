@@ -79,13 +79,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.0
       - uses: "./.github/actions/windows"
+        with:
+          py_version: "${{ matrix.py_version }}"
       - name: Testing Hydra
         run: |-
+          $env:CONDA_DLL_SEARCH_MODIFICATION_ENABLE = "1"
           conda run -n hydra pip install nox --progress-bar off
-          set NOX_PYTHON_VERSIONS="${{ matrix.py_version }}"
-          set ConEmuDefaultCp=65001
-          set PYTHONIOENCODING="utf_8"
-          nox -s test_tools test_core test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
+          $env:NOX_PYTHON_VERSIONS = "${{ matrix.py_version }}"
+          $env:ConEmuDefaultCp = "65001"
+          $env:PYTHONIOENCODING = "utf_8"
+          conda run -n hydra nox -s test_tools test_core test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
           exit $LASTEXITCODE
   test_linux_omc_dev:
     runs-on: ubuntu-latest

@@ -2,7 +2,7 @@
 import math
 import os
 from pathlib import Path
-from typing import Any, List
+from typing import Any, List, Tuple
 
 from hydra.core.plugins import Plugins
 from hydra.plugins.sweeper import Sweeper
@@ -17,6 +17,18 @@ from pytest import mark, raises
 from hydra_plugins.hydra_ax_sweeper.ax_sweeper import AxSweeper
 
 chdir_plugin_root()
+
+pytestmark = mark.filterwarnings(
+    "ignore:`torch.jit.script` is deprecated:DeprecationWarning"
+)
+
+TORCH_JIT_SCRIPT_WARNING_FILTER = (
+    "-Wignore:`torch.jit.script` is deprecated:DeprecationWarning"
+)
+
+
+def run_ax_python_script(cmd: List[str]) -> Tuple[str, str]:
+    return run_python_script([TORCH_JIT_SCRIPT_WARNING_FILTER] + cmd)
 
 
 def test_discovery() -> None:
@@ -222,7 +234,7 @@ def test_ax_logging(tmpdir: Path, cmd_arg: str, expected_str: str) -> None:
         "polynomial.z=10",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + [cmd_arg]
-    result, _ = run_python_script(cmd)
+    result, _ = run_ax_python_script(cmd)
     assert "polynomial.x: range=[-5.0, -2.0]" in result
     assert expected_str in result
     assert "polynomial.z: fixed=10" in result
@@ -243,7 +255,7 @@ def test_search_space_exhausted_exception(tmpdir: Path, cmd_args: List[str]) -> 
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + cmd_args
-    run_python_script(cmd)
+    run_ax_python_script(cmd)
 
 
 @mark.parametrize(
@@ -264,7 +276,7 @@ def test_search_space_with_constraint_metric(tmpdir: Path, cmd_args: List[str]) 
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=2",
     ] + cmd_args
-    results, _ = run_python_script(cmd)
+    results, _ = run_ax_python_script(cmd)
 
 
 @mark.parametrize(
@@ -298,7 +310,7 @@ def test_jobs_using_choice_between_lists(
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
-    result, _ = run_python_script(cmd)
+    result, _ = run_ax_python_script(cmd)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
@@ -335,7 +347,7 @@ def test_jobs_using_choice_between_dicts(
         "hydra.job.chdir=True",
         "hydra.sweeper.ax_config.max_trials=3",
     ] + [cmd_arg]
-    result, _ = run_python_script(cmd)
+    result, _ = run_ax_python_script(cmd)
     assert f"polynomial.coefficients: {serialized_encoding}" in result
     assert f"'+polynomial.coefficients': {best_coefficients}" in result
     assert f"New best value: {best_value}" in result
@@ -351,6 +363,6 @@ def test_example_app(tmpdir: Path) -> None:
         "banana.y=interval(-5, 10.1)",
         "hydra.sweeper.ax_config.max_trials=2",
     ]
-    result, _ = run_python_script(cmd)
+    result, _ = run_ax_python_script(cmd)
     assert "banana.x: range=[-5, 5]" in result
     assert "banana.y: range=[-5.0, 10.1]" in result
