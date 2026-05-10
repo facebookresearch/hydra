@@ -1,6 +1,8 @@
 name: facebookresearch/hydra/core_tests
 on:
   push:
+    # Keep push coverage for main while avoiding duplicate push+pull_request
+    # runs for same-repository PR branches.
     branches:
       - main
   pull_request:
