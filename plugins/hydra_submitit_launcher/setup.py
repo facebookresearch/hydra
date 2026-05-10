@@ -17,20 +17,19 @@ setup(
     packages=find_namespace_packages(include=["hydra_plugins.*"]),
     classifiers=[
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
         "Operating System :: MacOS",
         "Operating System :: POSIX :: Linux",
         "Development Status :: 4 - Beta",
     ],
-    python_requires=">=3.9",
+    python_requires=">=3.10",
     install_requires=[
         "hydra-core>=1.1.0.dev7",
-        # Temporary pins; remove when Hydra drops Python 3.9.0 support.
-        "submitit>=1.3.3,<1.5.4; python_version < '3.10'",
-        "setuptools<81; python_version < '3.10'",
-        "submitit>=1.3.3; python_version >= '3.10'",
+        "submitit>=1.3.3",
     ],
     include_package_data=True,
 )
