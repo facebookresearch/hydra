@@ -163,6 +163,8 @@ class Develop(develop.develop):
 
 
 class SDistCommand(sdist.sdist):
+    dry_run: bool
+
     def run(self) -> None:
         if not self.dry_run:
             self.run_command("clean")
