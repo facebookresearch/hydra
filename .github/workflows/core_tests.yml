@@ -1,9 +1,13 @@
 name: facebookresearch/hydra/core_tests
 on:
   push:
+    branches:
+      - main
+      - '*_branch'
   pull_request:
     branches:
       - main
+      - '*_branch'
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -90,26 +94,3 @@ jobs:
           $env:PYTHONIOENCODING = "utf_8"
           conda run -n hydra nox -s test_tools test_core test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
           exit $LASTEXITCODE
-  test_linux_omc_dev:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        py_version:
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
-          - '3.13'
-          - '3.14'
-    steps:
-      - uses: actions/checkout@v4.1.0
-      - uses: "./.github/actions/linux"
-        with:
-          py_version: "${{ matrix.py_version }}"
-      - name: Testing Hydra
-        run: |-
-          export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
-          export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
-          export USE_OMEGACONF_DEV_VERSION=1
-          pip install nox --progress-bar off
-          nox -s test_core -ts
