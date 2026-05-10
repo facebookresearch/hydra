@@ -27,7 +27,10 @@ setup(
     python_requires=">=3.9",
     install_requires=[
         "hydra-core>=1.1.0.dev7",
-        "submitit>=1.3.3",
+        # Temporary pins; remove when Hydra drops Python 3.9.0 support.
+        "submitit>=1.3.3,<1.5.4; python_version < '3.10'",
+        "setuptools<81; python_version < '3.10'",
+        "submitit>=1.3.3; python_version >= '3.10'",
     ],
     include_package_data=True,
 )
