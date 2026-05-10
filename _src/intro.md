@@ -7,8 +7,6 @@ sidebar_label: Getting started
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import Link from '@docusaurus/Link';
 
-{/* No-op website preview trigger. */}
-
 ## Introduction
 Hydra is an open-source Python framework that simplifies the development of research and other complex applications.
 The key feature is the ability to dynamically create a hierarchical configuration by composition and override it through config files and the command line. 
