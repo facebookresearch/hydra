@@ -19,3 +19,7 @@ pip-wheel-metadata
 TODO.txt
 /venv
 /.venv
+
+# agents
+.codex
+
