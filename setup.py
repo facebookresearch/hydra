@@ -14,11 +14,10 @@ from build_helpers.build_helpers import (
 )
 
 with pathlib.Path("requirements/requirements.txt").open() as requirements_txt:
-    requirements = (line.strip() for line in requirements_txt)
     install_requires = [
-        requirement
-        for requirement in requirements
-        if requirement and not requirement.startswith("#")
+        stripped
+        for line in requirements_txt
+        if (stripped := line.strip()) and not stripped.startswith("#")
     ]
 
 
