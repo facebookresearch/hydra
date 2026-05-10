@@ -1,0 +1,1 @@
+Drop Python 3.7, 3.8, and 3.9 support; Hydra now supports Python 3.10 through 3.14. This also covers [#2854](https://github.com/facebookresearch/hydra/pull/2854).

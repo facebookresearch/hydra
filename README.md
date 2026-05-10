@@ -35,14 +35,21 @@
 
 ----------------------
 
-
 ### Releases
+
+#### Development
+
+**Hydra 1.4** is the current development version of Hydra.
+- [Documentation](https://hydra.cc/docs/intro/)
+- Installation from source : `pip install git+https://github.com/facebookresearch/hydra.git`
+- Supported Python versions: 3.10 through 3.14.
 
 #### Stable
 
 **Hydra 1.3** is the stable version of Hydra.
 - [Documentation](https://hydra.cc/docs/1.3/intro/)
 - Installation : `pip install hydra-core --upgrade`
+- Supported Python versions: 3.6 through 3.11.
 
 See the [NEWS.md](NEWS.md) file for a summary of recent changes to Hydra.
 

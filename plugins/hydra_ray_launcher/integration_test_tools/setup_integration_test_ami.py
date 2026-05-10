@@ -2,15 +2,14 @@
 import subprocess
 import sys
 from datetime import datetime
+from shlex import quote
 
 dependencies = [
-    "boto3==1.22.6",
+    "boto3",
     "hydra-core>=1.1.2",
-    "ray[default]==1.12.0",
-    # https://github.com/aio-libs/aiohttp/issues/6203
-    "aiohttp==3.8.1",
-    "cloudpickle==2.0.0",
-    "pickle5==0.0.11; python_version < '3.8.0'",
+    "ray[default]<3",
+    "aiohttp<4",
+    "cloudpickle<3",
 ]
 
 
@@ -27,7 +26,7 @@ def run(py_version):
     _run_command(f"conda create -n hydra_{py_version} python={py_version} -y")
     pip_path = f"/home/ubuntu/anaconda3/envs/hydra_{py_version}/bin/pip"
     for d in dependencies:
-        _run_command(f"{pip_path} install {d}")
+        _run_command(f"{pip_path} install {quote(d)}")
 
 
 if __name__ == "__main__":
