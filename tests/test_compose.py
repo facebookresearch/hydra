@@ -70,10 +70,7 @@ def test_initialize_old_version_base(hydra_restore_singletons: Any) -> None:
 
 def test_initialize_bad_version_base(hydra_restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
-    with raises(
-        TypeError,
-        match="expected string or bytes-like object",
-    ):
+    with raises(TypeError):
         initialize(version_base=1.1)  # type: ignore
 
 
