@@ -15,6 +15,10 @@ from hydra_plugins.hydra_submitit_launcher import submitit_launcher
 
 chdir_plugin_root()
 
+pytestmark = mark.filterwarnings(
+    "ignore:pkg_resources is deprecated as an API:DeprecationWarning"
+)
+
 
 @mark.parametrize(
     "cls", [submitit_launcher.LocalLauncher, submitit_launcher.SlurmLauncher]
