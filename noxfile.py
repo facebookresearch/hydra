@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import functools
+import importlib.util
 import os
 import platform
 import subprocess
@@ -15,7 +16,8 @@ from nox.logger import logger
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
-DEFAULT_PYTHON_VERSIONS = ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+DEFAULT_PYTHON_VERSIONS = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+LINT_PYTHON_VERSIONS = ["3.10"]
 DEFAULT_OS_NAMES = ["Linux", "MacOS", "Windows"]
 
 PYTHON_VERSIONS = os.environ.get(
@@ -193,16 +195,19 @@ def list_plugins(directory: str) -> List[Plugin]:
     ]
 
     # Install bootstrap deps in base python environment
-    subprocess.check_output(
-        [
-            sys.executable,
-            "-m",
-            "pip",
-            "install",
-            "read-version",  # needed to read data from setup.py
-            "toml",  # so read-version can read pyproject.toml
-        ],
-    )
+    bootstrap_deps = {
+        "read_version": "read-version",  # needed to read data from setup.py
+        "toml": "toml",  # so read-version can read pyproject.toml
+    }
+    missing_deps = [
+        package
+        for module, package in bootstrap_deps.items()
+        if importlib.util.find_spec(module) is None
+    ]
+    if missing_deps:
+        subprocess.check_output(
+            [sys.executable, "-m", "pip", "install", "--no-cache-dir", *missing_deps],
+        )
 
     plugins: List[Plugin] = []
     for dir_name in _plugin_directories:
@@ -308,7 +313,7 @@ def _isort_cmd() -> List[str]:
     return isort
 
 
-def _mypy_cmd(strict: bool, python_version: Optional[str] = "3.9") -> List[str]:
+def _mypy_cmd(strict: bool, python_version: Optional[str] = "3.10") -> List[str]:
     mypy = [
         "mypy",
         "--install-types",
@@ -323,7 +328,7 @@ def _mypy_cmd(strict: bool, python_version: Optional[str] = "3.9") -> List[str]:
     return mypy
 
 
-@nox.session(python=PYTHON_VERSIONS)  # type: ignore
+@nox.session(python=LINT_PYTHON_VERSIONS)  # type: ignore
 def lint(session: Session) -> None:
     _upgrade_basic(session)
     install_dev_deps(session)
@@ -411,7 +416,7 @@ def lint_plugins_in_dir(session: Session, directory: str) -> None:
         lint_plugin(session, plugin)
 
 
-@nox.session(python=PYTHON_VERSIONS)  # type: ignore
+@nox.session(python=LINT_PYTHON_VERSIONS)  # type: ignore
 @nox.parametrize("plugin", list_plugins("plugins"), ids=[p.name for p in list_plugins("plugins")])  # type: ignore
 def lint_plugins(session: Session, plugin: Plugin) -> None:
     if not is_plugin_compatible(session, plugin):
@@ -576,7 +581,7 @@ def test_selected_plugins(session: Session, selected_plugins: List[Plugin]) -> N
         run_pytest(session)
 
 
-@nox.session(python="3.9")  # type: ignore
+@nox.session(python="3.10")  # type: ignore
 def coverage(session: Session) -> None:
     _upgrade_basic(session)
     coverage_env = {
@@ -660,12 +665,3 @@ def test_jupyter_notebooks(session: Session) -> None:
         )
         args = [x for x in args if x != "-Werror"]
         session.run(*args, silent=SILENT)
-
-
-@nox.session(python=PYTHON_VERSIONS)  # type: ignore
-def benchmark(session: Session) -> None:
-    _upgrade_basic(session)
-    install_dev_deps(session)
-    install_hydra(session, INSTALL_COMMAND)
-    session.install("pytest")
-    run_pytest(session, "build_helpers", "tests/benchmark.py", *session.posargs)

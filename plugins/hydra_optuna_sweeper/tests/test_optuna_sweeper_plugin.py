@@ -35,6 +35,15 @@ from hydra_plugins.hydra_optuna_sweeper.optuna_sweeper import OptunaSweeper
 
 chdir_plugin_root()
 
+SQLALCHEMY_UTC_WARNING_FILTER = (
+    r"-W ignore:datetime.datetime.utcfromtimestamp() is deprecated:"
+    r"DeprecationWarning:sqlalchemy.sql.sqltypes"
+)
+
+
+def run_optuna_script(cmd: List[str]) -> None:
+    run_python_script([SQLALCHEMY_UTC_WARNING_FILTER, *cmd])
+
 
 def test_discovery() -> None:
     assert OptunaSweeper.__name__ in [
@@ -173,7 +182,7 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
             "x=choice(0, 1, 2)",
             "y=0",  # Fixed parameter
         ]
-    run_python_script(cmd)
+    run_optuna_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     study = optuna.load_study(storage=storage, study_name=study_name)
     best_trial = study.best_trial
@@ -212,7 +221,7 @@ def test_example_with_grid_sampler(
         f"hydra.sweeper.storage={storage}",
         f"hydra.sweeper.study_name={study_name}",
     ]
-    run_python_script(cmd)
+    run_optuna_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     bv, bx, by, bz = (
@@ -245,7 +254,7 @@ def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) ->
             "x=range(0, 5)",
             "y=range(0, 3)",
         ]
-    run_python_script(cmd)
+    run_optuna_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     assert returns.name == "optuna"
@@ -284,7 +293,7 @@ def test_optuna_custom_search_space_example(tmpdir: Path) -> None:
         "hydra.sweeper.sampler.seed=123",
         f"max_z_difference_from_x={max_z_difference_from_x}",
     ]
-    run_python_script(cmd)
+    run_optuna_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     assert returns.name == "optuna"
@@ -386,7 +395,7 @@ def test_example_with_deprecated_search_space(
         "hydra.sweeper.n_jobs=1",
     ]
 
-    run_python_script(cmd)
+    run_optuna_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     assert returns.name == "optuna"
