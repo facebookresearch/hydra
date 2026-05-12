@@ -37,9 +37,9 @@ chdir_hydra_root()
             dedent(
                 """\
                 [HYDRA] Launching 2 jobs locally
-                [HYDRA] \t#0 : db=mysql db.timeout=5
+                [HYDRA] \t#0 : db.timeout=5 db=mysql
                 driver=mysql, timeout=5
-                [HYDRA] \t#1 : db=mysql db.timeout=10
+                [HYDRA] \t#1 : db.timeout=10 db=mysql
                 driver=mysql, timeout=10"""
             ),
         ),
@@ -48,13 +48,13 @@ chdir_hydra_root()
             dedent(
                 """\
                 [HYDRA] Launching 4 jobs locally
-                [HYDRA] \t#0 : db=mysql db.timeout=5 db.user=one
+                [HYDRA] \t#0 : db.timeout=5 db=mysql db.user=one
                 driver=mysql, timeout=5
-                [HYDRA] \t#1 : db=mysql db.timeout=5 db.user=two
+                [HYDRA] \t#1 : db.timeout=5 db=mysql db.user=two
                 driver=mysql, timeout=5
-                [HYDRA] \t#2 : db=mysql db.timeout=10 db.user=one
+                [HYDRA] \t#2 : db.timeout=10 db=mysql db.user=one
                 driver=mysql, timeout=10
-                [HYDRA] \t#3 : db=mysql db.timeout=10 db.user=two
+                [HYDRA] \t#3 : db.timeout=10 db=mysql db.user=two
                 driver=mysql, timeout=10"""
             ),
         ),
