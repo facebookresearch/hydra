@@ -1,0 +1,8 @@
+[build]
+  base = "website"
+  command = "pnpm run build"
+  publish = "build"
+
+[build.environment]
+  NODE_VERSION = "20"
+  PNPM_FLAGS = "--frozen-lockfile"
