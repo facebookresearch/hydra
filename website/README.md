@@ -1,8 +1,10 @@
 # Website
 
-This website is built using Docusaurus 2, a modern static website generator.
+This website is built using Docusaurus 3, a modern static website generator.
 
 ### Installation
+
+The website requires Node.js 20 or newer.
 
 ```
 $ corepack pnpm install
