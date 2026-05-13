@@ -4,33 +4,40 @@
   <a href="https://pypi.org/project/hydra-core/">
     <img src="https://img.shields.io/pypi/v/hydra-core" alt="PyPI" />
   </a>
-  <a href="https://circleci.com/gh/facebookresearch/hydra">
-    <img src="https://img.shields.io/circleci/build/github/facebookresearch/hydra?token=af199cd2deca9e70e53776f9ded96284b10687e9" alt="CircleCI" />
-  </a>
-  <a href="#">
-    <img src="https://img.shields.io/pypi/l/hydra-core" alt="PyPI - License" />
-  </a>
   <a href="#">
     <img src="https://img.shields.io/pypi/pyversions/hydra-core" alt="PyPI - Python Version" />
+  </a>
+  <a href="https://github.com/facebookresearch/hydra/actions/workflows/core_tests.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/facebookresearch/hydra/core_tests.yml?branch=main" alt="GitHub Actions build" />
   </a>
   <a href="https://www.pepy.tech/projects/hydra-core?versions=0.11.*&versions=1.0.*&versions=1.1.*&versions=1.2.*&versions=1.3.*&versions=1.4.*">
     <img src="https://pepy.tech/badge/hydra-core/month" alt="Downloads" />
   </a>
+</p>
+
+<p align="center">
+  <a href="#">
+    <img src="https://img.shields.io/pypi/l/hydra-core" alt="PyPI - License" />
+  </a>
+  <a href="https://hydra-framework.zulipchat.com/">
+    <img src="https://img.shields.io/badge/zulip-join_chat-brightgreen.svg" alt="Zulip chat" />
+  </a>
   <a href="https://github.com/psf/black">
     <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" />
   </a>
-  <p align="center">
-    <i>A framework for elegantly configuring complex applications.</i>
-  </p>
-  <p align="center">
-    <i>Check the <a href="https://hydra.cc/">website</a> for more information,<br>
-    or click the thumbnail below for a one-minute video introduction to Hydra.</i>
-  </p>
-  <p align="center">
-   <a href="http://www.youtube.com/watch?feature=player_embedded&v=Slc3gRQpnBI" target="_blank">
-     <img src="http://img.youtube.com/vi/Slc3gRQpnBI/hqdefault.jpg" alt="1 minute overview" width="240" height="180" border="10" />
-   </a>
-  </p>
+</p>
+
+<p align="center">
+  <i>A framework for elegantly configuring complex applications.</i>
+</p>
+<p align="center">
+  <i>Check the <a href="https://hydra.cc/">website</a> for more information,<br>
+  or click the thumbnail below for a one-minute video introduction to Hydra.</i>
+</p>
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=Slc3gRQpnBI" target="_blank">
+    <img src="https://raw.githubusercontent.com/facebookresearch/hydra/63cea8f89eaaae80355e8e50847709c83cc9abc6/website/static/img/Hydra-Readme-video-thumbnail.jpg" alt="1 minute overview" width="240" height="180" border="10" />
+  </a>
 </p>
 
 ----------------------
