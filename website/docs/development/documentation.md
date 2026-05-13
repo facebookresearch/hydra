@@ -58,12 +58,16 @@ Run the following commands from the `website` directory.
 ### Install
 
 ```
-$ yarn
+$ corepack pnpm install
 ```
+
+pnpm is configured to avoid resolving npm package versions published in the
+last 10 days during dependency updates.
+
 ### Local Development
 
 ```
-$ yarn start
+$ corepack pnpm start
 ```
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
