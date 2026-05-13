@@ -3,7 +3,7 @@ bandit
 black==24.3.0
 build
 coverage
-flake8==6.0.0
+flake8==7.3.0
 flake8-copyright
 isort==5.13.2
 mypy==1.8.0
