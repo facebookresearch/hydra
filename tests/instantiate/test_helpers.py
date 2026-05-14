@@ -5,9 +5,9 @@ from textwrap import dedent
 from typing import Any
 
 try:
-    from _pytest.python_api import RaisesContext
+    from _pytest.raises import RaisesExc as RaisesContext
 except ImportError:
-    from _pytest.raises import RaisesExc as RaisesContext  # type: ignore
+    from _pytest.python_api import RaisesContext  # type: ignore[attr-defined,no-redef]
 from pytest import mark, param, raises
 
 from hydra._internal.utils import _locate
@@ -32,13 +32,11 @@ from .module_shadowed_by_function import a_function
             "int",
             raises(
                 ImportError,
-                match=dedent(
-                    r"""
+                match=dedent(r"""
                     Error loading 'int':
                     ModuleNotFoundError\("No module named 'int'",?\)
                     Are you sure that module 'int' is installed\?
-                    """
-                ).strip(),
+                    """).strip(),
             ),
             id="int",
         ),
@@ -48,13 +46,11 @@ from .module_shadowed_by_function import a_function
             "builtins.int.not_found",
             raises(
                 ImportError,
-                match=dedent(
-                    r"""
+                match=dedent(r"""
                     Error loading 'builtins\.int\.not_found':
                     AttributeError\("type object 'int' has no attribute 'not_found'",?\)
                     Are you sure that 'not_found' is an attribute of 'builtins\.int'\?
-                    """
-                ).strip(),
+                    """).strip(),
             ),
             id="builtin_attribute_error",
         ),
@@ -75,13 +71,11 @@ from .module_shadowed_by_function import a_function
             "tests.instantiate.AClass.not_found",
             raises(
                 ImportError,
-                match=dedent(
-                    r"""
+                match=dedent(r"""
                     Error loading 'tests\.instantiate\.AClass\.not_found':
                     AttributeError\("type object 'AClass' has no attribute 'not_found'",?\)
                     Are you sure that 'not_found' is an attribute of 'tests\.instantiate\.AClass'\?
-                    """
-                ).strip(),
+                    """).strip(),
             ),
             id="class_attribute_error",
         ),
@@ -98,13 +92,11 @@ from .module_shadowed_by_function import a_function
             "toplevel_not_found",
             raises(
                 ImportError,
-                match=dedent(
-                    r"""
+                match=dedent(r"""
                     Error loading 'toplevel_not_found':
                     ModuleNotFoundError\("No module named 'toplevel_not_found'",?\)
                     Are you sure that module 'toplevel_not_found' is installed\?
-                    """
-                ).strip(),
+                    """).strip(),
             ),
             id="toplevel_not_found",
         ),
@@ -125,13 +117,9 @@ from .module_shadowed_by_function import a_function
             "tests.instantiate.import_error",
             raises(
                 ImportError,
-                match=re.escape(
-                    dedent(
-                        """\
+                match=re.escape(dedent("""\
                         Error loading 'tests.instantiate.import_error':
-                        AssertionError()"""
-                    )
-                ),
+                        AssertionError()""")),
             ),
             id="import_assertion_error",
         ),
@@ -251,13 +239,11 @@ def test_get_class(path: str, expected: Any) -> None:
             "builtins.int.not_found",
             raises(
                 ImportError,
-                match=dedent(
-                    r"""
+                match=dedent(r"""
                     Error loading 'builtins\.int\.not_found':
                     AttributeError\("type object 'int' has no attribute 'not_found'",?\)
                     Are you sure that 'not_found' is an attribute of 'builtins\.int'\?
-                    """
-                ).strip(),
+                    """).strip(),
             ),
             id="builtin_attribute_error",
         ),

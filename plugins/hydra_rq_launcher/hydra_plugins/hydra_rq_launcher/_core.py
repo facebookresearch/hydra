@@ -3,7 +3,7 @@ import logging
 import time
 import uuid
 from pathlib import Path
-from typing import Any, Dict, List, Sequence
+from typing import Any, Dict, List, Sequence, cast
 
 import cloudpickle  # type: ignore
 from fakeredis import FakeStrictRedis  # type: ignore
@@ -18,7 +18,7 @@ from hydra.core.utils import (
 )
 from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf, open_dict
-from redis import Redis
+from redis import Redis  # type: ignore[import-untyped]
 from rq import Queue
 
 from .rq_launcher import RQLauncher
@@ -104,7 +104,9 @@ def launch(
     for idx, overrides in enumerate(job_overrides):
         description = " ".join(filter_overrides(overrides))
 
-        enqueue_keywords = OmegaConf.to_container(rq_cfg.enqueue, resolve=True)
+        enqueue_keywords = cast(
+            Dict[str, Any], OmegaConf.to_container(rq_cfg.enqueue, resolve=True)
+        )
         assert isinstance(enqueue_keywords, dict)
         if enqueue_keywords["job_timeout"] is None:
             enqueue_keywords["job_timeout"] = -1
@@ -135,7 +137,7 @@ def launch(
         jobs.append(job)
 
         log.info(f"Enqueued {job.get_id()}")
-        log.info(f"\t#{idx+1} : {description}")
+        log.info(f"\t#{idx + 1} : {description}")
 
     log.info("Finished enqueuing")
     if rq_cfg.stop_after_enqueue:
@@ -154,7 +156,7 @@ def launch(
     runs: List[JobReturn] = []
     for job in jobs:
         result = job.result if job.result is not None else None
-        runs.append(result)
+        runs.append(cast(JobReturn, result))
 
     return runs
 

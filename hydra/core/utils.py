@@ -154,11 +154,9 @@ def run_job(
         if _chdir is None:
             url = "https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/"
             deprecation_warning(
-                message=dedent(
-                    f"""\
+                message=dedent(f"""\
                     Future Hydra versions will no longer change working directory at job runtime by default.
-                    See {url} for more information."""
-                ),
+                    See {url} for more information."""),
                 stacklevel=2,
             )
             _chdir = True
@@ -284,12 +282,10 @@ def validate_config_path(config_path: Optional[str]) -> None:
     if config_path is not None:
         split_file = splitext(config_path)
         if split_file[1] in (".yaml", ".yml"):
-            msg = dedent(
-                """\
+            msg = dedent("""\
             Using config_path to specify the config name is not supported, specify the config name via config_name.
             See https://hydra.cc/docs/1.2/upgrades/0.11_to_1.0/config_path_changes
-            """
-            )
+            """)
             raise ValueError(msg)
 
 

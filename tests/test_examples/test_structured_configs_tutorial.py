@@ -28,12 +28,10 @@ def test_1_basic_run(tmpdir: Path) -> None:
 
 
 def test_1_basic_run_with_override_error(tmpdir: Path) -> None:
-    expected = dedent(
-        """\
-        Key 'pork' not in 'MySQLConfig'
+    expected = dedent("""\
+        Key 'pork' not in 'MySQLConfig'(\\. Did you mean: 'port'\\?)?
             full_key: pork
-            object_type=MySQLConfig"""
-    )
+            object_type=MySQLConfig""")
     err = run_with_error(
         [
             "examples/tutorials/structured_configs/1_minimal/my_app_type_error.py",
@@ -41,7 +39,7 @@ def test_1_basic_run_with_override_error(tmpdir: Path) -> None:
             "hydra.job.chdir=True",
         ]
     )
-    assert re.search(re.escape(expected), err) is not None
+    assert re.search(expected, err) is not None
 
 
 def test_1_basic_override(tmpdir: Path) -> None:
@@ -64,12 +62,10 @@ def test_1_basic_override_type_error(tmpdir: Path) -> None:
         "port=foo",
     ]
 
-    expected = dedent(
-        """\
+    expected = dedent("""\
         Value 'foo'( of type 'str')? could not be converted to Integer
             full_key: port
-            object_type=MySQLConfig"""
-    )
+            object_type=MySQLConfig""")
 
     err = run_with_error(cmd)
     assert re.search(expected, err) is not None

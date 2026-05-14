@@ -446,14 +446,10 @@ def test_defaults_tree_with_package_overrides(
             ["group1@wrong=file2"],
             raises(
                 ConfigCompositionException,
-                match=re.escape(
-                    dedent(
-                        """\
+                match=re.escape(dedent("""\
                         Could not override 'group1@wrong'.
                         Did you mean to override group1@pkg1?
-                        To append to your default list use +group1@wrong=file2"""
-                    )
-                ),
+                        To append to your default list use +group1@wrong=file2""")),
             ),
             id="option_override:group_default_pkg1:bad_package_in_override",
         ),
@@ -480,14 +476,10 @@ def test_defaults_tree_with_package_overrides(
             ["group1/group2=file2"],
             raises(
                 ConfigCompositionException,
-                match=re.escape(
-                    dedent(
-                        """\
+                match=re.escape(dedent("""\
                         Could not override 'group1/group2'.
                         Did you mean to override group1/group2@group1.pkg2?
-                        To append to your default list use +group1/group2=file2"""
-                    )
-                ),
+                        To append to your default list use +group1/group2=file2""")),
             ),
             id="option_override:include_nested_group_pkg2:missing_package_in_override",
         ),
@@ -619,13 +611,9 @@ def test_defaults_tree_with_package_overrides__group_override(
             [],
             raises(
                 ConfigCompositionException,
-                match=re.escape(
-                    dedent(
-                        """\
+                match=re.escape(dedent("""\
                         In override_wrong_order: Override 'group1 : file2' is defined before 'group1: file1'.
-                        Overrides must be at the end of the defaults list"""
-                    )
-                ),
+                        Overrides must be at the end of the defaults list""")),
             ),
             id="test_override_wrong_order_in_defaults_list",
         ),
@@ -942,14 +930,10 @@ def test_legacy_override_hydra_version_base_1_1(
     hydra_restore_singletons: Any,
 ) -> None:
     version.setbase("1.1")
-    msg_regex = r"Invalid overriding of hydra/(help|output):" + re.escape(
-        dedent(
-            """
+    msg_regex = r"Invalid overriding of hydra/(help|output):" + re.escape(dedent("""
             Default list overrides requires 'override' keyword.
             See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/defaults_list_override for more information.
-            """
-        )
-    )
+            """))
     with warns(expected_warning=UserWarning, match=msg_regex):
         _test_defaults_tree_impl(
             config_name=config_name,
@@ -1577,11 +1561,9 @@ def test_name_collision(
             [],
             raises(
                 ConfigCompositionException,
-                match=dedent(
-                    """\
+                match=dedent("""\
                 You must specify 'db', e.g, db=<OPTION>
-                Available options:"""
-                ),
+                Available options:"""),
             ),
             id="with_missing",
         ),
@@ -1590,11 +1572,9 @@ def test_name_collision(
             [],
             raises(
                 ConfigCompositionException,
-                match=dedent(
-                    """\
+                match=dedent("""\
                 You must specify 'db@_global_', e.g, db@_global_=<OPTION>
-                Available options:"""
-                ),
+                Available options:"""),
             ),
             id="with_missing_at_global",
         ),
@@ -1615,11 +1595,9 @@ def test_name_collision(
             [],
             raises(
                 ConfigCompositionException,
-                match=dedent(
-                    """\
+                match=dedent("""\
                 You must specify 'db@foo', e.g, db@foo=<OPTION>
-                Available options:"""
-                ),
+                Available options:"""),
             ),
             id="with_missing_at_foo",
         ),
@@ -1640,11 +1618,9 @@ def test_name_collision(
             ["+group1=with_missing"],
             raises(
                 ConfigCompositionException,
-                match=dedent(
-                    """\
+                match=dedent("""\
                     You must specify 'group1/group2', e.g, group1/group2=<OPTION>
-                    Available options"""
-                ),
+                    Available options"""),
             ),
             id="nested_missing",
         ),
@@ -1671,11 +1647,9 @@ def test_name_collision(
             ["+group1=with_missing_at_foo"],
             raises(
                 ConfigCompositionException,
-                match=dedent(
-                    """\
+                match=dedent("""\
                     You must specify 'group1/group2@group1.foo', e.g, group1/group2@group1.foo=<OPTION>
-                    Available options"""
-                ),
+                    Available options"""),
             ),
             id="nested_missing_at_foo",
         ),
@@ -1982,14 +1956,10 @@ def test_placeholder(
             [],
             raises(
                 ConfigCompositionException,
-                match=re.escape(
-                    dedent(
-                        """\
+                match=re.escape(dedent("""\
                 group1_group2/file1_file1_defaults_with_override: Default List Overrides are not allowed in the subtree
                 of an in interpolated config group (override group1_group2/foo=bar).
-                """
-                    )
-                ),
+                """)),
             ),
             id="interpolation_with_nested_defaults_list_with_override",
         ),
@@ -2442,14 +2412,10 @@ def test_missing_config_errors(
             ["group1@foo=file1"],
             raises(
                 ConfigCompositionException,
-                match=re.escape(
-                    dedent(
-                        """\
+                match=re.escape(dedent("""\
                 Could not override 'group1@foo'.
                 Did you mean to override group1?
-                To append to your default list use +group1@foo=file1"""
-                    )
-                ),
+                To append to your default list use +group1@foo=file1""")),
             ),
             id="no_match_package_one_candidate",
         ),
@@ -2458,14 +2424,10 @@ def test_missing_config_errors(
             ["group1@foo=file1"],
             raises(
                 ConfigCompositionException,
-                match=re.escape(
-                    dedent(
-                        """\
+                match=re.escape(dedent("""\
                         Could not override 'group1@foo'.
                         Did you mean to override one of group1@pkg1, group1@pkg2?
-                        To append to your default list use +group1@foo=file1"""
-                    )
-                ),
+                        To append to your default list use +group1@foo=file1""")),
             ),
             id="no_match_package_multiple_candidates",
         ),
