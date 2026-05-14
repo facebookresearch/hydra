@@ -777,12 +777,10 @@ def test_deprecated_initialize_config_module(hydra_restore_singletons: Any) -> N
 
 
 def test_initialize_without_config_path(tmpdir: Path) -> None:
-    expected0 = dedent(
-        f"""
+    expected0 = dedent(f"""
         The version_base parameter is not specified.
         Please specify a compatibility version level, or None.
-        Will assume defaults for version {version.__compat_version__}"""
-    )
+        Will assume defaults for version {version.__compat_version__}""")
     expected1 = dedent(
         """\
         config_path is not specified in hydra.initialize().
@@ -832,13 +830,11 @@ def test_error_assigning_null_to_logging_config(
 def test_deprecated_compose_strict_flag(
     strict: bool, hydra_restore_singletons: Any
 ) -> None:
-    msg = dedent(
-        """\
+    msg = dedent("""\
 
         The strict flag in the compose API is deprecated.
         See https://hydra.cc/docs/1.2/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
-        """
-    )
+        """)
 
     version.setbase("1.1")
 

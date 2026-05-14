@@ -27,16 +27,14 @@ chdir_hydra_root()
         param(
             "tests/test_apps/app_with_callbacks/custom_callback/my_app.py",
             [],
-            dedent(
-                """\
+            dedent("""\
                 [HYDRA] Init custom_callback
                 [HYDRA] custom_callback on_run_start
                 [JOB] custom_callback on_job_start
                 [JOB] foo: bar
 
                 [JOB] custom_callback on_job_end
-                [JOB] custom_callback on_run_end"""
-            ),
+                [JOB] custom_callback on_run_end"""),
             id="custom_callback",
         ),
         param(
@@ -45,8 +43,7 @@ chdir_hydra_root()
                 "foo=bar",
                 "-m",
             ],
-            dedent(
-                """\
+            dedent("""\
                 [HYDRA] Init custom_callback
                 [HYDRA] custom_callback on_multirun_start
                 [HYDRA] Launching 1 jobs locally
@@ -55,8 +52,7 @@ chdir_hydra_root()
                 [JOB] foo: bar
 
                 [JOB] custom_callback on_job_end
-                [HYDRA] custom_callback on_multirun_end"""
-            ),
+                [HYDRA] custom_callback on_multirun_end"""),
             id="custom_callback_multirun",
         ),
         param(
@@ -65,8 +61,7 @@ chdir_hydra_root()
                 "--config-name",
                 "config_with_two_callbacks",
             ],
-            dedent(
-                """\
+            dedent("""\
                 [HYDRA] Init callback_1
                 [HYDRA] Init callback_2
                 [HYDRA] callback_1 on_run_start
@@ -78,8 +73,7 @@ chdir_hydra_root()
                 [JOB] callback_2 on_job_end
                 [JOB] callback_1 on_job_end
                 [JOB] callback_2 on_run_end
-                [JOB] callback_1 on_run_end"""
-            ),
+                [JOB] callback_1 on_run_end"""),
             id="two_custom_callbacks",
         ),
         param(
@@ -91,8 +85,7 @@ chdir_hydra_root()
         param(
             "tests/test_apps/app_with_callbacks/app_with_log_compose_callback/my_app.py",
             ["age=10"],
-            dedent(
-                """\
+            dedent("""\
                 [HYDRA] ====
                 Composed config .*tests.test_apps.app_with_callbacks.app_with_log_compose_callback.config
                 age: 10
@@ -105,8 +98,7 @@ chdir_hydra_root()
                 Used defaults \\['config_schema', 'config', 'group/a'\\]
                 ====
                 job_name: test, name: James Bond, age: 10, group: a
-                """
-            ),
+                """),
             id="on_compose_callback",
         ),
     ],

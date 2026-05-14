@@ -329,13 +329,11 @@ class TestConfigLoader:
             config_search_path=create_config_search_path(path)
         )
 
-        msg = dedent(
-            """\
+        msg = dedent("""\
             In 'schema_validation_error': ValidationError raised while composing config:
             Value 'not_an_int'( of type 'str')? could not be converted to Integer
                 full_key: port
-                object_type=MySQLConfig"""
-        )
+                object_type=MySQLConfig""")
         with raises(ConfigCompositionException, match=msg):
             config_loader.load_configuration(
                 config_name="schema_validation_error",
@@ -353,13 +351,11 @@ class TestConfigLoader:
             config_search_path=create_config_search_path(path)
         )
 
-        msg = dedent(
-            """\
+        msg = dedent("""\
             In 'schema_key_error': ConfigKeyError raised while composing config:
             Key 'foo' not in 'MySQLConfig'
                 full_key: foo
-                object_type=MySQLConfig"""
-        )
+                object_type=MySQLConfig""")
         with raises(ConfigCompositionException, match=re.escape(msg)):
             config_loader.load_configuration(
                 config_name="schema_key_error",
@@ -409,10 +405,10 @@ class TestConfigLoader:
         )
 
         # trigger resolution by type assertion
-        assert type(master_cfg.time) == str
-        assert type(master_cfg.test_env) == str
-        assert type(master_cfg.test_cached) == str  # "1st"
-        assert type(master_cfg.test_uncached) == str  # "2nd"
+        assert type(master_cfg.time) is str
+        assert type(master_cfg.test_env) is str
+        assert type(master_cfg.test_cached) is str  # "1st"
+        assert type(master_cfg.test_uncached) is str  # "2nd"
 
         master_cfg_cache = OmegaConf.get_cache(master_cfg)
         assert "now" in master_cfg_cache.keys()

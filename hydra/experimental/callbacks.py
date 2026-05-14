@@ -96,12 +96,10 @@ class LogComposeCallback(Callback):
             for d in defaults_list.defaults
             if not d.package.startswith("hydra")
         ]
-        self.log.info(
-            f"""====
+        self.log.info(f"""====
 Composed config {config_dir}/{str(config_name)}
 {OmegaConf.to_yaml(config)}
 ----
 Includes overrides {overrides}
 Used defaults {non_hydra_defaults}
-===="""
-        )
+====""")
