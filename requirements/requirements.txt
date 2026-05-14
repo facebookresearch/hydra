@@ -1,2 +1,2 @@
-omegaconf>=2.4.0.dev4,<2.4.0.dev11
+omegaconf>=2.4.0.dev10,<2.4.0.dev11
 packaging
