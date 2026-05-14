@@ -49,7 +49,7 @@ log = logging.getLogger(__name__)
 
 
 def create_optuna_distribution_from_config(
-    config: MutableMapping[str, Any]
+    config: MutableMapping[str, Any],
 ) -> BaseDistribution:
     kwargs = dict(config)
     if isinstance(config["type"], str):
@@ -192,13 +192,11 @@ class OptunaSweeperImpl(Sweeper):
                 )
             else:
                 deprecation_warning(
-                    message=dedent(
-                        f"""\
+                    message=dedent(f"""\
                         `hydra.sweeper.search_space` is deprecated and will be removed in the next major release.
                         Please configure with `hydra.sweeper.params`.
                         {url}
-                        """
-                    ),
+                        """),
                 )
                 self.search_space_distributions = {
                     str(x): create_optuna_distribution_from_config(y)

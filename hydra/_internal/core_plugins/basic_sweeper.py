@@ -16,6 +16,7 @@ Basic Sweeper would generate 6 jobs:
 The Basic Sweeper also support, the following is equivalent to the above.
 python foo.py a=range(1,4) b=10,20
 """
+
 import itertools
 import logging
 import time
@@ -172,7 +173,8 @@ class BasicSweeper(Sweeper):
             self.validate_batch_is_legal(batch)
             elapsed = time.perf_counter() - tic
             log.debug(
-                f"Validated configs of {len(batch)} jobs in {elapsed:0.2f} seconds, {len(batch)/elapsed:.2f} / second)"
+                f"Validated configs of {len(batch)} jobs in {elapsed:0.2f} seconds, "
+                f"{len(batch) / elapsed:.2f} / second)"
             )
             results = self.launcher.launch(batch, initial_job_idx=initial_job_idx)
 

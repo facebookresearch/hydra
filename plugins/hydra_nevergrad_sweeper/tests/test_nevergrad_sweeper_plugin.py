@@ -30,7 +30,7 @@ def test_discovery() -> None:
 
 
 def assert_ng_param_equals(expected: Any, actual: Any) -> None:
-    assert type(expected) == type(actual)
+    assert type(expected) is type(actual)
     if isinstance(actual, ng.p.Choice) or isinstance(actual, ng.p.TransitionChoice):
         assert sorted(expected.choices.value) == sorted(actual.choices.value)
     elif isinstance(actual, ng.p.Log) or isinstance(actual, ng.p.Scalar):

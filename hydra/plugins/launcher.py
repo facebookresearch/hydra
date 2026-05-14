@@ -2,6 +2,7 @@
 """
 Launcher plugin interface
 """
+
 from abc import abstractmethod
 from typing import Sequence
 

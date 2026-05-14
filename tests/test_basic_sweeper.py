@@ -76,21 +76,16 @@ def test_partial_failure(
     ]
     out, err = run_process(cmd=cmd, print_error=False, raise_exception=False)
 
-    expected_out_regex = re.escape(
-        dedent(
-            """
+    expected_out_regex = re.escape(dedent("""
             [HYDRA] Launching 2 jobs locally
             [HYDRA] \t#0 : +divisor=1
             val=1.0
             [HYDRA] \t#1 : +divisor=0
-            """
-        ).strip()
-    )
+            """).strip())
 
     assert_multiline_regex_search(expected_out_regex, out)
 
-    expected_err_regex = dedent(
-        r"""
+    expected_err_regex = dedent(r"""
         Error executing job with overrides: \['\+divisor=0'\](
         )?
         Traceback \(most recent call last\):
@@ -100,7 +95,6 @@ def test_partial_failure(
         ZeroDivisionError: division by zero
 
         Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
-        """
-    ).strip()
+        """).strip()
 
     assert_multiline_regex_search(expected_err_regex, err)

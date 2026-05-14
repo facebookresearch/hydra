@@ -11,6 +11,7 @@ conda env on demand.
 
 Please update env variable AWS_RAY_AMI locally and on circleCI with the new AMI id when the new AMI is available.
 """
+
 import os
 import subprocess
 import tempfile

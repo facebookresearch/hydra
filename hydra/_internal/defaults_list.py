@@ -313,12 +313,10 @@ def _check_not_missing(
                 results_filter=ObjectType.CONFIG,
             )
             opt_list = "\n".join("\t" + x for x in options)
-            msg = dedent(
-                f"""\
+            msg = dedent(f"""\
                 You must specify '{override_key}', e.g, {override_key}=<OPTION>
                 Available options:
-                """
-            )
+                """)
             raise ConfigCompositionException(msg + opt_list)
         elif isinstance(default, ConfigDefault):
             raise ValueError(f"Missing ConfigDefault is not supported : {path}")
@@ -393,25 +391,19 @@ def _update_overrides(
             pcp = parent.get_config_path()
             okey = last_override_seen.get_override_key()
             oval = last_override_seen.get_name()
-            raise ConfigCompositionException(
-                dedent(
-                    f"""\
+            raise ConfigCompositionException(dedent(f"""\
                     In {pcp}: Override '{okey} : {oval}' is defined before '{d.get_override_key()}: {d.get_name()}'.
-                    Overrides must be at the end of the defaults list"""
-                )
-            )
+                    Overrides must be at the end of the defaults list"""))
 
         if isinstance(d, GroupDefault):
             if legacy_hydra_override:
                 d.override = True
                 url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/defaults_list_override"
-                msg = dedent(
-                    f"""\
+                msg = dedent(f"""\
                     In {parent.get_config_path()}: Invalid overriding of {d.group}:
                     Default list overrides requires 'override' keyword.
                     See {url} for more information.
-                    """
-                )
+                    """)
                 deprecation_warning(msg)
 
             if d.override:
@@ -421,14 +413,10 @@ def _update_overrides(
                 if interpolated_subtree:
                     # Since interpolations are deferred for until all the config groups are already set,
                     # Their subtree may not contain config group overrides
-                    raise ConfigCompositionException(
-                        dedent(
-                            f"""\
+                    raise ConfigCompositionException(dedent(f"""\
                             {parent.get_config_path()}: Default List Overrides are not allowed in the subtree
                             of an in interpolated config group (override {d.get_override_key()}={d.get_name()}).
-                            """
-                        )
-                    )
+                            """))
                 overrides.add_override(parent.get_config_path(), d)
 
 
@@ -768,11 +756,9 @@ def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> N
         options = repo.get_group_options(group, ObjectType.CONFIG)
 
     if element.primary:
-        msg = dedent(
-            f"""\
+        msg = dedent(f"""\
         Cannot find primary config '{element.get_config_path()}'. Check that it's in your config search path.
-        """
-        )
+        """)
     else:
         parent = tree.parent.node if tree.parent is not None else None
         if isinstance(element, GroupDefault):
@@ -781,11 +767,9 @@ def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> N
                 opt_list = "\n".join("\t" + x for x in options)
                 msg = f"{msg}\nAvailable options in '{group}':\n" + opt_list
         else:
-            msg = dedent(
-                f"""\
+            msg = dedent(f"""\
             Could not load '{element.get_config_path()}'.
-            """
-            )
+            """)
 
         if parent is not None:
             msg = f"In '{parent.get_config_path()}': {msg}"

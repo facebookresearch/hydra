@@ -1,30 +1,16 @@
 <p align="center"><img src="https://raw.githubusercontent.com/facebookresearch/hydra/main/website/static/img/Hydra-Readme-logo2.svg" alt="logo" width="70%" /></p>
 
 <p align="center">
-  <a href="https://pypi.org/project/hydra-core/">
-    <img src="https://img.shields.io/pypi/v/hydra-core" alt="PyPI" />
-  </a>
-  <a href="#">
-    <img src="https://img.shields.io/pypi/pyversions/hydra-core" alt="PyPI - Python Version" />
-  </a>
-  <a href="https://github.com/facebookresearch/hydra/actions/workflows/core_tests.yml">
-    <img src="https://img.shields.io/github/actions/workflow/status/facebookresearch/hydra/core_tests.yml?branch=main" alt="GitHub Actions build" />
-  </a>
-  <a href="https://www.pepy.tech/projects/hydra-core?versions=0.11.*&versions=1.0.*&versions=1.1.*&versions=1.2.*&versions=1.3.*&versions=1.4.*">
-    <img src="https://pepy.tech/badge/hydra-core/month" alt="Downloads" />
-  </a>
+  <a href="https://pypi.org/project/hydra-core/"><img src="https://img.shields.io/pypi/v/hydra-core" alt="PyPI" /></a>
+  <a href="#"><img src="https://img.shields.io/pypi/pyversions/hydra-core" alt="PyPI - Python Version" /></a>
+  <a href="https://github.com/facebookresearch/hydra/actions/workflows/core_tests.yml"><img src="https://img.shields.io/github/actions/workflow/status/facebookresearch/hydra/core_tests.yml?branch=main" alt="GitHub Actions build" /></a>
+  <a href="https://www.pepy.tech/projects/hydra-core?versions=0.11.*&versions=1.0.*&versions=1.1.*&versions=1.2.*&versions=1.3.*&versions=1.4.*"><img src="https://pepy.tech/badge/hydra-core/month" alt="Downloads" /></a>
 </p>
 
 <p align="center">
-  <a href="#">
-    <img src="https://img.shields.io/pypi/l/hydra-core" alt="PyPI - License" />
-  </a>
-  <a href="https://hydra-framework.zulipchat.com/">
-    <img src="https://img.shields.io/badge/zulip-join_chat-brightgreen.svg" alt="Zulip chat" />
-  </a>
-  <a href="https://github.com/psf/black">
-    <img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" />
-  </a>
+  <a href="#"><img src="https://img.shields.io/pypi/l/hydra-core" alt="PyPI - License" /></a>
+  <a href="https://hydra-framework.zulipchat.com/"><img src="https://img.shields.io/badge/zulip-join_chat-brightgreen.svg" alt="Zulip chat" /></a>
+  <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" /></a>
 </p>
 
 <p align="center">
@@ -35,9 +21,7 @@
   or click the thumbnail below for a one-minute video introduction to Hydra.</i>
 </p>
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=Slc3gRQpnBI" target="_blank">
-    <img src="https://raw.githubusercontent.com/facebookresearch/hydra/main/website/static/img/Hydra-Readme-video-thumbnail.jpg" alt="1 minute overview" width="240" height="180" border="10" />
-  </a>
+  <a href="https://www.youtube.com/watch?v=Slc3gRQpnBI" target="_blank"><img src="https://raw.githubusercontent.com/facebookresearch/hydra/main/website/static/img/Hydra-Readme-video-thumbnail.jpg" alt="1 minute overview" width="240" height="180" border="10" /></a>
 </p>
 
 ----------------------
