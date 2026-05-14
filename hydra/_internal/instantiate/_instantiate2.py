@@ -356,14 +356,10 @@ def instantiate(
             config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
         )
     else:
-        raise InstantiationException(
-            dedent(
-                f"""\
+        raise InstantiationException(dedent(f"""\
                 Cannot instantiate config of type {type(config).__name__}.
                 Top level config must be an OmegaConf DictConfig/ListConfig object,
-                a plain dict/list, or a Structured Config class or instance."""
-            )
-        )
+                a plain dict/list, or a Structured Config class or instance."""))
 
 
 def _convert_node(node: Any, convert: Union[ConvertMode, str]) -> Any:
@@ -412,7 +408,7 @@ def instantiate_node(
         raise TypeError(msg)
 
     if not isinstance(partial, bool):
-        msg = f"Instantiation: _partial_ flag must be a bool, got {type( partial )}"
+        msg = f"Instantiation: _partial_ flag must be a bool, got {type(partial)}"
         if node and full_key:
             msg += f"\nfull_key: {full_key}"
         raise TypeError(msg)

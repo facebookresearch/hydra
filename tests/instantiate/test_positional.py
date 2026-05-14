@@ -68,12 +68,10 @@ def test_instantiate_args_kwargs(cfg: Any, expected: Any) -> None:
                     "_args_": {"foo": "bar"},
                 }
             },
-            dedent(
-                """\
+            dedent("""\
                 Error in collecting args and kwargs for 'tests\\.instantiate\\.ArgsClass':
                 InstantiationException\\("Unsupported _args_ type: 'DictConfig'\\. value: '{'foo': 'bar'}'",?\\)
-                full_key: foo"""
-            ),
+                full_key: foo"""),
             id="unsupported-args-type-nested",
         ),
     ],

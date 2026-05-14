@@ -498,9 +498,7 @@ class Override:
             if self.package is not None and "_name_" in self.package:
                 url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
                 deprecation_warning(
-                    message=dedent(
-                        f"""\
+                    message=dedent(f"""\
                         In override {self.input_line}: _name_ keyword is deprecated in packages, see {url}
-                        """
-                    ),
+                        """),
                 )

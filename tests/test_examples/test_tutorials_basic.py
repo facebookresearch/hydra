@@ -7,9 +7,9 @@ from textwrap import dedent
 from typing import Any, List
 
 try:
-    from _pytest.python_api import RaisesContext
+    from _pytest.raises import RaisesExc as RaisesContext
 except ImportError:
-    from _pytest.raises import RaisesExc as RaisesContext  # type: ignore
+    from _pytest.python_api import RaisesContext  # type: ignore[attr-defined,no-redef]
 from omegaconf import DictConfig, OmegaConf
 from pytest import mark, raises
 
@@ -67,17 +67,12 @@ def test_tutorial_working_directory_original_cwd(tmpdir: Path) -> None:
         "hydra.job.chdir=True",
     ]
     result, _err = run_python_script(cmd)
-    assert (
-        result.strip()
-        == dedent(
-            f"""
+    assert result.strip() == dedent(f"""
             Current working directory : {tmpdir}
             Orig working directory    : {os.getcwd()}
             to_absolute_path('foo')   : {Path(os.getcwd()) / "foo"}
             to_absolute_path('/foo')  : {Path("/foo").resolve()}
-            """
-        ).strip()
-    )
+            """).strip()
 
 
 @mark.parametrize(

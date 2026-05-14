@@ -21,8 +21,7 @@ def test_custom_help(tmpdir: Path) -> None:
             "--help",
         ]
     )
-    expected = dedent(
-        """\
+    expected = dedent("""\
             == AwesomeApp ==
 
             This is AwesomeApp!
@@ -47,8 +46,7 @@ def test_custom_help(tmpdir: Path) -> None:
 
             Powered by Hydra (https://hydra.cc)
             Use --hydra-help to view Hydra specific help
-"""
-    )
+""")
     assert_text_same(from_line=expected, to_line=result)
 
 

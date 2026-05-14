@@ -299,8 +299,6 @@ def test_example_application(monkeypatch: Any, tmpdir: Path):
         else f"$PYTHONPATH:{':'.join(sys.path)}"
     )
     result, _err = run_python_script(cmd, dict(os.environ, PYTHONPATH=python_path))
-    assert result == dedent(
-        """\
+    assert result == dedent("""\
     User: name=Batman, age=7
-    Admin: name=Lex Luthor, age=10, private_key=deadbeef"""
-    )
+    Admin: name=Lex Luthor, age=10, private_key=deadbeef""")

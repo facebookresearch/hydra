@@ -278,6 +278,7 @@ class Hydra:
                 overrides = action
             else:
                 s += f"{','.join(action.option_strings)} : {action.help}\n"
+        assert overrides.help is not None
         s += "Overrides : " + overrides.help
         return s
 

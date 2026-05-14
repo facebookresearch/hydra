@@ -3,7 +3,7 @@ import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import Any, List, Sequence, Union
+from typing import Any, Dict, List, Sequence, Union, cast
 
 import cloudpickle  # type: ignore
 from hydra.core.singleton import Singleton
@@ -31,7 +31,8 @@ except ModuleNotFoundError as e:
 log = logging.getLogger(__name__)
 
 
-def _get_abs_code_dir(code_dir: str) -> str:
+def _get_abs_code_dir(code_dir: Union[str, Path]) -> str:
+    code_dir = str(code_dir)
     if code_dir:
         if os.path.isabs(code_dir):
             return code_dir
@@ -74,8 +75,9 @@ def launch(
         launcher.ray_cfg.cluster.setup_commands = setup_commands
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
-    logging_config = OmegaConf.to_container(
-        launcher.logging, resolve=True, enum_to_str=True
+    logging_config = cast(
+        Dict[str, Any],
+        OmegaConf.to_container(launcher.logging, resolve=True, enum_to_str=True),
     )
     sdk.configure_logging(**logging_config)
 
@@ -116,7 +118,7 @@ def launch_jobs(
     )
     sdk.create_or_update_cluster(
         config,
-        **launcher.create_update_cluster,
+        **cast(Dict[str, Any], launcher.create_update_cluster),
     )
     with tempfile.TemporaryDirectory() as local_tmp_download_dir:
         assert isinstance(config, dict)
@@ -201,7 +203,7 @@ def launch_jobs(
                 log.info("Deleted the cluster (provider.cache_stopped_nodes=false)")
             sdk.teardown_cluster(
                 config,
-                **launcher.teardown_cluster,
+                **cast(Dict[str, Any], launcher.teardown_cluster),
             )
         else:
             log.warning(
