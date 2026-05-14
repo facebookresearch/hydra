@@ -2,7 +2,6 @@
 # type: ignore
 from setuptools import find_namespace_packages, setup, find_packages
 
-
 with open("README.md") as fh:
     LONG_DESC = fh.read()
     setup(

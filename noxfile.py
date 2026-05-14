@@ -346,6 +346,7 @@ def lint(session: Session) -> None:
 
     skiplist = apps + [
         ".git",
+        ".sl",
         "website",
         "plugins",
         "tools",
@@ -407,7 +408,15 @@ def lint(session: Session) -> None:
     lint_plugins_in_dir(session=session, directory="examples/plugins")
 
     # bandit static security analysis
-    session.run("bandit", "--exclude", "./.nox/**", "-ll", "-r", ".", silent=SILENT)
+    session.run(
+        "bandit",
+        "--exclude",
+        "./.nox/**,./.sl/**,./website/**",
+        "-ll",
+        "-r",
+        ".",
+        silent=SILENT,
+    )
 
 
 def lint_plugins_in_dir(session: Session, directory: str) -> None:

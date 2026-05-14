@@ -7,7 +7,15 @@ from argparse import ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type, Union
 
-from omegaconf import Container, DictConfig, OmegaConf, flag_override
+from omegaconf import (
+    MISSING,
+    Container,
+    DictConfig,
+    ListConfig,
+    OmegaConf,
+    flag_override,
+)
+from omegaconf.errors import InterpolationToMissingValueError
 
 from hydra._internal.utils import get_column_widths, run_and_report
 from hydra.core.config_loader import ConfigLoader
@@ -35,6 +43,39 @@ from .config_loader_impl import ConfigLoaderImpl
 from .utils import create_automatic_config_search_path
 
 log: Optional[logging.Logger] = None
+
+
+def _resolve_node_interpolations(cfg: Any) -> None:
+    if cfg._is_missing() or cfg._is_none():
+        return
+
+    if isinstance(cfg, DictConfig):
+        keys: Sequence[Any] = list(cfg.keys())
+    else:
+        assert isinstance(cfg, ListConfig)
+        keys = range(len(cfg))
+
+    for key in keys:
+        if OmegaConf.is_missing(cfg, key):
+            continue
+
+        node = cfg._get_node(key)
+        if isinstance(node, Container):
+            _resolve_node_interpolations(node)
+            continue
+
+        try:
+            cfg[key] = cfg[key]
+        except InterpolationToMissingValueError:
+            cfg[key] = MISSING
+
+
+def _resolve_for_cfg_output(cfg: Container) -> None:
+    try:
+        OmegaConf.resolve(cfg)
+    except InterpolationToMissingValueError:
+        with flag_override(cfg, ["readonly", "struct"], False):
+            _resolve_node_interpolations(cfg)
 
 
 class Hydra:
@@ -220,7 +261,7 @@ class Hydra:
             if package is not None:
                 print(f"# @package {package}")
             if resolve:
-                OmegaConf.resolve(ret)
+                _resolve_for_cfg_output(ret)
             sys.stdout.write(OmegaConf.to_yaml(ret))
 
     @staticmethod
@@ -278,7 +319,9 @@ class Hydra:
                 overrides = action
             else:
                 s += f"{','.join(action.option_strings)} : {action.help}\n"
-        s += "Overrides : " + overrides.help
+        overrides_help = overrides.help
+        assert isinstance(overrides_help, str)
+        s += "Overrides : " + overrides_help
         return s
 
     def list_all_config_groups(self, parent: str = "") -> Sequence[str]:

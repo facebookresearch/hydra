@@ -19,8 +19,7 @@ chdir_hydra_root()
     [
         (
             [],
-            dedent(
-                """\
+            dedent("""\
                 [HYDRA] Launching 4 jobs locally
                 [HYDRA] \t#0 : db=mysql db.timeout=5
                 driver=mysql, timeout=5
@@ -29,24 +28,20 @@ chdir_hydra_root()
                 [HYDRA] \t#2 : db=postgresql db.timeout=5
                 driver=postgresql, timeout=5
                 [HYDRA] \t#3 : db=postgresql db.timeout=10
-                driver=postgresql, timeout=10"""
-            ),
+                driver=postgresql, timeout=10"""),
         ),
         (
             ["db=glob([m*],exclude=postgresql)"],
-            dedent(
-                """\
+            dedent("""\
                 [HYDRA] Launching 2 jobs locally
                 [HYDRA] \t#0 : db=mysql db.timeout=5
                 driver=mysql, timeout=5
                 [HYDRA] \t#1 : db=mysql db.timeout=10
-                driver=mysql, timeout=10"""
-            ),
+                driver=mysql, timeout=10"""),
         ),
         (
             ["db=mysql", "db.user=choice(one,two)"],
-            dedent(
-                """\
+            dedent("""\
                 [HYDRA] Launching 4 jobs locally
                 [HYDRA] \t#0 : db=mysql db.timeout=5 db.user=one
                 driver=mysql, timeout=5
@@ -55,8 +50,7 @@ chdir_hydra_root()
                 [HYDRA] \t#2 : db=mysql db.timeout=10 db.user=one
                 driver=mysql, timeout=10
                 [HYDRA] \t#3 : db=mysql db.timeout=10 db.user=two
-                driver=mysql, timeout=10"""
-            ),
+                driver=mysql, timeout=10"""),
         ),
     ],
 )

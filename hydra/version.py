@@ -66,12 +66,10 @@ def setbase(ver: Any) -> None:
     """
     if type(ver) is type(_UNSPECIFIED_):
         deprecation_warning(
-            message=dedent(
-                f"""
+            message=dedent(f"""
             The version_base parameter is not specified.
             Please specify a compatibility version level, or None.
-            Will assume defaults for version {__compat_version__}"""
-            ),
+            Will assume defaults for version {__compat_version__}"""),
             stacklevel=3,
         )
         _version_base = __compat_version__
