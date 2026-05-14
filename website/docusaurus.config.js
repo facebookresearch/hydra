@@ -32,14 +32,6 @@ module.exports = {
         },
     },
     themeConfig: {
-        announcementBar: {
-            id: 'support_ukraine',
-            content:
-              'Support Ukraine 🇺🇦 <a target="_blank" rel="noopener noreferrer" href="https://opensource.fb.com/support-ukraine"> Help Provide Humanitarian Aid to Ukraine</a>.',
-            backgroundColor: '#20232a',
-            textColor: '#fff',
-            isCloseable: false,
-        },
         algolia: {
             appId: 'KVTVP1D78C',
             apiKey: '9585f41bc128c5a99dd9f22827e1e836',
