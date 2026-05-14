@@ -28,7 +28,7 @@ def partial_equal(obj1: Any, obj2: Any) -> bool:
 
     obj1, obj2 = _convert_type(obj1), _convert_type(obj2)
 
-    if type(obj1) != type(obj2):
+    if type(obj1) is not type(obj2):
         return False
     if isinstance(obj1, dict):
         if len(obj1) != len(obj2):

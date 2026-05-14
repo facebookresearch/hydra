@@ -91,10 +91,8 @@ def test_setup_plugins(
 
 def test_run_job() -> None:
     hydra_context = None
-    msg = dedent(
-        """
+    msg = dedent("""
         run_job's signature has changed: the `hydra_context` arg is now required.
-        For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
-    )
+        For more info, check https://github.com/facebookresearch/hydra/pull/1581.""")
     with raises(TypeError, match=msg):
         _check_hydra_context(hydra_context)

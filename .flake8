@@ -1,6 +1,9 @@
 [flake8]
 exclude = 
     .git
+    ,.hg
+    ,.sl
+    ,website
     ,.nox,build
     ,hydra/grammar/gen
     ,dist
