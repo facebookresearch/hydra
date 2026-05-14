@@ -6,9 +6,9 @@ from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Union
 
 try:
-    from _pytest.python_api import RaisesContext
+    from _pytest.raises import RaisesExc as RaisesContext
 except ImportError:
-    from _pytest.raises import RaisesExc as RaisesContext  # type: ignore
+    from _pytest.python_api import RaisesContext  # type: ignore[attr-defined,no-redef]
 from pytest import mark, param, raises, warns
 
 from hydra import version

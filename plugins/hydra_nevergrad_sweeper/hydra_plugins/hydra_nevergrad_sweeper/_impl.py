@@ -33,7 +33,7 @@ log = logging.getLogger(__name__)
 
 
 def create_nevergrad_param_from_config(
-    config: Union[MutableSequence[Any], MutableMapping[str, Any]]
+    config: Union[MutableSequence[Any], MutableMapping[str, Any]],
 ) -> Any:
     if isinstance(config, MutableSequence):
         if isinstance(config, ListConfig):

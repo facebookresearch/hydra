@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union, cast
 
 from ax.core import types as ax_types  # type: ignore
 from ax.exceptions.core import SearchSpaceExhausted  # type: ignore
@@ -72,7 +72,7 @@ def get_one_batch_of_trials(
     is_search_space_exhausted = False
     # Ax throws an exception if the search space is exhausted. We catch
     # the exception and set the flag to True
-    (num_trials, max_parallelism_setting) = parallelism
+    num_trials, max_parallelism_setting = parallelism
     if max_parallelism_setting == -1:
         # Special case, we can group all the trials into one batch
         max_parallelism_setting = num_trials - num_trials_so_far
@@ -269,7 +269,9 @@ class CoreAxSweeper(Sweeper):
             verbose_logging=self.ax_client_config.verbose_logging,
             random_seed=self.ax_client_config.random_seed,
         )
-        ax_client.create_experiment(parameters=parameters, **self.experiment)
+        ax_client.create_experiment(
+            parameters=parameters, **cast(Mapping[str, Any], self.experiment)
+        )
 
         return ax_client
 

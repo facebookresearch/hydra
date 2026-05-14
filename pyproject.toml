@@ -53,6 +53,7 @@ exclude = '''
       .eggs         # exclude a few common directories in the
     | .git          # root of the project
     | .hg
+    | .sl
     | .mypy_cache
     | hydra/grammar/gen
     | tools/configen/example/gen
@@ -60,6 +61,7 @@ exclude = '''
     | .nox
     | website
     | .venv
+    | temp
     | _build
     | dist
     | build

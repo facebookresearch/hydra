@@ -172,11 +172,9 @@ class ConfigRepository(IConfigRepository):
             # DEPRECATED: remove in 1.2
             url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
             deprecation_warning(
-                message=dedent(
-                    f"""\
+                message=dedent(f"""\
                     In {config_path}: Defaults List contains deprecated keyword _name_, see {url}
-                    """
-                ),
+                    """),
             )
 
         res: List[InputDefault] = []
