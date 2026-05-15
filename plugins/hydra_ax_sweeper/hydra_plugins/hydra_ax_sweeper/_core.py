@@ -1,11 +1,23 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from dataclasses import dataclass
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple, Union, cast
+from typing import (
+    Any,
+    Dict,
+    Iterable,
+    List,
+    Literal,
+    Mapping,
+    Optional,
+    Tuple,
+    Union,
+    cast,
+)
 
+from ax.api.client import Client  # type: ignore
+from ax.api.configs import ChoiceParameterConfig, RangeParameterConfig  # type: ignore
 from ax.core import types as ax_types  # type: ignore
-from ax.exceptions.core import SearchSpaceExhausted  # type: ignore
-from ax.service.ax_client import AxClient  # type: ignore
+from ax.exceptions.core import SearchSpaceExhausted, UnsupportedError  # type: ignore
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import IntervalSweep, Override, Transformer
 from hydra.core.plugins import Plugins
@@ -18,6 +30,10 @@ from ._earlystopper import EarlyStopper
 from .config import AxConfig, ClientConfig, ExperimentConfig
 
 log = logging.getLogger(__name__)
+
+AxRangeParameterType = Literal["float", "int"]
+AxChoiceParameterType = Literal["float", "int", "str", "bool"]
+AxParameterConfig = Union[RangeParameterConfig, ChoiceParameterConfig]
 
 
 @dataclass
@@ -52,7 +68,9 @@ def encoder_parameters_into_string(parameters: List[Dict[str, Any]]) -> str:
     return parameter_log_string
 
 
-def map_params_to_arg_list(params: Mapping[str, Union[str, float, int]]) -> List[str]:
+def map_params_to_arg_list(
+    params: Mapping[str, Union[str, float, int, bool]],
+) -> List[str]:
     """Method to map a dictionary of params to a list of string arguments"""
     arg_list = []
     for key in params:
@@ -60,45 +78,76 @@ def map_params_to_arg_list(params: Mapping[str, Union[str, float, int]]) -> List
     return arg_list
 
 
+def get_ax_choice_parameter_type(values: Iterable[Any]) -> AxChoiceParameterType:
+    value_types = {type(value) for value in values}
+    if value_types == {bool}:
+        return "bool"
+    if value_types <= {int}:
+        return "int"
+    if value_types <= {int, float}:
+        return "float"
+    if value_types == {str}:
+        return "str"
+    raise ValueError(f"Unsupported mixed Ax parameter value types: {value_types}")
+
+
+def create_ax_parameter_config(param: Dict[Any, Any]) -> AxParameterConfig:
+    name = param["name"]
+    if param["type"] == "range":
+        bounds = param["bounds"]
+        parameter_type: AxRangeParameterType = (
+            "int" if all(type(bound) is int for bound in bounds) else "float"
+        )
+        return RangeParameterConfig(
+            name=name,
+            bounds=cast(Tuple[float, float], tuple(bounds)),
+            parameter_type=parameter_type,
+            scaling="log" if param.get("log_scale") else None,
+        )
+
+    if param["type"] == "choice":
+        values = param["values"]
+        parameter_type = get_ax_choice_parameter_type(values)
+        is_ordered = param.get("is_ordered", parameter_type != "str")
+    elif param["type"] == "fixed":
+        values = [param["value"]]
+        parameter_type = get_ax_choice_parameter_type(values)
+        is_ordered = None
+    else:
+        raise ValueError(f"Unexpected Ax parameter type: {param['type']}")
+
+    if parameter_type == "float":
+        values = [float(value) for value in values]
+    return ChoiceParameterConfig(
+        name=name,
+        values=cast(Any, values),
+        parameter_type=parameter_type,
+        is_ordered=is_ordered,
+    )
+
+
 def get_one_batch_of_trials(
-    ax_client: AxClient,
-    parallelism: Tuple[int, int],
-    num_trials_so_far: int,
+    ax_client: Client,
     num_max_trials_to_do: int,
 ) -> TrialBatch:
     """Returns a TrialBatch that contains a list of trials that can be
     run in parallel. TrialBatch also flags if the search space is exhausted."""
 
-    is_search_space_exhausted = False
-    # Ax throws an exception if the search space is exhausted. We catch
-    # the exception and set the flag to True
-    num_trials, max_parallelism_setting = parallelism
-    if max_parallelism_setting == -1:
-        # Special case, we can group all the trials into one batch
-        max_parallelism_setting = num_trials - num_trials_so_far
+    try:
+        trials = ax_client.get_next_trials(max_trials=num_max_trials_to_do)
+    except SearchSpaceExhausted:
+        return TrialBatch(list_of_trials=[], is_search_space_exhausted=True)
 
-        if num_trials == -1:
-            # This is a special case where we can run as many trials in parallel as we want.
-            # Given that num_trials is also -1, we can run all the trials in parallel.
-            max_parallelism_setting = num_max_trials_to_do
-
-    list_of_trials = []
-    for _ in range(max_parallelism_setting):
-        try:
-            parameters, trial_index = ax_client.get_next_trial()
-            list_of_trials.append(
-                Trial(
-                    overrides=map_params_to_arg_list(params=parameters),
-                    trial_index=trial_index,
-                )
-            )
-        except SearchSpaceExhausted:
-            is_search_space_exhausted = True
-            break
-
+    list_of_trials = [
+        Trial(
+            overrides=map_params_to_arg_list(params=parameters),
+            trial_index=trial_index,
+        )
+        for trial_index, parameters in trials.items()
+    ]
     return TrialBatch(
         list_of_trials=list_of_trials,
-        is_search_space_exhausted=is_search_space_exhausted,
+        is_search_space_exhausted=len(list_of_trials) == 0,
     )
 
 
@@ -146,56 +195,40 @@ class CoreAxSweeper(Sweeper):
         ax_client = self.setup_ax_client(arguments)
 
         num_trials_left = self.max_trials
-        max_parallelism = ax_client.get_max_parallelism()
-        current_parallelism_index = 0
-        # Index to track the parallelism value we are using right now.
         is_search_space_exhausted = False
         # Ax throws an exception if the search space is exhausted. We catch
         # the exception and set the flag to True
 
         best_parameters = {}
         while num_trials_left > 0 and not is_search_space_exhausted:
-            current_parallelism = max_parallelism[current_parallelism_index]
-            num_trials, max_parallelism_setting = current_parallelism
-            num_trials_so_far = 0
-            while (
-                num_trials > num_trials_so_far or num_trials == -1
-            ) and num_trials_left > 0:
-                trial_batch = get_one_batch_of_trials(
-                    ax_client=ax_client,
-                    parallelism=current_parallelism,
-                    num_trials_so_far=num_trials_so_far,
-                    num_max_trials_to_do=num_trials_left,
-                )
+            num_trials_to_request = min(num_trials_left, self.max_batch_size or 5)
+            trial_batch = get_one_batch_of_trials(
+                ax_client=ax_client,
+                num_max_trials_to_do=num_trials_to_request,
+            )
 
-                list_of_trials_to_launch = trial_batch.list_of_trials[:num_trials_left]
-                is_search_space_exhausted = trial_batch.is_search_space_exhausted
+            list_of_trials_to_launch = trial_batch.list_of_trials[:num_trials_left]
+            is_search_space_exhausted = trial_batch.is_search_space_exhausted
 
-                log.info(
-                    "AxSweeper is launching {} jobs".format(
-                        len(list_of_trials_to_launch)
-                    )
-                )
+            log.info(
+                "AxSweeper is launching {} jobs".format(len(list_of_trials_to_launch))
+            )
 
-                self.sweep_over_batches(
-                    ax_client=ax_client, list_of_trials=list_of_trials_to_launch
-                )
+            self.sweep_over_batches(
+                ax_client=ax_client, list_of_trials=list_of_trials_to_launch
+            )
 
-                num_trials_so_far += len(list_of_trials_to_launch)
-                num_trials_left -= len(list_of_trials_to_launch)
+            num_trials_left -= len(list_of_trials_to_launch)
 
-                best_parameters, predictions = ax_client.get_best_parameters()
-                metric = predictions[0][ax_client.objective_name]
-
+            best_point = self.get_best_point(ax_client)
+            if best_point is not None:
+                best_parameters, metric = best_point
                 if self.early_stopper.should_stop(metric, best_parameters):
-                    num_trials_left = -1
                     break
 
-                if is_search_space_exhausted:
-                    log.info("Ax has exhausted the search space")
-                    break
-
-            current_parallelism_index += 1
+            if is_search_space_exhausted:
+                log.info("Ax has exhausted the search space")
+                break
 
         results_to_serialize = {"optimizer": "ax", "ax": best_parameters}
         OmegaConf.save(
@@ -205,7 +238,7 @@ class CoreAxSweeper(Sweeper):
         log.info("Best parameters: " + str(best_parameters))
 
     def sweep_over_batches(
-        self, ax_client: AxClient, list_of_trials: List[Trial]
+        self, ax_client: Client, list_of_trials: List[Trial]
     ) -> None:
         assert self.launcher is not None
         assert self.job_idx is not None
@@ -234,11 +267,30 @@ class CoreAxSweeper(Sweeper):
                         val = (val, None)  # specify unknown noise
                     else:
                         val = (val, 0)  # specify no noise
+                if isinstance(val, tuple):
+                    val = {self.experiment.objective_name: val}
                 ax_client.complete_trial(
                     trial_index=batch[idx].trial_index, raw_data=val
                 )
 
-    def setup_ax_client(self, arguments: List[str]) -> AxClient:
+    def get_best_point(
+        self, ax_client: Client
+    ) -> Optional[Tuple[Mapping[str, Any], float]]:
+        try:
+            best_parameters, metrics, _, _ = ax_client.get_best_parameterization(
+                use_model_predictions=False
+            )
+        except (AssertionError, UnsupportedError):
+            return None
+
+        metric = metrics.get(self.experiment.objective_name)
+        if metric is None:
+            return None
+        if isinstance(metric, tuple):
+            metric = metric[0]
+        return best_parameters, float(metric)
+
+    def setup_ax_client(self, arguments: List[str]) -> Client:
         """Method to setup the Ax Client"""
         parameters: List[Dict[Any, Any]] = []
         for key, value in self.ax_params.items():
@@ -249,7 +301,6 @@ class CoreAxSweeper(Sweeper):
                 if not (all(isinstance(x, int) for x in bounds)):
                     # Type mismatch. Promote all to float
                     param["bounds"] = [float(x) for x in bounds]
-
             parameters.append(param)
             parameters[-1]["name"] = key
         commandline_params = self.parse_commandline_args(arguments)
@@ -265,12 +316,26 @@ class CoreAxSweeper(Sweeper):
         log.info(
             f"AxSweeper is optimizing the following parameters: {encoder_parameters_into_string(parameters)}"
         )
-        ax_client = AxClient(
-            verbose_logging=self.ax_client_config.verbose_logging,
-            random_seed=self.ax_client_config.random_seed,
+
+        if not self.ax_client_config.verbose_logging:
+            logging.getLogger("ax.api.client").setLevel(logging.WARNING)
+        ax_client = Client(random_seed=self.ax_client_config.random_seed)
+        ax_client.configure_experiment(
+            parameters=[create_ax_parameter_config(param) for param in parameters],
+            parameter_constraints=self.experiment.parameter_constraints,
+            name=self.experiment.name,
         )
-        ax_client.create_experiment(
-            parameters=parameters, **cast(Mapping[str, Any], self.experiment)
+        if self.experiment.status_quo is not None:
+            ax_client.attach_baseline(
+                parameters=cast(Mapping[str, Any], self.experiment.status_quo)
+            )
+        ax_client.configure_optimization(
+            objective=(
+                f"-{self.experiment.objective_name}"
+                if self.experiment.minimize
+                else self.experiment.objective_name
+            ),
+            outcome_constraints=self.experiment.outcome_constraints,
         )
 
         return ax_client

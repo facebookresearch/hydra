@@ -17,19 +17,19 @@ setup(
     url="https://github.com/facebookresearch/hydra/",
     packages=find_namespace_packages(include=["hydra_plugins.*"]),
     classifiers=[
-        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
         "Operating System :: POSIX :: Linux",
         "Operating System :: MacOS",
         "Development Status :: 4 - Beta",
     ],
-    python_requires=">=3.10,<3.11",
+    python_requires=">=3.11,<3.15",
     install_requires=[
         "hydra-core>=1.1.0.dev7",
-        "ax-platform>=0.1.20,<0.2.1",  # https://github.com/facebookresearch/hydra/issues/1767
-        "torch",
-        "gpytorch<=1.8.1",  # avoid deprecation warnings. This can probably be removed when ax-platform is unpinned.
-        "pandas<1.5.0",  # https://github.com/facebook/Ax/issues/1153, unpin when upgrading ax to >=0.2.8
-        "numpy<1.25.0",  # same as above, silences deprecation from np.find_common_type for pandas <1.5
+        "ax-platform>=1.2.4,<1.3.0",
+        "torch>=2.2",
     ],
     include_package_data=True,
 )
