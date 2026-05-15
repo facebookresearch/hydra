@@ -103,7 +103,7 @@ For focused local checks, use the same tools the noxfile runs:
 
 - `black .` / `black --check .`
 - `isort . --check --diff`
-- `mypy --config-file .mypy.ini`
+- `pyrefly check --config pyproject.toml`
 - `flake8 --config .flake8`
 - `yamllint --strict .`
 - `bandit --exclude ./.nox/** -ll -r .`

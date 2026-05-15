@@ -54,7 +54,6 @@ exclude = '''
     | .git          # root of the project
     | .hg
     | .sl
-    | .mypy_cache
     | hydra/grammar/gen
     | tools/configen/example/gen
     | .tox
@@ -69,3 +68,34 @@ exclude = '''
   )
 )
 '''
+
+[tool.pyrefly]
+project-includes = [
+    "*.py",
+    "build_helpers/**/*.py",
+    "hydra/**/*.py",
+    "tests/**/*.py",
+]
+project-excludes = [
+    "hydra/grammar/gen/**",
+    "tests/standalone_apps/**",
+    "tests/test_apps/**",
+]
+search-path = [
+    ".stubs",
+]
+ignore-missing-imports = [
+    "antlr4",
+    "antlr4.*",
+    "nevergrad",
+    "nevergrad.*",
+    "rq",
+    "rq.*",
+]
+replace-imports-with-any = [
+    "hydra.grammar.gen.*",
+]
+enabled-ignores = [
+    "type",
+    "pyrefly",
+]

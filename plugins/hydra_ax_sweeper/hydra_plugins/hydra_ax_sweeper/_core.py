@@ -184,10 +184,13 @@ class CoreAxSweeper(Sweeper):
                 num_trials_so_far += len(list_of_trials_to_launch)
                 num_trials_left -= len(list_of_trials_to_launch)
 
-                best_parameters, predictions = ax_client.get_best_parameters()
+                best_result = ax_client.get_best_parameters()
+                assert best_result is not None
+                best_parameters, predictions = best_result
+                assert predictions is not None
                 metric = predictions[0][ax_client.objective_name]
 
-                if self.early_stopper.should_stop(metric, best_parameters):
+                if self.early_stopper.should_stop(metric, cast(Any, best_parameters)):
                     num_trials_left = -1
                     break
 
@@ -290,8 +293,12 @@ class CoreAxSweeper(Sweeper):
                     param = create_choice_param_from_range_override(override)
                 elif override.is_interval_sweep():
                     param = create_range_param_using_interval_override(override)
+                else:
+                    raise ValueError(f"Unsupported sweep override: {override}")
             elif not override.is_hydra_override():
                 param = create_fixed_param_from_element_override(override)
+            else:
+                continue
             parameters.append(param)
 
         return parameters

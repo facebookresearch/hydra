@@ -181,8 +181,8 @@ class ConfigRepository(IConfigRepository):
         for item in defaults._iter_ex(resolve=False):
             default: InputDefault
             if isinstance(item, DictConfig):
+                old_optional = None
                 if not version.base_at_least("1.2"):
-                    old_optional = None
                     if len(item) > 1:
                         if "optional" in item:
                             old_optional = item.pop("optional")

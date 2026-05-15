@@ -8,7 +8,7 @@ The code need to pass verification by the following tools:
  - `black .` : Automatic code formatting for Python
  - `flake8` : PEP8 compliance checker for Python, this includes copyright header verification
  - `isort .` : Ensure imports are sorted properly
- - `mypy --strict .` : Ensures code passes strict type checking
+ - `pyrefly check` : Ensures code passes static type checking
  - `yamllint .` : Ensures that yaml files are syntactically correct and properly indented.
 
 The easiest way to run the required verifications is: 

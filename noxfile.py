@@ -43,6 +43,10 @@ SILENT = VERBOSE == "0"
 
 nox.options.error_on_missing_interpreters = True
 
+PYREFLY_POSITIONAL_EXCLUDES = [
+    "**/build/**",
+]
+
 
 @dataclass
 class Plugin:
@@ -313,19 +317,27 @@ def _isort_cmd() -> List[str]:
     return isort
 
 
-def _mypy_cmd(strict: bool, python_version: Optional[str] = "3.10") -> List[str]:
-    mypy = [
-        "mypy",
-        "--install-types",
-        "--non-interactive",
-        "--config-file",
-        f"{BASE}/.mypy.ini",
+def _pyrefly_cmd(
+    python_version: Optional[str] = "3.10",
+    extra_search_paths: Optional[List[str]] = None,
+) -> List[str]:
+    pyrefly = [
+        "pyrefly",
+        "check",
+        "--config",
+        f"{BASE}/pyproject.toml",
+        "--python-interpreter-path",
+        "python",
     ]
-    if strict:
-        mypy.append("--strict")
     if python_version is not None:
-        mypy.append(f"--python-version={python_version}")
-    return mypy
+        pyrefly.append(f"--python-version={python_version}")
+    if extra_search_paths is not None:
+        pyrefly.extend(["--search-path", f"{BASE}/.stubs"])
+        for path in extra_search_paths:
+            pyrefly.extend(["--search-path", path])
+        for path in PYREFLY_POSITIONAL_EXCLUDES:
+            pyrefly.extend(["--project-excludes", path])
+    return pyrefly
 
 
 @nox.session(python=LINT_PYTHON_VERSIONS)  # type: ignore
@@ -362,20 +374,16 @@ def lint(session: Session) -> None:
 
     session.run(*isort, silent=SILENT)
 
+    # No positional target: Pyrefly uses the core project scope from pyproject.toml.
+    # Examples, tools, and plugins are checked below with explicit import roots.
     session.run(
-        *_mypy_cmd(python_version=session.python, strict=True),
-        ".",
-        "--exclude=^examples/",
-        "--exclude=^tests/standalone_apps/",
-        "--exclude=^tests/test_apps/",
-        "--exclude=^tools/",
-        "--exclude=^plugins/",
+        *_pyrefly_cmd(python_version=session.python),
         silent=SILENT,
     )
     session.run("flake8", "--config", ".flake8")
     session.run("yamllint", "--strict", ".")
 
-    mypy_check_subdirs = [
+    pyrefly_check_subdirs = [
         "examples/advanced",
         "examples/configure_hydra",
         "examples/patterns",
@@ -386,11 +394,11 @@ def lint(session: Session) -> None:
         "tests/standalone_apps",
         "tests/test_apps",
     ]
-    for sdir in mypy_check_subdirs:
+    for sdir in pyrefly_check_subdirs:
         dirs = find_dirs(path=sdir)
         for d in dirs:
             session.run(
-                *_mypy_cmd(strict=True),
+                *_pyrefly_cmd(extra_search_paths=[d]),
                 d,
                 silent=SILENT,
             )
@@ -399,7 +407,7 @@ def lint(session: Session) -> None:
         dirs = find_dirs(path=sdir)
         for d in dirs:
             session.run(
-                *_mypy_cmd(strict=False),  # no --strict flag for tools
+                *_pyrefly_cmd(extra_search_paths=[d]),
                 d,
                 silent=SILENT,
             )
@@ -457,17 +465,16 @@ def lint_plugin(session: Session, plugin: Plugin) -> None:
         if os.path.exists(abs):
             files.append(abs)
 
-    # Mypy for plugin
+    # Pyrefly for plugin
     session.run(
-        *_mypy_cmd(
-            strict=True,
-            # Don't pass --python-version flag when linting plugins, as mypy may
+        *_pyrefly_cmd(
+            # Don't pass --python-version flag when linting plugins, as Pyrefly may
             # report syntax errors if the passed --python-version is different
             # from the python version that was used to install the plugin's
             # dependencies.
             python_version=None,
+            extra_search_paths=[path],
         ),
-        "--follow-imports=silent",
         f"{path}/{source_dir}",
         *files,
         silent=SILENT,

@@ -1199,10 +1199,13 @@ def test_recursive_instantiation(
             ),
             {},
             Compose(
-                transforms=[
-                    partial(CenterCrop, size=10),  # type: ignore
-                    Rotation(degrees=45),
-                ],
+                transforms=cast(
+                    Any,
+                    [
+                        partial(CenterCrop, size=10),  # type: ignore
+                        Rotation(degrees=45),
+                    ],
+                ),
             ),
         ),
         param(
@@ -1215,10 +1218,13 @@ def test_recursive_instantiation(
             },
             {},
             Compose(
-                transforms=[
-                    partial(CenterCrop),  # type: ignore
-                    Rotation(degrees=45),
-                ]
+                transforms=cast(
+                    Any,
+                    [
+                        partial(CenterCrop),  # type: ignore
+                        Rotation(degrees=45),
+                    ],
+                )
             ),
             id="recursive:list:dict",
         ),
@@ -1232,10 +1238,13 @@ def test_recursive_instantiation(
             ),
             {},
             Mapping(
-                dictionary={
-                    "a": partial(Mapping, dictionary=None),  # type: ignore
-                    "b": Mapping(),
-                }
+                dictionary=cast(
+                    Any,
+                    {
+                        "a": partial(Mapping, dictionary=None),
+                        "b": Mapping(),
+                    },
+                )
             ),
         ),
         param(
