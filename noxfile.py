@@ -135,7 +135,7 @@ def maybe_install_torch(session: Session, plugin: Plugin) -> None:
 
 def plugin_requires_torch(plugin: Plugin) -> bool:
     """Determine whether the given plugin depends on pytorch as a requirement"""
-    return '"torch"' in Path(plugin.setup_py).read_text()
+    return '"torch' in Path(plugin.setup_py).read_text()
 
 
 def install_cpu_torch(session: Session) -> None:

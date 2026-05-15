@@ -1,8 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Optional
-
-from ax import ParameterType  # type: ignore
+from typing import Any, Mapping, Optional
 
 log = logging.getLogger(__name__)
 
@@ -24,7 +22,7 @@ class EarlyStopper:
         self.current_epochs_without_improvement = 0
 
     def should_stop(
-        self, potential_best_value: float, best_parameters: ParameterType
+        self, potential_best_value: float, best_parameters: Mapping[str, Any]
     ) -> bool:
         """Check if the optimization process should be stopped."""
         is_improving = True
