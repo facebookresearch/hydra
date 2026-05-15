@@ -3,6 +3,7 @@ We want to make contributing to this project as easy and transparent as
 possible.
 
 Please see the [developer guide](https://hydra.cc/docs/development/overview/) on the website.
+Maintainers can find the release process in the [release guide](website/docs/development/release.md).
 
 ## Pull Requests
 We welcome your pull requests.
