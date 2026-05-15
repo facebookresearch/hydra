@@ -2,9 +2,9 @@
 import re
 from dataclasses import dataclass, field
 from textwrap import dedent
-from typing import Any, List
+from typing import Any, List, cast
 
-from omegaconf import MISSING, OmegaConf, ValidationError, open_dict
+from omegaconf import MISSING, DictConfig, OmegaConf, ValidationError, open_dict
 from pytest import mark, param, raises, warns
 
 from hydra import version
@@ -769,7 +769,7 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
 def test_apply_overrides_to_config(
     input_cfg: Any, overrides: List[str], expected: Any
 ) -> None:
-    cfg = OmegaConf.create(input_cfg)
+    cfg = cast(DictConfig, OmegaConf.create(input_cfg))
     OmegaConf.set_struct(cfg, True)
     parser = OverridesParser.create()
     parsed = parser.parse_overrides(overrides=overrides)

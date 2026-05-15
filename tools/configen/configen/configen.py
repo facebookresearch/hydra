@@ -9,7 +9,7 @@ from pathlib import Path
 
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from textwrap import dedent
-from typing import Any, Dict, List, Optional, Set, Type, get_type_hints
+from typing import Any, Dict, List, Optional, Set, Type, cast, get_type_hints
 
 import hydra
 from jinja2 import Environment, PackageLoader, Template
@@ -43,7 +43,7 @@ jinja_env = Environment(
     keep_trailing_newline=True,
     trim_blocks=True,
 )
-jinja_env.tests["empty"] = lambda x: x == inspect.Signature.empty
+cast(Dict[str, Any], jinja_env.tests)["empty"] = lambda x: x == inspect.Signature.empty
 
 
 def init_config(conf_dir: str) -> None:

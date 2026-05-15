@@ -1,6 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
-from typing import Any, Optional, Sequence
+from typing import Any, Optional, Sequence, cast
 
 from hydra.core.utils import JobReturn
 from hydra.plugins.launcher import Launcher
@@ -43,5 +43,7 @@ class JoblibLauncher(Launcher):
         from . import _core
 
         return _core.launch(
-            launcher=self, job_overrides=job_overrides, initial_job_idx=initial_job_idx
+            launcher=cast(Any, self),
+            job_overrides=job_overrides,
+            initial_job_idx=initial_job_idx,
         )

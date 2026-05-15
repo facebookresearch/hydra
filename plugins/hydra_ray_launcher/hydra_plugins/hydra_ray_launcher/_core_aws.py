@@ -19,7 +19,7 @@ except ModuleNotFoundError:
     import pickle
 
 
-# mypy complains about "unused type: ignore comment" on macos
+# Static type checkers can complain about "unused type: ignore comment" on macos
 # workaround adapted from: https://github.com/twisted/twisted/pull/1416
 try:
     import importlib
