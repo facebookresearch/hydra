@@ -1,0 +1,9 @@
+{
+  "bundled_wheel_path": ".backlog-atlas/packages/backlog_atlas-0.1.0-py3-none-any.whl",
+  "install_source": "backlog-atlas-branch/.backlog-atlas/packages/backlog_atlas-0.1.0-py3-none-any.whl",
+  "installed_version": "0.1.0",
+  "schema_version": 1,
+  "source_type": "bundled-wheel",
+  "tool": "backlog-atlas",
+  "workflow_path": ".github/workflows/update-backlog-atlas.yml"
+}
