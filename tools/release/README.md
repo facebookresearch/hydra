@@ -1,48 +1,84 @@
-## Release tool.
+## Release tool
 
-A few usage examples:
+This tool keeps Hydra release operations package-aware. It knows about
+`hydra-core`, the bundled plugins, and `hydra-configen`, and can check versions,
+set versions, and build distributions.
 
-Check all plugins against the published versions:
-```text
-$ python tools/release/release.py  action=check set=plugins 
-[2021-03-30 18:21:05,768][__main__][INFO] - Build outputs : /home/omry/dev/hydra/outputs/2021-03-30/18-21-05/build
-[2021-03-30 18:21:05,768][__main__][INFO] - Checking for unpublished packages
-[2021-03-30 18:21:06,258][__main__][INFO] - ❋ : hydra-ax-sweeper : newer (local=1.1.5.dev1 > latest=1.1.0rc2)
-[2021-03-30 18:21:06,746][__main__][INFO] - ❋ : hydra-colorlog : newer (local=1.1.0.dev1 > latest=1.0.1)
-[2021-03-30 18:21:07,232][__main__][INFO] - ❋ : hydra-joblib-launcher : newer (local=1.1.5.dev1 > latest=1.1.2)
-[2021-03-30 18:21:07,708][__main__][INFO] - ❋ : hydra-nevergrad-sweeper : newer (local=1.1.5.dev1 > latest=1.1.0rc2)
-[2021-03-30 18:21:08,161][__main__][INFO] - ❋ : hydra-optuna-sweeper : newer (local=1.1.0.dev1 > latest=0.9.0rc2)
-[2021-03-30 18:21:08,639][__main__][INFO] - ❋ : hydra-ray-launcher : newer (local=1.1.0.dev1 > latest=0.1.4)
-[2021-03-30 18:21:09,122][__main__][INFO] - ❋ : hydra-rq-launcher : newer (local=1.1.0.dev1 > latest=1.0.2)
-[2021-03-30 18:21:09,620][__main__][INFO] - ❋ : hydra-submitit-launcher : newer (local=1.1.5.dev1 > latest=1.1.1)
-```
+Publishing is intentionally handled by GitHub Actions Trusted Publishing, not by
+this local tool. The publish workflows call this tool to build artifacts, then
+upload them from GitHub Actions.
 
-Check specific packages (hydra and configen) against the published versions
-```text
-$ python tools/release/release.py  action=check packages=[hydra,configen]
-[2021-03-30 18:21:25,423][__main__][INFO] - Build outputs : /home/omry/dev/hydra/outputs/2021-03-30/18-21-25/build
-[2021-03-30 18:21:25,423][__main__][INFO] - Checking for unpublished packages
-[2021-03-30 18:21:26,042][__main__][INFO] - ❋ : hydra-core : newer (local=1.1.0.dev6 > latest=1.1.0.dev5)
-[2021-03-30 18:21:26,497][__main__][INFO] - ❋ : hydra-configen : newer (local=0.9.0.dev8 > latest=0.9.0.dev7)
-```
+### Package sets
 
-Build all plugins:
+- `set=hydra-core`: `hydra-core` only.
+- `set=hydra-plugins`: all bundled Hydra plugins.
+- `set=hydra-full-release`: `hydra-core` plus all bundled Hydra plugins.
+- `set=configen`: `hydra-configen` only.
+- `set=all`: `hydra-core`, `hydra-configen`, and all bundled Hydra plugins.
+
+### Check published versions
+
 ```shell
-$ python tools/release/release.py  action=build set=plugins
-[2021-03-30 18:21:40,426][__main__][INFO] - Build outputs : /home/omry/dev/hydra/outputs/2021-03-30/18-21-40/build
-[2021-03-30 18:21:40,426][__main__][INFO] - Building unpublished packages
-[2021-03-30 18:21:41,280][__main__][INFO] - Building hydra-ax-sweeper
-[2021-03-30 18:21:47,237][__main__][INFO] - Building hydra-colorlog
-[2021-03-30 18:21:52,982][__main__][INFO] - Building hydra-joblib-launcher
-[2021-03-30 18:21:58,833][__main__][INFO] - Building hydra-nevergrad-sweeper
-[2021-03-30 18:22:04,618][__main__][INFO] - Building hydra-optuna-sweeper
-[2021-03-30 18:22:10,511][__main__][INFO] - Building hydra-ray-launcher
-[2021-03-30 18:22:16,487][__main__][INFO] - Building hydra-rq-launcher
-[2021-03-30 18:22:22,302][__main__][INFO] - Building hydra-submitit-launcher
+python tools/release/release.py \
+  action=check \
+  set=hydra-full-release \
+  repository=pypi
 ```
 
-Publish all build articats (sdists and wheels):
+This compares local package versions with the latest non-yanked wheel on the
+selected repository. Use `repository=testpypi` when preparing a TestPyPI upload.
+
+### Set an explicit version
+
+```shell
+python tools/release/release.py \
+  action=set_version \
+  set=hydra-full-release \
+  version=1.4.0.dev2
 ```
-$ twine upload /home/omry/dev/hydra/outputs/2021-03-30/18-21-40/build/*
-...
+
+Use this for coordinated dev releases where `hydra-core` and the bundled plugins
+should share the same version.
+
+### Bump published packages
+
+```shell
+python tools/release/release.py action=bump set=hydra-full-release
 ```
+
+This increments only packages whose local version exactly matches the latest
+published version on PyPI. It is useful for continuing an existing release
+series, but less useful when aligning multiple packages to a specific version.
+
+### Build artifacts
+
+Build only packages whose local version is newer than PyPI:
+
+```shell
+python tools/release/release.py \
+  action=build \
+  set=hydra-full-release \
+  repository=pypi \
+  clean_build_dir=true \
+  require_artifacts=true \
+  build_dir=dist
+```
+
+Use `repository=testpypi` to compare against TestPyPI instead.
+
+Build every package in a set, ignoring repository state:
+
+```shell
+python tools/release/release.py \
+  action=build \
+  set=hydra-full-release \
+  build_policy=all \
+  clean_build_dir=true \
+  build_dir=dist
+```
+
+The GitHub publish workflows use the repository-aware form so already-published
+files are not uploaded again.
+
+The workflows also write a release summary listing the target repository,
+publish mode, trigger, ref, commit, and every artifact that was built.
