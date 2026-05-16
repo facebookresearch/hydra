@@ -1,0 +1,4629 @@
+{
+  "generated_on": "2026-05-16",
+  "generated_at": "2026-05-16T19:36:44Z",
+  "repo": "facebookresearch/hydra",
+  "summary": {
+    "open_total": 289,
+    "by_category": [
+      {
+        "category": "Bug",
+        "emoji": "🐛",
+        "count": 120,
+        "percentage": 41.5
+      },
+      {
+        "category": "Enhancement",
+        "emoji": "✨",
+        "count": 136,
+        "percentage": 47.1
+      },
+      {
+        "category": "Documentation",
+        "emoji": "📄",
+        "count": 12,
+        "percentage": 4.2
+      },
+      {
+        "category": "Question",
+        "emoji": "❓",
+        "count": 12,
+        "percentage": 4.2
+      },
+      {
+        "category": "Refactor",
+        "emoji": "🔧",
+        "count": 2,
+        "percentage": 0.7
+      },
+      {
+        "category": "Build",
+        "emoji": "🏗️",
+        "count": 7,
+        "percentage": 2.4
+      }
+    ],
+    "by_status": [
+      {
+        "status": "in progress",
+        "emoji": "🔄",
+        "count": 3
+      },
+      {
+        "status": "community PR",
+        "emoji": "🤝",
+        "count": 21
+      },
+      {
+        "status": "blocked",
+        "emoji": "🚫",
+        "count": 0
+      },
+      {
+        "status": "not started",
+        "emoji": "⬜",
+        "count": 265
+      },
+      {
+        "status": "done",
+        "emoji": "✅",
+        "count": 0
+      }
+    ]
+  },
+  "issues": [
+    {
+      "number": 1830,
+      "title": "[Bug] Cannot use plugin's conf dataclasses in structured config",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 2019,
+          "url": "https://github.com/facebookresearch/hydra/pull/2019"
+        }
+      ],
+      "created": "2021-09-21",
+      "updated": "2023-07-05",
+      "labels": [
+        "bug",
+        "plugin",
+        "structured config"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1830"
+    },
+    {
+      "number": 2632,
+      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 2633,
+          "url": "https://github.com/facebookresearch/hydra/pull/2633"
+        }
+      ],
+      "created": "2023-04-04",
+      "updated": "2026-03-03",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 3176,
+      "title": "Upgrade and modernize Ax Sweeper",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3178,
+          "url": "https://github.com/facebookresearch/hydra/pull/3178"
+        }
+      ],
+      "created": "2026-05-15",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3176"
+    },
+    {
+      "number": 692,
+      "title": "[Feature Request] Support non blocking launching",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2171,
+          "url": "https://github.com/facebookresearch/hydra/pull/2171"
+        }
+      ],
+      "created": "2020-06-19",
+      "updated": "2024-02-15",
+      "labels": [
+        "enhancement",
+        "plugin"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/692"
+    },
+    {
+      "number": 845,
+      "title": "Add a standalone page describing @hydra.main() in details.",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3136,
+          "url": "https://github.com/facebookresearch/hydra/pull/3136"
+        }
+      ],
+      "created": "2020-08-05",
+      "updated": "2023-12-04",
+      "labels": [
+        "documentation",
+        "good first issue"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/845"
+    },
+    {
+      "number": 1393,
+      "title": "[Feature Request] Consider supporting singleton pattern in recursive instantiation",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3013,
+          "url": "https://github.com/facebookresearch/hydra/pull/3013"
+        },
+        {
+          "number": 3025,
+          "url": "https://github.com/facebookresearch/hydra/pull/3025"
+        }
+      ],
+      "created": "2021-02-11",
+      "updated": "2025-05-19",
+      "labels": [
+        "enhancement",
+        "instantiate_api",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1393"
+    },
+    {
+      "number": 1679,
+      "title": "[Feature Request] Resume study and avoid OOM when optimizing with Optuna plugin",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2647,
+          "url": "https://github.com/facebookresearch/hydra/pull/2647"
+        }
+      ],
+      "created": "2021-06-17",
+      "updated": "2022-10-21",
+      "labels": [
+        "enhancement",
+        "help wanted",
+        "wishlist",
+        "plugin"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1679"
+    },
+    {
+      "number": 1758,
+      "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2269,
+          "url": "https://github.com/facebookresearch/hydra/pull/2269"
+        }
+      ],
+      "created": "2021-08-10",
+      "updated": "2022-11-06",
+      "labels": [
+        "enhancement",
+        "instantiate_api",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1758"
+    },
+    {
+      "number": 1890,
+      "title": "HPO config standardization",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2034,
+          "url": "https://github.com/facebookresearch/hydra/pull/2034"
+        }
+      ],
+      "created": "2021-11-15",
+      "updated": "2022-05-18",
+      "labels": [
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1890"
+    },
+    {
+      "number": 1898,
+      "title": "[Bug] Submitit has optional parameter tasks_per_node set",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2157,
+          "url": "https://github.com/facebookresearch/hydra/pull/2157"
+        }
+      ],
+      "created": "2021-11-22",
+      "updated": "2022-01-14",
+      "labels": [
+        "bug",
+        "sweep",
+        "submitit"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1898"
+    },
+    {
+      "number": 2162,
+      "title": "Upgrading Optuna from v2.x.x to v3.0.0",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2995,
+          "url": "https://github.com/facebookresearch/hydra/pull/2995"
+        }
+      ],
+      "created": "2022-04-20",
+      "updated": "2025-01-22",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2162"
+    },
+    {
+      "number": 2237,
+      "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2225,
+          "url": "https://github.com/facebookresearch/hydra/pull/2225"
+        }
+      ],
+      "created": "2022-05-26",
+      "updated": "2022-05-26",
+      "labels": [
+        "bug",
+        "plugin",
+        "optuna",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2237"
+    },
+    {
+      "number": 2268,
+      "title": "Enable instantiations without resolution",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2269,
+          "url": "https://github.com/facebookresearch/hydra/pull/2269"
+        }
+      ],
+      "created": "2022-06-20",
+      "updated": "2022-11-06",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2268"
+    },
+    {
+      "number": 2293,
+      "title": "Modify Trial when using a Sweeper",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2718,
+          "url": "https://github.com/facebookresearch/hydra/pull/2718"
+        }
+      ],
+      "created": "2022-07-14",
+      "updated": "2022-12-02",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2293"
+    },
+    {
+      "number": 2435,
+      "title": "[Feature Request] Optuna experiment stream processing",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2461,
+          "url": "https://github.com/facebookresearch/hydra/pull/2461"
+        }
+      ],
+      "created": "2022-10-24",
+      "updated": "2022-10-27",
+      "labels": [
+        "enhancement",
+        "plugin",
+        "optuna",
+        "sweep",
+        "launchers"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2435"
+    },
+    {
+      "number": 2477,
+      "title": "[Bug] Unable to delete an item from ListConfig",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3146,
+          "url": "https://github.com/facebookresearch/hydra/pull/3146"
+        }
+      ],
+      "created": "2022-11-23",
+      "updated": "2026-04-25",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2477"
+    },
+    {
+      "number": 2479,
+      "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3128,
+          "url": "https://github.com/facebookresearch/hydra/pull/3128"
+        }
+      ],
+      "created": "2022-11-23",
+      "updated": "2024-10-04",
+      "labels": [
+        "enhancement",
+        "internal"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2479"
+    },
+    {
+      "number": 2502,
+      "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3126,
+          "url": "https://github.com/facebookresearch/hydra/pull/3126"
+        }
+      ],
+      "created": "2022-12-13",
+      "updated": "2026-02-05",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2562,
+      "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2995,
+          "url": "https://github.com/facebookresearch/hydra/pull/2995"
+        }
+      ],
+      "created": "2023-01-30",
+      "updated": "2023-02-08",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2562"
+    },
+    {
+      "number": 2889,
+      "title": "[Bug] Misleading error message when opening .yml file",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2890,
+          "url": "https://github.com/facebookresearch/hydra/pull/2890"
+        }
+      ],
+      "created": "2024-04-10",
+      "updated": "2024-04-11",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2889"
+    },
+    {
+      "number": 2977,
+      "title": "[Feature Request] Add a generation strategy config to ax-sweeper plugin",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 2978,
+          "url": "https://github.com/facebookresearch/hydra/pull/2978"
+        }
+      ],
+      "created": "2024-10-29",
+      "updated": "2024-10-29",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2977"
+    },
+    {
+      "number": 3053,
+      "title": "[Bug] --multirun yields error on specific command line flag ordering",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3133,
+          "url": "https://github.com/facebookresearch/hydra/pull/3133"
+        }
+      ],
+      "created": "2025-04-13",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3053"
+    },
+    {
+      "number": 3062,
+      "title": "[Feature Request] _once_ behavior for instantiate",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3063,
+          "url": "https://github.com/facebookresearch/hydra/pull/3063"
+        }
+      ],
+      "created": "2025-05-19",
+      "updated": "2026-05-16",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3062"
+    },
+    {
+      "number": 3106,
+      "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3107,
+          "url": "https://github.com/facebookresearch/hydra/pull/3107"
+        }
+      ],
+      "created": "2025-12-20",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3106"
+    },
+    {
+      "number": 385,
+      "title": "Experimentation tracking support",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-01-19",
+      "updated": "2025-07-08",
+      "labels": [
+        "enhancement",
+        "callbacks"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/385"
+    },
+    {
+      "number": 468,
+      "title": "Specify the schema for returning the result of optimization.",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-03-04",
+      "updated": "2020-10-08",
+      "labels": [
+        "plugin"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/468"
+    },
+    {
+      "number": 633,
+      "title": "Allow adding help messages to command line arguments",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-05-31",
+      "updated": "2025-12-23",
+      "labels": [
+        "enhancement",
+        "wishlist",
+        "priority_medium"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/633"
+    },
+    {
+      "number": 700,
+      "title": "[Feature Request] Purging older output/working directories ",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-06-21",
+      "updated": "2022-01-14",
+      "labels": [
+        "enhancement",
+        "wishlist"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/700"
+    },
+    {
+      "number": 714,
+      "title": "Make sure Hydra logging config override all loggers from 3rd party libs",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-06-25",
+      "updated": "2020-11-09",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/714"
+    },
+    {
+      "number": 733,
+      "title": "[Feature Request] Support for s3fs",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-06-30",
+      "updated": "2024-11-05",
+      "labels": [
+        "enhancement",
+        "blocked"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/733"
+    },
+    {
+      "number": 753,
+      "title": "Explore a the option of a dedicated Prompt-toolkit based Hydra shell",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-07-12",
+      "updated": "2020-07-12",
+      "labels": [
+        "enhancement",
+        "exploratory"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/753"
+    },
+    {
+      "number": 802,
+      "title": "Improving the test coverage in Hydra",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-07-21",
+      "updated": "2020-10-19",
+      "labels": [
+        "help wanted",
+        "maintenance"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/802"
+    },
+    {
+      "number": 841,
+      "title": "Add docker example for Ray launcher.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-07-31",
+      "updated": "2021-05-19",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/841"
+    },
+    {
+      "number": 851,
+      "title": "Evaluate using the configured launcher in regular runs",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-08-07",
+      "updated": "2025-02-20",
+      "labels": [
+        "enhancement",
+        "priority_medium"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/851"
+    },
+    {
+      "number": 902,
+      "title": "[Feature Request] Replace lexer token names by their symbols in ANTLR error messages",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-08-21",
+      "updated": "2021-06-04",
+      "labels": [
+        "enhancement",
+        "wishlist"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/902"
+    },
+    {
+      "number": 934,
+      "title": "[Bug] tab completion slow with slow imports",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-09-01",
+      "updated": "2022-05-05",
+      "labels": [
+        "question"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/934"
+    },
+    {
+      "number": 993,
+      "title": "Create a working directory abstraction",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-09-20",
+      "updated": "2023-03-02",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/993"
+    },
+    {
+      "number": 1081,
+      "title": "[Feature Request] Configen adds url to original module documentation",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-10-20",
+      "updated": "2021-09-27",
+      "labels": [
+        "enhancement",
+        "configen"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1081"
+    },
+    {
+      "number": 1085,
+      "title": "[Feature Request] shell completion for Enum type",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-10-21",
+      "updated": "2022-10-21",
+      "labels": [
+        "enhancement",
+        "help wanted",
+        "wishlist",
+        "tab_completion"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1085"
+    },
+    {
+      "number": 1112,
+      "title": "Nightly builds",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-11-03",
+      "updated": "2021-12-27",
+      "labels": [
+        "maintenance"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1112"
+    },
+    {
+      "number": 1128,
+      "title": "Document recommendations for frameworks using Hydra",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-11-06",
+      "updated": "2022-05-18",
+      "labels": [
+        "documentation",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1128"
+    },
+    {
+      "number": 1164,
+      "title": "Move non-user facing tools out of `hydra/tools`",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-11-19",
+      "updated": "2021-11-01",
+      "labels": [
+        "maintenance"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1164"
+    },
+    {
+      "number": 1174,
+      "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-11-30",
+      "updated": "2021-09-27",
+      "labels": [
+        "bug",
+        "help wanted",
+        "configen"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1174"
+    },
+    {
+      "number": 1228,
+      "title": "[Hydra doc] Improvement to doc search.",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-12-22",
+      "updated": "2021-06-04",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/1228"
+    },
+    {
+      "number": 1241,
+      "title": "[Configen][Bug] Configs for abstract classes with Generic Type",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-12-25",
+      "updated": "2020-12-25",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1241"
+    },
+    {
+      "number": 1258,
+      "title": "[Feature Request] Tuple Sweeper OR Top-level dictionary overrides",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-01-03",
+      "updated": "2024-06-04",
+      "labels": [
+        "enhancement",
+        "wishlist"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1258"
+    },
+    {
+      "number": 1291,
+      "title": "ray launcher improvements",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-01-11",
+      "updated": "2021-01-26",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/1291"
+    },
+    {
+      "number": 1367,
+      "title": "[Feature Request] [Configen] Multiple path patterns",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-02-01",
+      "updated": "2021-09-29",
+      "labels": [
+        "enhancement",
+        "wishlist",
+        "configen"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1367"
+    },
+    {
+      "number": 1431,
+      "title": "PrettyErrors doesn't work with Hydra",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-02-26",
+      "updated": "2025-04-11",
+      "labels": [
+        "enhancement",
+        "wishlist"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1431"
+    },
+    {
+      "number": 1463,
+      "title": "[Feature Request] Fault tolerance option for Optuna Sweeper",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-03-09",
+      "updated": "2022-01-24",
+      "labels": [
+        "enhancement",
+        "plugin",
+        "optuna",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1463"
+    },
+    {
+      "number": 1512,
+      "title": "Support multirun partial failure in Ax Sweeper",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-03-29",
+      "updated": "2022-01-24",
+      "labels": [
+        "ax",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1512"
+    },
+    {
+      "number": 1547,
+      "title": "[Feature Request] Append to a list from command line",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-04-09",
+      "updated": "2026-02-22",
+      "labels": [
+        "enhancement",
+        "wishlist",
+        "list composition",
+        "internal"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1547"
+    },
+    {
+      "number": 1602,
+      "title": "[Bug] sporadic transient errors from Ray plugin CI",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-05-03",
+      "updated": "2021-06-21",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1602"
+    },
+    {
+      "number": 1622,
+      "title": "keyword documentation for config.yaml",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-05-17",
+      "updated": "2022-11-24",
+      "labels": [
+        "documentation",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1622"
+    },
+    {
+      "number": 1636,
+      "title": "Updates to callback doc",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-05-21",
+      "updated": "2021-06-08",
+      "labels": [
+        "documentation"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1636"
+    },
+    {
+      "number": 1749,
+      "title": "tests: Use multiline regex search instead of assert_regex_match",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-08-02",
+      "updated": "2022-05-18",
+      "labels": [
+        "maintenance",
+        "tests",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1749"
+    },
+    {
+      "number": 1753,
+      "title": "[Feature Request] Add GCP support in Ray launcher.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-08-04",
+      "updated": "2022-01-17",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1753"
+    },
+    {
+      "number": 1764,
+      "title": "[ray launcher] fix how ray launcher gets the job return",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-08-12",
+      "updated": "2021-08-12",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/1764"
+    },
+    {
+      "number": 1767,
+      "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-08-13",
+      "updated": "2023-09-15",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/1767"
+    },
+    {
+      "number": 1781,
+      "title": "[Bug] Testing for hydra examples",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-08-20",
+      "updated": "2022-05-18",
+      "labels": [
+        "maintenance",
+        "tests",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1781"
+    },
+    {
+      "number": 1817,
+      "title": "Change default behavior to disallow writes to pre-existing output directory",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-09-08",
+      "updated": "2022-01-24",
+      "labels": [
+        "enhancement",
+        "working_dir"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1817"
+    },
+    {
+      "number": 1832,
+      "title": "[Feature Request] Expand options to transform special characters for dir name",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-09-23",
+      "updated": "2022-03-29",
+      "labels": [
+        "enhancement",
+        "has-workaround"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1832"
+    },
+    {
+      "number": 1855,
+      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-10-14",
+      "updated": "2024-06-10",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1855"
+    },
+    {
+      "number": 1859,
+      "title": "SLURM sweep with hydra",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-10-20",
+      "updated": "2022-03-31",
+      "labels": [
+        "question"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1859"
+    },
+    {
+      "number": 1865,
+      "title": "Instantiation fails when _target_ arg interpolates to another node with _target_ key and object arg",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-10-22",
+      "updated": "2022-05-18",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1865"
+    },
+    {
+      "number": 1866,
+      "title": "[Bug] recursive instantiation mutates original config object's interpolations",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-10-25",
+      "updated": "2021-11-12",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1866"
+    },
+    {
+      "number": 1869,
+      "title": "Add more examples to the submitit plugin",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-10-28",
+      "updated": "2021-11-10",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1869"
+    },
+    {
+      "number": 1872,
+      "title": "[Feature Request] Interpolate cmd options before passing to override_dirname for sweep",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-10-30",
+      "updated": "2021-11-17",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1872"
+    },
+    {
+      "number": 1873,
+      "title": "[Feature Request] `exclude_keys` in `override_dirname` should have regex/wildcard/glob(*) option",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-10-30",
+      "updated": "2021-11-18",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1873"
+    },
+    {
+      "number": 1885,
+      "title": "follow up with shell testing for #1842",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-11-11",
+      "updated": "2022-08-04",
+      "labels": [
+        "tests",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1885"
+    },
+    {
+      "number": 1888,
+      "title": "interpolation fail in compose API",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-11-12",
+      "updated": "2021-11-12",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/1888"
+    },
+    {
+      "number": 1892,
+      "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-11-17",
+      "updated": "2021-11-22",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
+      "number": 1896,
+      "title": "[Feature Request] Override dictionary syntax",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-11-19",
+      "updated": "2025-10-22",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1896"
+    },
+    {
+      "number": 1899,
+      "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-11-22",
+      "updated": "2021-11-23",
+      "labels": [
+        "bug",
+        "wishlist"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1899"
+    },
+    {
+      "number": 1901,
+      "title": "[Feature Request] Derive structured configuration from class constructor ",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-11-23",
+      "updated": "2022-02-15",
+      "labels": [
+        "enhancement",
+        "structured config",
+        "config store"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1901"
+    },
+    {
+      "number": 1913,
+      "title": "[Feature Request] Mixing `_global_` / `_here_` / `_package_`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-12-03",
+      "updated": "2024-04-03",
+      "labels": [
+        "enhancement",
+        "wishlist",
+        "exploratory"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1913"
+    },
+    {
+      "number": 1918,
+      "title": "sweep parameters in a paired manner",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-12-09",
+      "updated": "2024-06-27",
+      "labels": [
+        "enhancement",
+        "wishlist",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1918"
+    },
+    {
+      "number": 1923,
+      "title": "[Feature Request] Document how configs typing validation works",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-12-14",
+      "updated": "2022-05-18",
+      "labels": [
+        "documentation",
+        "enhancement",
+        "internal",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1923"
+    },
+    {
+      "number": 1928,
+      "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\"",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-12-16",
+      "updated": "2022-01-24",
+      "labels": [
+        "bug",
+        "plugin",
+        "sweep",
+        "submitit"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1928"
+    },
+    {
+      "number": 1933,
+      "title": "[Bug] Selecting multiple configs from a group should allow selecting none",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-12-19",
+      "updated": "2025-11-05",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1933"
+    },
+    {
+      "number": 1934,
+      "title": "hydra.utils.instantiate using a config file",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-12-20",
+      "updated": "2022-01-14",
+      "labels": [
+        "question"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1934"
+    },
+    {
+      "number": 1936,
+      "title": "instantiate api - having to write a dataclass conf for every _target_ class ",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-12-21",
+      "updated": "2022-05-18",
+      "labels": [
+        "instantiate_api",
+        "structured config",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1936"
+    },
+    {
+      "number": 1937,
+      "title": "[Feature Request] Conditionally disable the creation of folders in output/multirun via the CLI",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-12-21",
+      "updated": "2022-01-14",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1937"
+    },
+    {
+      "number": 1939,
+      "title": "Implement #1389 or similar functionality",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-12-27",
+      "updated": "2025-12-17",
+      "labels": [
+        "enhancement",
+        "list composition"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1939"
+    },
+    {
+      "number": 1942,
+      "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-01-01",
+      "updated": "2022-01-01",
+      "labels": [
+        "bug",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1942"
+    },
+    {
+      "number": 1944,
+      "title": "[Feature Request] logrange sweep",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-01-05",
+      "updated": "2022-07-13",
+      "labels": [
+        "enhancement",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1944"
+    },
+    {
+      "number": 1951,
+      "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-01-11",
+      "updated": "2022-01-14",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1951"
+    },
+    {
+      "number": 1954,
+      "title": "Pruning option for Optuna",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-01-11",
+      "updated": "2025-06-24",
+      "labels": [
+        "plugin",
+        "exploratory",
+        "optuna",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1954"
+    },
+    {
+      "number": 1957,
+      "title": "[Bug] Shell completion doesn't work with `python -m module_name ...`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-01-14",
+      "updated": "2022-05-18",
+      "labels": [
+        "bug",
+        "tab_completion",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1957"
+    },
+    {
+      "number": 1982,
+      "title": "[Feature Request] ConfigStore.store to act as decorator",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-01-21",
+      "updated": "2022-10-31",
+      "labels": [
+        "enhancement",
+        "exploratory",
+        "structured config",
+        "config store"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1982"
+    },
+    {
+      "number": 1983,
+      "title": "[Feature Request] Copying a config field between different branches in one config",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-01-21",
+      "updated": "2022-01-23",
+      "labels": [
+        "enhancement",
+        "exploratory",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1983"
+    },
+    {
+      "number": 1989,
+      "title": "Feature Request: allow limited use of \"override\" keyword in interpolated config",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-01-23",
+      "updated": "2022-01-23",
+      "labels": [
+        "enhancement",
+        "wishlist",
+        "defaults list",
+        "difficult"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1989"
+    },
+    {
+      "number": 2000,
+      "title": "[Feature Request] Minimal Version of Hydra With Bare-Bones Config Support",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-01-30",
+      "updated": "2022-03-03",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2000"
+    },
+    {
+      "number": 2017,
+      "title": "[Bug] Hydra resolver does not work in compose_api",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-02-07",
+      "updated": "2023-04-28",
+      "labels": [
+        "bug",
+        "wishlist",
+        "compose_api"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2017"
+    },
+    {
+      "number": 2027,
+      "title": "[Feature Request] Concatenate Multiple Config List elements",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-02-11",
+      "updated": "2024-07-15",
+      "labels": [
+        "enhancement",
+        "list composition"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2027"
+    },
+    {
+      "number": 2032,
+      "title": "[Feature Request]Config aliases",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-02-16",
+      "updated": "2024-08-25",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2032"
+    },
+    {
+      "number": 2039,
+      "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-02-17",
+      "updated": "2022-02-18",
+      "labels": [
+        "question"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2039"
+    },
+    {
+      "number": 2070,
+      "title": "Improving Hydra + PL +  DDP experience",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-03-04",
+      "updated": "2024-11-13",
+      "labels": [
+        "internal",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2070"
+    },
+    {
+      "number": 2086,
+      "title": "[Feature Request] Support Ray launcher on windows. ",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-03-11",
+      "updated": "2022-03-11",
+      "labels": [
+        "enhancement",
+        "plugin",
+        "ray-launcher"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2086"
+    },
+    {
+      "number": 2091,
+      "title": "Replace dictionary (instead of merging) from command line",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-03-14",
+      "updated": "2025-03-09",
+      "labels": [
+        "question"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2091"
+    },
+    {
+      "number": 2102,
+      "title": "[Bug] Structured config in config store is not found with SearchPathPlugin",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-03-18",
+      "updated": "2022-03-21",
+      "labels": [
+        "bug",
+        "plugin",
+        "defaults list",
+        "config store",
+        "has-workaround"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2102"
+    },
+    {
+      "number": 2107,
+      "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-03-23",
+      "updated": "2023-05-31",
+      "labels": [
+        "bug",
+        "compose_api"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2107"
+    },
+    {
+      "number": 2121,
+      "title": "[Bug] Recursion overflow from `--help` if `group=''`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-04-01",
+      "updated": "2022-04-01",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2121"
+    },
+    {
+      "number": 2125,
+      "title": "[Bug] Cannot find conf/ dir when outside of packaged app.",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-04-04",
+      "updated": "2022-08-04",
+      "labels": [
+        "bug",
+        "internal",
+        "has-workaround"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2125"
+    },
+    {
+      "number": 2140,
+      "title": "[Feature Request] hydra.utils.instantiate support for lookup (without calling)",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-04-09",
+      "updated": "2026-02-22",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2140"
+    },
+    {
+      "number": 2149,
+      "title": "[Bug] Documentation Binder link is broken.",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-04-13",
+      "updated": "2022-04-19",
+      "labels": [
+        "bug",
+        "documentation"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2149"
+    },
+    {
+      "number": 2170,
+      "title": "[Bug] `???` defaults cannot display `--help`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-04-22",
+      "updated": "2022-04-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2170"
+    },
+    {
+      "number": 2187,
+      "title": "[Feature Request] implement `MultiprocessingLauncher`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-02",
+      "updated": "2022-12-02",
+      "labels": [
+        "enhancement",
+        "launchers"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2187"
+    },
+    {
+      "number": 2193,
+      "title": "[Bug] Not failing when required fields are missing when using structured config",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-05",
+      "updated": "2025-11-06",
+      "labels": [
+        "documentation"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2193"
+    },
+    {
+      "number": 2194,
+      "title": "Support for warning handling",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-06",
+      "updated": "2022-05-06",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2194"
+    },
+    {
+      "number": 2196,
+      "title": "CI: Testing Hydra against OmegaConf's master branch",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-06",
+      "updated": "2022-05-06",
+      "labels": [
+        "tests"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2196"
+    },
+    {
+      "number": 2208,
+      "title": "instantiate converts inner structured configs back to Dict/ListConf",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-12",
+      "updated": "2022-05-12",
+      "labels": [
+        "bug",
+        "has-workaround"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2208"
+    },
+    {
+      "number": 2226,
+      "title": "No hydra interpolation is possible in Jupyter",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-23",
+      "updated": "2024-10-07",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2226"
+    },
+    {
+      "number": 2227,
+      "title": "[Feature Request] Easier **replacement** of subconfigs",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-24",
+      "updated": "2025-07-31",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2227"
+    },
+    {
+      "number": 2235,
+      "title": "Error message during `instantiate` missing some information",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-26",
+      "updated": "2022-05-26",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2235"
+    },
+    {
+      "number": 2236,
+      "title": "`AssertionError` with unusual defaults list",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-26",
+      "updated": "2022-11-22",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2236"
+    },
+    {
+      "number": 2241,
+      "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-26",
+      "updated": "2024-10-11",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2241"
+    },
+    {
+      "number": 2249,
+      "title": "[Question/Feature Request] prevent logging of secrets",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-30",
+      "updated": "2025-10-07",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2249"
+    },
+    {
+      "number": 2252,
+      "title": "[Feature Request] Support having '\"' in dict keys in command line override",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-31",
+      "updated": "2022-06-10",
+      "labels": [
+        "enhancement",
+        "internal"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2252"
+    },
+    {
+      "number": 2254,
+      "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-06-02",
+      "updated": "2022-06-27",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2254"
+    },
+    {
+      "number": 2262,
+      "title": "[Bug] hydra conf in structured config is not well handled",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-06-10",
+      "updated": "2022-06-11",
+      "labels": [
+        "bug",
+        "structured config",
+        "has-workaround"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2262"
+    },
+    {
+      "number": 2263,
+      "title": "[Feature Request] Non-strict instantiation",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-06-11",
+      "updated": "2022-09-07",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2263"
+    },
+    {
+      "number": 2265,
+      "title": "[Feature Request] Better document structured config schema example with attrs",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-06-13",
+      "updated": "2023-07-13",
+      "labels": [
+        "documentation",
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2265"
+    },
+    {
+      "number": 2267,
+      "title": "[Feature Request] allow repeating elements in list",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-06-20",
+      "updated": "2022-06-21",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2267"
+    },
+    {
+      "number": 2274,
+      "title": "[Bug/Question] `config_path` resolution is misleading",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-06-29",
+      "updated": "2022-11-10",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2274"
+    },
+    {
+      "number": 2281,
+      "title": "[Feature Request] RQ Launcher plugin the ability to send tasks to different types of workers",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-07-04",
+      "updated": "2022-09-16",
+      "labels": [
+        "enhancement",
+        "plugin",
+        "launchers"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2281"
+    },
+    {
+      "number": 2284,
+      "title": "[Bug] Multirun doesn't notify user about exception",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-07-07",
+      "updated": "2022-07-26",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2284"
+    },
+    {
+      "number": 2305,
+      "title": "[Bug] Dicts not merging",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-07-19",
+      "updated": "2022-09-10",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2305"
+    },
+    {
+      "number": 2313,
+      "title": "[Bug]OptunaSweeper sample does not work with Hydra=1.2.0",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-07-26",
+      "updated": "2025-05-13",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2313"
+    },
+    {
+      "number": 2322,
+      "title": "[Bug] instantiate stacktrace does not provide config key info",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-08-01",
+      "updated": "2022-08-02",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2322"
+    },
+    {
+      "number": 2323,
+      "title": "specify maximum tasks in submitit_local",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-08-03",
+      "updated": "2022-08-04",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2323"
+    },
+    {
+      "number": 2338,
+      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-08-12",
+      "updated": "2023-01-28",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2338"
+    },
+    {
+      "number": 2348,
+      "title": "[Bug] AssertionError when configuring hydra from top-level dataclass",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-08-18",
+      "updated": "2025-04-04",
+      "labels": [
+        "bug",
+        "structured config"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2348"
+    },
+    {
+      "number": 2350,
+      "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-08-19",
+      "updated": "2023-04-24",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2350"
+    },
+    {
+      "number": 2351,
+      "title": "[Feature Request] Possibility to save full start command in separate file",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-08-22",
+      "updated": "2022-10-05",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2351"
+    },
+    {
+      "number": 2359,
+      "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-08-27",
+      "updated": "2022-08-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2359"
+    },
+    {
+      "number": 2364,
+      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-09-05",
+      "updated": "2025-05-08",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2364"
+    },
+    {
+      "number": 2381,
+      "title": "Error out on attempt to sweep on the Hydra configuration",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-09-14",
+      "updated": "2022-10-20",
+      "labels": [
+        "bug",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2381"
+    },
+    {
+      "number": 2387,
+      "title": "Docs unclear on how to use multiple entries in defaults list",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-09-16",
+      "updated": "2022-09-16",
+      "labels": [
+        "documentation"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2387"
+    },
+    {
+      "number": 2407,
+      "title": "[Bug] Ray Launcher - Py3.9 and 3.10 - Could not find a version that satisfies the requirement ray[default]==1.12.0 ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-10-06",
+      "updated": "2023-01-23",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2407"
+    },
+    {
+      "number": 2412,
+      "title": "[Feature Request] allow to use hydra without an __init__.py",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-10-10",
+      "updated": "2022-10-17",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2412"
+    },
+    {
+      "number": 2416,
+      "title": "[Bug] Cannot do variable interpolation on non-leaf nodes between two structured configs in default list",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-10-13",
+      "updated": "2023-10-11",
+      "labels": [
+        "bug",
+        "structured config"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2416"
+    },
+    {
+      "number": 2445,
+      "title": "[Bug] Navigating to certain pages in the hosted documentation fails with `t is undefined`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-10-26",
+      "updated": "2023-01-20",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2445"
+    },
+    {
+      "number": 2453,
+      "title": "[Feature Request] ConfigStore to warn or raise on name/group collision",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-11-07",
+      "updated": "2022-11-22",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2453"
+    },
+    {
+      "number": 2455,
+      "title": "[Feature Request] Support loading YAML from user-specified URI",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-11-08",
+      "updated": "2023-04-13",
+      "labels": [
+        "enhancement",
+        "has-workaround"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2455"
+    },
+    {
+      "number": 2459,
+      "title": "[Feature Request] Add `overrides` parameter to `@hydra.main()`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-11-08",
+      "updated": "2026-02-22",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2459"
+    },
+    {
+      "number": 2469,
+      "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-11-17",
+      "updated": "2022-11-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2469"
+    },
+    {
+      "number": 2471,
+      "title": "[Feature Request] Appending to a structured dict from a config file",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-11-18",
+      "updated": "2025-11-14",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2471"
+    },
+    {
+      "number": 2482,
+      "title": "hydra.runtime.cwd, hydra.rutime.config_sources mixed path separators",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-11-28",
+      "updated": "2022-12-06",
+      "labels": [
+        "bug",
+        "windows"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2482"
+    },
+    {
+      "number": 2483,
+      "title": "[Feature Request] Consistent mechanism for defaulting to environment variables",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-11-28",
+      "updated": "2022-12-02",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2483"
+    },
+    {
+      "number": 2488,
+      "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-12-03",
+      "updated": "2022-12-06",
+      "labels": [
+        "bug",
+        "sweep",
+        "launchers",
+        "has-workaround"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2488"
+    },
+    {
+      "number": 2507,
+      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-12-17",
+      "updated": "2022-12-17",
+      "labels": [
+        "bug",
+        "instantiate_api",
+        "structured config"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2507"
+    },
+    {
+      "number": 2551,
+      "title": "keep simulating in multirun even if some failed ",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-01-16",
+      "updated": "2023-01-16",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2551"
+    },
+    {
+      "number": 2564,
+      "title": "[Bug] relative config_path resolution is not consistent",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-01-31",
+      "updated": "2023-02-27",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2564"
+    },
+    {
+      "number": 2575,
+      "title": "[Bug] Schema validation for recursively instantiated targets failing",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-02-03",
+      "updated": "2025-05-23",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2575"
+    },
+    {
+      "number": 2587,
+      "title": "How to instantiate a child class which inherited from super class?",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-02-15",
+      "updated": "2023-04-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2587"
+    },
+    {
+      "number": 2590,
+      "title": "Is there a way to disable Hydra exceptions/errors override?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-02-20",
+      "updated": "2024-01-11",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2590"
+    },
+    {
+      "number": 2655,
+      "title": "[Bug] ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-05-01",
+      "updated": "2023-11-28",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2655"
+    },
+    {
+      "number": 2656,
+      "title": "[Question] How to set the \"package directive\" on the command line or in the compose API",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-05-08",
+      "updated": "2023-05-08",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2656"
+    },
+    {
+      "number": 2657,
+      "title": "[Feature Request] Support commas in key names (override grammar)",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-05-08",
+      "updated": "2023-05-08",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2657"
+    },
+    {
+      "number": 2660,
+      "title": "[Feature Request] Make hydra-submitit-launcher available via Conda",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-05-14",
+      "updated": "2024-03-04",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2660"
+    },
+    {
+      "number": 2662,
+      "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-05-16",
+      "updated": "2023-05-16",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2662"
+    },
+    {
+      "number": 2664,
+      "title": "[Not sure if bug/feature] Where does submitit error output go?",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-05-16",
+      "updated": "2024-04-12",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2664"
+    },
+    {
+      "number": 2669,
+      "title": "[Bug]error installing hydra-core using poetry",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-05-31",
+      "updated": "2024-02-05",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2669"
+    },
+    {
+      "number": 2670,
+      "title": "[Bug] Inconsistent/buggy behavior when overriding config groups from the CLI",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-06-01",
+      "updated": "2023-06-01",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2670"
+    },
+    {
+      "number": 2673,
+      "title": "[Feature Request] Support multirun in compose API",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-06-04",
+      "updated": "2023-06-04",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2673"
+    },
+    {
+      "number": 2674,
+      "title": "[Bug] OverrideParseException when trying to use override syntax to drop key starting with integer",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-06-05",
+      "updated": "2023-06-06",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2674"
+    },
+    {
+      "number": 2695,
+      "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-06-29",
+      "updated": "2023-07-01",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2695"
+    },
+    {
+      "number": 2697,
+      "title": "[Bug] submitit and structured config.",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-07-02",
+      "updated": "2023-07-14",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2697"
+    },
+    {
+      "number": 2704,
+      "title": "Outdated tutorial on job.chdir",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-07-05",
+      "updated": "2023-08-15",
+      "labels": [
+        "documentation"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2704"
+    },
+    {
+      "number": 2709,
+      "title": "[Bug] Ray Hydra Launcher fails to connect to the GCS",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-07-11",
+      "updated": "2023-07-14",
+      "labels": [
+        "bug",
+        "ray-launcher"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2709"
+    },
+    {
+      "number": 2711,
+      "title": "[Feature Request] API Docs?",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-07-13",
+      "updated": "2023-07-14",
+      "labels": [
+        "documentation",
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2711"
+    },
+    {
+      "number": 2716,
+      "title": "[Bug]Ray launcher plugin passes unrecognized arguments",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-07-17",
+      "updated": "2025-04-21",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2716"
+    },
+    {
+      "number": 2720,
+      "title": "[Bug] Reproducing a Hydra run from previous Hydra job configs - WITH SCHEMA",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-07-19",
+      "updated": "2023-10-16",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2720"
+    },
+    {
+      "number": 2725,
+      "title": "RayLauncher.setup() got an unexpected keyword argument 'hydra_context'",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-07-21",
+      "updated": "2023-09-01",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2725"
+    },
+    {
+      "number": 2738,
+      "title": "[Bug] Nested config schema problem with union types.",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-08-28",
+      "updated": "2023-08-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2738"
+    },
+    {
+      "number": 2754,
+      "title": "Remove the 'file://' extension when using @hydra.main()",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-09-20",
+      "updated": "2023-09-20",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2754"
+    },
+    {
+      "number": 2757,
+      "title": "[Bug] Submitit Local Launcher does not share jobs across GPUs",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-09-26",
+      "updated": "2023-09-27",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2757"
+    },
+    {
+      "number": 2758,
+      "title": "[Feature Request] How to specify orders in `hydra.searchpath`?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-09-30",
+      "updated": "2023-09-30",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2758"
+    },
+    {
+      "number": 2759,
+      "title": "[Feature Request] Dry run option for sweeper / launcher",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-10-02",
+      "updated": "2023-10-02",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2759"
+    },
+    {
+      "number": 2762,
+      "title": "New Release Version?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-10-06",
+      "updated": "2023-10-07",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2762"
+    },
+    {
+      "number": 2765,
+      "title": "[Feature Request] Loguru and Hydra ",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-10-09",
+      "updated": "2026-03-19",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2765"
+    },
+    {
+      "number": 2767,
+      "title": "[Feature Request] Allow optional and override keywords to work together.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-10-11",
+      "updated": "2023-10-11",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2767"
+    },
+    {
+      "number": 2770,
+      "title": "Experiment Tracker with Hydra",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-10-16",
+      "updated": "2023-10-16",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2770"
+    },
+    {
+      "number": 2771,
+      "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-10-16",
+      "updated": "2023-10-16",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2771"
+    },
+    {
+      "number": 2772,
+      "title": "[Bug] Built in resolvers unsupported with multiprocessing",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-10-18",
+      "updated": "2023-10-18",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2772"
+    },
+    {
+      "number": 2775,
+      "title": "[Feature Request] Problem with Overwriting dict config of existing configuration",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-10-27",
+      "updated": "2023-10-28",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2775"
+    },
+    {
+      "number": 2779,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-10-29",
+      "updated": "2024-01-27",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2779"
+    },
+    {
+      "number": 2782,
+      "title": "[Feature Request] Add an additional node to the defaults tree",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-10-30",
+      "updated": "2023-10-31",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2782"
+    },
+    {
+      "number": 2783,
+      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'kazu.steps.joint_ner_and_linking.explosion.ExplosionStringMatchingStep': TypeError(\"__init__() missing 1 required positional argument: 'parsers'\")",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-11-01",
+      "updated": "2023-11-09",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2783"
+    },
+    {
+      "number": 2784,
+      "title": "optuna + submitit hp sweeps error stack trace",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-11-04",
+      "updated": "2023-11-04",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2784"
+    },
+    {
+      "number": 2786,
+      "title": "Hydra + Submitit Help",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-11-07",
+      "updated": "2023-11-08",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2786"
+    },
+    {
+      "number": 2791,
+      "title": "Permission issues with the outputs folder when script is run by multiple users",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-11-10",
+      "updated": "2024-05-15",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2791"
+    },
+    {
+      "number": 2793,
+      "title": "[Optuna Sweeper Plugin] - Store Optuna study object for automatic plotting!",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-11-15",
+      "updated": "2025-03-30",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2793"
+    },
+    {
+      "number": 2794,
+      "title": "Merge compose API and `@hydra.main`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-11-16",
+      "updated": "2023-11-16",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2794"
+    },
+    {
+      "number": 2797,
+      "title": "Use output_subdir on multirun",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-11-17",
+      "updated": "2023-11-17",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2797"
+    },
+    {
+      "number": 2800,
+      "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-11-21",
+      "updated": "2023-11-21",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2800"
+    },
+    {
+      "number": 2801,
+      "title": "[Bug] Facebook Open Source logo missing",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-11-21",
+      "updated": "2024-07-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2801"
+    },
+    {
+      "number": 2807,
+      "title": "[Bug] Sweep over sweeps does not work as expected",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-11-28",
+      "updated": "2023-11-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2807"
+    },
+    {
+      "number": 2810,
+      "title": "hydra.errors.MissingConfigException: In 'hydra/config': Could not find 'hydra/sweeper/hgemm'",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-12-01",
+      "updated": "2025-04-13",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2810"
+    },
+    {
+      "number": 2813,
+      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper':",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-12-05",
+      "updated": "2024-06-28",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2813"
+    },
+    {
+      "number": 2814,
+      "title": "[Feature Request] Allow setting use_srun from submitit launcher",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-12-06",
+      "updated": "2023-12-06",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2814"
+    },
+    {
+      "number": 2816,
+      "title": "[Bug] Tab completion fails with filenames containing \"-\" character",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-12-15",
+      "updated": "2023-12-24",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2816"
+    },
+    {
+      "number": 2823,
+      "title": "Nevergrad sweeper appears to be broken?",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-12-21",
+      "updated": "2024-09-08",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2823"
+    },
+    {
+      "number": 2824,
+      "title": "Option to raise exception upon first failure in multirun",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-12-22",
+      "updated": "2025-02-26",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2824"
+    },
+    {
+      "number": 2828,
+      "title": "[Feature Request] Adding the best trial number in the `optimization_results.yaml` file",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-01-03",
+      "updated": "2024-01-03",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2828"
+    },
+    {
+      "number": 2829,
+      "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-01-04",
+      "updated": "2024-02-05",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2829"
+    },
+    {
+      "number": 2843,
+      "title": "[Bug] Unexpected behavior of tilde (~) when removing from default list of multiple choices",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-01-25",
+      "updated": "2024-10-02",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2843"
+    },
+    {
+      "number": 2846,
+      "title": "[Feature Request] Conditionally disable the creation of output folders via callback",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-02-03",
+      "updated": "2024-08-16",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2846"
+    },
+    {
+      "number": 2848,
+      "title": "[Feature Request] Add more meaningful information on hydra resolving interpolation error",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-02-15",
+      "updated": "2024-02-17",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2848"
+    },
+    {
+      "number": 2851,
+      "title": "[Feature Request] Concatenating parameter sweeps",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-02-21",
+      "updated": "2024-06-19",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2851"
+    },
+    {
+      "number": 2864,
+      "title": "[Feature Request] Generalize PickleJobInfoCallback to support YAML and/or JSON serialization ",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-03-03",
+      "updated": "2024-03-03",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2864"
+    },
+    {
+      "number": 2869,
+      "title": "test_initialize_compat_version_base and test_app_with_error_exception_sanitized tests failed",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-03-13",
+      "updated": "2024-05-03",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2869"
+    },
+    {
+      "number": 2870,
+      "title": "importlib-resources 6.2+ is breaking hydra",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-03-13",
+      "updated": "2026-02-22",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2870"
+    },
+    {
+      "number": 2873,
+      "title": "Bug when debugging with vscode",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-03-19",
+      "updated": "2024-03-19",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2873"
+    },
+    {
+      "number": 2874,
+      "title": "[Help requested] Dynamic hydra launcher configuration",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-03-21",
+      "updated": "2024-03-21",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2874"
+    },
+    {
+      "number": 2875,
+      "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-03-22",
+      "updated": "2024-03-22",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2875"
+    },
+    {
+      "number": 2878,
+      "title": "[Bug] Config hierarchy contains empty strings when using relative path in defaults ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-03-28",
+      "updated": "2026-02-22",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2878"
+    },
+    {
+      "number": 2887,
+      "title": "[Feature Request] Support relative paths in defaults keys.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-04-08",
+      "updated": "2026-04-23",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2887"
+    },
+    {
+      "number": 2888,
+      "title": "[Bug] Failed to override configuration nodes in `--multirun`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-04-09",
+      "updated": "2024-04-10",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2888"
+    },
+    {
+      "number": 2892,
+      "title": "[Help requested] Optuna Sweeper Multiple GPU Parallelism",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-04-17",
+      "updated": "2024-08-28",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2892"
+    },
+    {
+      "number": 2893,
+      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-04-22",
+      "updated": "2025-04-10",
+      "labels": [
+        "bug",
+        "ray-launcher"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2893"
+    },
+    {
+      "number": 2894,
+      "title": "[Bug] ipykernel_launcher.py: error:",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-04-23",
+      "updated": "2024-06-04",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2894"
+    },
+    {
+      "number": 2898,
+      "title": "[Feature Request & Solution] Troublehooting guide to prevent duplicated log messages",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-04-30",
+      "updated": "2024-04-30",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2898"
+    },
+    {
+      "number": 2908,
+      "title": "pytest fails on Windows due to an issue with the pytest-snail plugin that is included in requirements/dev.txt",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-06-04",
+      "updated": "2024-06-04",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2908"
+    },
+    {
+      "number": 2913,
+      "title": "[Bug] hydra.utils.instantiate fails with resolver returning list in defaults package",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-06-09",
+      "updated": "2025-03-06",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2913"
+    },
+    {
+      "number": 2915,
+      "title": "[Bug] initialize() and compose() do not work on Databricks 13.3 LTS",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-06-10",
+      "updated": "2024-07-10",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2915"
+    },
+    {
+      "number": 2926,
+      "title": "[Bug] hydra.utils.instantiate can not find modules in mtrl",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-07-19",
+      "updated": "2024-07-30",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2926"
+    },
+    {
+      "number": 2927,
+      "title": "Ray Launcher:  Additional properties are not allowed",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-07-21",
+      "updated": "2024-10-24",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2927"
+    },
+    {
+      "number": 2935,
+      "title": "[Bug] Appending to Defaults List via command line doesn't work if config is in subfolder",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-08-06",
+      "updated": "2026-02-22",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2935"
+    },
+    {
+      "number": 2938,
+      "title": "How to override the default model in main.yaml in code when testing different models",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-08-20",
+      "updated": "2024-08-20",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2938"
+    },
+    {
+      "number": 2939,
+      "title": "[Bug]RQ Launcher Plugin under Python 3.11 got ValueError: mutable default for field enqueue is not allowed: use default_factory",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-08-22",
+      "updated": "2024-08-22",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2939"
+    },
+    {
+      "number": 2940,
+      "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-08-23",
+      "updated": "2025-08-17",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2940"
+    },
+    {
+      "number": 2942,
+      "title": "[Feature Request] I'd like to be able to do multirun over files matching a glob (ideally a glob that depends on other, non-sweeped params in the config file)",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-09-01",
+      "updated": "2025-11-17",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2942"
+    },
+    {
+      "number": 2943,
+      "title": "[Feature Request] It'd be nice to have a custom resolver for accessing data files for a given python package.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-09-01",
+      "updated": "2024-09-01",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2943"
+    },
+    {
+      "number": 2944,
+      "title": "[Feature Request] I would like resolvers to access the decorated main function's docstring and the name of the running script, as well as some other capabilities.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-09-03",
+      "updated": "2024-09-03",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2944"
+    },
+    {
+      "number": 2945,
+      "title": "[Bug] The \"Contributing\" link in the GitHub template for feature requests points to a 404 error",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-09-03",
+      "updated": "2024-09-03",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2945"
+    },
+    {
+      "number": 2946,
+      "title": "[Bug] Joblib multirun not working when specified within the experiment file",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-09-04",
+      "updated": "2024-09-18",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2946"
+    },
+    {
+      "number": 2949,
+      "title": "[Feature Request] Use @hydra.main() decorator for multiple python scripts from one bash script",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-09-10",
+      "updated": "2024-09-11",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2949"
+    },
+    {
+      "number": 2953,
+      "title": "[Bug] Depercated warning regarding __self__ in defaults list",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-09-13",
+      "updated": "2024-09-13",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2953"
+    },
+    {
+      "number": 2958,
+      "title": "[Bug] Misleading overriding behavior for \"empty\" (null) keys",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-09-18",
+      "updated": "2024-09-18",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2958"
+    },
+    {
+      "number": 2959,
+      "title": "[Bug] Deleting a key via CLI doesn't affect `_self_`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-09-19",
+      "updated": "2024-09-19",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2959"
+    },
+    {
+      "number": 2961,
+      "title": "[Bug] Google Colab: MissingConfigException: Primary config directory not found. Check that the config directory '/tmp/ipykernel_3309' exists and readable",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-09-29",
+      "updated": "2024-09-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2961"
+    },
+    {
+      "number": 2963,
+      "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-10-03",
+      "updated": "2024-10-03",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2963"
+    },
+    {
+      "number": 2972,
+      "title": "How to get the application config file path inside application code?",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-10-16",
+      "updated": "2024-10-16",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2972"
+    },
+    {
+      "number": 2980,
+      "title": "Can hydra be used for programming languages other than Python?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-11-09",
+      "updated": "2025-01-01",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2980"
+    },
+    {
+      "number": 2981,
+      "title": "[Feature Request] Allow partial instantiation with factories",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-11-13",
+      "updated": "2025-01-14",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2981"
+    },
+    {
+      "number": 2989,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-11-18",
+      "updated": "2024-11-18",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2989"
+    },
+    {
+      "number": 2991,
+      "title": "[Feature Request] VS Code Hydra Config File Navigation",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-11-20",
+      "updated": "2024-11-22",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2991"
+    },
+    {
+      "number": 2993,
+      "title": "[Feature Request] Allow complete group override while Inheriting other Configs",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-11-22",
+      "updated": "2025-01-23",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2993"
+    },
+    {
+      "number": 2999,
+      "title": "[Feature Request] use slurm launcher without having to specify -m or --multirun",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-12-16",
+      "updated": "2025-04-29",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2999"
+    },
+    {
+      "number": 3002,
+      "title": "Implement parallel startup with startup intervals between multiple tasks in multirun mode",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-01-06",
+      "updated": "2025-01-20",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3002"
+    },
+    {
+      "number": 3003,
+      "title": "Primary config module'xxx'not found.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-01-06",
+      "updated": "2025-01-06",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3003"
+    },
+    {
+      "number": 3011,
+      "title": "New release of hydra-colorlog?",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-01-20",
+      "updated": "2025-01-20",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3011"
+    },
+    {
+      "number": 3012,
+      "title": "[Feature Request] It might be useful to have a utility function for integration testing pipelines built with Hydra that expose command line interfaces through config files.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-01-21",
+      "updated": "2025-01-21",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3012"
+    },
+    {
+      "number": 3015,
+      "title": "[Feature Request] Support Instantiation of User Plugins Without Special Module",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-01-29",
+      "updated": "2025-04-29",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3015"
+    },
+    {
+      "number": 3018,
+      "title": "[Feature Request] Add option to replace \"/\" in hydra.job.override_dirname",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-01-31",
+      "updated": "2025-02-01",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3018"
+    },
+    {
+      "number": 3024,
+      "title": "Compatibility with Optuna dashboard",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-02-07",
+      "updated": "2025-02-28",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3024"
+    },
+    {
+      "number": 3026,
+      "title": "[Feature Request] Allow for defaults list `override` to update the ordering of defaults?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-02-12",
+      "updated": "2025-02-12",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3026"
+    },
+    {
+      "number": 3028,
+      "title": "Is there a way to get the current file location within the config file?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-02-14",
+      "updated": "2025-02-28",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3028"
+    },
+    {
+      "number": 3031,
+      "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-02-23",
+      "updated": "2025-08-17",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3031"
+    },
+    {
+      "number": 3033,
+      "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-02-27",
+      "updated": "2025-02-27",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3033"
+    },
+    {
+      "number": 3034,
+      "title": "[Bug] Default List Packaged to Root Level Not Configurable from CLI",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-02-27",
+      "updated": "2025-03-04",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3034"
+    },
+    {
+      "number": 3035,
+      "title": "weird behaviour when inheriting configs",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-02-27",
+      "updated": "2025-02-27",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3035"
+    },
+    {
+      "number": 3036,
+      "title": "[Bug] Child defaults list with interpolation fails with a constructed path with too many group names",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-02-27",
+      "updated": "2025-03-01",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3036"
+    },
+    {
+      "number": 3038,
+      "title": "[Bug] nemo logger breaks submitit launcher usage for hydra multirun parameter sweep",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-03-10",
+      "updated": "2025-05-04",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3038"
+    },
+    {
+      "number": 3045,
+      "title": "[Bug] Potential Error in get_config_path() For Absolute Paths",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-03-23",
+      "updated": "2025-11-07",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3045"
+    },
+    {
+      "number": 3047,
+      "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-03-31",
+      "updated": "2025-04-08",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3047"
+    },
+    {
+      "number": 3050,
+      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-04-03",
+      "updated": "2025-05-20",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3050"
+    },
+    {
+      "number": 3055,
+      "title": "[Feature Request] -- is there a way to sweep in nested folder inside config group?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-04-15",
+      "updated": "2026-05-16",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3055"
+    },
+    {
+      "number": 3058,
+      "title": "[Question] How to Submit SLURM Jobs Eagerly?",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-04-29",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3058"
+    },
+    {
+      "number": 3060,
+      "title": "[Bug] Config path issue for second order nested group config",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-05-07",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3060"
+    },
+    {
+      "number": 3064,
+      "title": "[Feature Request] No sweepers are compatible with python >3.10 (NeverGrad, Ax, Optuna)",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-05-21",
+      "updated": "2026-05-16",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3064"
+    },
+    {
+      "number": 3065,
+      "title": "Doc tutorial issue?",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-05-22",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3065"
+    },
+    {
+      "number": 3066,
+      "title": "[Feature Request] Logging config to include `loggers` as well as `root` (suggested solution)",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-05-27",
+      "updated": "2026-05-16",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3066"
+    },
+    {
+      "number": 3067,
+      "title": "[Bug] Union type in structured config",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-06-02",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3067"
+    },
+    {
+      "number": 3068,
+      "title": "[Bug] Unexpected string conversion when overriding an interpolated sibling config group",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-06-20",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3068"
+    },
+    {
+      "number": 3069,
+      "title": "Callback composition unclear",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-07-01",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3069"
+    },
+    {
+      "number": 3075,
+      "title": "What is the project status given the last release was in 2023",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-08-04",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3075"
+    },
+    {
+      "number": 3078,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-08-08",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3078"
+    },
+    {
+      "number": 3082,
+      "title": "[Feature Request] `submitit` Multirun without sweeping",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-09-02",
+      "updated": "2026-05-16",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3082"
+    },
+    {
+      "number": 3091,
+      "title": "Optuna sweeper n_jobs>1 is blocking",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-10-30",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3091"
+    },
+    {
+      "number": 3103,
+      "title": "[Feature Request] Get swept list without `hydra.main`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-12-19",
+      "updated": "2026-05-16",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3103"
+    },
+    {
+      "number": 3104,
+      "title": "[Bug] Updating config group from a config group of another config group only works with full path",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-12-19",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3104"
+    },
+    {
+      "number": 3118,
+      "title": "[Bug] update `antlr4` dependency to 4.13 :)",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-01-21",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3118"
+    },
+    {
+      "number": 3129,
+      "title": "[Feature Request] outputs/.gitignore",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-02-07",
+      "updated": "2026-05-16",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3129"
+    },
+    {
+      "number": 3158,
+      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-05-10",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3158"
+    },
+    {
+      "number": 3162,
+      "title": "Support Sapling for Docusaurus last-updated metadata",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-05-13",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3162"
+    },
+    {
+      "number": 3177,
+      "title": "Consider supporting newer Ax features in Ax Sweeper",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-05-15",
+      "updated": "2026-05-16",
+      "labels": [
+        "help wanted",
+        "plugin",
+        "triage",
+        "ax"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3177"
+    }
+  ],
+  "updates": []
+}

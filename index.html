@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Backlog</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --fg: #e6edf3;
+    --muted: #8b949e;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --soft: #161b22;
+    --soft-hover: #1c2129;
+    --pill-active: #1f6feb;
+    --pill-active-fg: #fff;
+    --kind-new: #3fb950;
+    --kind-closed: #a371f7;
+    --kind-status: #d29922;
+    --kind-label: #8b949e;
+  }
+  html[data-theme="light"] {
+    --bg: #fff;
+    --fg: #1f2328;
+    --muted: #59636e;
+    --border: #d0d7de;
+    --accent: #0969da;
+    --soft: #f6f8fa;
+    --soft-hover: #eaeef2;
+    --pill-active: #0969da;
+    --pill-active-fg: #fff;
+    --kind-new: #1a7f37;
+    --kind-closed: #8250df;
+    --kind-status: #bf8700;
+    --kind-label: #59636e;
+  }
+  * { box-sizing: border-box; }
+  * { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+  :root {
+    --left-w: 280px;
+    --right-w: 240px;
+    --activity-h: 150px;
+  }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--fg);
+    background: var(--bg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    flex: 0 0 auto;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 1.5rem 0.5rem 1.5rem;
+  }
+  header h1 { margin: 0; font-size: 1.4rem; }
+  header .meta { color: var(--muted); font-size: 0.85rem; }
+
+  .layout {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: var(--left-w) 6px minmax(0, 1fr) 6px var(--right-w);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 0;
+    padding: 0 1.5rem;
+  }
+  .col-resize {
+    cursor: ew-resize;
+    user-select: none;
+    background: transparent;
+    border-left: 1px solid var(--border);
+    transition: background 0.1s;
+    height: 100%;
+  }
+  .col-resize:hover, .col-resize.dragging {
+    background: var(--accent);
+    opacity: 0.6;
+  }
+  main {
+    padding: 0.75rem 1rem;
+    min-width: 0;
+    overflow-y: auto;
+    height: 100%;
+  }
+  aside.stats-aside { padding: 0.75rem 0.75rem 0.75rem 0; }
+  aside:not(.stats-aside) { padding: 0.75rem 0 0.75rem 0.75rem; }
+  aside {
+    font-size: 0.78rem;
+    height: 100%;
+    overflow-y: auto;
+  }
+  aside .box {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    background: var(--soft);
+  }
+  aside h3 {
+    margin: 0 0 0.4rem 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  aside table { border-collapse: collapse; width: 100%; }
+  aside td { padding: 0.1rem 0.25rem; vertical-align: top; }
+  aside code {
+    background: rgba(175,184,193,0.2);
+    padding: 0 0.25rem;
+    border-radius: 3px;
+    font-size: 0.7rem;
+  }
+  aside.stats-aside .box th,
+  aside.stats-aside .box td {
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.4rem;
+    text-align: left;
+    font-size: 0.78rem;
+  }
+  aside.stats-aside .box th { font-weight: 600; }
+
+  @media (max-width: 900px) {
+    body { overflow: auto; }
+    .layout {
+      grid-template-columns: 1fr;
+      flex: 0 0 auto;
+      padding: 0 1rem;
+    }
+    aside { height: auto; overflow-y: visible; padding: 0.5rem 0 !important; }
+    .col-resize { display: none; }
+    main { height: auto; overflow-y: visible; padding: 0.5rem 0; }
+    .activity-panel { flex: 0 0 auto; }
+  }
+
+  .controls {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+    align-items: center; margin-bottom: 0.5rem;
+  }
+  .controls .label-text {
+    color: var(--muted); font-size: 0.78rem;
+    margin-right: 0.25rem;
+  }
+  .pill {
+    border: 1px solid var(--border);
+    background: var(--soft); color: var(--fg);
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+    cursor: pointer; font-size: 0.78rem;
+    user-select: none; font-family: inherit;
+  }
+  .pill.active {
+    background: var(--pill-active); color: var(--pill-active-fg);
+    border-color: var(--pill-active);
+  }
+  .pill:hover { border-color: var(--accent); }
+
+  input.search {
+    flex: 1; min-width: 14rem;
+    padding: 0.3rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px; font-size: 0.85rem; font-family: inherit;
+    background: var(--soft);
+    color: var(--fg);
+  }
+  input.search:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  input.search::placeholder { color: var(--muted); }
+  .count { color: var(--muted); font-size: 0.8rem; }
+  .result-count {
+    font-size: 0.9rem;
+    color: var(--fg);
+    font-weight: 500;
+    margin: 0.75rem 0 0.25rem 0;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .result-count .muted { color: var(--muted); font-weight: 400; }
+
+  table.issues {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.82rem; margin-top: 0.5rem;
+  }
+  table.issues th, table.issues td {
+    border-bottom: 1px solid var(--border);
+    padding: 0.35rem 0.5rem;
+    text-align: left; vertical-align: top;
+  }
+  table.issues th {
+    background: var(--soft);
+    cursor: pointer; user-select: none;
+    position: sticky; top: 0;
+  }
+  table.issues th.sort-asc::after { content: " ▲"; color: var(--muted); }
+  table.issues th.sort-desc::after { content: " ▼"; color: var(--muted); }
+  table.issues tr:hover { background: var(--soft-hover); }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .label {
+    display: inline-block;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0 0.4rem;
+    font-size: 0.7rem;
+    margin: 0 0.2rem 0.1rem 0;
+    background: var(--soft);
+  }
+
+  .activity-panel {
+    flex: 0 0 auto;
+    height: var(--activity-h);
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column;
+  }
+  .activity-panel .row-resize {
+    height: 6px;
+    cursor: ns-resize;
+    background: var(--soft);
+    border-bottom: 1px solid var(--border);
+    flex: 0 0 auto;
+    transition: background 0.1s;
+  }
+  .activity-panel .row-resize:hover, .activity-panel .row-resize.dragging {
+    background: var(--accent);
+  }
+  .activity-panel .panel-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.35rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+    flex: 0 0 auto;
+  }
+  .activity-panel .panel-header h2 {
+    margin: 0; font-size: 0.9rem; font-weight: 600;
+  }
+  .activity-panel .panel-body {
+    flex: 1; overflow-y: auto;
+    padding: 0.5rem 1.5rem;
+  }
+  ul.activity-list { list-style: none; padding: 0; margin: 0; }
+  ul.activity-list li {
+    padding: 0.35rem 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 0.82rem;
+    display: flex; gap: 0.6rem; align-items: baseline;
+  }
+  .ts { color: var(--muted); font-size: 0.72rem; min-width: 9rem; font-family: ui-monospace, monospace; }
+  .kind {
+    display: inline-block;
+    border-radius: 3px;
+    padding: 0 0.35rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #fff;
+    min-width: 3.5rem; text-align: center;
+  }
+  .kind-new { background: var(--kind-new); }
+  .kind-closed { background: var(--kind-closed); }
+  .kind-status { background: var(--kind-status); }
+  .kind-label { background: var(--kind-label); }
+
+  header { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; }
+  header .titles { flex: 1; }
+  button.theme-toggle {
+    border: 1px solid var(--border);
+    background: var(--soft);
+    color: var(--fg);
+    border-radius: 6px;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-family: inherit;
+  }
+  button.theme-toggle:hover { border-color: var(--accent); }
+  .header-actions { display: flex; gap: 0.4rem; align-items: center; }
+</style>
+<script>
+  // Set theme before render to avoid flash.
+  (function () {
+    const saved = localStorage.getItem("bk-theme") || "dark";
+    document.documentElement.dataset.theme = saved;
+  })();
+</script>
+</head>
+<body>
+
+<header>
+  <div class="titles">
+    <h1 id="page-title">Backlog</h1>
+    <div class="meta">
+      Generated <span id="generated-on">…</span> ·
+      <span id="open-total">…</span> open issues ·
+      <a id="repo-link" href="#" target="_blank">view on GitHub</a>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="theme-toggle" id="reset-layout" title="Reset panel sizes">↺ Reset layout</button>
+    <button class="theme-toggle" id="theme-toggle" title="Toggle theme"></button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="stats-aside">
+    <div class="box">
+      <h3>By Category (open)</h3>
+      <table id="by-category"></table>
+    </div>
+    <div class="box">
+      <h3>By Status</h3>
+      <table id="by-status"></table>
+    </div>
+  </aside>
+
+  <div class="col-resize" id="left-resize" title="Drag to resize"></div>
+
+  <main>
+    <div class="controls">
+      <input type="search" class="search" id="search" placeholder="Search title or #number…">
+    </div>
+    <div class="controls" id="openness-pills"></div>
+    <div class="controls" id="category-pills"></div>
+    <div class="controls" id="status-pills"></div>
+
+    <div class="result-count" id="count">…</div>
+
+    <table class="issues" id="issues">
+      <thead>
+        <tr>
+          <th data-key="number">#</th>
+          <th data-key="title">Title</th>
+          <th data-key="category">Category</th>
+          <th data-key="status">Status</th>
+          <th>PR</th>
+          <th data-key="created">Created</th>
+          <th data-key="updated">Updated</th>
+          <th>Labels</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+  </main>
+
+  <div class="col-resize" id="right-resize" title="Drag to resize"></div>
+
+  <aside>
+    <div class="box">
+      <h3>Status legend</h3>
+      <table id="status-legend"></table>
+    </div>
+    <div class="box">
+      <h3>Category legend</h3>
+      <table id="category-legend"></table>
+    </div>
+  </aside>
+</div>
+
+<div class="activity-panel" id="activity-panel">
+  <div class="row-resize" id="activity-resize" title="Drag to resize"></div>
+  <div class="panel-header">
+    <h2>Recent activity</h2>
+    <span class="count" id="activity-count">…</span>
+  </div>
+  <div class="panel-body">
+    <ul class="activity-list" id="activity"></ul>
+  </div>
+</div>
+
+<script>
+const STATUS_LEGEND = [
+  ["⬜", "not started", "No open PR"],
+  ["🔄", "in progress", "Open PR by a maintainer"],
+  ["🤝", "community PR", "Open PR by a non-maintainer"],
+  ["🚫", "blocked", "awaiting response, no PR"],
+  ["✅", "done", "Closed or merged PR"],
+];
+const CATEGORY_LEGEND = [
+  ["🐛", "Bug"],
+  ["✨", "Enhancement"],
+  ["🔧", "Refactor"],
+  ["🏗️", "Build"],
+  ["📄", "Documentation"],
+  ["❓", "Question"],
+];
+
+const state = {
+  data: null,
+  openness: "open",
+  cats: new Set(),
+  statuses: new Set(),
+  search: "",
+  sortKey: "updated",
+  sortDir: "desc",
+};
+
+const esc = s => String(s).replace(/[&<>"]/g, c =>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+function renderLegends() {
+  document.getElementById("status-legend").innerHTML = STATUS_LEGEND
+    .map(([e, s, m]) => `<tr><td>${e}</td><td><code>${esc(s)}</code></td><td>${esc(m)}</td></tr>`)
+    .join("");
+  document.getElementById("category-legend").innerHTML = CATEGORY_LEGEND
+    .map(([e, c]) => `<tr><td>${e}</td><td><code>${esc(c)}</code></td></tr>`)
+    .join("");
+}
+
+function renderStats() {
+  const c = state.data.summary.by_category;
+  document.getElementById("by-category").innerHTML =
+    `<tr><th>Category</th><th>Count</th><th>%</th></tr>` +
+    c.map(r => `<tr><td>${r.emoji} ${esc(r.category)}</td><td>${r.count}</td><td>${r.percentage.toFixed(1)}%</td></tr>`).join("") +
+    `<tr><td><b>Total</b></td><td><b>${state.data.summary.open_total}</b></td><td></td></tr>`;
+  const s = state.data.summary.by_status;
+  document.getElementById("by-status").innerHTML =
+    `<tr><th>Status</th><th>Count</th></tr>` +
+    s.map(r => `<tr><td>${r.emoji} ${esc(r.status)}</td><td>${r.count}</td></tr>`).join("");
+}
+
+function renderOpennessPills() {
+  const el = document.getElementById("openness-pills");
+  const opts = [["open", "Open"], ["closed", "Closed"], ["all", "All"]];
+  el.innerHTML = `<span class="label-text">Show:</span>` +
+    opts.map(([v, l]) => {
+      const a = state.openness === v ? " active" : "";
+      return `<button class="pill${a}" data-openness="${v}">${esc(l)}</button>`;
+    }).join("");
+  el.querySelectorAll("[data-openness]").forEach(b =>
+    b.addEventListener("click", () => {
+      state.openness = b.dataset.openness;
+      renderOpennessPills(); renderIssues();
+    }));
+}
+
+function renderPills() {
+  const cat = document.getElementById("category-pills");
+  cat.innerHTML = `<span class="label-text">Category:</span>` +
+    CATEGORY_LEGEND.map(([e, c]) => {
+      const a = state.cats.has(c) ? " active" : "";
+      return `<button class="pill${a}" data-cat="${esc(c)}">${e} ${esc(c)}</button>`;
+    }).join("");
+  cat.querySelectorAll("[data-cat]").forEach(b =>
+    b.addEventListener("click", () => {
+      const c = b.dataset.cat;
+      state.cats.has(c) ? state.cats.delete(c) : state.cats.add(c);
+      renderPills(); renderIssues();
+    }));
+
+  const st = document.getElementById("status-pills");
+  st.innerHTML = `<span class="label-text">Status:</span>` +
+    STATUS_LEGEND.map(([e, s]) => {
+      const a = state.statuses.has(s) ? " active" : "";
+      return `<button class="pill${a}" data-st="${esc(s)}">${e} ${esc(s)}</button>`;
+    }).join("");
+  st.querySelectorAll("[data-st]").forEach(b =>
+    b.addEventListener("click", () => {
+      const s = b.dataset.st;
+      state.statuses.has(s) ? state.statuses.delete(s) : state.statuses.add(s);
+      renderPills(); renderIssues();
+    }));
+}
+
+function filtered() {
+  let xs = state.data.issues;
+  if (state.openness === "open")        xs = xs.filter(i => i.status !== "done");
+  else if (state.openness === "closed") xs = xs.filter(i => i.status === "done");
+  if (state.cats.size)     xs = xs.filter(i => state.cats.has(i.category));
+  if (state.statuses.size) xs = xs.filter(i => state.statuses.has(i.status));
+  if (state.search.trim()) {
+    const q = state.search.toLowerCase();
+    xs = xs.filter(i => i.title.toLowerCase().includes(q) || String(i.number).includes(q));
+  }
+  const k = state.sortKey, d = state.sortDir === "asc" ? 1 : -1;
+  return [...xs].sort((a, b) => (a[k] < b[k] ? -1 : a[k] > b[k] ? 1 : 0) * d);
+}
+
+function renderIssues() {
+  const xs = filtered();
+  const total = state.data.issues.length;
+  document.getElementById("count").innerHTML =
+    `<b>${xs.length}</b> ${xs.length === 1 ? "issue" : "issues"} <span class="muted">match · ${total} total in dataset</span>`;
+  document.querySelector("table.issues tbody").innerHTML = xs.map(i => `
+    <tr>
+      <td><a href="${i.url}" target="_blank">#${i.number}</a></td>
+      <td>${esc(i.title)}</td>
+      <td>${i.category_emoji} ${esc(i.category)}</td>
+      <td>${i.status_emoji} ${esc(i.status)}</td>
+      <td>${i.prs.map(p => `<a href="${p.url}" target="_blank">#${p.number}</a>`).join(", ")}</td>
+      <td>${esc(i.created)}</td>
+      <td>${esc(i.updated)}</td>
+      <td>${i.labels.map(l => `<span class="label">${esc(l)}</span>`).join("")}</td>
+    </tr>
+  `).join("");
+  document.querySelectorAll("table.issues th[data-key]").forEach(th => {
+    th.classList.remove("sort-asc", "sort-desc");
+    if (th.dataset.key === state.sortKey)
+      th.classList.add(state.sortDir === "asc" ? "sort-asc" : "sort-desc");
+  });
+}
+
+function renderActivity() {
+  const xs = state.data.updates || [];
+  document.getElementById("activity-count").textContent =
+    xs.length === 1 ? "1 event" : `${xs.length} events`;
+  document.getElementById("activity").innerHTML = xs.map(u => `
+    <li>
+      <span class="ts">${esc(u.ts)}</span>
+      <span class="kind kind-${esc(u.kind)}">${esc(u.kind)}</span>
+      <span>
+        <a href="${u.issue_url}" target="_blank">#${u.issue}</a>
+        ${esc(u.title)}
+        ${u.detail ? ` — <i>${esc(u.detail)}</i>` : ""}
+        ${u.pr ? ` (<a href="${u.pr.url}" target="_blank">PR #${u.pr.number}</a>)` : ""}
+      </span>
+    </li>
+  `).join("");
+}
+
+function bindSort() {
+  document.querySelectorAll("table.issues th[data-key]").forEach(th =>
+    th.addEventListener("click", () => {
+      const k = th.dataset.key;
+      if (state.sortKey === k) state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
+      else { state.sortKey = k; state.sortDir = "asc"; }
+      renderIssues();
+    }));
+}
+
+function setupResize(handleId, varName, axis, sign, min, max) {
+  const handle = document.getElementById(handleId);
+  const root = document.documentElement;
+  const saved = localStorage.getItem("bk-" + varName);
+  if (saved) root.style.setProperty(varName, saved);
+
+  handle.addEventListener("mousedown", e => {
+    e.preventDefault();
+    handle.classList.add("dragging");
+    const startPos = axis === "x" ? e.clientX : e.clientY;
+    const startVal = parseFloat(getComputedStyle(root).getPropertyValue(varName));
+    document.body.style.cursor = axis === "x" ? "ew-resize" : "ns-resize";
+    document.body.style.userSelect = "none";
+
+    function onMove(ev) {
+      const cur = axis === "x" ? ev.clientX : ev.clientY;
+      const delta = (cur - startPos) * sign;
+      const next = Math.min(max, Math.max(min, startVal + delta));
+      root.style.setProperty(varName, next + "px");
+    }
+    function onUp() {
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onUp);
+      handle.classList.remove("dragging");
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      localStorage.setItem("bk-" + varName,
+        getComputedStyle(root).getPropertyValue(varName).trim());
+    }
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onUp);
+  });
+}
+
+function renderThemeToggle() {
+  const cur = document.documentElement.dataset.theme;
+  const btn = document.getElementById("theme-toggle");
+  btn.textContent = cur === "dark" ? "☀️ Light" : "🌙 Dark";
+}
+
+function bindThemeToggle() {
+  document.getElementById("theme-toggle").addEventListener("click", () => {
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("bk-theme", next);
+    renderThemeToggle();
+  });
+}
+
+function bindResetLayout() {
+  document.getElementById("reset-layout").addEventListener("click", () => {
+    ["--left-w", "--right-w", "--activity-h"].forEach(v => {
+      localStorage.removeItem("bk-" + v);
+      document.documentElement.style.removeProperty(v);
+    });
+  });
+}
+
+async function init() {
+  renderLegends();
+  renderThemeToggle();
+  bindThemeToggle();
+  bindResetLayout();
+  setupResize("left-resize", "--left-w", "x", 1, 160, 480);
+  setupResize("right-resize", "--right-w", "x", -1, 140, 400);
+  setupResize("activity-resize", "--activity-h", "y", -1, 60, 600);
+  const r = await fetch("backlog.json");
+  state.data = await r.json();
+  const repo = state.data.repo || "";
+  if (repo) {
+    document.title = `Backlog · ${repo}`;
+    document.getElementById("page-title").textContent = `Backlog · ${repo}`;
+    document.getElementById("repo-link").href = `https://github.com/${repo}/issues`;
+  }
+  document.getElementById("generated-on").textContent = state.data.generated_on;
+  document.getElementById("open-total").textContent = state.data.summary.open_total;
+  renderStats();
+  renderOpennessPills();
+  renderPills();
+  bindSort();
+  renderIssues();
+  renderActivity();
+  document.getElementById("search").addEventListener("input", e => {
+    state.search = e.target.value; renderIssues();
+  });
+}
+
+init();
+</script>
+</body>
+</html>

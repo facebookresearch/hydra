@@ -1,0 +1,3619 @@
+{
+  "closed_at": {},
+  "generated_at": "2026-05-16T19:36:44Z",
+  "issues": {
+    "1081": {
+      "category": "Enhancement",
+      "created_at": "2020-10-20T20:51:17Z",
+      "labels": [
+        "configen",
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Configen adds url to original module documentation",
+      "updated_at": "2021-09-27T22:47:23Z"
+    },
+    "1085": {
+      "category": "Enhancement",
+      "created_at": "2020-10-21T15:42:11Z",
+      "labels": [
+        "enhancement",
+        "help wanted",
+        "tab_completion",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] shell completion for Enum type",
+      "updated_at": "2022-10-21T18:42:31Z"
+    },
+    "1112": {
+      "category": "Build",
+      "created_at": "2020-11-03T08:53:31Z",
+      "labels": [
+        "maintenance"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Nightly builds",
+      "updated_at": "2021-12-27T21:29:49Z"
+    },
+    "1128": {
+      "category": "Documentation",
+      "created_at": "2020-11-06T20:00:00Z",
+      "labels": [
+        "documentation",
+        "priority_low"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Document recommendations for frameworks using Hydra",
+      "updated_at": "2022-05-18T14:38:45Z"
+    },
+    "1164": {
+      "category": "Build",
+      "created_at": "2020-11-19T18:56:00Z",
+      "labels": [
+        "maintenance"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Move non-user facing tools out of `hydra/tools`",
+      "updated_at": "2021-11-01T20:20:18Z"
+    },
+    "1174": {
+      "category": "Bug",
+      "created_at": "2020-11-30T17:20:08Z",
+      "labels": [
+        "bug",
+        "configen",
+        "help wanted"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]",
+      "updated_at": "2021-09-27T22:25:15Z"
+    },
+    "1228": {
+      "category": "Documentation",
+      "created_at": "2020-12-22T19:07:11Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Hydra doc] Improvement to doc search.",
+      "updated_at": "2021-06-04T01:26:37Z"
+    },
+    "1241": {
+      "category": "Bug",
+      "created_at": "2020-12-25T02:52:40Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Configen][Bug] Configs for abstract classes with Generic Type",
+      "updated_at": "2020-12-25T04:36:55Z"
+    },
+    "1258": {
+      "category": "Enhancement",
+      "created_at": "2021-01-03T11:23:53Z",
+      "labels": [
+        "enhancement",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Tuple Sweeper OR Top-level dictionary overrides",
+      "updated_at": "2024-06-04T20:32:23Z"
+    },
+    "1291": {
+      "category": "Enhancement",
+      "created_at": "2021-01-11T23:00:42Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "ray launcher improvements",
+      "updated_at": "2021-01-26T21:39:20Z"
+    },
+    "1367": {
+      "category": "Enhancement",
+      "created_at": "2021-02-01T16:31:01Z",
+      "labels": [
+        "configen",
+        "enhancement",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] [Configen] Multiple path patterns",
+      "updated_at": "2021-09-29T19:47:10Z"
+    },
+    "1393": {
+      "category": "Enhancement",
+      "created_at": "2021-02-11T19:18:40Z",
+      "labels": [
+        "enhancement",
+        "instantiate_api",
+        "priority_low"
+      ],
+      "pr_numbers": [
+        "3013",
+        "3025"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Feature Request] Consider supporting singleton pattern in recursive instantiation",
+      "updated_at": "2025-05-19T19:56:30Z"
+    },
+    "1431": {
+      "category": "Enhancement",
+      "created_at": "2021-02-26T12:50:26Z",
+      "labels": [
+        "enhancement",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "PrettyErrors doesn't work with Hydra",
+      "updated_at": "2025-04-11T04:01:37Z"
+    },
+    "1463": {
+      "category": "Enhancement",
+      "created_at": "2021-03-09T14:28:49Z",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "plugin",
+        "sweep"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Fault tolerance option for Optuna Sweeper",
+      "updated_at": "2022-01-24T18:58:07Z"
+    },
+    "1512": {
+      "category": "Bug",
+      "created_at": "2021-03-29T16:25:59Z",
+      "labels": [
+        "ax",
+        "sweep"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Support multirun partial failure in Ax Sweeper",
+      "updated_at": "2022-01-24T19:31:04Z"
+    },
+    "1547": {
+      "category": "Enhancement",
+      "created_at": "2021-04-09T04:34:23Z",
+      "labels": [
+        "enhancement",
+        "internal",
+        "list composition",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Append to a list from command line",
+      "updated_at": "2026-02-22T04:43:15Z"
+    },
+    "1602": {
+      "category": "Bug",
+      "created_at": "2021-05-03T21:46:57Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] sporadic transient errors from Ray plugin CI",
+      "updated_at": "2021-06-21T18:07:46Z"
+    },
+    "1622": {
+      "category": "Documentation",
+      "created_at": "2021-05-17T22:38:06Z",
+      "labels": [
+        "documentation",
+        "priority_low"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "keyword documentation for config.yaml",
+      "updated_at": "2022-11-24T00:08:56Z"
+    },
+    "1636": {
+      "category": "Documentation",
+      "created_at": "2021-05-21T23:04:27Z",
+      "labels": [
+        "documentation"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Updates to callback doc",
+      "updated_at": "2021-06-08T20:01:56Z"
+    },
+    "1679": {
+      "category": "Enhancement",
+      "created_at": "2021-06-17T13:46:52Z",
+      "labels": [
+        "enhancement",
+        "help wanted",
+        "plugin",
+        "wishlist"
+      ],
+      "pr_numbers": [
+        "2647"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Feature Request] Resume study and avoid OOM when optimizing with Optuna plugin",
+      "updated_at": "2022-10-21T20:42:29Z"
+    },
+    "1749": {
+      "category": "Enhancement",
+      "created_at": "2021-08-02T23:27:54Z",
+      "labels": [
+        "maintenance",
+        "priority_low",
+        "tests"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "tests: Use multiline regex search instead of assert_regex_match",
+      "updated_at": "2022-05-18T14:40:07Z"
+    },
+    "1753": {
+      "category": "Enhancement",
+      "created_at": "2021-08-04T19:17:49Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Add GCP support in Ray launcher.",
+      "updated_at": "2022-01-17T01:37:44Z"
+    },
+    "1758": {
+      "category": "Enhancement",
+      "created_at": "2021-08-10T19:33:42Z",
+      "labels": [
+        "enhancement",
+        "instantiate_api",
+        "priority_low"
+      ],
+      "pr_numbers": [
+        "2269"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
+      "updated_at": "2022-11-06T12:09:35Z"
+    },
+    "1764": {
+      "category": "Enhancement",
+      "created_at": "2021-08-12T21:01:03Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[ray launcher] fix how ray launcher gets the job return",
+      "updated_at": "2021-08-12T21:01:06Z"
+    },
+    "1767": {
+      "category": "Bug",
+      "created_at": "2021-08-13T17:52:57Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. ",
+      "updated_at": "2023-09-15T12:25:01Z"
+    },
+    "1781": {
+      "category": "Bug",
+      "created_at": "2021-08-20T21:36:30Z",
+      "labels": [
+        "maintenance",
+        "priority_low",
+        "tests"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Testing for hydra examples",
+      "updated_at": "2022-05-18T14:40:37Z"
+    },
+    "1817": {
+      "category": "Enhancement",
+      "created_at": "2021-09-08T16:06:03Z",
+      "labels": [
+        "enhancement",
+        "working_dir"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Change default behavior to disallow writes to pre-existing output directory",
+      "updated_at": "2022-01-24T21:18:01Z"
+    },
+    "1830": {
+      "category": "Bug",
+      "created_at": "2021-09-21T12:40:50Z",
+      "labels": [
+        "bug",
+        "plugin",
+        "structured config"
+      ],
+      "pr_numbers": [
+        "2019"
+      ],
+      "state": "OPEN",
+      "status": "in progress",
+      "title": "[Bug] Cannot use plugin's conf dataclasses in structured config",
+      "updated_at": "2023-07-05T15:17:49Z"
+    },
+    "1832": {
+      "category": "Enhancement",
+      "created_at": "2021-09-23T15:59:41Z",
+      "labels": [
+        "enhancement",
+        "has-workaround"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Expand options to transform special characters for dir name",
+      "updated_at": "2022-03-29T23:58:12Z"
+    },
+    "1855": {
+      "category": "Bug",
+      "created_at": "2021-10-14T11:33:00Z",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
+      "updated_at": "2024-06-10T16:44:46Z"
+    },
+    "1859": {
+      "category": "Question",
+      "created_at": "2021-10-20T15:36:47Z",
+      "labels": [
+        "question"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "SLURM sweep with hydra",
+      "updated_at": "2022-03-31T15:19:26Z"
+    },
+    "1865": {
+      "category": "Bug",
+      "created_at": "2021-10-22T10:09:06Z",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "priority_low"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Instantiation fails when _target_ arg interpolates to another node with _target_ key and object arg",
+      "updated_at": "2022-05-18T14:40:46Z"
+    },
+    "1866": {
+      "category": "Bug",
+      "created_at": "2021-10-25T16:55:57Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] recursive instantiation mutates original config object's interpolations",
+      "updated_at": "2021-11-12T08:40:13Z"
+    },
+    "1869": {
+      "category": "Enhancement",
+      "created_at": "2021-10-28T09:37:38Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Add more examples to the submitit plugin",
+      "updated_at": "2021-11-10T09:54:06Z"
+    },
+    "1872": {
+      "category": "Enhancement",
+      "created_at": "2021-10-30T21:54:42Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Interpolate cmd options before passing to override_dirname for sweep",
+      "updated_at": "2021-11-17T23:56:57Z"
+    },
+    "1873": {
+      "category": "Enhancement",
+      "created_at": "2021-10-30T22:14:34Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] `exclude_keys` in `override_dirname` should have regex/wildcard/glob(*) option",
+      "updated_at": "2021-11-18T00:28:20Z"
+    },
+    "1885": {
+      "category": "Enhancement",
+      "created_at": "2021-11-11T22:38:11Z",
+      "labels": [
+        "priority_low",
+        "tests"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "follow up with shell testing for #1842",
+      "updated_at": "2022-08-04T16:51:04Z"
+    },
+    "1888": {
+      "category": "Bug",
+      "created_at": "2021-11-12T03:32:52Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "interpolation fail in compose API",
+      "updated_at": "2021-11-12T07:48:43Z"
+    },
+    "1890": {
+      "category": "Enhancement",
+      "created_at": "2021-11-15T15:22:36Z",
+      "labels": [
+        "priority_low"
+      ],
+      "pr_numbers": [
+        "2034"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "HPO config standardization",
+      "updated_at": "2022-05-18T14:41:10Z"
+    },
+    "1892": {
+      "category": "Enhancement",
+      "created_at": "2021-11-17T20:03:19Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
+      "updated_at": "2021-11-22T21:10:28Z"
+    },
+    "1896": {
+      "category": "Enhancement",
+      "created_at": "2021-11-19T13:47:21Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Override dictionary syntax",
+      "updated_at": "2025-10-22T22:59:29Z"
+    },
+    "1898": {
+      "category": "Bug",
+      "created_at": "2021-11-22T08:16:43Z",
+      "labels": [
+        "bug",
+        "submitit",
+        "sweep"
+      ],
+      "pr_numbers": [
+        "2157"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Bug] Submitit has optional parameter tasks_per_node set",
+      "updated_at": "2022-01-14T22:17:01Z"
+    },
+    "1899": {
+      "category": "Bug",
+      "created_at": "2021-11-22T18:36:22Z",
+      "labels": [
+        "bug",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config",
+      "updated_at": "2021-11-23T15:54:57Z"
+    },
+    "1901": {
+      "category": "Enhancement",
+      "created_at": "2021-11-23T15:13:07Z",
+      "labels": [
+        "config store",
+        "enhancement",
+        "structured config"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Derive structured configuration from class constructor ",
+      "updated_at": "2022-02-15T19:07:29Z"
+    },
+    "1913": {
+      "category": "Enhancement",
+      "created_at": "2021-12-03T22:09:58Z",
+      "labels": [
+        "enhancement",
+        "exploratory",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Mixing `_global_` / `_here_` / `_package_`",
+      "updated_at": "2024-04-03T20:19:18Z"
+    },
+    "1918": {
+      "category": "Enhancement",
+      "created_at": "2021-12-09T05:11:32Z",
+      "labels": [
+        "defaults list",
+        "enhancement",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "sweep parameters in a paired manner",
+      "updated_at": "2024-06-27T14:50:22Z"
+    },
+    "1923": {
+      "category": "Documentation",
+      "created_at": "2021-12-14T17:05:27Z",
+      "labels": [
+        "documentation",
+        "enhancement",
+        "internal",
+        "priority_low"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Document how configs typing validation works",
+      "updated_at": "2022-05-18T14:41:19Z"
+    },
+    "1928": {
+      "category": "Bug",
+      "created_at": "2021-12-16T18:47:51Z",
+      "labels": [
+        "bug",
+        "plugin",
+        "submitit",
+        "sweep"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\"",
+      "updated_at": "2022-01-24T21:45:59Z"
+    },
+    "1933": {
+      "category": "Bug",
+      "created_at": "2021-12-19T22:23:54Z",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Selecting multiple configs from a group should allow selecting none",
+      "updated_at": "2025-11-05T13:15:22Z"
+    },
+    "1934": {
+      "category": "Question",
+      "created_at": "2021-12-20T11:28:25Z",
+      "labels": [
+        "question"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "hydra.utils.instantiate using a config file",
+      "updated_at": "2022-01-14T20:09:20Z"
+    },
+    "1936": {
+      "category": "Enhancement",
+      "created_at": "2021-12-21T15:56:48Z",
+      "labels": [
+        "instantiate_api",
+        "priority_low",
+        "structured config"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "instantiate api - having to write a dataclass conf for every _target_ class ",
+      "updated_at": "2022-05-18T14:41:27Z"
+    },
+    "1937": {
+      "category": "Enhancement",
+      "created_at": "2021-12-21T19:30:00Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Conditionally disable the creation of folders in output/multirun via the CLI",
+      "updated_at": "2022-01-14T19:47:51Z"
+    },
+    "1939": {
+      "category": "Enhancement",
+      "created_at": "2021-12-27T22:09:03Z",
+      "labels": [
+        "enhancement",
+        "list composition"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Implement #1389 or similar functionality",
+      "updated_at": "2025-12-17T20:57:46Z"
+    },
+    "1942": {
+      "category": "Bug",
+      "created_at": "2022-01-01T17:43:41Z",
+      "labels": [
+        "bug",
+        "sweep"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath",
+      "updated_at": "2022-01-01T17:45:18Z"
+    },
+    "1944": {
+      "category": "Enhancement",
+      "created_at": "2022-01-05T15:39:17Z",
+      "labels": [
+        "enhancement",
+        "sweep"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] logrange sweep",
+      "updated_at": "2022-07-13T08:43:59Z"
+    },
+    "1951": {
+      "category": "Bug",
+      "created_at": "2022-01-11T05:55:00Z",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
+      "updated_at": "2022-01-14T18:40:45Z"
+    },
+    "1954": {
+      "category": "Enhancement",
+      "created_at": "2022-01-11T22:56:37Z",
+      "labels": [
+        "exploratory",
+        "optuna",
+        "plugin",
+        "sweep"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Pruning option for Optuna",
+      "updated_at": "2025-06-24T08:20:04Z"
+    },
+    "1957": {
+      "category": "Bug",
+      "created_at": "2022-01-14T01:08:05Z",
+      "labels": [
+        "bug",
+        "priority_low",
+        "tab_completion"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Shell completion doesn't work with `python -m module_name ...`",
+      "updated_at": "2022-05-18T14:41:37Z"
+    },
+    "1982": {
+      "category": "Enhancement",
+      "created_at": "2022-01-21T04:39:16Z",
+      "labels": [
+        "config store",
+        "enhancement",
+        "exploratory",
+        "structured config"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] ConfigStore.store to act as decorator",
+      "updated_at": "2022-10-31T15:54:48Z"
+    },
+    "1983": {
+      "category": "Enhancement",
+      "created_at": "2022-01-21T13:07:20Z",
+      "labels": [
+        "defaults list",
+        "enhancement",
+        "exploratory"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Copying a config field between different branches in one config",
+      "updated_at": "2022-01-23T20:22:46Z"
+    },
+    "1989": {
+      "category": "Enhancement",
+      "created_at": "2022-01-23T12:46:05Z",
+      "labels": [
+        "defaults list",
+        "difficult",
+        "enhancement",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Feature Request: allow limited use of \"override\" keyword in interpolated config",
+      "updated_at": "2022-01-23T20:21:50Z"
+    },
+    "2000": {
+      "category": "Enhancement",
+      "created_at": "2022-01-30T19:05:37Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Minimal Version of Hydra With Bare-Bones Config Support",
+      "updated_at": "2022-03-03T14:57:59Z"
+    },
+    "2017": {
+      "category": "Bug",
+      "created_at": "2022-02-07T15:36:43Z",
+      "labels": [
+        "bug",
+        "compose_api",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Hydra resolver does not work in compose_api",
+      "updated_at": "2023-04-28T18:20:48Z"
+    },
+    "2027": {
+      "category": "Enhancement",
+      "created_at": "2022-02-11T21:57:50Z",
+      "labels": [
+        "enhancement",
+        "list composition"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Concatenate Multiple Config List elements",
+      "updated_at": "2024-07-15T14:43:25Z"
+    },
+    "2032": {
+      "category": "Enhancement",
+      "created_at": "2022-02-16T10:13:31Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request]Config aliases",
+      "updated_at": "2024-08-25T14:04:43Z"
+    },
+    "2039": {
+      "category": "Question",
+      "created_at": "2022-02-17T17:56:49Z",
+      "labels": [
+        "question"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config",
+      "updated_at": "2022-02-18T23:23:46Z"
+    },
+    "2070": {
+      "category": "Enhancement",
+      "created_at": "2022-03-04T20:13:16Z",
+      "labels": [
+        "internal",
+        "priority_low"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Improving Hydra + PL +  DDP experience",
+      "updated_at": "2024-11-13T13:35:11Z"
+    },
+    "2086": {
+      "category": "Enhancement",
+      "created_at": "2022-03-11T23:07:06Z",
+      "labels": [
+        "enhancement",
+        "plugin",
+        "ray-launcher"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Support Ray launcher on windows. ",
+      "updated_at": "2022-03-11T23:07:16Z"
+    },
+    "2091": {
+      "category": "Question",
+      "created_at": "2022-03-14T21:01:37Z",
+      "labels": [
+        "question"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Replace dictionary (instead of merging) from command line",
+      "updated_at": "2025-03-09T17:40:43Z"
+    },
+    "2102": {
+      "category": "Bug",
+      "created_at": "2022-03-18T17:44:15Z",
+      "labels": [
+        "bug",
+        "config store",
+        "defaults list",
+        "has-workaround",
+        "plugin"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Structured config in config store is not found with SearchPathPlugin",
+      "updated_at": "2022-03-21T09:55:25Z"
+    },
+    "2107": {
+      "category": "Bug",
+      "created_at": "2022-03-23T08:06:43Z",
+      "labels": [
+        "bug",
+        "compose_api"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`",
+      "updated_at": "2023-05-31T17:07:42Z"
+    },
+    "2121": {
+      "category": "Bug",
+      "created_at": "2022-04-01T15:18:04Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Recursion overflow from `--help` if `group=''`",
+      "updated_at": "2022-04-01T21:04:08Z"
+    },
+    "2125": {
+      "category": "Bug",
+      "created_at": "2022-04-04T15:06:53Z",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "internal"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Cannot find conf/ dir when outside of packaged app.",
+      "updated_at": "2022-08-04T20:15:12Z"
+    },
+    "2140": {
+      "category": "Enhancement",
+      "created_at": "2022-04-09T11:17:22Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] hydra.utils.instantiate support for lookup (without calling)",
+      "updated_at": "2026-02-22T04:44:00Z"
+    },
+    "2149": {
+      "category": "Bug",
+      "created_at": "2022-04-13T17:23:25Z",
+      "labels": [
+        "bug",
+        "documentation"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Documentation Binder link is broken.",
+      "updated_at": "2022-04-19T19:30:09Z"
+    },
+    "2162": {
+      "category": "Enhancement",
+      "created_at": "2022-04-20T06:39:32Z",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "sweep"
+      ],
+      "pr_numbers": [
+        "2995"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "Upgrading Optuna from v2.x.x to v3.0.0",
+      "updated_at": "2025-01-22T23:55:03Z"
+    },
+    "2170": {
+      "category": "Bug",
+      "created_at": "2022-04-22T23:19:07Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] `???` defaults cannot display `--help`",
+      "updated_at": "2022-04-29T21:22:24Z"
+    },
+    "2187": {
+      "category": "Enhancement",
+      "created_at": "2022-05-02T19:25:32Z",
+      "labels": [
+        "enhancement",
+        "launchers"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] implement `MultiprocessingLauncher`",
+      "updated_at": "2022-12-02T23:15:07Z"
+    },
+    "2193": {
+      "category": "Documentation",
+      "created_at": "2022-05-05T17:06:52Z",
+      "labels": [
+        "documentation"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Not failing when required fields are missing when using structured config",
+      "updated_at": "2025-11-06T13:23:11Z"
+    },
+    "2194": {
+      "category": "Enhancement",
+      "created_at": "2022-05-06T16:49:10Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Support for warning handling",
+      "updated_at": "2022-05-06T18:10:49Z"
+    },
+    "2196": {
+      "category": "Build",
+      "created_at": "2022-05-06T20:39:55Z",
+      "labels": [
+        "tests"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "CI: Testing Hydra against OmegaConf's master branch",
+      "updated_at": "2022-05-06T20:40:11Z"
+    },
+    "2208": {
+      "category": "Bug",
+      "created_at": "2022-05-12T17:15:11Z",
+      "labels": [
+        "bug",
+        "has-workaround"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "instantiate converts inner structured configs back to Dict/ListConf",
+      "updated_at": "2022-05-12T22:59:33Z"
+    },
+    "2226": {
+      "category": "Enhancement",
+      "created_at": "2022-05-23T22:39:02Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "No hydra interpolation is possible in Jupyter",
+      "updated_at": "2024-10-07T04:07:05Z"
+    },
+    "2227": {
+      "category": "Enhancement",
+      "created_at": "2022-05-24T04:47:20Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Easier **replacement** of subconfigs",
+      "updated_at": "2025-07-31T13:46:24Z"
+    },
+    "2235": {
+      "category": "Bug",
+      "created_at": "2022-05-26T11:23:01Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Error message during `instantiate` missing some information",
+      "updated_at": "2022-05-26T11:23:01Z"
+    },
+    "2236": {
+      "category": "Bug",
+      "created_at": "2022-05-26T12:14:53Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "`AssertionError` with unusual defaults list",
+      "updated_at": "2022-11-22T01:11:26Z"
+    },
+    "2237": {
+      "category": "Bug",
+      "created_at": "2022-05-26T12:28:37Z",
+      "labels": [
+        "bug",
+        "optuna",
+        "plugin",
+        "sweep"
+      ],
+      "pr_numbers": [
+        "2225"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
+      "updated_at": "2022-05-26T16:27:50Z"
+    },
+    "2241": {
+      "category": "Bug",
+      "created_at": "2022-05-26T19:29:59Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir",
+      "updated_at": "2024-10-11T08:47:59Z"
+    },
+    "2249": {
+      "category": "Enhancement",
+      "created_at": "2022-05-30T07:45:35Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Question/Feature Request] prevent logging of secrets",
+      "updated_at": "2025-10-07T23:40:00Z"
+    },
+    "2252": {
+      "category": "Enhancement",
+      "created_at": "2022-05-31T16:43:43Z",
+      "labels": [
+        "enhancement",
+        "internal"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Support having '\"' in dict keys in command line override",
+      "updated_at": "2022-06-10T21:29:21Z"
+    },
+    "2254": {
+      "category": "Enhancement",
+      "created_at": "2022-06-02T13:16:43Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default.",
+      "updated_at": "2022-06-27T18:16:32Z"
+    },
+    "2262": {
+      "category": "Bug",
+      "created_at": "2022-06-10T18:36:15Z",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "structured config"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] hydra conf in structured config is not well handled",
+      "updated_at": "2022-06-11T04:31:56Z"
+    },
+    "2263": {
+      "category": "Enhancement",
+      "created_at": "2022-06-11T07:08:14Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Non-strict instantiation",
+      "updated_at": "2022-09-07T03:37:34Z"
+    },
+    "2265": {
+      "category": "Documentation",
+      "created_at": "2022-06-13T13:47:59Z",
+      "labels": [
+        "documentation",
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Better document structured config schema example with attrs",
+      "updated_at": "2023-07-13T08:36:44Z"
+    },
+    "2267": {
+      "category": "Enhancement",
+      "created_at": "2022-06-20T08:19:34Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] allow repeating elements in list",
+      "updated_at": "2022-06-21T03:52:12Z"
+    },
+    "2268": {
+      "category": "Enhancement",
+      "created_at": "2022-06-20T10:16:49Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [
+        "2269"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "Enable instantiations without resolution",
+      "updated_at": "2022-11-06T12:10:45Z"
+    },
+    "2274": {
+      "category": "Bug",
+      "created_at": "2022-06-29T16:34:32Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug/Question] `config_path` resolution is misleading",
+      "updated_at": "2022-11-10T13:57:03Z"
+    },
+    "2281": {
+      "category": "Enhancement",
+      "created_at": "2022-07-04T21:54:17Z",
+      "labels": [
+        "enhancement",
+        "launchers",
+        "plugin"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] RQ Launcher plugin the ability to send tasks to different types of workers",
+      "updated_at": "2022-09-16T11:35:06Z"
+    },
+    "2284": {
+      "category": "Bug",
+      "created_at": "2022-07-07T21:43:46Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Multirun doesn't notify user about exception",
+      "updated_at": "2022-07-26T22:28:50Z"
+    },
+    "2293": {
+      "category": "Enhancement",
+      "created_at": "2022-07-14T11:15:29Z",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "sweep"
+      ],
+      "pr_numbers": [
+        "2718"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "Modify Trial when using a Sweeper",
+      "updated_at": "2022-12-02T08:55:50Z"
+    },
+    "2305": {
+      "category": "Bug",
+      "created_at": "2022-07-19T17:37:14Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Dicts not merging",
+      "updated_at": "2022-09-10T16:27:57Z"
+    },
+    "2313": {
+      "category": "Bug",
+      "created_at": "2022-07-26T10:17:59Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug]OptunaSweeper sample does not work with Hydra=1.2.0",
+      "updated_at": "2025-05-13T20:16:03Z"
+    },
+    "2322": {
+      "category": "Bug",
+      "created_at": "2022-08-01T23:29:27Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] instantiate stacktrace does not provide config key info",
+      "updated_at": "2022-08-02T00:10:25Z"
+    },
+    "2323": {
+      "category": "Enhancement",
+      "created_at": "2022-08-03T13:18:55Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "specify maximum tasks in submitit_local",
+      "updated_at": "2022-08-04T17:34:57Z"
+    },
+    "2338": {
+      "category": "Bug",
+      "created_at": "2022-08-12T13:59:57Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
+      "updated_at": "2023-01-28T17:38:49Z"
+    },
+    "2348": {
+      "category": "Bug",
+      "created_at": "2022-08-18T19:14:52Z",
+      "labels": [
+        "bug",
+        "structured config"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] AssertionError when configuring hydra from top-level dataclass",
+      "updated_at": "2025-04-04T13:48:21Z"
+    },
+    "2350": {
+      "category": "Bug",
+      "created_at": "2022-08-19T17:45:13Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
+      "updated_at": "2023-04-24T14:44:17Z"
+    },
+    "2351": {
+      "category": "Enhancement",
+      "created_at": "2022-08-22T12:40:06Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Possibility to save full start command in separate file",
+      "updated_at": "2022-10-05T22:54:08Z"
+    },
+    "2359": {
+      "category": "Bug",
+      "created_at": "2022-08-27T13:43:08Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`",
+      "updated_at": "2022-08-29T16:04:25Z"
+    },
+    "2364": {
+      "category": "Enhancement",
+      "created_at": "2022-09-05T08:09:55Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
+      "updated_at": "2025-05-08T08:05:40Z"
+    },
+    "2381": {
+      "category": "Bug",
+      "created_at": "2022-09-14T15:35:11Z",
+      "labels": [
+        "bug",
+        "sweep"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Error out on attempt to sweep on the Hydra configuration",
+      "updated_at": "2022-10-20T17:38:42Z"
+    },
+    "2387": {
+      "category": "Documentation",
+      "created_at": "2022-09-16T18:16:56Z",
+      "labels": [
+        "documentation"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Docs unclear on how to use multiple entries in defaults list",
+      "updated_at": "2022-09-16T18:16:56Z"
+    },
+    "2407": {
+      "category": "Bug",
+      "created_at": "2022-10-06T16:56:34Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Ray Launcher - Py3.9 and 3.10 - Could not find a version that satisfies the requirement ray[default]==1.12.0 ",
+      "updated_at": "2023-01-23T09:52:11Z"
+    },
+    "2412": {
+      "category": "Enhancement",
+      "created_at": "2022-10-10T11:20:40Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] allow to use hydra without an __init__.py",
+      "updated_at": "2022-10-17T22:40:23Z"
+    },
+    "2416": {
+      "category": "Bug",
+      "created_at": "2022-10-13T23:11:36Z",
+      "labels": [
+        "bug",
+        "structured config"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Cannot do variable interpolation on non-leaf nodes between two structured configs in default list",
+      "updated_at": "2023-10-11T14:06:19Z"
+    },
+    "2435": {
+      "category": "Enhancement",
+      "created_at": "2022-10-24T08:30:35Z",
+      "labels": [
+        "enhancement",
+        "launchers",
+        "optuna",
+        "plugin",
+        "sweep"
+      ],
+      "pr_numbers": [
+        "2461"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Feature Request] Optuna experiment stream processing",
+      "updated_at": "2022-10-27T15:14:54Z"
+    },
+    "2445": {
+      "category": "Bug",
+      "created_at": "2022-10-26T00:00:39Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Navigating to certain pages in the hosted documentation fails with `t is undefined`",
+      "updated_at": "2023-01-20T08:45:20Z"
+    },
+    "2453": {
+      "category": "Enhancement",
+      "created_at": "2022-11-07T17:10:24Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] ConfigStore to warn or raise on name/group collision",
+      "updated_at": "2022-11-22T01:08:04Z"
+    },
+    "2455": {
+      "category": "Enhancement",
+      "created_at": "2022-11-08T16:36:21Z",
+      "labels": [
+        "enhancement",
+        "has-workaround"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Support loading YAML from user-specified URI",
+      "updated_at": "2023-04-13T20:05:18Z"
+    },
+    "2459": {
+      "category": "Enhancement",
+      "created_at": "2022-11-08T22:43:30Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Add `overrides` parameter to `@hydra.main()`",
+      "updated_at": "2026-02-22T04:43:49Z"
+    },
+    "2469": {
+      "category": "Bug",
+      "created_at": "2022-11-17T02:33:24Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification",
+      "updated_at": "2022-11-29T05:44:02Z"
+    },
+    "2471": {
+      "category": "Enhancement",
+      "created_at": "2022-11-18T12:54:02Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Appending to a structured dict from a config file",
+      "updated_at": "2025-11-14T04:26:13Z"
+    },
+    "2477": {
+      "category": "Bug",
+      "created_at": "2022-11-23T10:25:38Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "3146"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Bug] Unable to delete an item from ListConfig",
+      "updated_at": "2026-04-25T05:50:26Z"
+    },
+    "2479": {
+      "category": "Enhancement",
+      "created_at": "2022-11-23T22:42:01Z",
+      "labels": [
+        "enhancement",
+        "internal"
+      ],
+      "pr_numbers": [
+        "3128"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm",
+      "updated_at": "2024-10-04T17:09:36Z"
+    },
+    "2482": {
+      "category": "Bug",
+      "created_at": "2022-11-28T05:04:40Z",
+      "labels": [
+        "bug",
+        "windows"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "hydra.runtime.cwd, hydra.rutime.config_sources mixed path separators",
+      "updated_at": "2022-12-06T01:49:48Z"
+    },
+    "2483": {
+      "category": "Enhancement",
+      "created_at": "2022-11-28T16:25:27Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Consistent mechanism for defaulting to environment variables",
+      "updated_at": "2022-12-02T22:39:23Z"
+    },
+    "2488": {
+      "category": "Bug",
+      "created_at": "2022-12-03T07:53:53Z",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "launchers",
+        "sweep"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep",
+      "updated_at": "2022-12-06T09:39:54Z"
+    },
+    "2502": {
+      "category": "Bug",
+      "created_at": "2022-12-13T23:35:54Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "3126"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
+      "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2507": {
+      "category": "Bug",
+      "created_at": "2022-12-17T03:54:08Z",
+      "labels": [
+        "bug",
+        "instantiate_api",
+        "structured config"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
+      "updated_at": "2022-12-17T03:54:08Z"
+    },
+    "2551": {
+      "category": "Enhancement",
+      "created_at": "2023-01-16T08:14:07Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "keep simulating in multirun even if some failed ",
+      "updated_at": "2023-01-16T08:14:07Z"
+    },
+    "2562": {
+      "category": "Bug",
+      "created_at": "2023-01-30T03:17:23Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "2995"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
+      "updated_at": "2023-02-08T06:44:30Z"
+    },
+    "2564": {
+      "category": "Bug",
+      "created_at": "2023-01-31T03:15:06Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] relative config_path resolution is not consistent",
+      "updated_at": "2023-02-27T20:08:39Z"
+    },
+    "2575": {
+      "category": "Bug",
+      "created_at": "2023-02-03T20:33:45Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Schema validation for recursively instantiated targets failing",
+      "updated_at": "2025-05-23T07:26:41Z"
+    },
+    "2587": {
+      "category": "Question",
+      "created_at": "2023-02-15T06:24:34Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "How to instantiate a child class which inherited from super class?",
+      "updated_at": "2023-04-18T16:11:51Z"
+    },
+    "2590": {
+      "category": "Enhancement",
+      "created_at": "2023-02-20T22:21:46Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Is there a way to disable Hydra exceptions/errors override?",
+      "updated_at": "2024-01-11T12:41:24Z"
+    },
+    "2632": {
+      "category": "Enhancement",
+      "created_at": "2023-04-04T15:52:47Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [
+        "2633"
+      ],
+      "state": "OPEN",
+      "status": "in progress",
+      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
+      "updated_at": "2026-03-03T14:49:08Z"
+    },
+    "2655": {
+      "category": "Bug",
+      "created_at": "2023-05-01T20:44:33Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] ",
+      "updated_at": "2023-11-28T07:23:13Z"
+    },
+    "2656": {
+      "category": "Question",
+      "created_at": "2023-05-08T09:31:03Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Question] How to set the \"package directive\" on the command line or in the compose API",
+      "updated_at": "2023-05-08T09:31:03Z"
+    },
+    "2657": {
+      "category": "Enhancement",
+      "created_at": "2023-05-08T13:20:38Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Support commas in key names (override grammar)",
+      "updated_at": "2023-05-08T13:21:43Z"
+    },
+    "2660": {
+      "category": "Enhancement",
+      "created_at": "2023-05-14T22:31:20Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Make hydra-submitit-launcher available via Conda",
+      "updated_at": "2024-03-04T17:15:23Z"
+    },
+    "2662": {
+      "category": "Bug",
+      "created_at": "2023-05-16T12:22:09Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler",
+      "updated_at": "2023-05-16T12:22:09Z"
+    },
+    "2664": {
+      "category": "Bug",
+      "created_at": "2023-05-16T15:10:07Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Not sure if bug/feature] Where does submitit error output go?",
+      "updated_at": "2024-04-12T22:35:25Z"
+    },
+    "2669": {
+      "category": "Bug",
+      "created_at": "2023-05-31T13:53:28Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug]error installing hydra-core using poetry",
+      "updated_at": "2024-02-05T14:34:31Z"
+    },
+    "2670": {
+      "category": "Bug",
+      "created_at": "2023-06-01T01:52:40Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Inconsistent/buggy behavior when overriding config groups from the CLI",
+      "updated_at": "2023-06-01T03:30:14Z"
+    },
+    "2673": {
+      "category": "Enhancement",
+      "created_at": "2023-06-04T09:30:24Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Support multirun in compose API",
+      "updated_at": "2023-06-04T09:30:24Z"
+    },
+    "2674": {
+      "category": "Bug",
+      "created_at": "2023-06-05T05:49:42Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] OverrideParseException when trying to use override syntax to drop key starting with integer",
+      "updated_at": "2023-06-06T20:07:56Z"
+    },
+    "2695": {
+      "category": "Bug",
+      "created_at": "2023-06-29T08:26:15Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
+      "updated_at": "2023-07-01T22:05:58Z"
+    },
+    "2697": {
+      "category": "Bug",
+      "created_at": "2023-07-02T09:53:50Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] submitit and structured config.",
+      "updated_at": "2023-07-14T07:49:15Z"
+    },
+    "2704": {
+      "category": "Documentation",
+      "created_at": "2023-07-05T12:49:57Z",
+      "labels": [
+        "documentation"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Outdated tutorial on job.chdir",
+      "updated_at": "2023-08-15T20:16:05Z"
+    },
+    "2709": {
+      "category": "Bug",
+      "created_at": "2023-07-11T14:46:24Z",
+      "labels": [
+        "bug",
+        "ray-launcher"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Ray Hydra Launcher fails to connect to the GCS",
+      "updated_at": "2023-07-14T06:48:37Z"
+    },
+    "2711": {
+      "category": "Documentation",
+      "created_at": "2023-07-13T19:08:18Z",
+      "labels": [
+        "documentation",
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] API Docs?",
+      "updated_at": "2023-07-14T17:05:13Z"
+    },
+    "2716": {
+      "category": "Bug",
+      "created_at": "2023-07-17T05:21:55Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug]Ray launcher plugin passes unrecognized arguments",
+      "updated_at": "2025-04-21T15:25:00Z"
+    },
+    "2720": {
+      "category": "Bug",
+      "created_at": "2023-07-19T09:19:39Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Reproducing a Hydra run from previous Hydra job configs - WITH SCHEMA",
+      "updated_at": "2023-10-16T05:47:05Z"
+    },
+    "2725": {
+      "category": "Bug",
+      "created_at": "2023-07-21T17:27:06Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "RayLauncher.setup() got an unexpected keyword argument 'hydra_context'",
+      "updated_at": "2023-09-01T23:26:27Z"
+    },
+    "2738": {
+      "category": "Bug",
+      "created_at": "2023-08-28T03:31:35Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Nested config schema problem with union types.",
+      "updated_at": "2023-08-29T08:25:15Z"
+    },
+    "2754": {
+      "category": "Refactor",
+      "created_at": "2023-09-20T16:42:24Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Remove the 'file://' extension when using @hydra.main()",
+      "updated_at": "2023-09-20T17:42:57Z"
+    },
+    "2757": {
+      "category": "Bug",
+      "created_at": "2023-09-26T11:52:03Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Submitit Local Launcher does not share jobs across GPUs",
+      "updated_at": "2023-09-27T13:48:44Z"
+    },
+    "2758": {
+      "category": "Enhancement",
+      "created_at": "2023-09-30T00:05:37Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] How to specify orders in `hydra.searchpath`?",
+      "updated_at": "2023-09-30T00:05:37Z"
+    },
+    "2759": {
+      "category": "Enhancement",
+      "created_at": "2023-10-02T14:27:28Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Dry run option for sweeper / launcher",
+      "updated_at": "2023-10-02T14:27:28Z"
+    },
+    "2762": {
+      "category": "Enhancement",
+      "created_at": "2023-10-06T21:56:43Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "New Release Version?",
+      "updated_at": "2023-10-07T00:10:11Z"
+    },
+    "2765": {
+      "category": "Enhancement",
+      "created_at": "2023-10-09T10:40:01Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Loguru and Hydra ",
+      "updated_at": "2026-03-19T12:40:40Z"
+    },
+    "2767": {
+      "category": "Enhancement",
+      "created_at": "2023-10-11T23:13:28Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Allow optional and override keywords to work together.",
+      "updated_at": "2023-10-11T23:13:28Z"
+    },
+    "2770": {
+      "category": "Enhancement",
+      "created_at": "2023-10-16T08:23:09Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Experiment Tracker with Hydra",
+      "updated_at": "2023-10-16T19:37:39Z"
+    },
+    "2771": {
+      "category": "Bug",
+      "created_at": "2023-10-16T09:04:51Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True",
+      "updated_at": "2023-10-16T19:39:12Z"
+    },
+    "2772": {
+      "category": "Bug",
+      "created_at": "2023-10-18T16:55:07Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Built in resolvers unsupported with multiprocessing",
+      "updated_at": "2023-10-18T23:20:14Z"
+    },
+    "2775": {
+      "category": "Enhancement",
+      "created_at": "2023-10-27T21:42:58Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Problem with Overwriting dict config of existing configuration",
+      "updated_at": "2023-10-28T22:00:04Z"
+    },
+    "2779": {
+      "category": "Bug",
+      "created_at": "2023-10-29T18:32:21Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug]",
+      "updated_at": "2024-01-27T16:46:02Z"
+    },
+    "2782": {
+      "category": "Enhancement",
+      "created_at": "2023-10-30T19:00:53Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Add an additional node to the defaults tree",
+      "updated_at": "2023-10-31T08:06:39Z"
+    },
+    "2783": {
+      "category": "Bug",
+      "created_at": "2023-11-01T11:57:40Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'kazu.steps.joint_ner_and_linking.explosion.ExplosionStringMatchingStep': TypeError(\"__init__() missing 1 required positional argument: 'parsers'\")",
+      "updated_at": "2023-11-09T04:52:47Z"
+    },
+    "2784": {
+      "category": "Bug",
+      "created_at": "2023-11-04T06:40:18Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "optuna + submitit hp sweeps error stack trace",
+      "updated_at": "2023-11-04T06:40:18Z"
+    },
+    "2786": {
+      "category": "Question",
+      "created_at": "2023-11-07T18:41:29Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Hydra + Submitit Help",
+      "updated_at": "2023-11-08T00:17:52Z"
+    },
+    "2791": {
+      "category": "Enhancement",
+      "created_at": "2023-11-10T14:36:04Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Permission issues with the outputs folder when script is run by multiple users",
+      "updated_at": "2024-05-15T23:33:18Z"
+    },
+    "2793": {
+      "category": "Enhancement",
+      "created_at": "2023-11-15T20:05:19Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Optuna Sweeper Plugin] - Store Optuna study object for automatic plotting!",
+      "updated_at": "2025-03-30T19:12:17Z"
+    },
+    "2794": {
+      "category": "Enhancement",
+      "created_at": "2023-11-16T08:49:26Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Merge compose API and `@hydra.main`",
+      "updated_at": "2023-11-16T08:49:26Z"
+    },
+    "2797": {
+      "category": "Enhancement",
+      "created_at": "2023-11-17T11:16:03Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Use output_subdir on multirun",
+      "updated_at": "2023-11-17T11:16:03Z"
+    },
+    "2800": {
+      "category": "Bug",
+      "created_at": "2023-11-21T04:55:50Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
+      "updated_at": "2023-11-21T19:30:03Z"
+    },
+    "2801": {
+      "category": "Bug",
+      "created_at": "2023-11-21T15:32:18Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Facebook Open Source logo missing",
+      "updated_at": "2024-07-29T14:52:36Z"
+    },
+    "2807": {
+      "category": "Bug",
+      "created_at": "2023-11-28T22:34:25Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Sweep over sweeps does not work as expected",
+      "updated_at": "2023-11-29T18:39:26Z"
+    },
+    "2810": {
+      "category": "Bug",
+      "created_at": "2023-12-01T07:52:32Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "hydra.errors.MissingConfigException: In 'hydra/config': Could not find 'hydra/sweeper/hgemm'",
+      "updated_at": "2025-04-13T04:00:25Z"
+    },
+    "2813": {
+      "category": "Bug",
+      "created_at": "2023-12-05T15:53:00Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper':",
+      "updated_at": "2024-06-28T23:25:35Z"
+    },
+    "2814": {
+      "category": "Enhancement",
+      "created_at": "2023-12-06T15:06:23Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Allow setting use_srun from submitit launcher",
+      "updated_at": "2023-12-06T15:06:23Z"
+    },
+    "2816": {
+      "category": "Bug",
+      "created_at": "2023-12-15T16:21:00Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Tab completion fails with filenames containing \"-\" character",
+      "updated_at": "2023-12-24T12:11:08Z"
+    },
+    "2823": {
+      "category": "Bug",
+      "created_at": "2023-12-21T17:16:36Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Nevergrad sweeper appears to be broken?",
+      "updated_at": "2024-09-08T01:58:04Z"
+    },
+    "2824": {
+      "category": "Enhancement",
+      "created_at": "2023-12-22T11:43:04Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Option to raise exception upon first failure in multirun",
+      "updated_at": "2025-02-26T22:13:50Z"
+    },
+    "2828": {
+      "category": "Enhancement",
+      "created_at": "2024-01-03T20:23:31Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Adding the best trial number in the `optimization_results.yaml` file",
+      "updated_at": "2024-01-03T20:23:31Z"
+    },
+    "2829": {
+      "category": "Bug",
+      "created_at": "2024-01-04T08:47:56Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
+      "updated_at": "2024-02-05T15:10:28Z"
+    },
+    "2843": {
+      "category": "Bug",
+      "created_at": "2024-01-25T16:00:47Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Unexpected behavior of tilde (~) when removing from default list of multiple choices",
+      "updated_at": "2024-10-02T11:28:46Z"
+    },
+    "2846": {
+      "category": "Enhancement",
+      "created_at": "2024-02-03T06:16:11Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Conditionally disable the creation of output folders via callback",
+      "updated_at": "2024-08-16T15:00:54Z"
+    },
+    "2848": {
+      "category": "Enhancement",
+      "created_at": "2024-02-15T08:20:11Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Add more meaningful information on hydra resolving interpolation error",
+      "updated_at": "2024-02-17T17:34:26Z"
+    },
+    "2851": {
+      "category": "Enhancement",
+      "created_at": "2024-02-21T10:25:13Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Concatenating parameter sweeps",
+      "updated_at": "2024-06-19T21:55:15Z"
+    },
+    "2864": {
+      "category": "Enhancement",
+      "created_at": "2024-03-03T16:46:59Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Generalize PickleJobInfoCallback to support YAML and/or JSON serialization ",
+      "updated_at": "2024-03-03T17:15:45Z"
+    },
+    "2869": {
+      "category": "Bug",
+      "created_at": "2024-03-13T08:09:39Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "test_initialize_compat_version_base and test_app_with_error_exception_sanitized tests failed",
+      "updated_at": "2024-05-03T11:51:07Z"
+    },
+    "2870": {
+      "category": "Bug",
+      "created_at": "2024-03-13T17:06:37Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "importlib-resources 6.2+ is breaking hydra",
+      "updated_at": "2026-02-22T04:44:38Z"
+    },
+    "2873": {
+      "category": "Bug",
+      "created_at": "2024-03-19T03:26:52Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Bug when debugging with vscode",
+      "updated_at": "2024-03-19T03:26:52Z"
+    },
+    "2874": {
+      "category": "Enhancement",
+      "created_at": "2024-03-21T03:42:35Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Help requested] Dynamic hydra launcher configuration",
+      "updated_at": "2024-03-21T03:42:35Z"
+    },
+    "2875": {
+      "category": "Bug",
+      "created_at": "2024-03-22T15:24:15Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
+      "updated_at": "2024-03-22T15:26:49Z"
+    },
+    "2878": {
+      "category": "Bug",
+      "created_at": "2024-03-28T16:16:52Z",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Config hierarchy contains empty strings when using relative path in defaults ",
+      "updated_at": "2026-02-22T04:44:26Z"
+    },
+    "2887": {
+      "category": "Enhancement",
+      "created_at": "2024-04-08T11:40:58Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Support relative paths in defaults keys.",
+      "updated_at": "2026-04-23T13:57:24Z"
+    },
+    "2888": {
+      "category": "Bug",
+      "created_at": "2024-04-09T08:05:06Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Failed to override configuration nodes in `--multirun`",
+      "updated_at": "2024-04-10T14:55:03Z"
+    },
+    "2889": {
+      "category": "Bug",
+      "created_at": "2024-04-10T16:38:07Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "2890"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Bug] Misleading error message when opening .yml file",
+      "updated_at": "2024-04-11T10:47:42Z"
+    },
+    "2892": {
+      "category": "Enhancement",
+      "created_at": "2024-04-17T08:09:42Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Help requested] Optuna Sweeper Multiple GPU Parallelism",
+      "updated_at": "2024-08-28T11:55:44Z"
+    },
+    "2893": {
+      "category": "Bug",
+      "created_at": "2024-04-22T00:53:41Z",
+      "labels": [
+        "bug",
+        "ray-launcher"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
+      "updated_at": "2025-04-10T11:13:10Z"
+    },
+    "2894": {
+      "category": "Bug",
+      "created_at": "2024-04-23T16:26:18Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] ipykernel_launcher.py: error:",
+      "updated_at": "2024-06-04T17:15:39Z"
+    },
+    "2898": {
+      "category": "Enhancement",
+      "created_at": "2024-04-30T15:35:59Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request & Solution] Troublehooting guide to prevent duplicated log messages",
+      "updated_at": "2024-04-30T16:42:38Z"
+    },
+    "2908": {
+      "category": "Bug",
+      "created_at": "2024-06-04T05:17:40Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "pytest fails on Windows due to an issue with the pytest-snail plugin that is included in requirements/dev.txt",
+      "updated_at": "2024-06-04T05:20:49Z"
+    },
+    "2913": {
+      "category": "Bug",
+      "created_at": "2024-06-09T10:40:32Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] hydra.utils.instantiate fails with resolver returning list in defaults package",
+      "updated_at": "2025-03-06T16:02:46Z"
+    },
+    "2915": {
+      "category": "Bug",
+      "created_at": "2024-06-10T22:30:28Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] initialize() and compose() do not work on Databricks 13.3 LTS",
+      "updated_at": "2024-07-10T13:18:50Z"
+    },
+    "2926": {
+      "category": "Bug",
+      "created_at": "2024-07-19T13:39:27Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] hydra.utils.instantiate can not find modules in mtrl",
+      "updated_at": "2024-07-30T07:07:14Z"
+    },
+    "2927": {
+      "category": "Bug",
+      "created_at": "2024-07-21T09:19:25Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Ray Launcher:  Additional properties are not allowed",
+      "updated_at": "2024-10-24T14:24:17Z"
+    },
+    "2935": {
+      "category": "Bug",
+      "created_at": "2024-08-06T02:49:21Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Appending to Defaults List via command line doesn't work if config is in subfolder",
+      "updated_at": "2026-02-22T04:44:14Z"
+    },
+    "2938": {
+      "category": "Question",
+      "created_at": "2024-08-20T16:45:05Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "How to override the default model in main.yaml in code when testing different models",
+      "updated_at": "2024-08-20T16:45:05Z"
+    },
+    "2939": {
+      "category": "Bug",
+      "created_at": "2024-08-22T06:42:31Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug]RQ Launcher Plugin under Python 3.11 got ValueError: mutable default for field enqueue is not allowed: use default_factory",
+      "updated_at": "2024-08-22T06:45:23Z"
+    },
+    "2940": {
+      "category": "Enhancement",
+      "created_at": "2024-08-23T23:23:09Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
+      "updated_at": "2025-08-17T22:53:33Z"
+    },
+    "2942": {
+      "category": "Enhancement",
+      "created_at": "2024-09-01T13:00:58Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] I'd like to be able to do multirun over files matching a glob (ideally a glob that depends on other, non-sweeped params in the config file)",
+      "updated_at": "2025-11-17T19:49:28Z"
+    },
+    "2943": {
+      "category": "Enhancement",
+      "created_at": "2024-09-01T17:36:44Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] It'd be nice to have a custom resolver for accessing data files for a given python package.",
+      "updated_at": "2024-09-01T17:36:44Z"
+    },
+    "2944": {
+      "category": "Enhancement",
+      "created_at": "2024-09-03T00:43:59Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] I would like resolvers to access the decorated main function's docstring and the name of the running script, as well as some other capabilities.",
+      "updated_at": "2024-09-03T00:52:17Z"
+    },
+    "2945": {
+      "category": "Bug",
+      "created_at": "2024-09-03T00:45:21Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] The \"Contributing\" link in the GitHub template for feature requests points to a 404 error",
+      "updated_at": "2024-09-03T00:45:21Z"
+    },
+    "2946": {
+      "category": "Bug",
+      "created_at": "2024-09-04T15:42:33Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Joblib multirun not working when specified within the experiment file",
+      "updated_at": "2024-09-18T08:56:18Z"
+    },
+    "2949": {
+      "category": "Enhancement",
+      "created_at": "2024-09-10T16:13:54Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Use @hydra.main() decorator for multiple python scripts from one bash script",
+      "updated_at": "2024-09-11T06:11:22Z"
+    },
+    "2953": {
+      "category": "Bug",
+      "created_at": "2024-09-13T18:54:24Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Depercated warning regarding __self__ in defaults list",
+      "updated_at": "2024-09-13T18:54:46Z"
+    },
+    "2958": {
+      "category": "Bug",
+      "created_at": "2024-09-18T22:28:12Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Misleading overriding behavior for \"empty\" (null) keys",
+      "updated_at": "2024-09-18T22:30:04Z"
+    },
+    "2959": {
+      "category": "Bug",
+      "created_at": "2024-09-19T05:22:56Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Deleting a key via CLI doesn't affect `_self_`",
+      "updated_at": "2024-09-19T05:28:01Z"
+    },
+    "2961": {
+      "category": "Bug",
+      "created_at": "2024-09-29T00:29:27Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Google Colab: MissingConfigException: Primary config directory not found. Check that the config directory '/tmp/ipykernel_3309' exists and readable",
+      "updated_at": "2024-09-29T00:29:27Z"
+    },
+    "2963": {
+      "category": "Bug",
+      "created_at": "2024-10-03T12:54:31Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource",
+      "updated_at": "2024-10-03T12:54:31Z"
+    },
+    "2972": {
+      "category": "Question",
+      "created_at": "2024-10-16T09:36:34Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "How to get the application config file path inside application code?",
+      "updated_at": "2024-10-16T09:36:34Z"
+    },
+    "2977": {
+      "category": "Enhancement",
+      "created_at": "2024-10-29T14:10:23Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [
+        "2978"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Feature Request] Add a generation strategy config to ax-sweeper plugin",
+      "updated_at": "2024-10-29T14:12:02Z"
+    },
+    "2980": {
+      "category": "Enhancement",
+      "created_at": "2024-11-09T06:50:04Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Can hydra be used for programming languages other than Python?",
+      "updated_at": "2025-01-01T19:50:40Z"
+    },
+    "2981": {
+      "category": "Enhancement",
+      "created_at": "2024-11-13T13:48:11Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Allow partial instantiation with factories",
+      "updated_at": "2025-01-14T20:33:37Z"
+    },
+    "2989": {
+      "category": "Bug",
+      "created_at": "2024-11-18T20:48:53Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug]",
+      "updated_at": "2024-11-18T20:48:53Z"
+    },
+    "2991": {
+      "category": "Enhancement",
+      "created_at": "2024-11-20T04:02:26Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] VS Code Hydra Config File Navigation",
+      "updated_at": "2024-11-22T05:21:11Z"
+    },
+    "2993": {
+      "category": "Enhancement",
+      "created_at": "2024-11-22T06:16:35Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Allow complete group override while Inheriting other Configs",
+      "updated_at": "2025-01-23T08:35:38Z"
+    },
+    "2999": {
+      "category": "Enhancement",
+      "created_at": "2024-12-16T10:56:14Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] use slurm launcher without having to specify -m or --multirun",
+      "updated_at": "2025-04-29T15:40:18Z"
+    },
+    "3002": {
+      "category": "Enhancement",
+      "created_at": "2025-01-06T04:53:00Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Implement parallel startup with startup intervals between multiple tasks in multirun mode",
+      "updated_at": "2025-01-20T09:33:10Z"
+    },
+    "3003": {
+      "category": "Enhancement",
+      "created_at": "2025-01-06T08:09:17Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Primary config module'xxx'not found.",
+      "updated_at": "2025-01-06T13:16:35Z"
+    },
+    "3011": {
+      "category": "Build",
+      "created_at": "2025-01-20T09:55:45Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "New release of hydra-colorlog?",
+      "updated_at": "2025-01-20T09:55:45Z"
+    },
+    "3012": {
+      "category": "Enhancement",
+      "created_at": "2025-01-21T19:54:27Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] It might be useful to have a utility function for integration testing pipelines built with Hydra that expose command line interfaces through config files.",
+      "updated_at": "2025-01-21T19:59:43Z"
+    },
+    "3015": {
+      "category": "Enhancement",
+      "created_at": "2025-01-29T17:25:06Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Support Instantiation of User Plugins Without Special Module",
+      "updated_at": "2025-04-29T15:34:02Z"
+    },
+    "3018": {
+      "category": "Enhancement",
+      "created_at": "2025-01-31T17:16:18Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Add option to replace \"/\" in hydra.job.override_dirname",
+      "updated_at": "2025-02-01T11:43:35Z"
+    },
+    "3024": {
+      "category": "Enhancement",
+      "created_at": "2025-02-07T04:24:38Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Compatibility with Optuna dashboard",
+      "updated_at": "2025-02-28T14:38:46Z"
+    },
+    "3026": {
+      "category": "Enhancement",
+      "created_at": "2025-02-12T02:17:34Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Allow for defaults list `override` to update the ordering of defaults?",
+      "updated_at": "2025-02-12T02:18:14Z"
+    },
+    "3028": {
+      "category": "Enhancement",
+      "created_at": "2025-02-14T10:37:06Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Is there a way to get the current file location within the config file?",
+      "updated_at": "2025-02-28T09:28:34Z"
+    },
+    "3031": {
+      "category": "Bug",
+      "created_at": "2025-02-23T11:43:55Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_",
+      "updated_at": "2025-08-17T22:47:27Z"
+    },
+    "3033": {
+      "category": "Bug",
+      "created_at": "2025-02-27T01:51:59Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path",
+      "updated_at": "2025-02-27T01:51:59Z"
+    },
+    "3034": {
+      "category": "Bug",
+      "created_at": "2025-02-27T18:26:36Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Default List Packaged to Root Level Not Configurable from CLI",
+      "updated_at": "2025-03-04T01:27:27Z"
+    },
+    "3035": {
+      "category": "Enhancement",
+      "created_at": "2025-02-27T19:03:00Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "weird behaviour when inheriting configs",
+      "updated_at": "2025-02-27T19:03:44Z"
+    },
+    "3036": {
+      "category": "Bug",
+      "created_at": "2025-02-27T22:21:06Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Child defaults list with interpolation fails with a constructed path with too many group names",
+      "updated_at": "2025-03-01T13:13:07Z"
+    },
+    "3038": {
+      "category": "Bug",
+      "created_at": "2025-03-10T09:57:59Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] nemo logger breaks submitit launcher usage for hydra multirun parameter sweep",
+      "updated_at": "2025-05-04T14:03:02Z"
+    },
+    "3045": {
+      "category": "Bug",
+      "created_at": "2025-03-23T10:53:59Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Potential Error in get_config_path() For Absolute Paths",
+      "updated_at": "2025-11-07T13:32:59Z"
+    },
+    "3047": {
+      "category": "Enhancement",
+      "created_at": "2025-03-31T19:08:47Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?",
+      "updated_at": "2025-04-08T14:54:37Z"
+    },
+    "3050": {
+      "category": "Bug",
+      "created_at": "2025-04-03T13:11:30Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
+      "updated_at": "2025-05-20T18:35:33Z"
+    },
+    "3053": {
+      "category": "Bug",
+      "created_at": "2025-04-13T14:15:26Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [
+        "3133"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Bug] --multirun yields error on specific command line flag ordering",
+      "updated_at": "2026-05-16T02:12:46Z"
+    },
+    "3055": {
+      "category": "Enhancement",
+      "created_at": "2025-04-15T11:23:42Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] -- is there a way to sweep in nested folder inside config group?",
+      "updated_at": "2026-05-16T02:12:47Z"
+    },
+    "3058": {
+      "category": "Question",
+      "created_at": "2025-04-29T21:46:35Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Question] How to Submit SLURM Jobs Eagerly?",
+      "updated_at": "2026-05-16T02:12:48Z"
+    },
+    "3060": {
+      "category": "Bug",
+      "created_at": "2025-05-07T15:32:22Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Config path issue for second order nested group config",
+      "updated_at": "2026-05-16T02:12:48Z"
+    },
+    "3062": {
+      "category": "Enhancement",
+      "created_at": "2025-05-19T17:01:23Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [
+        "3063"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Feature Request] _once_ behavior for instantiate",
+      "updated_at": "2026-05-16T02:12:49Z"
+    },
+    "3064": {
+      "category": "Enhancement",
+      "created_at": "2025-05-21T12:51:01Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] No sweepers are compatible with python >3.10 (NeverGrad, Ax, Optuna)",
+      "updated_at": "2026-05-16T02:12:49Z"
+    },
+    "3065": {
+      "category": "Documentation",
+      "created_at": "2025-05-22T18:28:07Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Doc tutorial issue?",
+      "updated_at": "2026-05-16T02:12:50Z"
+    },
+    "3066": {
+      "category": "Enhancement",
+      "created_at": "2025-05-27T11:50:51Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Logging config to include `loggers` as well as `root` (suggested solution)",
+      "updated_at": "2026-05-16T02:12:50Z"
+    },
+    "3067": {
+      "category": "Bug",
+      "created_at": "2025-06-02T08:43:15Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Union type in structured config",
+      "updated_at": "2026-05-16T02:12:51Z"
+    },
+    "3068": {
+      "category": "Bug",
+      "created_at": "2025-06-20T03:54:35Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Unexpected string conversion when overriding an interpolated sibling config group",
+      "updated_at": "2026-05-16T02:12:52Z"
+    },
+    "3069": {
+      "category": "Question",
+      "created_at": "2025-07-01T11:18:44Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Callback composition unclear",
+      "updated_at": "2026-05-16T02:12:52Z"
+    },
+    "3075": {
+      "category": "Build",
+      "created_at": "2025-08-04T02:42:13Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "What is the project status given the last release was in 2023",
+      "updated_at": "2026-05-16T02:12:53Z"
+    },
+    "3078": {
+      "category": "Bug",
+      "created_at": "2025-08-08T11:56:13Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug]",
+      "updated_at": "2026-05-16T02:12:53Z"
+    },
+    "3082": {
+      "category": "Enhancement",
+      "created_at": "2025-09-02T13:46:00Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] `submitit` Multirun without sweeping",
+      "updated_at": "2026-05-16T02:12:54Z"
+    },
+    "3091": {
+      "category": "Enhancement",
+      "created_at": "2025-10-30T12:54:33Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Optuna sweeper n_jobs>1 is blocking",
+      "updated_at": "2026-05-16T02:12:54Z"
+    },
+    "3103": {
+      "category": "Enhancement",
+      "created_at": "2025-12-19T12:33:16Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Get swept list without `hydra.main`",
+      "updated_at": "2026-05-16T02:12:55Z"
+    },
+    "3104": {
+      "category": "Bug",
+      "created_at": "2025-12-19T15:08:48Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Updating config group from a config group of another config group only works with full path",
+      "updated_at": "2026-05-16T02:12:55Z"
+    },
+    "3106": {
+      "category": "Bug",
+      "created_at": "2025-12-20T10:25:16Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [
+        "3107"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
+      "updated_at": "2026-05-16T02:12:56Z"
+    },
+    "3118": {
+      "category": "Bug",
+      "created_at": "2026-01-21T16:37:39Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] update `antlr4` dependency to 4.13 :)",
+      "updated_at": "2026-05-16T02:12:56Z"
+    },
+    "3129": {
+      "category": "Enhancement",
+      "created_at": "2026-02-07T06:24:54Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] outputs/.gitignore",
+      "updated_at": "2026-05-16T02:12:57Z"
+    },
+    "3158": {
+      "category": "Build",
+      "created_at": "2026-05-10T16:52:50Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
+      "updated_at": "2026-05-16T02:12:57Z"
+    },
+    "3162": {
+      "category": "Enhancement",
+      "created_at": "2026-05-13T14:40:27Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Support Sapling for Docusaurus last-updated metadata",
+      "updated_at": "2026-05-16T02:12:58Z"
+    },
+    "3176": {
+      "category": "Refactor",
+      "created_at": "2026-05-15T18:05:27Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [
+        "3178"
+      ],
+      "state": "OPEN",
+      "status": "in progress",
+      "title": "Upgrade and modernize Ax Sweeper",
+      "updated_at": "2026-05-16T02:12:58Z"
+    },
+    "3177": {
+      "category": "Enhancement",
+      "created_at": "2026-05-15T18:17:59Z",
+      "labels": [
+        "ax",
+        "help wanted",
+        "plugin",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Consider supporting newer Ax features in Ax Sweeper",
+      "updated_at": "2026-05-16T02:12:59Z"
+    },
+    "385": {
+      "category": "Enhancement",
+      "created_at": "2020-01-19T10:23:55Z",
+      "labels": [
+        "callbacks",
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Experimentation tracking support",
+      "updated_at": "2025-07-08T16:26:46Z"
+    },
+    "468": {
+      "category": "Build",
+      "created_at": "2020-03-04T16:27:30Z",
+      "labels": [
+        "plugin"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Specify the schema for returning the result of optimization.",
+      "updated_at": "2020-10-08T17:06:14Z"
+    },
+    "633": {
+      "category": "Enhancement",
+      "created_at": "2020-05-31T22:23:16Z",
+      "labels": [
+        "enhancement",
+        "priority_medium",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Allow adding help messages to command line arguments",
+      "updated_at": "2025-12-23T13:45:18Z"
+    },
+    "692": {
+      "category": "Enhancement",
+      "created_at": "2020-06-19T18:43:55Z",
+      "labels": [
+        "enhancement",
+        "plugin"
+      ],
+      "pr_numbers": [
+        "2171"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "[Feature Request] Support non blocking launching",
+      "updated_at": "2024-02-15T14:21:57Z"
+    },
+    "700": {
+      "category": "Enhancement",
+      "created_at": "2020-06-21T08:48:48Z",
+      "labels": [
+        "enhancement",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Purging older output/working directories ",
+      "updated_at": "2022-01-14T23:14:36Z"
+    },
+    "714": {
+      "category": "Enhancement",
+      "created_at": "2020-06-25T00:04:15Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Make sure Hydra logging config override all loggers from 3rd party libs",
+      "updated_at": "2020-11-09T22:40:36Z"
+    },
+    "733": {
+      "category": "Enhancement",
+      "created_at": "2020-06-30T17:38:07Z",
+      "labels": [
+        "blocked",
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Support for s3fs",
+      "updated_at": "2024-11-05T08:58:49Z"
+    },
+    "753": {
+      "category": "Enhancement",
+      "created_at": "2020-07-12T03:02:48Z",
+      "labels": [
+        "enhancement",
+        "exploratory"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Explore a the option of a dedicated Prompt-toolkit based Hydra shell",
+      "updated_at": "2020-07-12T03:04:40Z"
+    },
+    "802": {
+      "category": "Enhancement",
+      "created_at": "2020-07-21T02:09:16Z",
+      "labels": [
+        "help wanted",
+        "maintenance"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Improving the test coverage in Hydra",
+      "updated_at": "2020-10-19T07:47:05Z"
+    },
+    "841": {
+      "category": "Enhancement",
+      "created_at": "2020-07-31T22:37:00Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Add docker example for Ray launcher.",
+      "updated_at": "2021-05-19T19:03:44Z"
+    },
+    "845": {
+      "category": "Documentation",
+      "created_at": "2020-08-05T01:39:44Z",
+      "labels": [
+        "documentation",
+        "good first issue"
+      ],
+      "pr_numbers": [
+        "3136"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "Add a standalone page describing @hydra.main() in details.",
+      "updated_at": "2023-12-04T13:21:57Z"
+    },
+    "851": {
+      "category": "Enhancement",
+      "created_at": "2020-08-07T14:53:34Z",
+      "labels": [
+        "enhancement",
+        "priority_medium"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Evaluate using the configured launcher in regular runs",
+      "updated_at": "2025-02-20T17:03:16Z"
+    },
+    "902": {
+      "category": "Enhancement",
+      "created_at": "2020-08-21T19:55:39Z",
+      "labels": [
+        "enhancement",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Replace lexer token names by their symbols in ANTLR error messages",
+      "updated_at": "2021-06-04T01:45:05Z"
+    },
+    "934": {
+      "category": "Question",
+      "created_at": "2020-09-01T09:47:34Z",
+      "labels": [
+        "question"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] tab completion slow with slow imports",
+      "updated_at": "2022-05-05T14:30:29Z"
+    },
+    "993": {
+      "category": "Enhancement",
+      "created_at": "2020-09-20T09:17:08Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Create a working directory abstraction",
+      "updated_at": "2023-03-02T17:00:12Z"
+    }
+  },
+  "recent_done": {},
+  "repo": "facebookresearch/hydra"
+}
