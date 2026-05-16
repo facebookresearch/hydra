@@ -66,15 +66,15 @@ def get_current_os() -> str:
     return current_os
 
 
-print(f"Operating system\t:\t{get_current_os()}")
-print(f"NOX_PYTHON_VERSIONS\t:\t{PYTHON_VERSIONS}")
-print(f"PLUGINS\t\t\t:\t{PLUGINS}")
-print(f"SKIP_PLUGINS\t\t\t:\t{SKIP_PLUGINS}")
-print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
-print(f"FIX\t\t\t:\t{FIX}")
-print(f"VERBOSE\t\t\t:\t{VERBOSE}")
-print(f"INSTALL_EDITABLE_MODE\t:\t{INSTALL_EDITABLE_MODE}")
-print(f"USE_OMEGACONF_DEV_VERSION\t:\t{USE_OMEGACONF_DEV_VERSION}")
+logger.info(f"Operating system\t:\t{get_current_os()}")
+logger.info(f"NOX_PYTHON_VERSIONS\t:\t{PYTHON_VERSIONS}")
+logger.info(f"PLUGINS\t\t\t:\t{PLUGINS}")
+logger.info(f"SKIP_PLUGINS\t\t\t:\t{SKIP_PLUGINS}")
+logger.info(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
+logger.info(f"FIX\t\t\t:\t{FIX}")
+logger.info(f"VERBOSE\t\t\t:\t{VERBOSE}")
+logger.info(f"INSTALL_EDITABLE_MODE\t:\t{INSTALL_EDITABLE_MODE}")
+logger.info(f"USE_OMEGACONF_DEV_VERSION\t:\t{USE_OMEGACONF_DEV_VERSION}")
 
 
 def _upgrade_basic(session: Session) -> None:
@@ -89,11 +89,11 @@ def find_dirs(path: str) -> Iterator[str]:
             yield fullname
 
 
-def print_installed_package_version(session: Session, package_name: str) -> None:
+def log_installed_package_version(session: Session, package_name: str) -> None:
     pip_list: str = session.run("pip", "list", silent=True)
     for line in pip_list.split("\n"):
         if package_name in line:
-            print(f"Installed {package_name} version: {line}")
+            session.log(f"Installed {package_name} version: {line}")
 
 
 def install_hydra(session: Session, cmd: List[str]) -> None:
@@ -104,7 +104,7 @@ def install_hydra(session: Session, cmd: List[str]) -> None:
     if USE_OMEGACONF_DEV_VERSION:
         session.install("--pre", "omegaconf", silent=SILENT)
     session.run(*cmd, ".", silent=SILENT)
-    print_installed_package_version(session, "omegaconf")
+    log_installed_package_version(session, "omegaconf")
     if not SILENT:
         session.install("pipdeptree", silent=SILENT)
         session.run("pipdeptree", "-p", "hydra-core")
@@ -134,7 +134,7 @@ def install_plugin(session: Session, install_cmd: List[str], plugin: Plugin) -> 
 def maybe_install_torch(session: Session, plugin: Plugin) -> None:
     if plugin_requires_torch(plugin):
         install_cpu_torch(session)
-        print_installed_package_version(session, "torch")
+        log_installed_package_version(session, "torch")
 
 
 def plugin_requires_torch(plugin: Plugin) -> bool:
