@@ -66,15 +66,15 @@ def get_current_os() -> str:
     return current_os
 
 
-print(f"Operating system\t:\t{get_current_os()}")
-print(f"NOX_PYTHON_VERSIONS\t:\t{PYTHON_VERSIONS}")
-print(f"PLUGINS\t\t\t:\t{PLUGINS}")
-print(f"SKIP_PLUGINS\t\t\t:\t{SKIP_PLUGINS}")
-print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
-print(f"FIX\t\t\t:\t{FIX}")
-print(f"VERBOSE\t\t\t:\t{VERBOSE}")
-print(f"INSTALL_EDITABLE_MODE\t:\t{INSTALL_EDITABLE_MODE}")
-print(f"USE_OMEGACONF_DEV_VERSION\t:\t{USE_OMEGACONF_DEV_VERSION}")
+logger.info(f"Operating system\t:\t{get_current_os()}")
+logger.info(f"NOX_PYTHON_VERSIONS\t:\t{PYTHON_VERSIONS}")
+logger.info(f"PLUGINS\t\t\t:\t{PLUGINS}")
+logger.info(f"SKIP_PLUGINS\t\t\t:\t{SKIP_PLUGINS}")
+logger.info(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
+logger.info(f"FIX\t\t\t:\t{FIX}")
+logger.info(f"VERBOSE\t\t\t:\t{VERBOSE}")
+logger.info(f"INSTALL_EDITABLE_MODE\t:\t{INSTALL_EDITABLE_MODE}")
+logger.info(f"USE_OMEGACONF_DEV_VERSION\t:\t{USE_OMEGACONF_DEV_VERSION}")
 
 
 def _upgrade_basic(session: Session) -> None:
@@ -89,11 +89,11 @@ def find_dirs(path: str) -> Iterator[str]:
             yield fullname
 
 
-def print_installed_package_version(session: Session, package_name: str) -> None:
+def log_installed_package_version(session: Session, package_name: str) -> None:
     pip_list: str = session.run("pip", "list", silent=True)
     for line in pip_list.split("\n"):
         if package_name in line:
-            print(f"Installed {package_name} version: {line}")
+            session.log(f"Installed {package_name} version: {line}")
 
 
 def install_hydra(session: Session, cmd: List[str]) -> None:
@@ -104,7 +104,7 @@ def install_hydra(session: Session, cmd: List[str]) -> None:
     if USE_OMEGACONF_DEV_VERSION:
         session.install("--pre", "omegaconf", silent=SILENT)
     session.run(*cmd, ".", silent=SILENT)
-    print_installed_package_version(session, "omegaconf")
+    log_installed_package_version(session, "omegaconf")
     if not SILENT:
         session.install("pipdeptree", silent=SILENT)
         session.run("pipdeptree", "-p", "hydra-core")
@@ -134,7 +134,7 @@ def install_plugin(session: Session, install_cmd: List[str], plugin: Plugin) -> 
 def maybe_install_torch(session: Session, plugin: Plugin) -> None:
     if plugin_requires_torch(plugin):
         install_cpu_torch(session)
-        print_installed_package_version(session, "torch")
+        log_installed_package_version(session, "torch")
 
 
 def plugin_requires_torch(plugin: Plugin) -> bool:
@@ -310,11 +310,54 @@ def _black_cmd() -> List[str]:
     return black
 
 
+def _is_github_actions() -> bool:
+    return os.environ.get("GITHUB_ACTIONS") == "true"
+
+
 def _isort_cmd() -> List[str]:
     isort = ["isort", "."]
     if not FIX:
         isort += ["--check", "--diff"]
+    if _is_github_actions():
+        isort += ["--format-error", "::error::isort {message}"]
     return isort
+
+
+def _flake8_cmd(*paths: str) -> List[str]:
+    flake8 = ["flake8", "--config", ".flake8"]
+    if _is_github_actions():
+        flake8 += [
+            "--format",
+            "::error file=%(path)s,line=%(row)d,col=%(col)d::%(code)s %(text)s",
+        ]
+    flake8.extend(paths)
+    return flake8
+
+
+def _yamllint_cmd() -> List[str]:
+    yamllint = ["yamllint", "--strict", "."]
+    if _is_github_actions():
+        yamllint += ["--format", "github"]
+    return yamllint
+
+
+def _bandit_cmd() -> List[str]:
+    bandit = [
+        "bandit",
+        "--exclude",
+        "./.nox/**,./.sl/**,./website/**",
+        "-ll",
+        "-r",
+        ".",
+    ]
+    if _is_github_actions():
+        bandit += [
+            "--format",
+            "custom",
+            "--msg-template",
+            "::error file={relpath},line={line},col={col}::{test_id} {severity}: {msg}",
+        ]
+    return bandit
 
 
 def _pyrefly_cmd(
@@ -329,6 +372,8 @@ def _pyrefly_cmd(
         "--python-interpreter-path",
         "python",
     ]
+    if _is_github_actions():
+        pyrefly.extend(["--output-format", "github"])
     if python_version is not None:
         pyrefly.append(f"--python-version={python_version}")
     if extra_search_paths is not None:
@@ -380,8 +425,8 @@ def lint(session: Session) -> None:
         *_pyrefly_cmd(python_version=session.python),
         silent=SILENT,
     )
-    session.run("flake8", "--config", ".flake8")
-    session.run("yamllint", "--strict", ".")
+    session.run(*_flake8_cmd())
+    session.run(*_yamllint_cmd())
 
     pyrefly_check_subdirs = [
         "examples/advanced",
@@ -416,15 +461,7 @@ def lint(session: Session) -> None:
     lint_plugins_in_dir(session=session, directory="examples/plugins")
 
     # bandit static security analysis
-    session.run(
-        "bandit",
-        "--exclude",
-        "./.nox/**,./.sl/**,./website/**",
-        "-ll",
-        "-r",
-        ".",
-        silent=SILENT,
-    )
+    session.run(*_bandit_cmd(), silent=SILENT)
 
 
 def lint_plugins_in_dir(session: Session, directory: str) -> None:
@@ -451,7 +488,7 @@ def lint_plugin(session: Session, plugin: Plugin) -> None:
 
     install_dev_deps(session)
 
-    session.run("flake8", "--config", ".flake8", plugin.abspath)
+    session.run(*_flake8_cmd(plugin.abspath))
     path = plugin.abspath
     source_dir = plugin.source_dir
     session.chdir(path)
