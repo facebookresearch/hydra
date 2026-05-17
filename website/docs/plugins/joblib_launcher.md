@@ -34,6 +34,7 @@ You can discover the Joblib Launcher parameters with:
 # @package hydra.launcher
 _target_: hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher
 n_jobs: -1
+inner_max_num_threads: null
 backend: null
 prefer: processes
 require: null
@@ -48,6 +49,19 @@ mmap_mode: r
 There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins.md) for more information.
 
 See [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/parallel.html) for full details about the parameters above.
+
+#### Controlling native library thread pools
+
+When using libraries that manage native thread pools, such as OpenBLAS, MKL, OpenMP, Numba, or NumExpr, set `inner_max_num_threads` to limit the number of native threads available to each Joblib worker process:
+
+```yaml
+hydra:
+  launcher:
+    n_jobs: 8
+    inner_max_num_threads: 1
+```
+
+This can help avoid oversubscription when multiple Hydra jobs run in parallel and each job calls into a multithreaded native library. For arbitrary environment variables, use [`hydra.job.env_set`](../configure_hydra/job.md#hydrajobenv_set) instead.
 
 <div class="alert alert--info" role="alert">
 NOTE: The only supported JobLib backend is Loky (process-based parallelism).
