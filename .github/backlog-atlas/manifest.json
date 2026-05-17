@@ -17,15 +17,27 @@
       "remove": "clean"
     },
     {
+      "branch": "default",
+      "optional": true,
+      "path": ".github/backlog-atlas/atlas.yaml",
+      "remove": "clean"
+    },
+    {
+      "branch": "default",
+      "optional": true,
+      "path": ".github/workflows/temporary-backlog-atlas-upgrade-cleanup.yml",
+      "remove": "uninstall"
+    },
+    {
       "branch": "backlog-atlas",
-      "path": ".backlog-atlas/packages/backlog_atlas-0.11-0.g54b213d52759-py3-none-any.whl",
+      "path": ".backlog-atlas/packages/backlog_atlas-0.13-0.gec3fb3755b6e-py3-none-any.whl",
       "remove": "uninstall"
     }
   ],
   "install": {
-    "bundled_wheel_path": ".backlog-atlas/packages/backlog_atlas-0.11-0.g54b213d52759-py3-none-any.whl",
-    "install_source": "backlog-atlas-branch/.backlog-atlas/packages/backlog_atlas-0.11-0.g54b213d52759-py3-none-any.whl",
-    "installed_version": "0.11",
+    "bundled_wheel_path": ".backlog-atlas/packages/backlog_atlas-0.13-0.gec3fb3755b6e-py3-none-any.whl",
+    "install_source": "backlog-atlas-branch/.backlog-atlas/packages/backlog_atlas-0.13-0.gec3fb3755b6e-py3-none-any.whl",
+    "installed_version": "0.13",
     "source_type": "bundled-wheel",
     "workflow_path": ".github/workflows/update-backlog-atlas.yml"
   },
