@@ -1,0 +1,12 @@
+defaults:
+  - _self_
+
+experiment:
+  name: test_experiment
+  db: cifar
+  lr: 0.01
+  batch_size: 8
+
+model:
+  name: test_model
+  dropout: 0.6

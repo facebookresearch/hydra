@@ -1,0 +1,113 @@
+# @package _global_
+defaults:
+  - override /hydra/sweeper: wandb
+
+hydra:
+  sweeper:
+    # See https://docs.wandb.ai/guides/sweeps/configuration for types of configs
+    wandb_sweep_config:
+      # (Required) The name of the sweep, displayed in the W&B UI.
+      name: hydra_plugin_test
+
+      # (Required) Specify the search strategy.
+      method: bayes
+
+      # (Optional) Specify the metric to optimize (only used by certain search
+      # strategies and stopping criteria). Default is {}.
+      metric:
+        name: out
+        goal: minimize
+
+        # (Optional) Goal value for the metric you're optimizing. When any run
+        # in the sweep achieves that target value, the sweep's state will be set
+        # to finished. This means all agents with active runs will finish those
+        # jobs, but no new runs will be launched in the sweep.
+        # target: 0.0
+
+      # (Optional) Number of agents to launch in a batch until budget is
+      # reached. Use a multi-processing launcher to have these agents execute
+      # simultaneously, otherwise it's a useless option since they'll execute in
+      # sequence. Default is 1.
+      num_agents: 2
+
+      # (Optional) Total number of agents to launch (must be >= num_agents)
+      # Default is 1.
+      budget: 4
+
+      # (Optional) Specify the entity for this sweep. Otherwise infer from the
+      # environment.
+      # entity: your_entity
+
+      # (Optional) Specify the project this sweep will be under. Projects are
+      # used to organize models that can be compared, working on the same
+      # problem with different architectures, hyperparameters, datasets,
+      # preprocessing etc. Default is None.
+      project: hydra_plugin_test_project
+
+      # (Optional) Notes can contain a string, a list, or any
+      # OmegaConf-compatible value. Notes are added to all runs and show up in
+      # the W&B UI for each run. Since notes can also be modified from within
+      # the W&B UI, they're meant to be used for noting runs with extra info
+      # _after_ they have finished. Default is None.
+      notes: ${hydra.overrides.task}
+
+      # (Optional) Tags can be used to label runs from an agent with particular
+      # features, such as the runs being pre-emptible. They make it easier to
+      # filter runs in the W&B UI. Default is [].
+      tags:
+        - ${experiment.name}
+        - ${model.name}
+        - ${experiment.db}
+
+      # (Optional) Specify any early stopping criteria. Default is {}.
+      early_terminate:
+        type: hyperband
+        min_iter: 3
+        # max_iter: 27  #  the maximum number of iterations.
+        # s: 2  # the total number of brackets (required for max_iter)
+        eta: 3  # the bracket multiplier schedule
+
+      # (Optional) Number of function evaluations to perform per agent
+      # Recommended to set to 1 when running in SLURM environment.
+      # Each agent only runs one training job then exits. Default is 1.
+      count: 3
+
+      # (Optional) Maximum authorized failure rate for a batch of wandb agents'
+      # runs. Default is 0.0.
+      max_run_failure_rate: 0.3
+
+      # (Optional) Maximum authorized failure rate for a batch of wandb agents
+      # launched by the launcher. Default is 0.0.
+      max_agent_failure_rate: 0.1
+
+      # (Optional) Used for resuming from a previous sweep. Default is None.
+      # sweep_id: your_sweep_id
+
+    # (Required) Specify parameters bounds to search.
+    # Parameters are described using dot notation but will be accessible within
+    # the task function in typical OmegaConf fashion,
+    # e.g., model_param1 = cfg.model.param1
+    params:
+      # Categorical, one or the other
+      experiment.db:
+        - mnist
+        - cifar
+
+      # A log-distributed positive scalar, evolving by factors of 2 on average
+      experiment.lr:
+        distribution: q_log_uniform
+        min: 0.02
+        max: 1
+        q: 2.0
+
+      # A linearly-distributed scalar between 0 and 1
+      model.dropout:
+        distribution: uniform
+        min: 0.0
+        max: 1.0
+
+      # A linearly-distributed integer scalar between 4 to 16
+      experiment.batch_size:
+        distribution: int_uniform
+        min: 4
+        max: 16
