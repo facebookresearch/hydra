@@ -122,7 +122,7 @@ def install_selected_plugins(
 
 
 def install_plugin(session: Session, install_cmd: List[str], plugin: Plugin) -> None:
-    maybe_install_torch(session, plugin)
+    install_plugin_test_requirements(session, plugin)
     cmd = install_cmd + [plugin.abspath]
     session.run(*cmd, silent=SILENT)
     if not SILENT:
@@ -131,26 +131,10 @@ def install_plugin(session: Session, install_cmd: List[str], plugin: Plugin) -> 
     session.run("python", "-c", f"import {plugin.module}")
 
 
-def maybe_install_torch(session: Session, plugin: Plugin) -> None:
-    if plugin_requires_torch(plugin):
-        install_cpu_torch(session)
-        log_installed_package_version(session, "torch")
-
-
-def plugin_requires_torch(plugin: Plugin) -> bool:
-    """Determine whether the given plugin depends on pytorch as a requirement"""
-    return '"torch"' in Path(plugin.setup_py).read_text()
-
-
-def install_cpu_torch(session: Session) -> None:
-    """
-    Install the CPU version of pytorch.
-    This is a much smaller download size than the normal version `torch` package hosted on pypi.
-    The smaller download prevents our CI jobs from timing out.
-    """
-    session.install(
-        "torch", "--extra-index-url", "https://download.pytorch.org/whl/cpu"
-    )
+def install_plugin_test_requirements(session: Session, plugin: Plugin) -> None:
+    requirements = Path(plugin.abspath) / "test-requirements.txt"
+    if requirements.exists():
+        session.install("-r", str(requirements), silent=SILENT)
 
 
 def pytest_args(*args: str) -> List[str]:
