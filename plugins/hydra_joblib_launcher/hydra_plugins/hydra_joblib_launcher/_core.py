@@ -13,7 +13,7 @@ from hydra.core.utils import (
     setup_globals,
 )
 from hydra.types import HydraContext, TaskFunction
-from joblib import Parallel, delayed  # type: ignore
+from joblib import Parallel, delayed, parallel_backend  # type: ignore
 from omegaconf import DictConfig, open_dict
 
 from .joblib_launcher import JoblibLauncher
@@ -84,13 +84,17 @@ def launch(
 
     # Joblib's backend is hard-coded to loky since the threading
     # backend is incompatible with Hydra
-    joblib_cfg = launcher.joblib
+    joblib_cfg = dict(launcher.joblib)
     joblib_cfg["backend"] = "loky"
     process_joblib_cfg(joblib_cfg)
+    inner_max_num_threads = joblib_cfg.pop("inner_max_num_threads", None)
+    logged_joblib_cfg = dict(joblib_cfg)
+    if inner_max_num_threads is not None:
+        logged_joblib_cfg["inner_max_num_threads"] = inner_max_num_threads
 
     log.info(
         "Joblib.Parallel({}) is launching {} jobs".format(
-            ",".join(f"{k}={v}" for k, v in joblib_cfg.items()),
+            ",".join(f"{k}={v}" for k, v in logged_joblib_cfg.items()),
             len(job_overrides),
         )
     )
@@ -100,7 +104,7 @@ def launch(
 
     singleton_state = Singleton.get_state()
 
-    runs = Parallel(**joblib_cfg)(
+    calls = (
         delayed(execute_job)(
             initial_job_idx + idx,
             overrides,
@@ -111,6 +115,19 @@ def launch(
         )
         for idx, overrides in enumerate(job_overrides)
     )
+    if inner_max_num_threads is None:
+        runs = Parallel(**joblib_cfg)(calls)
+    else:
+        n_jobs = joblib_cfg.pop("n_jobs")
+        backend = joblib_cfg.pop("backend")
+        joblib_cfg.pop("prefer", None)
+        joblib_cfg.pop("require", None)
+        with parallel_backend(
+            backend,
+            n_jobs=n_jobs,
+            inner_max_num_threads=inner_max_num_threads,
+        ):
+            runs = Parallel(**joblib_cfg)(calls)
 
     assert isinstance(runs, List)
     for run in runs:
