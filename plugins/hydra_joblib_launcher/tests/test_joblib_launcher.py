@@ -1,4 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from collections.abc import Iterator
+from contextlib import contextmanager
+from pathlib import Path
 from typing import Any
 
 from hydra.core.plugins import Plugins
@@ -7,7 +10,11 @@ from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
-from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
+from hydra.test_utils.test_utils import (
+    TSweepRunner,
+    chdir_plugin_root,
+    run_python_script,
+)
 from pytest import mark
 
 from hydra_plugins.hydra_joblib_launcher.joblib_launcher import JoblibLauncher
@@ -68,6 +75,53 @@ def test_example_app(hydra_sweep_runner: TSweepRunner, tmpdir: Any) -> None:
         assert sweep.returns is not None and len(sweep.returns[0]) == 4
         for ret in sweep.returns[0]:
             assert tuple(ret.overrides) in overrides
+
+
+def test_example_app_loads_its_config(tmp_path: Path) -> None:
+    stdout, _stderr = run_python_script(
+        [
+            "example/my_app.py",
+            "--multirun",
+            "task=1,2",
+            f'hydra.sweep.dir="{tmp_path}"',
+        ],
+    )
+
+    assert "Joblib.Parallel" in stdout
+    assert (tmp_path / "0" / "my_app.log").exists()
+    assert (tmp_path / "1" / "my_app.log").exists()
+
+
+def test_inner_max_num_threads_configures_loky_backend(
+    hydra_sweep_runner: TSweepRunner, monkeypatch: Any
+) -> None:
+    from hydra_plugins.hydra_joblib_launcher import _core
+
+    calls: list[tuple[tuple[Any, ...], dict[str, Any]]] = []
+    real_parallel_backend = _core.parallel_backend
+
+    @contextmanager
+    def spy_parallel_backend(*args: Any, **kwargs: Any) -> Iterator[None]:
+        calls.append((args, kwargs))
+        with real_parallel_backend(*args, **kwargs):
+            yield
+
+    monkeypatch.setattr(_core, "parallel_backend", spy_parallel_backend)
+
+    with hydra_sweep_runner(
+        calling_file="example/my_app.py",
+        calling_module=None,
+        task_function=None,
+        config_path=".",
+        config_name="config",
+        overrides=[
+            "hydra.launcher.n_jobs=1",
+            "hydra.launcher.inner_max_num_threads=2",
+        ],
+    ) as sweep:
+        assert sweep.returns is not None and len(sweep.returns[0]) == 1
+
+    assert calls == [(("loky",), {"n_jobs": 1, "inner_max_num_threads": 2})]
 
 
 @mark.parametrize(
