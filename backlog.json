@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-05-17",
-  "generated_at": "2026-05-17T14:16:42Z",
+  "generated_at": "2026-05-17T18:05:29Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 289,
+    "open_total": 288,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 120,
-        "percentage": 41.5
+        "percentage": 41.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 137,
-        "percentage": 47.4
+        "count": 136,
+        "percentage": 47.2
       },
       {
         "category": "Documentation",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 2
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 0
+        "count": 1
       }
     ]
   },
@@ -112,26 +112,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 3176,
-      "title": "Upgrade and modernize Ax Sweeper",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3178,
-          "url": "https://github.com/facebookresearch/hydra/pull/3178"
-        }
-      ],
-      "created": "2026-05-15",
-      "updated": "2026-05-17",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3176"
     },
     {
       "number": 692,
@@ -4623,9 +4603,36 @@
         "ax"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3177"
+    },
+    {
+      "number": 3176,
+      "title": "Upgrade and modernize Ax Sweeper",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3178,
+          "url": "https://github.com/facebookresearch/hydra/pull/3178"
+        }
+      ],
+      "created": "2026-05-15",
+      "updated": "2026-05-17",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3176"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-05-17T18:05:29Z",
+      "kind": "closed",
+      "issue": 3176,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3176",
+      "title": "Upgrade and modernize Ax Sweeper"
+    },
     {
       "ts": "2026-05-17T14:16:42Z",
       "kind": "label",

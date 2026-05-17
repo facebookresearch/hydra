@@ -1,6 +1,8 @@
 {
-  "closed_at": {},
-  "generated_at": "2026-05-17T14:16:42Z",
+  "closed_at": {
+    "3176": "2026-05-17"
+  },
+  "generated_at": "2026-05-17T18:05:29Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3390,20 +3392,6 @@
       "title": "Support Sapling for Docusaurus last-updated metadata",
       "updated_at": "2026-05-16T02:12:58Z"
     },
-    "3176": {
-      "category": "Enhancement",
-      "created_at": "2026-05-15T18:05:27Z",
-      "labels": [
-        "enhancement"
-      ],
-      "pr_numbers": [
-        "3178"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "Upgrade and modernize Ax Sweeper",
-      "updated_at": "2026-05-17T14:14:35Z"
-    },
     "3177": {
       "category": "Enhancement",
       "created_at": "2026-05-15T18:17:59Z",
@@ -3614,6 +3602,21 @@
       "updated_at": "2023-03-02T17:00:12Z"
     }
   },
-  "recent_done": {},
+  "recent_done": {
+    "3176": {
+      "category": "Enhancement",
+      "created_at": "2026-05-15T18:05:27Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [
+        "3178"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Upgrade and modernize Ax Sweeper",
+      "updated_at": "2026-05-17T14:14:35Z"
+    }
+  },
   "repo": "facebookresearch/hydra"
 }
