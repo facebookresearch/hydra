@@ -36,7 +36,7 @@ We include an example of how to use this plugin. The file <GithubLink to="plugin
 You can discover the Nevergrad sweeper parameters with:
 ```yaml title="$ python your_app hydra/sweeper=nevergrad --cfg hydra -p hydra.sweeper"
 # @package hydra.sweeper
-_target_: hydra_plugins.hydra_nevergrad_sweeper.core.NevergradSweeper
+_target_: hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper.NevergradSweeper
 optim:
   optimizer: NGOpt
   budget: 80
@@ -67,7 +67,7 @@ The function decorated with `@hydra.main()` returns a float which we want to min
 db: mnist
 lr: 0.12
 dropout: 0.33
-batch_size=4
+batch_size: 4
 ```
 
 To run hyperparameter search and look for the best parameters for this function, clone the code and run the following command in the `plugins/hydra_nevergrad_sweeper` directory:
@@ -112,7 +112,7 @@ and the final 2 evaluations look like this:
 ```
 
 
-The run also creates an `optimization_results.yaml` file in your sweep folder with the parameters recommended by the optimizer:
+The run also creates an `optimization_results.yaml` file in your sweep folder with the best evaluated parameters found during the sweep:
 ```yaml
 best_evaluated_result: 0.381
 
@@ -127,10 +127,10 @@ name: nevergrad
 
 ## Defining the parameters
 
-The plugin supports two types of parameters: [Choices](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Choice) and [Scalars](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.Scalar). They can be defined either through config file or commandline override.
+The plugin supports two types of parameters: [Choices](https://facebookresearch.github.io/nevergrad/parametrization.html#parameters) and [Scalars](https://facebookresearch.github.io/nevergrad/parametrization.html#parameters). They can be defined either through a config file or command-line override.
 
-### Defining through commandline override
-Hydra provides an override parser that supports rich syntax. More documentation can be found in ([OverrideGrammer/Basic](../advanced/override_grammar/basic.md)) and ([OverrideGrammer/Extended](../advanced/override_grammar/extended.md)). We recommend you go through them first before proceeding with this doc.
+### Defining through command-line override
+Hydra provides an override parser that supports rich syntax. More documentation can be found in ([Override Grammar/Basic](../advanced/override_grammar/basic.md)) and ([Override Grammar/Extended](../advanced/override_grammar/extended.md)). We recommend you go through them first before proceeding with this doc.
 
 #### Choices
 To override a field with choices:
@@ -140,16 +140,16 @@ To override a field with choices:
 'key=range(1,5)'
 ```
 
-You can tag an override with ```ordered``` to indicate it's a [```TransitionChoice```](https://facebookresearch.github.io/nevergrad/parametrization_ref.html#nevergrad.p.TransitionChoice)
+You can tag an override with `ordered` to indicate it's a [`TransitionChoice`](https://facebookresearch.github.io/nevergrad/parametrization.html#parameters)
 ```commandline
-`key=tag(ordered, choice(1,2,3))`
+key=tag(ordered, choice(1,2,3))
 ```
 
 #### Scalar
 ```commandline
-`key=interval(1,12)`             # Interval are float by default
-`key=int(interval(1,8))`         # Scalar bounds cast to an int
-`key=tag(log, interval(1,12))`   # call ng.p.Log if tagged with log
+key=interval(1,12)             # Intervals are float by default
+key=int(interval(1,8))         # Scalar bounds cast to an int
+key=tag(log, interval(1,12))   # call ng.p.Log if tagged with log
 ```
 
 ### Defining through config file
