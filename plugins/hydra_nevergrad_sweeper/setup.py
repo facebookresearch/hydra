@@ -28,7 +28,7 @@ setup(
     python_requires=">=3.10",
     install_requires=[
         "hydra-core>=1.1.0.dev7",
-        "nevergrad>=0.4.3.post9",
+        "nevergrad>=1.0.12",
     ],
     include_package_data=True,
 )
