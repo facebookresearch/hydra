@@ -118,15 +118,13 @@ def launch(
     if inner_max_num_threads is None:
         runs = Parallel(**joblib_cfg)(calls)
     else:
-        n_jobs = joblib_cfg.pop("n_jobs")
         backend = joblib_cfg.pop("backend")
         joblib_cfg.pop("prefer", None)
         joblib_cfg.pop("require", None)
-        with parallel_backend(
-            backend,
-            n_jobs=n_jobs,
-            inner_max_num_threads=inner_max_num_threads,
-        ):
+        backend_cfg = {"inner_max_num_threads": inner_max_num_threads}
+        if "n_jobs" in joblib_cfg:
+            backend_cfg["n_jobs"] = joblib_cfg.pop("n_jobs")
+        with parallel_backend(backend, **backend_cfg):
             runs = Parallel(**joblib_cfg)(calls)
 
     assert isinstance(runs, List)
