@@ -1,1 +1,3 @@
 {"ts": "2026-05-17T04:56:19Z", "kind": "label", "issue": 2765, "issue_url": "https://github.com/facebookresearch/hydra/issues/2765", "title": "[Feature Request] Loguru and Hydra ", "detail": "added \"awaiting_response\""}
+{"ts": "2026-05-17T14:16:42Z", "kind": "label", "issue": 3176, "issue_url": "https://github.com/facebookresearch/hydra/issues/3176", "title": "Upgrade and modernize Ax Sweeper", "detail": "added \"enhancement\"; removed \"triage\""}
+{"ts": "2026-05-17T14:16:42Z", "kind": "label", "issue": 3177, "issue_url": "https://github.com/facebookresearch/hydra/issues/3177", "title": "Consider supporting newer Ax features in Ax Sweeper", "detail": "removed \"triage\""}

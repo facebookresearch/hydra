@@ -1,6 +1,6 @@
 {
   "closed_at": {},
-  "generated_at": "2026-05-17T13:07:41Z",
+  "generated_at": "2026-05-17T14:16:42Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3391,10 +3391,10 @@
       "updated_at": "2026-05-16T02:12:58Z"
     },
     "3176": {
-      "category": "Refactor",
+      "category": "Enhancement",
       "created_at": "2026-05-15T18:05:27Z",
       "labels": [
-        "triage"
+        "enhancement"
       ],
       "pr_numbers": [
         "3178"
@@ -3402,7 +3402,7 @@
       "state": "OPEN",
       "status": "in progress",
       "title": "Upgrade and modernize Ax Sweeper",
-      "updated_at": "2026-05-16T02:12:58Z"
+      "updated_at": "2026-05-17T14:14:35Z"
     },
     "3177": {
       "category": "Enhancement",
@@ -3410,14 +3410,13 @@
       "labels": [
         "ax",
         "help wanted",
-        "plugin",
-        "triage"
+        "plugin"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "Consider supporting newer Ax features in Ax Sweeper",
-      "updated_at": "2026-05-16T02:12:59Z"
+      "updated_at": "2026-05-17T14:14:02Z"
     },
     "385": {
       "category": "Enhancement",

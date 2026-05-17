@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-05-17",
-  "generated_at": "2026-05-17T13:07:41Z",
+  "generated_at": "2026-05-17T14:16:42Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 289,
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 136,
-        "percentage": 47.1
+        "count": 137,
+        "percentage": 47.4
       },
       {
         "category": "Documentation",
@@ -32,8 +32,8 @@
       {
         "category": "Refactor",
         "emoji": "🔧",
-        "count": 2,
-        "percentage": 0.7
+        "count": 1,
+        "percentage": 0.3
       },
       {
         "category": "Build",
@@ -116,8 +116,8 @@
     {
       "number": 3176,
       "title": "Upgrade and modernize Ax Sweeper",
-      "category": "Refactor",
-      "category_emoji": "🔧",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "in progress",
       "status_emoji": "🔄",
       "prs": [
@@ -127,9 +127,9 @@
         }
       ],
       "created": "2026-05-15",
-      "updated": "2026-05-16",
+      "updated": "2026-05-17",
       "labels": [
-        "triage"
+        "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3176"
     },
@@ -4616,17 +4616,32 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-05-15",
-      "updated": "2026-05-16",
+      "updated": "2026-05-17",
       "labels": [
         "help wanted",
         "plugin",
-        "triage",
         "ax"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3177"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-05-17T14:16:42Z",
+      "kind": "label",
+      "issue": 3177,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3177",
+      "title": "Consider supporting newer Ax features in Ax Sweeper",
+      "detail": "removed \"triage\""
+    },
+    {
+      "ts": "2026-05-17T14:16:42Z",
+      "kind": "label",
+      "issue": 3176,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3176",
+      "title": "Upgrade and modernize Ax Sweeper",
+      "detail": "added \"enhancement\"; removed \"triage\""
+    },
     {
       "ts": "2026-05-17T04:56:19Z",
       "kind": "label",
