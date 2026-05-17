@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-05-17",
-  "generated_at": "2026-05-17T18:05:29Z",
+  "generated_at": "2026-05-17T20:33:38Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 288,
@@ -8,14 +8,14 @@
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 120,
-        "percentage": 41.7
+        "count": 117,
+        "percentage": 40.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 136,
-        "percentage": 47.2
+        "count": 139,
+        "percentage": 48.3
       },
       {
         "category": "Documentation",
@@ -26,8 +26,8 @@
       {
         "category": "Question",
         "emoji": "❓",
-        "count": 12,
-        "percentage": 4.2
+        "count": 14,
+        "percentage": 4.9
       },
       {
         "category": "Refactor",
@@ -38,8 +38,8 @@
       {
         "category": "Build",
         "emoji": "🏗️",
-        "count": 7,
-        "percentage": 2.4
+        "count": 5,
+        "percentage": 1.7
       }
     ],
     "by_status": [
@@ -582,8 +582,8 @@
     {
       "number": 468,
       "title": "Specify the schema for returning the result of optimization.",
-      "category": "Build",
-      "category_emoji": "🏗️",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
@@ -804,8 +804,8 @@
     {
       "number": 1112,
       "title": "Nightly builds",
-      "category": "Build",
-      "category_emoji": "🏗️",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
@@ -835,8 +835,8 @@
     {
       "number": 1164,
       "title": "Move non-user facing tools out of `hydra/tools`",
-      "category": "Build",
-      "category_emoji": "🏗️",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
@@ -975,8 +975,8 @@
     {
       "number": 1512,
       "title": "Support multirun partial failure in Ax Sweeper",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
@@ -1100,8 +1100,8 @@
     {
       "number": 1767,
       "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. ",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "category": "Build",
+      "category_emoji": "🏗️",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
@@ -3269,8 +3269,8 @@
     {
       "number": 2810,
       "title": "hydra.errors.MissingConfigException: In 'hydra/config': Could not find 'hydra/sweeper/hgemm'",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
@@ -3507,8 +3507,8 @@
     {
       "number": 2874,
       "title": "[Help requested] Dynamic hydra launcher configuration",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "category": "Question",
+      "category_emoji": "❓",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
@@ -3581,8 +3581,8 @@
     {
       "number": 2892,
       "title": "[Help requested] Optuna Sweeper Multiple GPU Parallelism",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "category": "Question",
+      "category_emoji": "❓",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],

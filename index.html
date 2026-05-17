@@ -42,7 +42,6 @@
   ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
   :root {
     --left-w: 280px;
-    --right-w: 240px;
     --activity-h: 150px;
   }
   html, body { height: 100%; margin: 0; }
@@ -67,7 +66,7 @@
     flex: 1;
     min-height: 0;
     display: grid;
-    grid-template-columns: var(--left-w) 6px minmax(0, 1fr) 6px var(--right-w);
+    grid-template-columns: var(--left-w) 6px minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr);
     gap: 0;
     padding: 0 1.5rem;
@@ -91,7 +90,6 @@
     height: 100%;
   }
   aside.stats-aside { padding: 0.75rem 0.75rem 0.75rem 0; }
-  aside:not(.stats-aside) { padding: 0.75rem 0 0.75rem 0.75rem; }
   aside {
     font-size: 0.78rem;
     height: 100%;
@@ -285,6 +283,16 @@
   }
   button.theme-toggle:hover { border-color: var(--accent); }
   .header-actions { display: flex; gap: 0.4rem; align-items: center; }
+  .error-banner {
+    margin: 0.75rem 1.5rem 0;
+    border: 1px solid #f85149;
+    background: rgba(248, 81, 73, 0.12);
+    color: var(--fg);
+    border-radius: 6px;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+  }
+  .error-banner[hidden] { display: none; }
 </style>
 <script>
   // Set theme before render to avoid flash.
@@ -302,6 +310,7 @@
     <div class="meta">
       Generated <span id="generated-on">…</span> ·
       <span id="open-total">…</span> open issues ·
+      <span id="repo-summary">…</span> ·
       <a id="repo-link" href="#" target="_blank">view on GitHub</a>
     </div>
   </div>
@@ -310,6 +319,8 @@
     <button class="theme-toggle" id="theme-toggle" title="Toggle theme"></button>
   </div>
 </header>
+
+<div class="error-banner" id="load-error" hidden></div>
 
 <div class="layout">
   <aside class="stats-aside">
@@ -327,8 +338,9 @@
 
   <main>
     <div class="controls">
-      <input type="search" class="search" id="search" placeholder="Search title or #number…">
+      <input type="search" class="search" id="search" placeholder="Search title, repo, or #number…">
     </div>
+    <div class="controls" id="repo-pills"></div>
     <div class="controls" id="openness-pills"></div>
     <div class="controls" id="category-pills"></div>
     <div class="controls" id="status-pills"></div>
@@ -338,6 +350,7 @@
     <table class="issues" id="issues">
       <thead>
         <tr>
+          <th data-key="repo">Repo</th>
           <th data-key="number">#</th>
           <th data-key="title">Title</th>
           <th data-key="category">Category</th>
@@ -352,19 +365,6 @@
     </table>
 
   </main>
-
-  <div class="col-resize" id="right-resize" title="Drag to resize"></div>
-
-  <aside>
-    <div class="box">
-      <h3>Status legend</h3>
-      <table id="status-legend"></table>
-    </div>
-    <div class="box">
-      <h3>Category legend</h3>
-      <table id="category-legend"></table>
-    </div>
-  </aside>
 </div>
 
 <div class="activity-panel" id="activity-panel">
@@ -386,7 +386,7 @@ const STATUS_LEGEND = [
   ["🚫", "blocked", "awaiting response, no PR"],
   ["✅", "done", "Closed or merged PR"],
 ];
-const CATEGORY_LEGEND = [
+const DEFAULT_CATEGORY_LEGEND = [
   ["🐛", "Bug"],
   ["✨", "Enhancement"],
   ["🔧", "Refactor"],
@@ -398,35 +398,56 @@ const CATEGORY_LEGEND = [
 const state = {
   data: null,
   openness: "open",
+  repos: new Set(),
   cats: new Set(),
   statuses: new Set(),
   search: "",
   sortKey: "updated",
   sortDir: "desc",
+  repoOptions: [],
+  categories: [],
 };
 
 const esc = s => String(s).replace(/[&<>"]/g, c =>
   ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
 
-function renderLegends() {
-  document.getElementById("status-legend").innerHTML = STATUS_LEGEND
-    .map(([e, s, m]) => `<tr><td>${e}</td><td><code>${esc(s)}</code></td><td>${esc(m)}</td></tr>`)
-    .join("");
-  document.getElementById("category-legend").innerHTML = CATEGORY_LEGEND
-    .map(([e, c]) => `<tr><td>${e}</td><td><code>${esc(c)}</code></td></tr>`)
-    .join("");
-}
-
 function renderStats() {
-  const c = state.data.summary.by_category;
+  const summary = computeSummary(repoFilteredIssues(), state.categories);
+  const c = summary.by_category;
+  document.getElementById("open-total").textContent = summary.open_total;
   document.getElementById("by-category").innerHTML =
     `<tr><th>Category</th><th>Count</th><th>%</th></tr>` +
     c.map(r => `<tr><td>${r.emoji} ${esc(r.category)}</td><td>${r.count}</td><td>${r.percentage.toFixed(1)}%</td></tr>`).join("") +
-    `<tr><td><b>Total</b></td><td><b>${state.data.summary.open_total}</b></td><td></td></tr>`;
-  const s = state.data.summary.by_status;
+    `<tr><td><b>Total</b></td><td><b>${summary.open_total}</b></td><td></td></tr>`;
+  const s = summary.by_status;
   document.getElementById("by-status").innerHTML =
     `<tr><th>Status</th><th>Count</th></tr>` +
     s.map(r => `<tr><td>${r.emoji} ${esc(r.status)}</td><td>${r.count}</td></tr>`).join("");
+}
+
+function renderRepoPills() {
+  const el = document.getElementById("repo-pills");
+  if (state.repoOptions.length <= 1) {
+    el.innerHTML = "";
+    return;
+  }
+  const allActive = state.repos.size === 0;
+  el.innerHTML = `<span class="label-text">Repo:</span>` +
+    `<button class="pill${allActive ? " active" : ""}" data-repo-all="1">All</button>` +
+    state.repoOptions.map(repo => {
+      const a = state.repos.has(repo) ? " active" : "";
+      return `<button class="pill${a}" data-repo="${esc(repo)}">${esc(repo)}</button>`;
+    }).join("");
+  el.querySelector("[data-repo-all]").addEventListener("click", () => {
+    state.repos.clear();
+    renderRepoPills(); renderStats(); renderIssues(); renderActivity();
+  });
+  el.querySelectorAll("[data-repo]").forEach(b =>
+    b.addEventListener("click", () => {
+      const repo = b.dataset.repo;
+      state.repos.has(repo) ? state.repos.delete(repo) : state.repos.add(repo);
+      renderRepoPills(); renderStats(); renderIssues(); renderActivity();
+    }));
 }
 
 function renderOpennessPills() {
@@ -440,16 +461,16 @@ function renderOpennessPills() {
   el.querySelectorAll("[data-openness]").forEach(b =>
     b.addEventListener("click", () => {
       state.openness = b.dataset.openness;
-      renderOpennessPills(); renderIssues();
+      renderOpennessPills(); renderIssues(); renderActivity();
     }));
 }
 
 function renderPills() {
   const cat = document.getElementById("category-pills");
   cat.innerHTML = `<span class="label-text">Category:</span>` +
-    CATEGORY_LEGEND.map(([e, c]) => {
-      const a = state.cats.has(c) ? " active" : "";
-      return `<button class="pill${a}" data-cat="${esc(c)}">${e} ${esc(c)}</button>`;
+    state.categories.map(({emoji, category}) => {
+      const a = state.cats.has(category) ? " active" : "";
+      return `<button class="pill${a}" data-cat="${esc(category)}">${emoji} ${esc(category)}</button>`;
     }).join("");
   cat.querySelectorAll("[data-cat]").forEach(b =>
     b.addEventListener("click", () => {
@@ -472,15 +493,21 @@ function renderPills() {
     }));
 }
 
-function filtered() {
+function repoFilteredIssues() {
   let xs = state.data.issues;
+  if (state.repos.size) xs = xs.filter(i => state.repos.has(i.repo));
+  return xs;
+}
+
+function filtered() {
+  let xs = repoFilteredIssues();
   if (state.openness === "open")        xs = xs.filter(i => i.status !== "done");
   else if (state.openness === "closed") xs = xs.filter(i => i.status === "done");
   if (state.cats.size)     xs = xs.filter(i => state.cats.has(i.category));
   if (state.statuses.size) xs = xs.filter(i => state.statuses.has(i.status));
   if (state.search.trim()) {
     const q = state.search.toLowerCase();
-    xs = xs.filter(i => i.title.toLowerCase().includes(q) || String(i.number).includes(q));
+    xs = xs.filter(i => i.title.toLowerCase().includes(q) || String(i.number).includes(q) || i.repo.toLowerCase().includes(q));
   }
   const k = state.sortKey, d = state.sortDir === "asc" ? 1 : -1;
   return [...xs].sort((a, b) => (a[k] < b[k] ? -1 : a[k] > b[k] ? 1 : 0) * d);
@@ -488,11 +515,12 @@ function filtered() {
 
 function renderIssues() {
   const xs = filtered();
-  const total = state.data.issues.length;
+  const total = repoFilteredIssues().length;
   document.getElementById("count").innerHTML =
     `<b>${xs.length}</b> ${xs.length === 1 ? "issue" : "issues"} <span class="muted">match · ${total} total in dataset</span>`;
   document.querySelector("table.issues tbody").innerHTML = xs.map(i => `
     <tr>
+      <td>${esc(i.repo)}</td>
       <td><a href="${i.url}" target="_blank">#${i.number}</a></td>
       <td>${esc(i.title)}</td>
       <td>${i.category_emoji} ${esc(i.category)}</td>
@@ -511,7 +539,8 @@ function renderIssues() {
 }
 
 function renderActivity() {
-  const xs = state.data.updates || [];
+  let xs = state.data.updates || [];
+  if (state.repos.size) xs = xs.filter(u => state.repos.has(u.repo));
   document.getElementById("activity-count").textContent =
     xs.length === 1 ? "1 event" : `${xs.length} events`;
   document.getElementById("activity").innerHTML = xs.map(u => `
@@ -519,6 +548,7 @@ function renderActivity() {
       <span class="ts">${esc(u.ts)}</span>
       <span class="kind kind-${esc(u.kind)}">${esc(u.kind)}</span>
       <span>
+        ${u.repo ? `<code>${esc(u.repo)}</code> ` : ""}
         <a href="${u.issue_url}" target="_blank">#${u.issue}</a>
         ${esc(u.title)}
         ${u.detail ? ` — <i>${esc(u.detail)}</i>` : ""}
@@ -589,32 +619,167 @@ function bindThemeToggle() {
 
 function bindResetLayout() {
   document.getElementById("reset-layout").addEventListener("click", () => {
-    ["--left-w", "--right-w", "--activity-h"].forEach(v => {
+    ["--left-w", "--activity-h"].forEach(v => {
       localStorage.removeItem("bk-" + v);
       document.documentElement.style.removeProperty(v);
     });
   });
 }
 
+async function fetchJson(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`Could not load ${url}: HTTP ${r.status}`);
+  return await r.json();
+}
+
+function categoryListFromDatasets(datasets) {
+  const byName = new Map();
+  function add(category, emoji) {
+    if (!category || byName.has(category)) return;
+    byName.set(category, {category, emoji: emoji || ""});
+  }
+  datasets.forEach(data => {
+    (data.summary?.by_category || []).forEach(row => add(row.category, row.emoji));
+    (data.issues || []).forEach(issue => add(issue.category, issue.category_emoji));
+  });
+  if (!byName.size) DEFAULT_CATEGORY_LEGEND.forEach(([emoji, category]) => add(category, emoji));
+  return [...byName.values()];
+}
+
+function computeSummary(issues, categories) {
+  const openRows = issues.filter(issue => issue.status !== "done");
+  const openTotal = openRows.length;
+  const categoryCounts = new Map();
+  openRows.forEach(issue => categoryCounts.set(issue.category, (categoryCounts.get(issue.category) || 0) + 1));
+  const categoryNames = new Set(categories.map(c => c.category));
+  openRows.forEach(issue => categoryNames.add(issue.category));
+  const byCategory = [...categoryNames].map(category => {
+    const count = categoryCounts.get(category) || 0;
+    const meta = categories.find(c => c.category === category) || {emoji: ""};
+    return {
+      category,
+      emoji: meta.emoji || "",
+      count,
+      percentage: openTotal ? count / openTotal * 100 : 0,
+    };
+  });
+  const byStatus = STATUS_LEGEND.map(([emoji, status]) => ({
+    status,
+    emoji,
+    count: issues.filter(issue => issue.status === status).length,
+  }));
+  return {open_total: openTotal, by_category: byCategory, by_status: byStatus};
+}
+
+function normalizeDataset(data, sourceUrl, repoHint = "") {
+  const repo = data.repo || repoHint || "";
+  const issues = (data.issues || []).map(issue => ({
+    ...issue,
+    repo: issue.repo || repo,
+    prs: issue.prs || [],
+    labels: issue.labels || [],
+  }));
+  const updates = (data.updates || []).map(update => ({
+    ...update,
+    repo: update.repo || repo,
+  }));
+  return {...data, source_url: sourceUrl, repo, issues, updates};
+}
+
+function combineDatasets(datasets, manifest = null) {
+  const categories = categoryListFromDatasets(datasets);
+  const issues = datasets.flatMap(data => data.issues);
+  const updates = datasets
+    .flatMap(data => data.updates || [])
+    .sort((a, b) => String(b.ts || "").localeCompare(String(a.ts || "")));
+  const generatedDates = datasets
+    .map(data => data.generated_at || "")
+    .sort();
+  const generatedAt = generatedDates[generatedDates.length - 1] || "";
+  const generatedOn = generatedAt ? generatedAt.slice(0, 10) : (datasets[0]?.generated_on || "");
+  return {
+    generated_on: generatedOn,
+    generated_at: generatedAt,
+    repo: datasets.length === 1 ? datasets[0].repo : "",
+    repos: datasets.map(data => ({
+      repo: data.repo,
+      source_url: data.source_url,
+      open_total: (data.summary || computeSummary(data.issues, categories)).open_total,
+    })),
+    title: manifest?.title || "",
+    summary: computeSummary(issues, categories),
+    issues,
+    updates,
+    categories,
+  };
+}
+
+async function loadSingleRepoData() {
+  const data = await fetchJson("backlog.json");
+  return combineDatasets([normalizeDataset(data, "backlog.json")]);
+}
+
+async function loadBacklogData() {
+  const manifestResponse = await fetch("atlas.json");
+  if (manifestResponse.status === 404) {
+    return await loadSingleRepoData();
+  }
+  if (!manifestResponse.ok) {
+    throw new Error(`Could not load atlas.json: HTTP ${manifestResponse.status}`);
+  }
+  const manifest = await manifestResponse.json();
+  if (!Array.isArray(manifest.repos) || !manifest.repos.length) {
+    throw new Error("atlas.json must include at least one repo entry");
+  }
+  const datasets = await Promise.all(manifest.repos.map(async entry => {
+    const url = entry.backlog_url || entry.url;
+    if (!url) throw new Error("atlas.json repo entries must include backlog_url");
+    return normalizeDataset(await fetchJson(url), url, entry.repo || "");
+  }));
+  return combineDatasets(datasets, manifest);
+}
+
+function showLoadError(error) {
+  const el = document.getElementById("load-error");
+  const message = error && error.message ? error.message : String(error);
+  el.textContent = `Could not load Backlog Atlas data: ${message}`;
+  el.hidden = false;
+}
+
 async function init() {
-  renderLegends();
   renderThemeToggle();
   bindThemeToggle();
   bindResetLayout();
   setupResize("left-resize", "--left-w", "x", 1, 160, 480);
-  setupResize("right-resize", "--right-w", "x", -1, 140, 400);
   setupResize("activity-resize", "--activity-h", "y", -1, 60, 600);
-  const r = await fetch("backlog.json");
-  state.data = await r.json();
+  try {
+    state.data = await loadBacklogData();
+  } catch (error) {
+    showLoadError(error);
+    return;
+  }
+  state.categories = state.data.categories || categoryListFromDatasets([state.data]);
+  state.repoOptions = [...new Set((state.data.repos || []).map(r => r.repo).filter(Boolean))];
   const repo = state.data.repo || "";
-  if (repo) {
+  if (state.repoOptions.length > 1) {
+    const title = state.data.title || "Backlog";
+    document.title = title;
+    document.getElementById("page-title").textContent = title;
+    document.getElementById("repo-summary").textContent = `${state.repoOptions.length} repositories`;
+    document.getElementById("repo-link").style.display = "none";
+  } else if (repo) {
     document.title = `Backlog · ${repo}`;
     document.getElementById("page-title").textContent = `Backlog · ${repo}`;
+    document.getElementById("repo-summary").textContent = repo;
     document.getElementById("repo-link").href = `https://github.com/${repo}/issues`;
+  } else {
+    document.getElementById("repo-summary").textContent = "single dataset";
+    document.getElementById("repo-link").style.display = "none";
   }
   document.getElementById("generated-on").textContent = state.data.generated_on;
   document.getElementById("open-total").textContent = state.data.summary.open_total;
   renderStats();
+  renderRepoPills();
   renderOpennessPills();
   renderPills();
   bindSort();
