@@ -1,6 +1,6 @@
 {
   "closed_at": {},
-  "generated_at": "2026-05-16T19:38:05Z",
+  "generated_at": "2026-05-17T04:56:19Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2056,13 +2056,14 @@
       "category": "Enhancement",
       "created_at": "2023-10-09T10:40:01Z",
       "labels": [
+        "awaiting_response",
         "enhancement"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] Loguru and Hydra ",
-      "updated_at": "2026-03-19T12:40:40Z"
+      "updated_at": "2026-05-17T04:54:59Z"
     },
     "2767": {
       "category": "Enhancement",

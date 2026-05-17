@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-05-16",
-  "generated_at": "2026-05-16T19:38:05Z",
+  "generated_on": "2026-05-17",
+  "generated_at": "2026-05-17T04:56:19Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 289,
@@ -3030,9 +3030,10 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2023-10-09",
-      "updated": "2026-03-19",
+      "updated": "2026-05-17",
       "labels": [
-        "enhancement"
+        "enhancement",
+        "awaiting_response"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2765"
     },
@@ -4625,5 +4626,14 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3177"
     }
   ],
-  "updates": []
+  "updates": [
+    {
+      "ts": "2026-05-17T04:56:19Z",
+      "kind": "label",
+      "issue": 2765,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2765",
+      "title": "[Feature Request] Loguru and Hydra ",
+      "detail": "added \"awaiting_response\""
+    }
+  ]
 }
