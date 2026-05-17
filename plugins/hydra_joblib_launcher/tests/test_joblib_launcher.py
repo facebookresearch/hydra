@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from pathlib import Path
 from typing import Any
 
 from hydra.core.plugins import Plugins
@@ -7,7 +8,11 @@ from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
-from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
+from hydra.test_utils.test_utils import (
+    TSweepRunner,
+    chdir_plugin_root,
+    run_python_script,
+)
 from pytest import mark
 
 from hydra_plugins.hydra_joblib_launcher.joblib_launcher import JoblibLauncher
@@ -68,6 +73,21 @@ def test_example_app(hydra_sweep_runner: TSweepRunner, tmpdir: Any) -> None:
         assert sweep.returns is not None and len(sweep.returns[0]) == 4
         for ret in sweep.returns[0]:
             assert tuple(ret.overrides) in overrides
+
+
+def test_example_app_loads_its_config(tmp_path: Path) -> None:
+    stdout, _stderr = run_python_script(
+        [
+            "example/my_app.py",
+            "--multirun",
+            "task=1,2",
+            f'hydra.sweep.dir="{tmp_path}"',
+        ],
+    )
+
+    assert "Joblib.Parallel" in stdout
+    assert (tmp_path / "0" / "my_app.log").exists()
+    assert (tmp_path / "1" / "my_app.log").exists()
 
 
 @mark.parametrize(
