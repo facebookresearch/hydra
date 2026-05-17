@@ -33,7 +33,7 @@ You can discover the Joblib Launcher parameters with:
 ```yaml title="$ python your_app.py hydra/launcher=joblib --cfg hydra -p hydra.launcher"
 # @package hydra.launcher
 _target_: hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher
-n_jobs: 10
+n_jobs: -1
 backend: null
 prefer: processes
 require: null
