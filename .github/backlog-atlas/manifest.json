@@ -21,17 +21,11 @@
       "optional": true,
       "path": ".github/backlog-atlas/atlas.yaml",
       "remove": "clean"
-    },
-    {
-      "branch": "default",
-      "optional": true,
-      "path": ".github/workflows/temporary-backlog-atlas-upgrade-cleanup.yml",
-      "remove": "uninstall"
     }
   ],
   "install": {
-    "install_source": "backlog-atlas==0.15",
-    "installed_version": "0.15",
+    "install_source": "backlog-atlas==0.16",
+    "installed_version": "0.16",
     "source_type": "pypi",
     "workflow_path": ".github/workflows/update-backlog-atlas.yml"
   },
