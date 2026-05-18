@@ -1,0 +1,98 @@
+name: Backlog Atlas Upgrade Cleanup
+
+on:
+  push:
+    paths:
+      - .github/workflows/update-backlog-atlas.yml
+      - .github/workflows/temporary-backlog-atlas-upgrade-cleanup.yml
+      - .github/backlog-atlas/manifest.json
+  workflow_dispatch:
+
+concurrency:
+  group: backlog-atlas-upgrade-cleanup
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  BACKLOG_ATLAS_BRANCH: backlog-atlas
+  BACKLOG_ATLAS_CLEANUP_WORKFLOW: ".github/workflows/temporary-backlog-atlas-upgrade-cleanup.yml"
+  BACKLOG_ATLAS_REMOVE_PACKAGES_JSON: '[".backlog-atlas/packages/backlog_atlas-0.11-0.g54b213d52759-py3-none-any.whl"]'
+
+jobs:
+  cleanup:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Remove old bundled install packages
+        run: |
+          python3 - <<'PY' > /tmp/backlog-atlas-remove-packages
+          import json
+          import os
+          from pathlib import PurePosixPath
+
+          def safe(path):
+              if not isinstance(path, str) or "\n" in path or path.startswith("/"):
+                  return False
+              parts = PurePosixPath(path).parts
+              return ".." not in parts and path not in {"", "."}
+
+          try:
+              paths = json.loads(os.environ["BACKLOG_ATLAS_REMOVE_PACKAGES_JSON"])
+          except json.JSONDecodeError:
+              paths = []
+
+          if not isinstance(paths, list):
+              paths = []
+
+          for path in dict.fromkeys(paths):
+              if (
+                  safe(path)
+                  and path.startswith(".backlog-atlas/packages/")
+                  and path.endswith(".whl")
+              ):
+                  print(path)
+          PY
+
+          if ! [ -s /tmp/backlog-atlas-remove-packages ]; then
+            echo "::notice title=Backlog Atlas upgrade cleanup::No old bundled install packages were listed."
+            exit 0
+          fi
+
+          if git ls-remote --exit-code --heads origin "$BACKLOG_ATLAS_BRANCH" >/dev/null 2>&1; then
+            git fetch origin "$BACKLOG_ATLAS_BRANCH"
+            git worktree add ../backlog-atlas-branch FETCH_HEAD
+            cd ../backlog-atlas-branch
+            while IFS= read -r package; do
+              if [ -z "$package" ]; then
+                  continue
+              fi
+              git rm --ignore-unmatch -- "$package"
+            done < /tmp/backlog-atlas-remove-packages
+            if git diff --cached --quiet; then
+              echo "::notice title=Backlog Atlas upgrade cleanup::No old bundled install packages were present."
+            else
+              git commit -m "backlog: remove old bundled install packages [skip ci]"
+              git push origin HEAD:"$BACKLOG_ATLAS_BRANCH"
+              echo "::notice title=Backlog Atlas upgrade cleanup::Removed old bundled install packages from $BACKLOG_ATLAS_BRANCH."
+            fi
+          else
+            echo "::notice title=Backlog Atlas upgrade cleanup::$BACKLOG_ATLAS_BRANCH branch was absent."
+          fi
+      - name: Remove temporary upgrade cleanup workflow
+        run: |
+          git rm --ignore-unmatch "$BACKLOG_ATLAS_CLEANUP_WORKFLOW"
+          if git diff --cached --quiet; then
+            echo "::notice title=Backlog Atlas upgrade cleanup::Temporary cleanup workflow was already absent."
+          else
+            git commit -m "backlog: remove temporary upgrade cleanup workflow [skip ci]"
+            git push
+          fi
