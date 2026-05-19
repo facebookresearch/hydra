@@ -2,7 +2,7 @@
   "closed_at": {
     "3176": "2026-05-17"
   },
-  "generated_at": "2026-05-19T08:14:30Z",
+  "generated_at": "2026-05-19T21:55:52Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3405,6 +3405,26 @@
       "status": "not started",
       "title": "Consider supporting newer Ax features in Ax Sweeper",
       "updated_at": "2026-05-17T14:14:02Z"
+    },
+    "3188": {
+      "category": "Enhancement",
+      "created_at": "2026-05-19T21:53:58Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Feature request: add lifecycle callbacks before and after config composition",
+      "updated_at": "2026-05-19T21:53:58Z"
+    },
+    "3189": {
+      "category": "Enhancement",
+      "created_at": "2026-05-19T21:54:10Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Feature request: support env files as first-class Hydra inputs",
+      "updated_at": "2026-05-19T21:54:10Z"
     },
     "385": {
       "category": "Enhancement",

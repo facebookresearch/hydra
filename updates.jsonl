@@ -2,3 +2,5 @@
 {"ts": "2026-05-17T14:16:42Z", "kind": "label", "issue": 3176, "issue_url": "https://github.com/facebookresearch/hydra/issues/3176", "title": "Upgrade and modernize Ax Sweeper", "detail": "added \"enhancement\"; removed \"triage\""}
 {"ts": "2026-05-17T14:16:42Z", "kind": "label", "issue": 3177, "issue_url": "https://github.com/facebookresearch/hydra/issues/3177", "title": "Consider supporting newer Ax features in Ax Sweeper", "detail": "removed \"triage\""}
 {"ts": "2026-05-17T18:05:29Z", "kind": "closed", "issue": 3176, "issue_url": "https://github.com/facebookresearch/hydra/issues/3176", "title": "Upgrade and modernize Ax Sweeper"}
+{"ts": "2026-05-19T21:55:52Z", "kind": "new", "issue": 3188, "issue_url": "https://github.com/facebookresearch/hydra/issues/3188", "title": "Feature request: add lifecycle callbacks before and after config composition"}
+{"ts": "2026-05-19T21:55:52Z", "kind": "new", "issue": 3189, "issue_url": "https://github.com/facebookresearch/hydra/issues/3189", "title": "Feature request: support env files as first-class Hydra inputs"}

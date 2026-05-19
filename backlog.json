@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-05-19",
-  "generated_at": "2026-05-19T08:14:30Z",
+  "generated_at": "2026-05-19T21:55:52Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 288,
+    "open_total": 290,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 117,
-        "percentage": 40.6
+        "percentage": 40.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 139,
-        "percentage": 48.3
+        "count": 141,
+        "percentage": 48.6
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 4.2
+        "percentage": 4.1
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 14,
-        "percentage": 4.9
+        "percentage": 4.8
       },
       {
         "category": "Refactor",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 265
+        "count": 267
       },
       {
         "status": "done",
@@ -4605,6 +4605,32 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3177"
     },
     {
+      "number": 3188,
+      "title": "Feature request: add lifecycle callbacks before and after config composition",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-05-19",
+      "updated": "2026-05-19",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3188"
+    },
+    {
+      "number": 3189,
+      "title": "Feature request: support env files as first-class Hydra inputs",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-05-19",
+      "updated": "2026-05-19",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3189"
+    },
+    {
       "number": 3176,
       "title": "Upgrade and modernize Ax Sweeper",
       "category": "Enhancement",
@@ -4626,6 +4652,20 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-05-19T21:55:52Z",
+      "kind": "new",
+      "issue": 3189,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3189",
+      "title": "Feature request: support env files as first-class Hydra inputs"
+    },
+    {
+      "ts": "2026-05-19T21:55:52Z",
+      "kind": "new",
+      "issue": 3188,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3188",
+      "title": "Feature request: add lifecycle callbacks before and after config composition"
+    },
     {
       "ts": "2026-05-17T18:05:29Z",
       "kind": "closed",
