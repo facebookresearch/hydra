@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Backlog Atlas icon">
+  <g transform="rotate(-12 32 45)">
+    <rect x="-7" y="35" width="76" height="20" rx="10" fill="#9a5a1e"/>
+    <rect x="-7" y="35" width="76" height="20" rx="10" fill="#713f12" opacity=".18"/>
+    <path d="M3 41h46M2 48h43" fill="none" stroke="#713f12" stroke-opacity=".36" stroke-width="2" stroke-linecap="round"/>
+    <ellipse cx="58" cy="45" rx="8.5" ry="10" fill="#713f12"/>
+    <ellipse cx="58" cy="45" rx="4.6" ry="5.2" fill="none" stroke="#fbbf24" stroke-opacity=".65" stroke-width="1.8"/>
+  </g>
+
+  <g transform="translate(32 31) scale(1.08) rotate(-8) translate(-32 -32)">
+    <path d="M32 11c-7.5-5-15.5-6-24-2v38c8.5-4 16.5-3 24 6V11Z" fill="#fef3c7" stroke="#60a5fa" stroke-width="3.4" stroke-linejoin="round"/>
+    <path d="M32 11c7.5-5 15.5-6 24-2v38c-8.5-4-16.5-3-24 6V11Z" fill="#fde68a" stroke="#60a5fa" stroke-width="3.4" stroke-linejoin="round"/>
+    <path d="M32 11v42" fill="none" stroke="#1d4ed8" stroke-opacity=".7" stroke-width="3.2" stroke-linecap="round"/>
+
+    <path d="M15 22c4.5-1.5 8.5-1 13 1M14 34c5-1.5 9.5-1 14 1M36 23c4.5-2 9-2 13.5-1M36 35c4.5-2 9-2 13.5-1" fill="none" stroke="#1e3a8a" stroke-opacity=".35" stroke-width="2.2" stroke-linecap="round"/>
+
+    <circle cx="32" cy="31" r="13" fill="#38bdf8"/>
+    <path d="M23 25c4-4 9-4 12-1 2 2 0 5-4 5-4 1-5 4-3 7 2 4-3 5-7 1-4-3-3-9 2-12Z" fill="#22c55e"/>
+    <path d="M39 29c4 0 7 2 7 5 0 4-3 7-7 8-3-2-4-5-2-7 2-2 1-4 2-6Z" fill="#16a34a"/>
+    <circle cx="32" cy="31" r="13" fill="none" stroke="#0f766e" stroke-width="2.4"/>
+    <path d="M19 31h26M32 18c4 4 6 9 6 13s-2 9-6 13M32 18c-4 4-6 9-6 13s2 9 6 13" fill="none" stroke="#0f766e" stroke-opacity=".55" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+</svg>
