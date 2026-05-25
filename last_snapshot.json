@@ -2,7 +2,7 @@
   "closed_at": {
     "3176": "2026-05-17"
   },
-  "generated_at": "2026-05-25T08:35:33Z",
+  "generated_at": "2026-05-25T10:24:09Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3425,6 +3425,16 @@
       "status": "not started",
       "title": "Feature request: support env files as first-class Hydra inputs",
       "updated_at": "2026-05-19T21:54:10Z"
+    },
+    "3192": {
+      "category": "Documentation",
+      "created_at": "2026-05-25T10:22:47Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "docs: update Twitter reference to X in README",
+      "updated_at": "2026-05-25T10:22:47Z"
     },
     "385": {
       "category": "Enhancement",

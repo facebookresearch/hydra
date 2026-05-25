@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-05-25",
-  "generated_at": "2026-05-25T08:35:33Z",
+  "generated_at": "2026-05-25T10:24:09Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 290,
+    "open_total": 291,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 117,
-        "percentage": 40.3
+        "percentage": 40.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 141,
-        "percentage": 48.6
+        "percentage": 48.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 12,
-        "percentage": 4.1
+        "count": 13,
+        "percentage": 4.5
       },
       {
         "category": "Question",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 267
+        "count": 268
       },
       {
         "status": "done",
@@ -4631,6 +4631,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3189"
     },
     {
+      "number": 3192,
+      "title": "docs: update Twitter reference to X in README",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-05-25",
+      "updated": "2026-05-25",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3192"
+    },
+    {
       "number": 3176,
       "title": "Upgrade and modernize Ax Sweeper",
       "category": "Enhancement",
@@ -4652,6 +4665,13 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-05-25T10:24:09Z",
+      "kind": "new",
+      "issue": 3192,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3192",
+      "title": "docs: update Twitter reference to X in README"
+    },
     {
       "ts": "2026-05-19T21:55:52Z",
       "kind": "new",
