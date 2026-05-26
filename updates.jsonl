@@ -5,3 +5,5 @@
 {"ts": "2026-05-19T21:55:52Z", "kind": "new", "issue": 3188, "issue_url": "https://github.com/facebookresearch/hydra/issues/3188", "title": "Feature request: add lifecycle callbacks before and after config composition"}
 {"ts": "2026-05-19T21:55:52Z", "kind": "new", "issue": 3189, "issue_url": "https://github.com/facebookresearch/hydra/issues/3189", "title": "Feature request: support env files as first-class Hydra inputs"}
 {"ts": "2026-05-25T10:24:09Z", "kind": "new", "issue": 3192, "issue_url": "https://github.com/facebookresearch/hydra/issues/3192", "title": "docs: update Twitter reference to X in README"}
+{"ts": "2026-05-26T08:17:04Z", "kind": "status", "issue": 3192, "issue_url": "https://github.com/facebookresearch/hydra/issues/3192", "title": "docs: update Twitter reference to X in README", "detail": "not started → community PR", "pr": {"number": 3193, "url": "https://github.com/facebookresearch/hydra/pull/3193"}}
+{"ts": "2026-05-26T08:17:04Z", "kind": "pr", "issue": 3192, "issue_url": "https://github.com/facebookresearch/hydra/issues/3192", "title": "docs: update Twitter reference to X in README", "detail": "linked #3193"}

@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-05-25",
-  "generated_at": "2026-05-25T10:24:09Z",
+  "generated_on": "2026-05-26",
+  "generated_at": "2026-05-26T08:17:04Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 291,
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 21
+        "count": 22
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 268
+        "count": 267
       },
       {
         "status": "done",
@@ -562,6 +562,24 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3106"
+    },
+    {
+      "number": 3192,
+      "title": "docs: update Twitter reference to X in README",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3193,
+          "url": "https://github.com/facebookresearch/hydra/pull/3193"
+        }
+      ],
+      "created": "2026-05-25",
+      "updated": "2026-05-25",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3192"
     },
     {
       "number": 385,
@@ -4631,19 +4649,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3189"
     },
     {
-      "number": 3192,
-      "title": "docs: update Twitter reference to X in README",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-05-25",
-      "updated": "2026-05-25",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3192"
-    },
-    {
       "number": 3176,
       "title": "Upgrade and modernize Ax Sweeper",
       "category": "Enhancement",
@@ -4665,6 +4670,26 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-05-26T08:17:04Z",
+      "kind": "pr",
+      "issue": 3192,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3192",
+      "title": "docs: update Twitter reference to X in README",
+      "detail": "linked #3193"
+    },
+    {
+      "ts": "2026-05-26T08:17:04Z",
+      "kind": "status",
+      "issue": 3192,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3192",
+      "title": "docs: update Twitter reference to X in README",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3193,
+        "url": "https://github.com/facebookresearch/hydra/pull/3193"
+      }
+    },
     {
       "ts": "2026-05-25T10:24:09Z",
       "kind": "new",

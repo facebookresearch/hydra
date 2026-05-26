@@ -2,7 +2,7 @@
   "closed_at": {
     "3176": "2026-05-17"
   },
-  "generated_at": "2026-05-25T10:24:09Z",
+  "generated_at": "2026-05-26T08:17:04Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3430,9 +3430,11 @@
       "category": "Documentation",
       "created_at": "2026-05-25T10:22:47Z",
       "labels": [],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3193"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "docs: update Twitter reference to X in README",
       "updated_at": "2026-05-25T10:22:47Z"
     },
