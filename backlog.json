@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-05-26",
-  "generated_at": "2026-05-26T08:17:04Z",
+  "generated_on": "2026-05-27",
+  "generated_at": "2026-05-27T08:23:18Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 291,
@@ -4458,7 +4458,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2025-08-04",
-      "updated": "2026-05-16",
+      "updated": "2026-05-27",
       "labels": [
         "triage"
       ],
