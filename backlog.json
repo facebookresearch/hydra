@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-05-27",
-  "generated_at": "2026-05-27T08:23:18Z",
+  "generated_at": "2026-05-27T09:38:02Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 291,
+    "open_total": 290,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 117,
-        "percentage": 40.2
+        "percentage": 40.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 141,
-        "percentage": 48.5
+        "percentage": 48.6
       },
       {
         "category": "Documentation",
@@ -38,8 +38,8 @@
       {
         "category": "Build",
         "emoji": "🏗️",
-        "count": 5,
-        "percentage": 1.7
+        "count": 4,
+        "percentage": 1.4
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 267
+        "count": 266
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 1
+        "count": 2
       }
     ]
   },
@@ -4450,21 +4450,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3069"
     },
     {
-      "number": 3075,
-      "title": "What is the project status given the last release was in 2023",
-      "category": "Build",
-      "category_emoji": "🏗️",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-08-04",
-      "updated": "2026-05-27",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3075"
-    },
-    {
       "number": 3078,
       "title": "[Bug]",
       "category": "Bug",
@@ -4667,9 +4652,31 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3176"
+    },
+    {
+      "number": 3075,
+      "title": "What is the project status given the last release was in 2023",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-08-04",
+      "updated": "2026-05-27",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3075"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-05-27T09:38:02Z",
+      "kind": "closed",
+      "issue": 3075,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3075",
+      "title": "What is the project status given the last release was in 2023"
+    },
     {
       "ts": "2026-05-26T08:17:04Z",
       "kind": "pr",

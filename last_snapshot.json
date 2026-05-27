@@ -1,8 +1,9 @@
 {
   "closed_at": {
+    "3075": "2026-05-27",
     "3176": "2026-05-17"
   },
-  "generated_at": "2026-05-27T08:23:18Z",
+  "generated_at": "2026-05-27T09:38:02Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3251,18 +3252,6 @@
       "title": "Callback composition unclear",
       "updated_at": "2026-05-16T02:12:52Z"
     },
-    "3075": {
-      "category": "Build",
-      "created_at": "2025-08-04T02:42:13Z",
-      "labels": [
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "What is the project status given the last release was in 2023",
-      "updated_at": "2026-05-27T07:59:16Z"
-    },
     "3078": {
       "category": "Bug",
       "created_at": "2025-08-08T11:56:13Z",
@@ -3635,6 +3624,18 @@
     }
   },
   "recent_done": {
+    "3075": {
+      "category": "Build",
+      "created_at": "2025-08-04T02:42:13Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "What is the project status given the last release was in 2023",
+      "updated_at": "2026-05-27T07:59:16Z"
+    },
     "3176": {
       "category": "Enhancement",
       "created_at": "2026-05-15T18:05:27Z",
