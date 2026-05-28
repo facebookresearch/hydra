@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-05-27",
-  "generated_at": "2026-05-27T09:38:02Z",
+  "generated_on": "2026-05-28",
+  "generated_at": "2026-05-28T08:23:15Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 290,
@@ -4634,6 +4634,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3189"
     },
     {
+      "number": 3075,
+      "title": "What is the project status given the last release was in 2023",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-08-04",
+      "updated": "2026-05-27",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3075"
+    },
+    {
       "number": 3176,
       "title": "Upgrade and modernize Ax Sweeper",
       "category": "Enhancement",
@@ -4652,21 +4667,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3176"
-    },
-    {
-      "number": 3075,
-      "title": "What is the project status given the last release was in 2023",
-      "category": "Build",
-      "category_emoji": "🏗️",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2025-08-04",
-      "updated": "2026-05-27",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3075"
     }
   ],
   "updates": [
