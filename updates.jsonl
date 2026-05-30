@@ -10,3 +10,4 @@
 {"ts": "2026-05-27T09:38:02Z", "kind": "closed", "issue": 3075, "issue_url": "https://github.com/facebookresearch/hydra/issues/3075", "title": "What is the project status given the last release was in 2023"}
 {"ts": "2026-05-29T13:24:41Z", "kind": "new", "issue": 3195, "issue_url": "https://github.com/facebookresearch/hydra/issues/3195", "title": "Add the ability to pass types or classes through a configuration file"}
 {"ts": "2026-05-30T06:42:31Z", "kind": "closed", "issue": 3195, "issue_url": "https://github.com/facebookresearch/hydra/issues/3195", "title": "Add the ability to pass types or classes through a configuration file"}
+{"ts": "2026-05-30T18:39:11Z", "kind": "closed", "issue": 2940, "issue_url": "https://github.com/facebookresearch/hydra/issues/2940", "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi"}

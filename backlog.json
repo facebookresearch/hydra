@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-05-30",
-  "generated_at": "2026-05-30T07:55:40Z",
+  "generated_at": "2026-05-30T18:39:11Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 290,
+    "open_total": 289,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 117,
-        "percentage": 40.3
+        "percentage": 40.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 141,
-        "percentage": 48.6
+        "count": 140,
+        "percentage": 48.4
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 266
+        "count": 265
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 3
+        "count": 4
       }
     ]
   },
@@ -3774,21 +3774,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2939"
     },
     {
-      "number": 2940,
-      "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-08-23",
-      "updated": "2025-08-17",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2940"
-    },
-    {
       "number": 2942,
       "title": "[Feature Request] I'd like to be able to do multirun over files matching a glob (ideally a glob that depends on other, non-sweeped params in the config file)",
       "category": "Enhancement",
@@ -4682,9 +4667,31 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
+    },
+    {
+      "number": 2940,
+      "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-08-23",
+      "updated": "2025-08-17",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2940"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-05-30T18:39:11Z",
+      "kind": "closed",
+      "issue": 2940,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2940",
+      "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi"
+    },
     {
       "ts": "2026-05-30T06:42:31Z",
       "kind": "closed",
