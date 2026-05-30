@@ -1,21 +1,21 @@
 {
-  "generated_on": "2026-05-29",
-  "generated_at": "2026-05-29T13:24:41Z",
+  "generated_on": "2026-05-30",
+  "generated_at": "2026-05-30T06:42:31Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 291,
+    "open_total": 290,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 117,
-        "percentage": 40.2
+        "percentage": 40.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 142,
-        "percentage": 48.8
+        "count": 141,
+        "percentage": 48.6
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 267
+        "count": 266
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 2
+        "count": 3
       }
     ]
   },
@@ -4634,21 +4634,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3189"
     },
     {
-      "number": 3195,
-      "title": "Add the ability to pass types or classes through a configuration file",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-05-29",
-      "updated": "2026-05-29",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3195"
-    },
-    {
       "number": 3075,
       "title": "What is the project status given the last release was in 2023",
       "category": "Build",
@@ -4682,9 +4667,31 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3176"
+    },
+    {
+      "number": 3195,
+      "title": "Add the ability to pass types or classes through a configuration file",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-05-29",
+      "updated": "2026-05-29",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3195"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-05-30T06:42:31Z",
+      "kind": "closed",
+      "issue": 3195,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3195",
+      "title": "Add the ability to pass types or classes through a configuration file"
+    },
     {
       "ts": "2026-05-29T13:24:41Z",
       "kind": "new",
