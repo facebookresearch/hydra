@@ -8,6 +8,10 @@ on:
     branches:
       - main
       - '*_branch'
+
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
