@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-05-30",
-  "generated_at": "2026-05-30T18:39:11Z",
+  "generated_on": "2026-05-31",
+  "generated_at": "2026-05-31T08:06:40Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 289,
@@ -4619,6 +4619,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3189"
     },
     {
+      "number": 2940,
+      "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-08-23",
+      "updated": "2025-08-17",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2940"
+    },
+    {
       "number": 3075,
       "title": "What is the project status given the last release was in 2023",
       "category": "Build",
@@ -4667,21 +4682,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
-    },
-    {
-      "number": 2940,
-      "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2024-08-23",
-      "updated": "2025-08-17",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2940"
     }
   ],
   "updates": [
