@@ -5,7 +5,7 @@
     "3176": "2026-05-17",
     "3195": "2026-05-30"
   },
-  "generated_at": "2026-05-31T08:06:40Z",
+  "generated_at": "2026-06-01T04:16:28Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1771,7 +1771,7 @@
       "state": "OPEN",
       "status": "in progress",
       "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
-      "updated_at": "2026-03-03T14:49:08Z"
+      "updated_at": "2026-05-31T12:40:21Z"
     },
     "2655": {
       "category": "Bug",

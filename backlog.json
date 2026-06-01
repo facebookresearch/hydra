@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-05-31",
-  "generated_at": "2026-05-31T08:06:40Z",
+  "generated_on": "2026-06-01",
+  "generated_at": "2026-06-01T04:16:28Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 289,
@@ -107,7 +107,7 @@
         }
       ],
       "created": "2023-04-04",
-      "updated": "2026-03-03",
+      "updated": "2026-05-31",
       "labels": [
         "enhancement"
       ],
