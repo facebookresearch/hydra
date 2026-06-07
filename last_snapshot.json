@@ -1,13 +1,14 @@
 {
   "closed_at": {
     "2477": "2026-06-07",
+    "2502": "2026-06-07",
     "2940": "2026-05-30",
     "3075": "2026-05-27",
     "3176": "2026-05-17",
     "3192": "2026-06-07",
     "3195": "2026-05-30"
   },
-  "generated_at": "2026-06-07T16:02:27Z",
+  "generated_at": "2026-06-07T18:25:23Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1646,20 +1647,6 @@
       "status": "not started",
       "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep",
       "updated_at": "2022-12-06T09:39:54Z"
-    },
-    "2502": {
-      "category": "Bug",
-      "created_at": "2022-12-13T23:35:54Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [
-        "3126"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
-      "updated_at": "2026-02-05T06:21:13Z"
     },
     "2507": {
       "category": "Bug",
@@ -3602,6 +3589,20 @@
       "status": "done",
       "title": "[Bug] Unable to delete an item from ListConfig",
       "updated_at": "2026-04-25T05:50:26Z"
+    },
+    "2502": {
+      "category": "Bug",
+      "created_at": "2022-12-13T23:35:54Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "3126"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
+      "updated_at": "2026-02-05T06:21:13Z"
     },
     "2940": {
       "category": "Enhancement",

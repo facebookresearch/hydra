@@ -14,3 +14,4 @@
 {"ts": "2026-06-07T04:56:40Z", "kind": "closed", "issue": 3192, "issue_url": "https://github.com/facebookresearch/hydra/issues/3192", "title": "docs: update Twitter reference to X in README"}
 {"ts": "2026-06-07T14:26:35Z", "kind": "closed", "issue": 2477, "issue_url": "https://github.com/facebookresearch/hydra/issues/2477", "title": "[Bug] Unable to delete an item from ListConfig"}
 {"ts": "2026-06-07T16:02:27Z", "kind": "label", "issue": 3053, "issue_url": "https://github.com/facebookresearch/hydra/issues/3053", "title": "[Bug] --multirun yields error on specific command line flag ordering", "detail": "removed \"triage\""}
+{"ts": "2026-06-07T18:25:23Z", "kind": "closed", "issue": 2502, "issue_url": "https://github.com/facebookresearch/hydra/issues/2502", "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig."}
