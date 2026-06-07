@@ -16,3 +16,4 @@
 {"ts": "2026-06-07T16:02:27Z", "kind": "label", "issue": 3053, "issue_url": "https://github.com/facebookresearch/hydra/issues/3053", "title": "[Bug] --multirun yields error on specific command line flag ordering", "detail": "removed \"triage\""}
 {"ts": "2026-06-07T18:25:23Z", "kind": "closed", "issue": 2502, "issue_url": "https://github.com/facebookresearch/hydra/issues/2502", "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig."}
 {"ts": "2026-06-07T19:14:08Z", "kind": "new", "issue": 3200, "issue_url": "https://github.com/facebookresearch/hydra/issues/3200", "title": "Revert extend_list before Hydra 1.4.0"}
+{"ts": "2026-06-07T21:14:31Z", "kind": "new", "issue": 3201, "issue_url": "https://github.com/facebookresearch/hydra/issues/3201", "title": "Explore async execution model for launchers and sweepers"}

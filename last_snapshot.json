@@ -8,7 +8,7 @@
     "3192": "2026-06-07",
     "3195": "2026-05-30"
   },
-  "generated_at": "2026-06-07T19:14:08Z",
+  "generated_at": "2026-06-07T21:14:31Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3391,6 +3391,21 @@
       "status": "not started",
       "title": "Revert extend_list before Hydra 1.4.0",
       "updated_at": "2026-06-07T19:12:43Z"
+    },
+    "3201": {
+      "category": "Enhancement",
+      "created_at": "2026-06-07T21:13:07Z",
+      "labels": [
+        "enhancement",
+        "launchers",
+        "sweep",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Explore async execution model for launchers and sweepers",
+      "updated_at": "2026-06-07T21:13:07Z"
     },
     "385": {
       "category": "Enhancement",

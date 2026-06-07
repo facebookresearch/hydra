@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-07",
-  "generated_at": "2026-06-07T19:14:08Z",
+  "generated_at": "2026-06-07T21:14:31Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 287,
+    "open_total": 288,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 115,
-        "percentage": 40.1
+        "percentage": 39.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 141,
-        "percentage": 49.1
+        "count": 142,
+        "percentage": 49.3
       },
       {
         "category": "Documentation",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 266
+        "count": 267
       },
       {
         "status": "done",
@@ -4576,6 +4576,24 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3200"
     },
     {
+      "number": 3201,
+      "title": "Explore async execution model for launchers and sweepers",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-07",
+      "updated": "2026-06-07",
+      "labels": [
+        "enhancement",
+        "wishlist",
+        "sweep",
+        "launchers"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3201"
+    },
+    {
       "number": 2477,
       "title": "[Bug] Unable to delete an item from ListConfig",
       "category": "Bug",
@@ -4700,6 +4718,13 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-07T21:14:31Z",
+      "kind": "new",
+      "issue": 3201,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3201",
+      "title": "Explore async execution model for launchers and sweepers"
+    },
     {
       "ts": "2026-06-07T19:14:08Z",
       "kind": "new",
