@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-07",
-  "generated_at": "2026-06-07T14:26:35Z",
+  "generated_at": "2026-06-07T15:31:32Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 287,
@@ -4581,6 +4581,26 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3189"
     },
     {
+      "number": 2477,
+      "title": "[Bug] Unable to delete an item from ListConfig",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3146,
+          "url": "https://github.com/facebookresearch/hydra/pull/3146"
+        }
+      ],
+      "created": "2022-11-23",
+      "updated": "2026-04-25",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2477"
+    },
+    {
       "number": 2940,
       "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
       "category": "Enhancement",
@@ -4662,26 +4682,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
-    },
-    {
-      "number": 2477,
-      "title": "[Bug] Unable to delete an item from ListConfig",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3146,
-          "url": "https://github.com/facebookresearch/hydra/pull/3146"
-        }
-      ],
-      "created": "2022-11-23",
-      "updated": "2026-04-25",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2477"
     }
   ],
   "updates": [
