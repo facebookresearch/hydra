@@ -3,9 +3,10 @@
     "2940": "2026-05-30",
     "3075": "2026-05-27",
     "3176": "2026-05-17",
+    "3192": "2026-06-07",
     "3195": "2026-05-30"
   },
-  "generated_at": "2026-06-06T07:58:47Z",
+  "generated_at": "2026-06-07T04:56:40Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3405,18 +3406,6 @@
       "title": "Feature request: support env files as first-class Hydra inputs",
       "updated_at": "2026-05-19T21:54:10Z"
     },
-    "3192": {
-      "category": "Documentation",
-      "created_at": "2026-05-25T10:22:47Z",
-      "labels": [],
-      "pr_numbers": [
-        "3193"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "docs: update Twitter reference to X in README",
-      "updated_at": "2026-05-25T10:22:47Z"
-    },
     "385": {
       "category": "Enhancement",
       "created_at": "2020-01-19T10:23:55Z",
@@ -3651,6 +3640,18 @@
       "status": "done",
       "title": "Upgrade and modernize Ax Sweeper",
       "updated_at": "2026-05-17T14:14:35Z"
+    },
+    "3192": {
+      "category": "Documentation",
+      "created_at": "2026-05-25T10:22:47Z",
+      "labels": [],
+      "pr_numbers": [
+        "3193"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "docs: update Twitter reference to X in README",
+      "updated_at": "2026-05-25T10:22:47Z"
     },
     "3195": {
       "category": "Enhancement",
