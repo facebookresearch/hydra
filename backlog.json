@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-07",
-  "generated_at": "2026-06-07T15:33:20Z",
+  "generated_at": "2026-06-07T16:02:27Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 287,
@@ -494,10 +494,9 @@
         }
       ],
       "created": "2025-04-13",
-      "updated": "2026-05-16",
+      "updated": "2026-06-07",
       "labels": [
-        "bug",
-        "triage"
+        "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3053"
     },
@@ -4685,6 +4684,14 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-07T16:02:27Z",
+      "kind": "label",
+      "issue": 3053,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3053",
+      "title": "[Bug] --multirun yields error on specific command line flag ordering",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-06-07T14:26:35Z",
       "kind": "closed",
