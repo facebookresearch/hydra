@@ -57,7 +57,7 @@ Hydra is licensed under [MIT License](LICENSE).
 #### Ask questions in Github Discussions or StackOverflow (Use the tag #fb-hydra or #omegaconf):
 * [Github Discussions](https://github.com/facebookresearch/hydra/discussions)
 * [StackOverflow](https://stackexchange.com/filters/391828/hydra-questions)
-* [Twitter](https://twitter.com/Hydra_Framework)
+* [X](https://twitter.com/Hydra_Framework)
 
 Check out the Meta AI [blog post](https://ai.facebook.com/blog/reengineering-facebook-ais-deep-learning-platforms-for-interoperability/) to learn about how Hydra fits into Meta's efforts to reengineer deep learning platforms for interoperability.
 
