@@ -8,7 +8,7 @@
     "3192": "2026-06-07",
     "3195": "2026-05-30"
   },
-  "generated_at": "2026-06-07T18:25:23Z",
+  "generated_at": "2026-06-07T19:14:08Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3378,6 +3378,19 @@
       "status": "not started",
       "title": "Feature request: support env files as first-class Hydra inputs",
       "updated_at": "2026-05-19T21:54:10Z"
+    },
+    "3200": {
+      "category": "Enhancement",
+      "created_at": "2026-06-07T19:12:43Z",
+      "labels": [
+        "list composition",
+        "maintenance"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Revert extend_list before Hydra 1.4.0",
+      "updated_at": "2026-06-07T19:12:43Z"
     },
     "385": {
       "category": "Enhancement",

@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-07",
-  "generated_at": "2026-06-07T18:25:23Z",
+  "generated_at": "2026-06-07T19:14:08Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 286,
+    "open_total": 287,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 115,
-        "percentage": 40.2
+        "percentage": 40.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 140,
-        "percentage": 49.0
+        "count": 141,
+        "percentage": 49.1
       },
       {
         "category": "Documentation",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 265
+        "count": 266
       },
       {
         "status": "done",
@@ -4560,6 +4560,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3189"
     },
     {
+      "number": 3200,
+      "title": "Revert extend_list before Hydra 1.4.0",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-07",
+      "updated": "2026-06-07",
+      "labels": [
+        "maintenance",
+        "list composition"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3200"
+    },
+    {
       "number": 2477,
       "title": "[Bug] Unable to delete an item from ListConfig",
       "category": "Bug",
@@ -4578,6 +4594,26 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2477"
+    },
+    {
+      "number": 2502,
+      "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3126,
+          "url": "https://github.com/facebookresearch/hydra/pull/3126"
+        }
+      ],
+      "created": "2022-12-13",
+      "updated": "2026-02-05",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
       "number": 2940,
@@ -4661,29 +4697,16 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
-    },
-    {
-      "number": 2502,
-      "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3126,
-          "url": "https://github.com/facebookresearch/hydra/pull/3126"
-        }
-      ],
-      "created": "2022-12-13",
-      "updated": "2026-02-05",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2502"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-07T19:14:08Z",
+      "kind": "new",
+      "issue": 3200,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3200",
+      "title": "Revert extend_list before Hydra 1.4.0"
+    },
     {
       "ts": "2026-06-07T18:25:23Z",
       "kind": "closed",
