@@ -7,7 +7,14 @@ import warnings
 from textwrap import dedent
 from typing import Any, List, MutableSequence, Optional, Tuple, Union
 
-from omegaconf import Container, DictConfig, ListConfig, OmegaConf, flag_override, open_dict
+from omegaconf import (
+    Container,
+    DictConfig,
+    ListConfig,
+    OmegaConf,
+    flag_override,
+    open_dict,
+)
 from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
