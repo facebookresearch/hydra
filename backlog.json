@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-07",
-  "generated_at": "2026-06-07T09:57:57Z",
+  "generated_at": "2026-06-07T14:26:35Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 288,
+    "open_total": 287,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 117,
-        "percentage": 40.6
+        "count": 116,
+        "percentage": 40.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 140,
-        "percentage": 48.6
+        "percentage": 48.8
       },
       {
         "category": "Documentation",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 21
+        "count": 20
       },
       {
         "status": "blocked",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 5
+        "count": 6
       }
     ]
   },
@@ -378,26 +378,6 @@
         "launchers"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2435"
-    },
-    {
-      "number": 2477,
-      "title": "[Bug] Unable to delete an item from ListConfig",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3146,
-          "url": "https://github.com/facebookresearch/hydra/pull/3146"
-        }
-      ],
-      "created": "2022-11-23",
-      "updated": "2026-04-25",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2477"
     },
     {
       "number": 2479,
@@ -4682,9 +4662,36 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
+    },
+    {
+      "number": 2477,
+      "title": "[Bug] Unable to delete an item from ListConfig",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3146,
+          "url": "https://github.com/facebookresearch/hydra/pull/3146"
+        }
+      ],
+      "created": "2022-11-23",
+      "updated": "2026-04-25",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2477"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-07T14:26:35Z",
+      "kind": "closed",
+      "issue": 2477,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2477",
+      "title": "[Bug] Unable to delete an item from ListConfig"
+    },
     {
       "ts": "2026-06-07T04:56:40Z",
       "kind": "closed",

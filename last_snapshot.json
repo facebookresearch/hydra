@@ -1,12 +1,13 @@
 {
   "closed_at": {
+    "2477": "2026-06-07",
     "2940": "2026-05-30",
     "3075": "2026-05-27",
     "3176": "2026-05-17",
     "3192": "2026-06-07",
     "3195": "2026-05-30"
   },
-  "generated_at": "2026-06-07T09:57:57Z",
+  "generated_at": "2026-06-07T14:26:35Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1590,20 +1591,6 @@
       "status": "not started",
       "title": "[Feature Request] Appending to a structured dict from a config file",
       "updated_at": "2025-11-14T04:26:13Z"
-    },
-    "2477": {
-      "category": "Bug",
-      "created_at": "2022-11-23T10:25:38Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [
-        "3146"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "[Bug] Unable to delete an item from ListConfig",
-      "updated_at": "2026-04-25T05:50:26Z"
     },
     "2479": {
       "category": "Enhancement",
@@ -3603,6 +3590,20 @@
     }
   },
   "recent_done": {
+    "2477": {
+      "category": "Bug",
+      "created_at": "2022-11-23T10:25:38Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "3146"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Unable to delete an item from ListConfig",
+      "updated_at": "2026-04-25T05:50:26Z"
+    },
     "2940": {
       "category": "Enhancement",
       "created_at": "2024-08-23T23:23:09Z",
