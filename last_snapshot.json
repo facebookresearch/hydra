@@ -1,14 +1,18 @@
 {
   "closed_at": {
+    "1892": "2026-06-07",
     "2477": "2026-06-07",
+    "2479": "2026-06-07",
     "2502": "2026-06-07",
     "2940": "2026-05-30",
+    "3058": "2026-06-07",
     "3075": "2026-05-27",
     "3176": "2026-05-17",
     "3192": "2026-06-07",
-    "3195": "2026-05-30"
+    "3195": "2026-05-30",
+    "692": "2026-06-07"
   },
-  "generated_at": "2026-06-07T21:14:31Z",
+  "generated_at": "2026-06-07T21:27:04Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -516,16 +520,6 @@
       "status": "community PR",
       "title": "HPO config standardization",
       "updated_at": "2022-05-18T14:41:10Z"
-    },
-    "1892": {
-      "category": "Enhancement",
-      "created_at": "2021-11-17T20:03:19Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
-      "updated_at": "2021-11-22T21:10:28Z"
     },
     "1896": {
       "category": "Enhancement",
@@ -1592,21 +1586,6 @@
       "status": "not started",
       "title": "[Feature Request] Appending to a structured dict from a config file",
       "updated_at": "2025-11-14T04:26:13Z"
-    },
-    "2479": {
-      "category": "Enhancement",
-      "created_at": "2022-11-23T22:42:01Z",
-      "labels": [
-        "enhancement",
-        "internal"
-      ],
-      "pr_numbers": [
-        "3128"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm",
-      "updated_at": "2024-10-04T17:09:36Z"
     },
     "2482": {
       "category": "Bug",
@@ -3100,18 +3079,6 @@
       "title": "[Feature Request] -- is there a way to sweep in nested folder inside config group?",
       "updated_at": "2026-05-16T02:12:47Z"
     },
-    "3058": {
-      "category": "Question",
-      "created_at": "2025-04-29T21:46:35Z",
-      "labels": [
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Question] How to Submit SLURM Jobs Eagerly?",
-      "updated_at": "2026-05-16T02:12:48Z"
-    },
     "3060": {
       "category": "Bug",
       "created_at": "2025-05-07T15:32:22Z",
@@ -3240,7 +3207,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] `submitit` Multirun without sweeping",
-      "updated_at": "2026-05-16T02:12:54Z"
+      "updated_at": "2026-06-07T21:23:25Z"
     },
     "3091": {
       "category": "Enhancement",
@@ -3446,21 +3413,6 @@
       "title": "Allow adding help messages to command line arguments",
       "updated_at": "2025-12-23T13:45:18Z"
     },
-    "692": {
-      "category": "Enhancement",
-      "created_at": "2020-06-19T18:43:55Z",
-      "labels": [
-        "enhancement",
-        "plugin"
-      ],
-      "pr_numbers": [
-        "2171"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "[Feature Request] Support non blocking launching",
-      "updated_at": "2024-02-15T14:21:57Z"
-    },
     "700": {
       "category": "Enhancement",
       "created_at": "2020-06-21T08:48:48Z",
@@ -3604,6 +3556,16 @@
     }
   },
   "recent_done": {
+    "1892": {
+      "category": "Enhancement",
+      "created_at": "2021-11-17T20:03:19Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
+      "updated_at": "2021-11-22T21:10:28Z"
+    },
     "2477": {
       "category": "Bug",
       "created_at": "2022-11-23T10:25:38Z",
@@ -3617,6 +3579,21 @@
       "status": "done",
       "title": "[Bug] Unable to delete an item from ListConfig",
       "updated_at": "2026-04-25T05:50:26Z"
+    },
+    "2479": {
+      "category": "Enhancement",
+      "created_at": "2022-11-23T22:42:01Z",
+      "labels": [
+        "enhancement",
+        "internal"
+      ],
+      "pr_numbers": [
+        "3128"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm",
+      "updated_at": "2024-10-04T17:09:36Z"
     },
     "2502": {
       "category": "Bug",
@@ -3643,6 +3620,18 @@
       "status": "done",
       "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
       "updated_at": "2025-08-17T22:53:33Z"
+    },
+    "3058": {
+      "category": "Question",
+      "created_at": "2025-04-29T21:46:35Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Question] How to Submit SLURM Jobs Eagerly?",
+      "updated_at": "2026-05-16T02:12:48Z"
     },
     "3075": {
       "category": "Build",
@@ -3693,6 +3682,21 @@
       "status": "done",
       "title": "Add the ability to pass types or classes through a configuration file",
       "updated_at": "2026-05-29T13:22:48Z"
+    },
+    "692": {
+      "category": "Enhancement",
+      "created_at": "2020-06-19T18:43:55Z",
+      "labels": [
+        "enhancement",
+        "plugin"
+      ],
+      "pr_numbers": [
+        "2171"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Support non blocking launching",
+      "updated_at": "2024-02-15T14:21:57Z"
     }
   },
   "repo": "facebookresearch/hydra"

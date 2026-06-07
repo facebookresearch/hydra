@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-07",
-  "generated_at": "2026-06-07T21:14:31Z",
+  "generated_at": "2026-06-07T21:27:04Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 288,
+    "open_total": 284,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 115,
-        "percentage": 39.9
+        "percentage": 40.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 142,
-        "percentage": 49.3
+        "count": 139,
+        "percentage": 48.9
       },
       {
         "category": "Documentation",
@@ -26,14 +26,14 @@
       {
         "category": "Question",
         "emoji": "❓",
-        "count": 14,
-        "percentage": 4.9
+        "count": 13,
+        "percentage": 4.6
       },
       {
         "category": "Refactor",
         "emoji": "🔧",
         "count": 1,
-        "percentage": 0.3
+        "percentage": 0.4
       },
       {
         "category": "Build",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 19
+        "count": 17
       },
       {
         "status": "blocked",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 267
+        "count": 265
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 7
+        "count": 11
       }
     ]
   },
@@ -112,27 +112,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 692,
-      "title": "[Feature Request] Support non blocking launching",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 2171,
-          "url": "https://github.com/facebookresearch/hydra/pull/2171"
-        }
-      ],
-      "created": "2020-06-19",
-      "updated": "2024-02-15",
-      "labels": [
-        "enhancement",
-        "plugin"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/692"
     },
     {
       "number": 845,
@@ -378,27 +357,6 @@
         "launchers"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2435"
-    },
-    {
-      "number": 2479,
-      "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3128,
-          "url": "https://github.com/facebookresearch/hydra/pull/3128"
-        }
-      ],
-      "created": "2022-11-23",
-      "updated": "2024-10-04",
-      "labels": [
-        "enhancement",
-        "internal"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2479"
     },
     {
       "number": 2562,
@@ -1254,19 +1212,6 @@
       "updated": "2021-11-12",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/1888"
-    },
-    {
-      "number": 1892,
-      "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-11-17",
-      "updated": "2021-11-22",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/1892"
     },
     {
       "number": 1896,
@@ -4251,21 +4196,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3055"
     },
     {
-      "number": 3058,
-      "title": "[Question] How to Submit SLURM Jobs Eagerly?",
-      "category": "Question",
-      "category_emoji": "❓",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-04-29",
-      "updated": "2026-05-16",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3058"
-    },
-    {
       "number": 3060,
       "title": "[Bug] Config path issue for second order nested group config",
       "category": "Bug",
@@ -4400,7 +4330,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2025-09-02",
-      "updated": "2026-05-16",
+      "updated": "2026-06-07",
       "labels": [
         "enhancement",
         "triage"
@@ -4715,9 +4645,107 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
+    },
+    {
+      "number": 692,
+      "title": "[Feature Request] Support non blocking launching",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 2171,
+          "url": "https://github.com/facebookresearch/hydra/pull/2171"
+        }
+      ],
+      "created": "2020-06-19",
+      "updated": "2024-02-15",
+      "labels": [
+        "enhancement",
+        "plugin"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/692"
+    },
+    {
+      "number": 1892,
+      "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-11-17",
+      "updated": "2021-11-22",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
+      "number": 2479,
+      "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3128,
+          "url": "https://github.com/facebookresearch/hydra/pull/3128"
+        }
+      ],
+      "created": "2022-11-23",
+      "updated": "2024-10-04",
+      "labels": [
+        "enhancement",
+        "internal"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2479"
+    },
+    {
+      "number": 3058,
+      "title": "[Question] How to Submit SLURM Jobs Eagerly?",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-04-29",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3058"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-07T21:27:04Z",
+      "kind": "closed",
+      "issue": 692,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/692",
+      "title": "[Feature Request] Support non blocking launching"
+    },
+    {
+      "ts": "2026-06-07T21:27:04Z",
+      "kind": "closed",
+      "issue": 3058,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3058",
+      "title": "[Question] How to Submit SLURM Jobs Eagerly?"
+    },
+    {
+      "ts": "2026-06-07T21:27:04Z",
+      "kind": "closed",
+      "issue": 2479,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2479",
+      "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm"
+    },
+    {
+      "ts": "2026-06-07T21:27:04Z",
+      "kind": "closed",
+      "issue": 1892,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1892",
+      "title": "Parallel Job Submission with sbatch instead of sequential submission with srun"
+    },
     {
       "ts": "2026-06-07T21:14:31Z",
       "kind": "new",

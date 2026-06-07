@@ -17,3 +17,7 @@
 {"ts": "2026-06-07T18:25:23Z", "kind": "closed", "issue": 2502, "issue_url": "https://github.com/facebookresearch/hydra/issues/2502", "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig."}
 {"ts": "2026-06-07T19:14:08Z", "kind": "new", "issue": 3200, "issue_url": "https://github.com/facebookresearch/hydra/issues/3200", "title": "Revert extend_list before Hydra 1.4.0"}
 {"ts": "2026-06-07T21:14:31Z", "kind": "new", "issue": 3201, "issue_url": "https://github.com/facebookresearch/hydra/issues/3201", "title": "Explore async execution model for launchers and sweepers"}
+{"ts": "2026-06-07T21:27:04Z", "kind": "closed", "issue": 1892, "issue_url": "https://github.com/facebookresearch/hydra/issues/1892", "title": "Parallel Job Submission with sbatch instead of sequential submission with srun"}
+{"ts": "2026-06-07T21:27:04Z", "kind": "closed", "issue": 2479, "issue_url": "https://github.com/facebookresearch/hydra/issues/2479", "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm"}
+{"ts": "2026-06-07T21:27:04Z", "kind": "closed", "issue": 3058, "issue_url": "https://github.com/facebookresearch/hydra/issues/3058", "title": "[Question] How to Submit SLURM Jobs Eagerly?"}
+{"ts": "2026-06-07T21:27:04Z", "kind": "closed", "issue": 692, "issue_url": "https://github.com/facebookresearch/hydra/issues/692", "title": "[Feature Request] Support non blocking launching"}
