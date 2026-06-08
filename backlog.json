@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-08",
-  "generated_at": "2026-06-08T05:46:26Z",
+  "generated_at": "2026-06-08T06:34:25Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 283,
+    "open_total": 282,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 114,
-        "percentage": 40.3
+        "count": 113,
+        "percentage": 40.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 138,
-        "percentage": 48.8
+        "percentage": 48.9
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 264
+        "count": 263
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 12
+        "count": 13
       }
     ]
   },
@@ -4369,22 +4369,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3103"
     },
     {
-      "number": 3104,
-      "title": "[Bug] Updating config group from a config group of another config group only works with full path",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-12-19",
-      "updated": "2026-05-16",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3104"
-    },
-    {
       "number": 3129,
       "title": "[Feature Request] outputs/.gitignore",
       "category": "Enhancement",
@@ -4714,9 +4698,32 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
+    },
+    {
+      "number": 3104,
+      "title": "[Bug] Updating config group from a config group of another config group only works with full path",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-12-19",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3104"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-08T06:34:25Z",
+      "kind": "closed",
+      "issue": 3104,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3104",
+      "title": "[Bug] Updating config group from a config group of another config group only works with full path"
+    },
     {
       "ts": "2026-06-08T05:46:26Z",
       "kind": "label",

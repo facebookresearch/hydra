@@ -7,13 +7,14 @@
     "2940": "2026-05-30",
     "3058": "2026-06-07",
     "3075": "2026-05-27",
+    "3104": "2026-06-08",
     "3118": "2026-06-08",
     "3176": "2026-05-17",
     "3192": "2026-06-07",
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-08T05:46:26Z",
+  "generated_at": "2026-06-08T06:34:25Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3235,19 +3236,6 @@
       "title": "[Feature Request] Get swept list without `hydra.main`",
       "updated_at": "2026-05-16T02:12:55Z"
     },
-    "3104": {
-      "category": "Bug",
-      "created_at": "2025-12-19T15:08:48Z",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Updating config group from a config group of another config group only works with full path",
-      "updated_at": "2026-05-16T02:12:55Z"
-    },
     "3106": {
       "category": "Bug",
       "created_at": "2025-12-20T10:25:16Z",
@@ -3631,6 +3619,19 @@
       "status": "done",
       "title": "What is the project status given the last release was in 2023",
       "updated_at": "2026-05-27T07:59:16Z"
+    },
+    "3104": {
+      "category": "Bug",
+      "created_at": "2025-12-19T15:08:48Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Updating config group from a config group of another config group only works with full path",
+      "updated_at": "2026-05-16T02:12:55Z"
     },
     "3118": {
       "category": "Bug",
