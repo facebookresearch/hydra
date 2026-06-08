@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-08",
-  "generated_at": "2026-06-08T05:18:10Z",
+  "generated_at": "2026-06-08T05:46:26Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 283,
@@ -473,10 +473,10 @@
         }
       ],
       "created": "2025-12-20",
-      "updated": "2026-05-16",
+      "updated": "2026-06-08",
       "labels": [
         "bug",
-        "triage"
+        "awaiting_response"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3106"
     },
@@ -4647,6 +4647,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3075"
     },
     {
+      "number": 3118,
+      "title": "[Bug] update `antlr4` dependency to 4.13 :)",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-01-21",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3118"
+    },
+    {
       "number": 3176,
       "title": "Upgrade and modernize Ax Sweeper",
       "category": "Enhancement",
@@ -4698,25 +4714,17 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
-    },
-    {
-      "number": 3118,
-      "title": "[Bug] update `antlr4` dependency to 4.13 :)",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2026-01-21",
-      "updated": "2026-05-16",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3118"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-08T05:46:26Z",
+      "kind": "label",
+      "issue": 3106,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3106",
+      "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
+      "detail": "added \"awaiting_response\"; removed \"triage\""
+    },
     {
       "ts": "2026-06-08T05:18:10Z",
       "kind": "closed",

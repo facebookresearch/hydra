@@ -24,3 +24,4 @@
 {"ts": "2026-06-08T04:52:36Z", "kind": "label", "issue": 3162, "issue_url": "https://github.com/facebookresearch/hydra/issues/3162", "title": "Support Sapling for Docusaurus last-updated metadata", "detail": "added \"documentation\"; removed \"triage\""}
 {"ts": "2026-06-08T05:12:30Z", "kind": "label", "issue": 3129, "issue_url": "https://github.com/facebookresearch/hydra/issues/3129", "title": "[Feature Request] outputs/.gitignore", "detail": "removed \"triage\""}
 {"ts": "2026-06-08T05:18:10Z", "kind": "closed", "issue": 3118, "issue_url": "https://github.com/facebookresearch/hydra/issues/3118", "title": "[Bug] update `antlr4` dependency to 4.13 :)"}
+{"ts": "2026-06-08T05:46:26Z", "kind": "label", "issue": 3106, "issue_url": "https://github.com/facebookresearch/hydra/issues/3106", "title": "[Bug] Basic sweeper would behavior wrong with value type dict", "detail": "added \"awaiting_response\"; removed \"triage\""}

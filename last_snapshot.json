@@ -13,7 +13,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-08T05:18:10Z",
+  "generated_at": "2026-06-08T05:46:26Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3252,8 +3252,8 @@
       "category": "Bug",
       "created_at": "2025-12-20T10:25:16Z",
       "labels": [
-        "bug",
-        "triage"
+        "awaiting_response",
+        "bug"
       ],
       "pr_numbers": [
         "3107"
@@ -3261,7 +3261,7 @@
       "state": "OPEN",
       "status": "community PR",
       "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
-      "updated_at": "2026-05-16T02:12:56Z"
+      "updated_at": "2026-06-08T05:44:45Z"
     },
     "3129": {
       "category": "Enhancement",
