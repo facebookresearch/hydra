@@ -1,9 +1,3 @@
----
-id: async_execution
-title: Async execution direction
-sidebar_label: Async execution direction
----
-
 # Async execution direction
 
 Status: exploratory design note.
