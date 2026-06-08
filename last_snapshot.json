@@ -15,7 +15,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-08T09:04:52Z",
+  "generated_at": "2026-06-08T14:43:32Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -163,14 +163,11 @@
         "instantiate_api",
         "priority_low"
       ],
-      "pr_numbers": [
-        "3013",
-        "3025"
-      ],
+      "pr_numbers": [],
       "state": "OPEN",
-      "status": "community PR",
+      "status": "not started",
       "title": "[Feature Request] Consider supporting singleton pattern in recursive instantiation",
-      "updated_at": "2025-05-19T19:56:30Z"
+      "updated_at": "2026-06-08T13:51:30Z"
     },
     "1431": {
       "category": "Enhancement",

@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-08",
-  "generated_at": "2026-06-08T09:04:52Z",
+  "generated_at": "2026-06-08T14:43:32Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 282,
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 16
+        "count": 15
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 264
+        "count": 265
       },
       {
         "status": "done",
@@ -133,32 +133,6 @@
         "good first issue"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/845"
-    },
-    {
-      "number": 1393,
-      "title": "[Feature Request] Consider supporting singleton pattern in recursive instantiation",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3013,
-          "url": "https://github.com/facebookresearch/hydra/pull/3013"
-        },
-        {
-          "number": 3025,
-          "url": "https://github.com/facebookresearch/hydra/pull/3025"
-        }
-      ],
-      "created": "2021-02-11",
-      "updated": "2025-05-19",
-      "labels": [
-        "enhancement",
-        "instantiate_api",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1393"
     },
     {
       "number": 1679,
@@ -4486,6 +4460,23 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3202"
     },
     {
+      "number": 1393,
+      "title": "[Feature Request] Consider supporting singleton pattern in recursive instantiation",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-02-11",
+      "updated": "2026-06-08",
+      "labels": [
+        "enhancement",
+        "instantiate_api",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1393"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4611,6 +4602,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3058"
     },
     {
+      "number": 3062,
+      "title": "[Feature Request] _once_ behavior for instantiate",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3063,
+          "url": "https://github.com/facebookresearch/hydra/pull/3063"
+        }
+      ],
+      "created": "2025-05-19",
+      "updated": "2026-05-16",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3062"
+    },
+    {
       "number": 3075,
       "title": "What is the project status given the last release was in 2023",
       "category": "Build",
@@ -4709,30 +4721,25 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
-    },
-    {
-      "number": 3062,
-      "title": "[Feature Request] _once_ behavior for instantiate",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3063,
-          "url": "https://github.com/facebookresearch/hydra/pull/3063"
-        }
-      ],
-      "created": "2025-05-19",
-      "updated": "2026-05-16",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3062"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-08T14:43:32Z",
+      "kind": "pr",
+      "issue": 1393,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1393",
+      "title": "[Feature Request] Consider supporting singleton pattern in recursive instantiation",
+      "detail": "unlinked #3013, #3025"
+    },
+    {
+      "ts": "2026-06-08T14:43:32Z",
+      "kind": "status",
+      "issue": 1393,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1393",
+      "title": "[Feature Request] Consider supporting singleton pattern in recursive instantiation",
+      "detail": "community PR → not started"
+    },
     {
       "ts": "2026-06-08T09:04:52Z",
       "kind": "closed",
