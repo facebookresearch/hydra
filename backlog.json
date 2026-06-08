@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-08",
-  "generated_at": "2026-06-08T14:43:32Z",
+  "generated_at": "2026-06-08T18:51:29Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 282,
+    "open_total": 283,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 113,
-        "percentage": 40.1
+        "percentage": 39.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 138,
-        "percentage": 48.9
+        "count": 139,
+        "percentage": 49.1
       },
       {
         "category": "Documentation",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 15
+        "count": 12
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 265
+        "count": 269
       },
       {
         "status": "done",
@@ -222,28 +222,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1898"
     },
     {
-      "number": 2162,
-      "title": "Upgrading Optuna from v2.x.x to v3.0.0",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 2995,
-          "url": "https://github.com/facebookresearch/hydra/pull/2995"
-        }
-      ],
-      "created": "2022-04-20",
-      "updated": "2025-01-22",
-      "labels": [
-        "enhancement",
-        "optuna",
-        "sweep"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2162"
-    },
-    {
       "number": 2237,
       "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
       "category": "Bug",
@@ -333,26 +311,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2435"
     },
     {
-      "number": 2562,
-      "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 2995,
-          "url": "https://github.com/facebookresearch/hydra/pull/2995"
-        }
-      ],
-      "created": "2023-01-30",
-      "updated": "2023-02-08",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2562"
-    },
-    {
       "number": 2889,
       "title": "[Bug] Misleading error message when opening .yml file",
       "category": "Bug",
@@ -366,31 +324,11 @@
         }
       ],
       "created": "2024-04-10",
-      "updated": "2024-04-11",
+      "updated": "2026-06-08",
       "labels": [
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2889"
-    },
-    {
-      "number": 2977,
-      "title": "[Feature Request] Add a generation strategy config to ax-sweeper plugin",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 2978,
-          "url": "https://github.com/facebookresearch/hydra/pull/2978"
-        }
-      ],
-      "created": "2024-10-29",
-      "updated": "2024-10-29",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2977"
     },
     {
       "number": 3053,
@@ -807,6 +745,23 @@
         "configen"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1367"
+    },
+    {
+      "number": 1393,
+      "title": "[Feature Request] Consider supporting singleton pattern in recursive instantiation",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-02-11",
+      "updated": "2026-06-08",
+      "labels": [
+        "enhancement",
+        "instantiate_api",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1393"
     },
     {
       "number": 1431,
@@ -4460,21 +4415,64 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3202"
     },
     {
-      "number": 1393,
-      "title": "[Feature Request] Consider supporting singleton pattern in recursive instantiation",
+      "number": 2162,
+      "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
-      "created": "2021-02-11",
-      "updated": "2026-06-08",
+      "created": "2022-04-20",
+      "updated": "2025-01-22",
       "labels": [
         "enhancement",
-        "instantiate_api",
-        "priority_low"
+        "optuna",
+        "sweep"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1393"
+      "url": "https://github.com/facebookresearch/hydra/issues/2162"
+    },
+    {
+      "number": 2562,
+      "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2023-01-30",
+      "updated": "2023-02-08",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2562"
+    },
+    {
+      "number": 2977,
+      "title": "[Feature Request] Add a generation strategy config to ax-sweeper plugin",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2024-10-29",
+      "updated": "2024-10-29",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2977"
+    },
+    {
+      "number": 3203,
+      "title": "[Feature Request] Type validation for instantiate arguments",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-08",
+      "updated": "2026-06-08",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3203"
     },
     {
       "number": 692,
@@ -4724,6 +4722,61 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-08T18:51:29Z",
+      "kind": "pr",
+      "issue": 2977,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2977",
+      "title": "[Feature Request] Add a generation strategy config to ax-sweeper plugin",
+      "detail": "unlinked #2978"
+    },
+    {
+      "ts": "2026-06-08T18:51:29Z",
+      "kind": "pr",
+      "issue": 2562,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2562",
+      "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
+      "detail": "unlinked #2995"
+    },
+    {
+      "ts": "2026-06-08T18:51:29Z",
+      "kind": "pr",
+      "issue": 2162,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2162",
+      "title": "Upgrading Optuna from v2.x.x to v3.0.0",
+      "detail": "unlinked #2995"
+    },
+    {
+      "ts": "2026-06-08T18:51:29Z",
+      "kind": "status",
+      "issue": 2977,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2977",
+      "title": "[Feature Request] Add a generation strategy config to ax-sweeper plugin",
+      "detail": "community PR → not started"
+    },
+    {
+      "ts": "2026-06-08T18:51:29Z",
+      "kind": "status",
+      "issue": 2562,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2562",
+      "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
+      "detail": "community PR → not started"
+    },
+    {
+      "ts": "2026-06-08T18:51:29Z",
+      "kind": "status",
+      "issue": 2162,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2162",
+      "title": "Upgrading Optuna from v2.x.x to v3.0.0",
+      "detail": "community PR → not started"
+    },
+    {
+      "ts": "2026-06-08T18:51:29Z",
+      "kind": "new",
+      "issue": 3203,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3203",
+      "title": "[Feature Request] Type validation for instantiate arguments"
+    },
     {
       "ts": "2026-06-08T14:43:32Z",
       "kind": "pr",

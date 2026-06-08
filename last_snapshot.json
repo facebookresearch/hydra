@@ -15,7 +15,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-08T14:43:32Z",
+  "generated_at": "2026-06-08T18:51:29Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1000,11 +1000,9 @@
         "optuna",
         "sweep"
       ],
-      "pr_numbers": [
-        "2995"
-      ],
+      "pr_numbers": [],
       "state": "OPEN",
-      "status": "community PR",
+      "status": "not started",
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "updated_at": "2025-01-22T23:55:03Z"
     },
@@ -1659,11 +1657,9 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [
-        "2995"
-      ],
+      "pr_numbers": [],
       "state": "OPEN",
-      "status": "community PR",
+      "status": "not started",
       "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
       "updated_at": "2023-02-08T06:44:30Z"
     },
@@ -2483,7 +2479,7 @@
       "state": "OPEN",
       "status": "community PR",
       "title": "[Bug] Misleading error message when opening .yml file",
-      "updated_at": "2024-04-11T10:47:42Z"
+      "updated_at": "2026-06-08T18:11:11Z"
     },
     "2892": {
       "category": "Question",
@@ -2772,11 +2768,9 @@
       "labels": [
         "enhancement"
       ],
-      "pr_numbers": [
-        "2978"
-      ],
+      "pr_numbers": [],
       "state": "OPEN",
-      "status": "community PR",
+      "status": "not started",
       "title": "[Feature Request] Add a generation strategy config to ax-sweeper plugin",
       "updated_at": "2024-10-29T14:12:02Z"
     },
@@ -3344,6 +3338,16 @@
       "status": "not started",
       "title": "Disallow parent traversal in Defaults List config groups",
       "updated_at": "2026-06-08T06:39:05Z"
+    },
+    "3203": {
+      "category": "Enhancement",
+      "created_at": "2026-06-08T18:50:06Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Type validation for instantiate arguments",
+      "updated_at": "2026-06-08T18:50:06Z"
     },
     "385": {
       "category": "Enhancement",
