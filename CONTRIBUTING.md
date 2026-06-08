@@ -14,6 +14,13 @@ We welcome your pull requests.
 4. Ensure the test suite and lint pass.
 5. If you haven't already, complete the Contributor License Agreement ("CLA").
 
+For non-trivial features, API changes, or user-visible behavior changes, please
+open an issue or design discussion and wait for maintainer feedback before
+starting substantial implementation work. Pull requests in these areas should
+link to the issue or discussion where the direction was agreed. Pull requests
+without prior design alignment may be redirected to discussion before
+implementation review.
+
 ## Contributor License Agreement ("CLA")
 In order to accept your pull request, we need you to submit a CLA. You only need
 to do this once to work on any of Facebook's open source projects.
