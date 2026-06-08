@@ -6,6 +6,7 @@
     "2502": "2026-06-07",
     "2940": "2026-05-30",
     "3058": "2026-06-07",
+    "3062": "2026-06-08",
     "3075": "2026-05-27",
     "3104": "2026-06-08",
     "3118": "2026-06-08",
@@ -14,7 +15,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-08T08:38:25Z",
+  "generated_at": "2026-06-08T09:04:52Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3094,21 +3095,6 @@
       "title": "[Bug] Config path issue for second order nested group config",
       "updated_at": "2026-05-16T02:12:48Z"
     },
-    "3062": {
-      "category": "Enhancement",
-      "created_at": "2025-05-19T17:01:23Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [
-        "3063"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "[Feature Request] _once_ behavior for instantiate",
-      "updated_at": "2026-05-16T02:12:49Z"
-    },
     "3064": {
       "category": "Enhancement",
       "created_at": "2025-05-21T12:51:01Z",
@@ -3620,6 +3606,21 @@
       "status": "done",
       "title": "[Question] How to Submit SLURM Jobs Eagerly?",
       "updated_at": "2026-05-16T02:12:48Z"
+    },
+    "3062": {
+      "category": "Enhancement",
+      "created_at": "2025-05-19T17:01:23Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [
+        "3063"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] _once_ behavior for instantiate",
+      "updated_at": "2026-05-16T02:12:49Z"
     },
     "3075": {
       "category": "Build",

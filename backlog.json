@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-08",
-  "generated_at": "2026-06-08T08:38:25Z",
+  "generated_at": "2026-06-08T09:04:52Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 283,
+    "open_total": 282,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 113,
-        "percentage": 39.9
+        "percentage": 40.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 139,
-        "percentage": 49.1
+        "count": 138,
+        "percentage": 48.9
       },
       {
         "category": "Documentation",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 17
+        "count": 16
       },
       {
         "status": "blocked",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 13
+        "count": 14
       }
     ]
   },
@@ -437,27 +437,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3053"
-    },
-    {
-      "number": 3062,
-      "title": "[Feature Request] _once_ behavior for instantiate",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3063,
-          "url": "https://github.com/facebookresearch/hydra/pull/3063"
-        }
-      ],
-      "created": "2025-05-19",
-      "updated": "2026-05-16",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3062"
     },
     {
       "number": 3106,
@@ -4730,9 +4709,37 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
+    },
+    {
+      "number": 3062,
+      "title": "[Feature Request] _once_ behavior for instantiate",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3063,
+          "url": "https://github.com/facebookresearch/hydra/pull/3063"
+        }
+      ],
+      "created": "2025-05-19",
+      "updated": "2026-05-16",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3062"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-08T09:04:52Z",
+      "kind": "closed",
+      "issue": 3062,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3062",
+      "title": "[Feature Request] _once_ behavior for instantiate"
+    },
     {
       "ts": "2026-06-08T06:45:31Z",
       "kind": "new",

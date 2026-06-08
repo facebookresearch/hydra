@@ -27,3 +27,4 @@
 {"ts": "2026-06-08T05:46:26Z", "kind": "label", "issue": 3106, "issue_url": "https://github.com/facebookresearch/hydra/issues/3106", "title": "[Bug] Basic sweeper would behavior wrong with value type dict", "detail": "added \"awaiting_response\"; removed \"triage\""}
 {"ts": "2026-06-08T06:34:25Z", "kind": "closed", "issue": 3104, "issue_url": "https://github.com/facebookresearch/hydra/issues/3104", "title": "[Bug] Updating config group from a config group of another config group only works with full path"}
 {"ts": "2026-06-08T06:45:31Z", "kind": "new", "issue": 3202, "issue_url": "https://github.com/facebookresearch/hydra/issues/3202", "title": "Disallow parent traversal in Defaults List config groups"}
+{"ts": "2026-06-08T09:04:52Z", "kind": "closed", "issue": 3062, "issue_url": "https://github.com/facebookresearch/hydra/issues/3062", "title": "[Feature Request] _once_ behavior for instantiate"}
