@@ -21,3 +21,4 @@
 {"ts": "2026-06-07T21:27:04Z", "kind": "closed", "issue": 2479, "issue_url": "https://github.com/facebookresearch/hydra/issues/2479", "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm"}
 {"ts": "2026-06-07T21:27:04Z", "kind": "closed", "issue": 3058, "issue_url": "https://github.com/facebookresearch/hydra/issues/3058", "title": "[Question] How to Submit SLURM Jobs Eagerly?"}
 {"ts": "2026-06-07T21:27:04Z", "kind": "closed", "issue": 692, "issue_url": "https://github.com/facebookresearch/hydra/issues/692", "title": "[Feature Request] Support non blocking launching"}
+{"ts": "2026-06-08T04:52:36Z", "kind": "label", "issue": 3162, "issue_url": "https://github.com/facebookresearch/hydra/issues/3162", "title": "Support Sapling for Docusaurus last-updated metadata", "detail": "added \"documentation\"; removed \"triage\""}

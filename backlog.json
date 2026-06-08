@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-06-07",
-  "generated_at": "2026-06-07T21:27:04Z",
+  "generated_on": "2026-06-08",
+  "generated_at": "2026-06-08T04:52:36Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 284,
@@ -14,14 +14,14 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 139,
-        "percentage": 48.9
+        "count": 138,
+        "percentage": 48.6
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 12,
-        "percentage": 4.2
+        "count": 13,
+        "percentage": 4.6
       },
       {
         "category": "Question",
@@ -4434,15 +4434,15 @@
     {
       "number": 3162,
       "title": "Support Sapling for Docusaurus last-updated metadata",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "category": "Documentation",
+      "category_emoji": "📄",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-05-13",
-      "updated": "2026-05-16",
+      "updated": "2026-06-08",
       "labels": [
-        "triage"
+        "documentation"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3162"
     },
@@ -4524,6 +4524,40 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3201"
     },
     {
+      "number": 692,
+      "title": "[Feature Request] Support non blocking launching",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 2171,
+          "url": "https://github.com/facebookresearch/hydra/pull/2171"
+        }
+      ],
+      "created": "2020-06-19",
+      "updated": "2024-02-15",
+      "labels": [
+        "enhancement",
+        "plugin"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/692"
+    },
+    {
+      "number": 1892,
+      "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-11-17",
+      "updated": "2021-11-22",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
       "number": 2477,
       "title": "[Bug] Unable to delete an item from ListConfig",
       "category": "Bug",
@@ -4542,6 +4576,27 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2477"
+    },
+    {
+      "number": 2479,
+      "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3128,
+          "url": "https://github.com/facebookresearch/hydra/pull/3128"
+        }
+      ],
+      "created": "2022-11-23",
+      "updated": "2024-10-04",
+      "labels": [
+        "enhancement",
+        "internal"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2479"
     },
     {
       "number": 2502,
@@ -4577,6 +4632,21 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2940"
+    },
+    {
+      "number": 3058,
+      "title": "[Question] How to Submit SLURM Jobs Eagerly?",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-04-29",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3058"
     },
     {
       "number": 3075,
@@ -4645,79 +4715,17 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
-    },
-    {
-      "number": 692,
-      "title": "[Feature Request] Support non blocking launching",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 2171,
-          "url": "https://github.com/facebookresearch/hydra/pull/2171"
-        }
-      ],
-      "created": "2020-06-19",
-      "updated": "2024-02-15",
-      "labels": [
-        "enhancement",
-        "plugin"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/692"
-    },
-    {
-      "number": 1892,
-      "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2021-11-17",
-      "updated": "2021-11-22",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/1892"
-    },
-    {
-      "number": 2479,
-      "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3128,
-          "url": "https://github.com/facebookresearch/hydra/pull/3128"
-        }
-      ],
-      "created": "2022-11-23",
-      "updated": "2024-10-04",
-      "labels": [
-        "enhancement",
-        "internal"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2479"
-    },
-    {
-      "number": 3058,
-      "title": "[Question] How to Submit SLURM Jobs Eagerly?",
-      "category": "Question",
-      "category_emoji": "❓",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2025-04-29",
-      "updated": "2026-05-16",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3058"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-08T04:52:36Z",
+      "kind": "label",
+      "issue": 3162,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3162",
+      "title": "Support Sapling for Docusaurus last-updated metadata",
+      "detail": "added \"documentation\"; removed \"triage\""
+    },
     {
       "ts": "2026-06-07T21:27:04Z",
       "kind": "closed",
