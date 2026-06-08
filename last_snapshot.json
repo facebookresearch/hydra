@@ -15,7 +15,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-08T18:51:29Z",
+  "generated_at": "2026-06-08T18:53:31Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3342,12 +3342,15 @@
     "3203": {
       "category": "Enhancement",
       "created_at": "2026-06-08T18:50:06Z",
-      "labels": [],
+      "labels": [
+        "enhancement",
+        "instantiate_api"
+      ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] Type validation for instantiate arguments",
-      "updated_at": "2026-06-08T18:50:06Z"
+      "updated_at": "2026-06-08T18:52:01Z"
     },
     "385": {
       "category": "Enhancement",

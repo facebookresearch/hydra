@@ -37,3 +37,4 @@
 {"ts": "2026-06-08T18:51:29Z", "kind": "pr", "issue": 2162, "issue_url": "https://github.com/facebookresearch/hydra/issues/2162", "title": "Upgrading Optuna from v2.x.x to v3.0.0", "detail": "unlinked #2995"}
 {"ts": "2026-06-08T18:51:29Z", "kind": "pr", "issue": 2562, "issue_url": "https://github.com/facebookresearch/hydra/issues/2562", "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ", "detail": "unlinked #2995"}
 {"ts": "2026-06-08T18:51:29Z", "kind": "pr", "issue": 2977, "issue_url": "https://github.com/facebookresearch/hydra/issues/2977", "title": "[Feature Request] Add a generation strategy config to ax-sweeper plugin", "detail": "unlinked #2978"}
+{"ts": "2026-06-08T18:53:31Z", "kind": "label", "issue": 3203, "issue_url": "https://github.com/facebookresearch/hydra/issues/3203", "title": "[Feature Request] Type validation for instantiate arguments", "detail": "added \"enhancement\", \"instantiate_api\""}
