@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-08",
-  "generated_at": "2026-06-08T04:52:36Z",
+  "generated_at": "2026-06-08T05:12:30Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 284,
@@ -4409,10 +4409,9 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-02-07",
-      "updated": "2026-05-16",
+      "updated": "2026-06-08",
       "labels": [
-        "enhancement",
-        "triage"
+        "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3129"
     },
@@ -4718,6 +4717,14 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-08T05:12:30Z",
+      "kind": "label",
+      "issue": 3129,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3129",
+      "title": "[Feature Request] outputs/.gitignore",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-06-08T04:52:36Z",
       "kind": "label",
