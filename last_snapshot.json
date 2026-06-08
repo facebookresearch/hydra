@@ -15,7 +15,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-08T18:53:31Z",
+  "generated_at": "2026-06-08T20:28:39Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3324,7 +3324,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Explore async execution model for launchers and sweepers",
-      "updated_at": "2026-06-07T21:13:07Z"
+      "updated_at": "2026-06-08T20:18:37Z"
     },
     "3202": {
       "category": "Enhancement",
