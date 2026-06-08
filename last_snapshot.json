@@ -14,7 +14,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-08T06:34:25Z",
+  "generated_at": "2026-06-08T06:45:31Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3348,6 +3348,19 @@
       "status": "not started",
       "title": "Explore async execution model for launchers and sweepers",
       "updated_at": "2026-06-07T21:13:07Z"
+    },
+    "3202": {
+      "category": "Enhancement",
+      "created_at": "2026-06-08T06:39:05Z",
+      "labels": [
+        "defaults list",
+        "maintenance"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Disallow parent traversal in Defaults List config groups",
+      "updated_at": "2026-06-08T06:39:05Z"
     },
     "385": {
       "category": "Enhancement",
