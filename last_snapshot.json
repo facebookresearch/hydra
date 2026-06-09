@@ -7,6 +7,7 @@
     "2940": "2026-05-30",
     "3058": "2026-06-07",
     "3062": "2026-06-08",
+    "3068": "2026-06-09",
     "3075": "2026-05-27",
     "3104": "2026-06-08",
     "3118": "2026-06-08",
@@ -15,7 +16,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-09T08:16:39Z",
+  "generated_at": "2026-06-09T13:22:47Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3137,19 +3138,6 @@
       "title": "[Bug] Union type in structured config",
       "updated_at": "2026-05-16T02:12:51Z"
     },
-    "3068": {
-      "category": "Bug",
-      "created_at": "2025-06-20T03:54:35Z",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Unexpected string conversion when overriding an interpolated sibling config group",
-      "updated_at": "2026-05-16T02:12:52Z"
-    },
     "3069": {
       "category": "Question",
       "created_at": "2025-07-01T11:18:44Z",
@@ -3625,6 +3613,19 @@
       "status": "done",
       "title": "[Feature Request] _once_ behavior for instantiate",
       "updated_at": "2026-05-16T02:12:49Z"
+    },
+    "3068": {
+      "category": "Bug",
+      "created_at": "2025-06-20T03:54:35Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Unexpected string conversion when overriding an interpolated sibling config group",
+      "updated_at": "2026-05-16T02:12:52Z"
     },
     "3075": {
       "category": "Build",

@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-09",
-  "generated_at": "2026-06-09T08:16:39Z",
+  "generated_at": "2026-06-09T13:22:47Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 283,
+    "open_total": 282,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 113,
-        "percentage": 39.9
+        "count": 112,
+        "percentage": 39.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 139,
-        "percentage": 49.1
+        "percentage": 49.3
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 269
+        "count": 268
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 14
+        "count": 15
       }
     ]
   },
@@ -4230,22 +4230,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3067"
     },
     {
-      "number": 3068,
-      "title": "[Bug] Unexpected string conversion when overriding an interpolated sibling config group",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-06-20",
-      "updated": "2026-05-16",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3068"
-    },
-    {
       "number": 3069,
       "title": "Callback composition unclear",
       "category": "Question",
@@ -4722,9 +4706,32 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
+    },
+    {
+      "number": 3068,
+      "title": "[Bug] Unexpected string conversion when overriding an interpolated sibling config group",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-06-20",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3068"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-09T13:22:47Z",
+      "kind": "closed",
+      "issue": 3068,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3068",
+      "title": "[Bug] Unexpected string conversion when overriding an interpolated sibling config group"
+    },
     {
       "ts": "2026-06-08T18:53:31Z",
       "kind": "label",
