@@ -17,7 +17,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-10T11:28:10Z",
+  "generated_at": "2026-06-10T13:00:27Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3115,7 +3115,7 @@
       "state": "OPEN",
       "status": "in progress",
       "title": "Doc tutorial issue?",
-      "updated_at": "2026-05-16T02:12:50Z"
+      "updated_at": "2026-06-10T11:59:17Z"
     },
     "3066": {
       "category": "Enhancement",
@@ -3331,6 +3331,19 @@
       "status": "not started",
       "title": "[Feature Request] Type validation for instantiate arguments",
       "updated_at": "2026-06-08T18:52:01Z"
+    },
+    "3206": {
+      "category": "Documentation",
+      "created_at": "2026-06-10T12:58:57Z",
+      "labels": [
+        "documentation",
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Create website surfaces for ecosystem and featured projects",
+      "updated_at": "2026-06-10T12:58:57Z"
     },
     "385": {
       "category": "Enhancement",

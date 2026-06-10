@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-10",
-  "generated_at": "2026-06-10T11:28:10Z",
+  "generated_at": "2026-06-10T13:00:27Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 281,
+    "open_total": 282,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 111,
-        "percentage": 39.5
+        "percentage": 39.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 139,
-        "percentage": 49.5
+        "percentage": 49.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 13,
-        "percentage": 4.6
+        "count": 14,
+        "percentage": 5.0
       },
       {
         "category": "Question",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 266
+        "count": 267
       },
       {
         "status": "done",
@@ -127,7 +127,7 @@
         }
       ],
       "created": "2025-05-22",
-      "updated": "2026-05-16",
+      "updated": "2026-06-10",
       "labels": [
         "triage"
       ],
@@ -4453,6 +4453,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3203"
     },
     {
+      "number": 3206,
+      "title": "Create website surfaces for ecosystem and featured projects",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-10",
+      "updated": "2026-06-10",
+      "labels": [
+        "documentation",
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3206"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4732,6 +4748,13 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-10T13:00:27Z",
+      "kind": "new",
+      "issue": 3206,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3206",
+      "title": "Create website surfaces for ecosystem and featured projects"
+    },
     {
       "ts": "2026-06-10T11:28:10Z",
       "kind": "pr",

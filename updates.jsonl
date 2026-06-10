@@ -43,3 +43,4 @@
 {"ts": "2026-06-10T04:21:18Z", "kind": "closed", "issue": 3067, "issue_url": "https://github.com/facebookresearch/hydra/issues/3067", "title": "[Bug] Union type in structured config"}
 {"ts": "2026-06-10T11:28:10Z", "kind": "status", "issue": 3065, "issue_url": "https://github.com/facebookresearch/hydra/issues/3065", "title": "Doc tutorial issue?", "detail": "not started → in progress", "pr": {"number": 3205, "url": "https://github.com/facebookresearch/hydra/pull/3205"}}
 {"ts": "2026-06-10T11:28:10Z", "kind": "pr", "issue": 3065, "issue_url": "https://github.com/facebookresearch/hydra/issues/3065", "title": "Doc tutorial issue?", "detail": "linked #3205"}
+{"ts": "2026-06-10T13:00:27Z", "kind": "new", "issue": 3206, "issue_url": "https://github.com/facebookresearch/hydra/issues/3206", "title": "Create website surfaces for ecosystem and featured projects"}
