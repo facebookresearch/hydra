@@ -184,7 +184,21 @@ def test_tutorial_config_groups(
 @mark.parametrize(
     "args,expected",
     [
-        ([], {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}}),
+        (
+            [],
+            {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}},
+        ),
+        (
+            ["+db/mysql/engine=innodb"],
+            {
+                "db": {
+                    "driver": "mysql",
+                    "pass": "secret",
+                    "mysql": {"engine": {"name": "innodb"}},
+                    "user": "omry",
+                }
+            },
+        ),
         (
             ["db=postgresql"],
             {
