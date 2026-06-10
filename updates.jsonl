@@ -40,3 +40,4 @@
 {"ts": "2026-06-08T18:53:31Z", "kind": "label", "issue": 3203, "issue_url": "https://github.com/facebookresearch/hydra/issues/3203", "title": "[Feature Request] Type validation for instantiate arguments", "detail": "added \"enhancement\", \"instantiate_api\""}
 {"ts": "2026-06-09T13:22:47Z", "kind": "closed", "issue": 3068, "issue_url": "https://github.com/facebookresearch/hydra/issues/3068", "title": "[Bug] Unexpected string conversion when overriding an interpolated sibling config group"}
 {"ts": "2026-06-10T04:05:53Z", "kind": "label", "issue": 2664, "issue_url": "https://github.com/facebookresearch/hydra/issues/2664", "title": "[Not sure if bug/feature] Where does submitit error output go?", "detail": "added \"bug\""}
+{"ts": "2026-06-10T04:21:18Z", "kind": "closed", "issue": 3067, "issue_url": "https://github.com/facebookresearch/hydra/issues/3067", "title": "[Bug] Union type in structured config"}

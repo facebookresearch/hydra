@@ -7,6 +7,7 @@
     "2940": "2026-05-30",
     "3058": "2026-06-07",
     "3062": "2026-06-08",
+    "3067": "2026-06-10",
     "3068": "2026-06-09",
     "3075": "2026-05-27",
     "3104": "2026-06-08",
@@ -16,7 +17,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-10T04:05:53Z",
+  "generated_at": "2026-06-10T04:21:18Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3127,19 +3128,6 @@
       "title": "[Feature Request] Logging config to include `loggers` as well as `root` (suggested solution)",
       "updated_at": "2026-05-16T02:12:50Z"
     },
-    "3067": {
-      "category": "Bug",
-      "created_at": "2025-06-02T08:43:15Z",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Union type in structured config",
-      "updated_at": "2026-05-16T02:12:51Z"
-    },
     "3069": {
       "category": "Question",
       "created_at": "2025-07-01T11:18:44Z",
@@ -3615,6 +3603,19 @@
       "status": "done",
       "title": "[Feature Request] _once_ behavior for instantiate",
       "updated_at": "2026-05-16T02:12:49Z"
+    },
+    "3067": {
+      "category": "Bug",
+      "created_at": "2025-06-02T08:43:15Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Union type in structured config",
+      "updated_at": "2026-05-16T02:12:51Z"
     },
     "3068": {
       "category": "Bug",

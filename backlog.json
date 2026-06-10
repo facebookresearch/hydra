@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-10",
-  "generated_at": "2026-06-10T04:05:53Z",
+  "generated_at": "2026-06-10T04:21:18Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 282,
+    "open_total": 281,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 112,
-        "percentage": 39.7
+        "count": 111,
+        "percentage": 39.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 139,
-        "percentage": 49.3
+        "percentage": 49.5
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 268
+        "count": 267
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 15
+        "count": 16
       }
     ]
   },
@@ -4216,22 +4216,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3066"
     },
     {
-      "number": 3067,
-      "title": "[Bug] Union type in structured config",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-06-02",
-      "updated": "2026-05-16",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3067"
-    },
-    {
       "number": 3069,
       "title": "Callback composition unclear",
       "category": "Question",
@@ -4724,9 +4708,32 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
+    },
+    {
+      "number": 3067,
+      "title": "[Bug] Union type in structured config",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-06-02",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3067"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-10T04:21:18Z",
+      "kind": "closed",
+      "issue": 3067,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3067",
+      "title": "[Bug] Union type in structured config"
+    },
     {
       "ts": "2026-06-10T04:05:53Z",
       "kind": "label",
