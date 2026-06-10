@@ -48,3 +48,4 @@
 {"ts": "2026-06-10T19:39:18Z", "kind": "closed", "issue": 3050, "issue_url": "https://github.com/facebookresearch/hydra/issues/3050", "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation"}
 {"ts": "2026-06-10T19:39:18Z", "kind": "closed", "issue": 3065, "issue_url": "https://github.com/facebookresearch/hydra/issues/3065", "title": "Doc tutorial issue?"}
 {"ts": "2026-06-10T19:39:18Z", "kind": "pr", "issue": 2293, "issue_url": "https://github.com/facebookresearch/hydra/issues/2293", "title": "Modify Trial when using a Sweeper", "detail": "unlinked #2718"}
+{"ts": "2026-06-10T19:49:39Z", "kind": "new", "issue": 3050, "issue_url": "https://github.com/facebookresearch/hydra/issues/3050", "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation"}

@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-10",
-  "generated_at": "2026-06-10T19:39:18Z",
+  "generated_at": "2026-06-10T19:49:39Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 280,
+    "open_total": 281,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 110,
-        "percentage": 39.3
+        "count": 111,
+        "percentage": 39.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 139,
-        "percentage": 49.6
+        "percentage": 49.5
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 267
+        "count": 268
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 18
+        "count": 17
       }
     ]
   },
@@ -1993,6 +1993,23 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2284"
+    },
+    {
+      "number": 2293,
+      "title": "Modify Trial when using a Sweeper",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-07-14",
+      "updated": "2026-06-10",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2293"
     },
     {
       "number": 2305,
@@ -4412,21 +4429,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
     },
     {
-      "number": 2293,
-      "title": "Modify Trial when using a Sweeper",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 3050,
+      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
+      "category": "Bug",
+      "category_emoji": "🐛",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
-      "created": "2022-07-14",
+      "created": "2025-04-03",
       "updated": "2026-06-10",
       "labels": [
-        "enhancement",
-        "optuna",
-        "sweep"
+        "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2293"
+      "url": "https://github.com/facebookresearch/hydra/issues/3050"
     },
     {
       "number": 692,
@@ -4575,6 +4590,26 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3062"
     },
     {
+      "number": 3065,
+      "title": "Doc tutorial issue?",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3205,
+          "url": "https://github.com/facebookresearch/hydra/pull/3205"
+        }
+      ],
+      "created": "2025-05-22",
+      "updated": "2026-06-10",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3065"
+    },
+    {
       "number": 3067,
       "title": "[Bug] Union type in structured config",
       "category": "Bug",
@@ -4705,44 +4740,16 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
-    },
-    {
-      "number": 3050,
-      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2025-04-03",
-      "updated": "2025-05-20",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3050"
-    },
-    {
-      "number": 3065,
-      "title": "Doc tutorial issue?",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3205,
-          "url": "https://github.com/facebookresearch/hydra/pull/3205"
-        }
-      ],
-      "created": "2025-05-22",
-      "updated": "2026-06-10",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3065"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-10T19:49:39Z",
+      "kind": "new",
+      "issue": 3050,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3050",
+      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation"
+    },
     {
       "ts": "2026-06-10T19:39:18Z",
       "kind": "pr",
