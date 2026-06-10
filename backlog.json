@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-10",
-  "generated_at": "2026-06-10T04:21:18Z",
+  "generated_at": "2026-06-10T08:26:42Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 281,
@@ -4594,6 +4594,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3062"
     },
     {
+      "number": 3067,
+      "title": "[Bug] Union type in structured config",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-06-02",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3067"
+    },
+    {
       "number": 3068,
       "title": "[Bug] Unexpected string conversion when overriding an interpolated sibling config group",
       "category": "Bug",
@@ -4708,22 +4724,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
-    },
-    {
-      "number": 3067,
-      "title": "[Bug] Union type in structured config",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2025-06-02",
-      "updated": "2026-05-16",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3067"
     }
   ],
   "updates": [
