@@ -5,8 +5,10 @@
     "2479": "2026-06-07",
     "2502": "2026-06-07",
     "2940": "2026-05-30",
+    "3050": "2026-06-10",
     "3058": "2026-06-07",
     "3062": "2026-06-08",
+    "3065": "2026-06-10",
     "3067": "2026-06-10",
     "3068": "2026-06-09",
     "3075": "2026-05-27",
@@ -17,7 +19,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-10T13:00:27Z",
+  "generated_at": "2026-06-10T19:39:18Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1305,13 +1307,11 @@
         "optuna",
         "sweep"
       ],
-      "pr_numbers": [
-        "2718"
-      ],
+      "pr_numbers": [],
       "state": "OPEN",
-      "status": "community PR",
+      "status": "not started",
       "title": "Modify Trial when using a Sweeper",
-      "updated_at": "2022-12-02T08:55:50Z"
+      "updated_at": "2026-06-10T19:23:48Z"
     },
     "2305": {
       "category": "Bug",
@@ -3038,18 +3038,6 @@
       "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?",
       "updated_at": "2025-04-08T14:54:37Z"
     },
-    "3050": {
-      "category": "Bug",
-      "created_at": "2025-04-03T13:11:30Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
-      "updated_at": "2025-05-20T18:35:33Z"
-    },
     "3053": {
       "category": "Bug",
       "created_at": "2025-04-13T14:15:26Z",
@@ -3102,20 +3090,6 @@
       "status": "not started",
       "title": "[Feature Request] No sweepers are compatible with python >3.10 (NeverGrad, Ax, Optuna)",
       "updated_at": "2026-05-16T02:12:49Z"
-    },
-    "3065": {
-      "category": "Documentation",
-      "created_at": "2025-05-22T18:28:07Z",
-      "labels": [
-        "triage"
-      ],
-      "pr_numbers": [
-        "3205"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "Doc tutorial issue?",
-      "updated_at": "2026-06-10T11:59:17Z"
     },
     "3066": {
       "category": "Enhancement",
@@ -3592,6 +3566,18 @@
       "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
       "updated_at": "2025-08-17T22:53:33Z"
     },
+    "3050": {
+      "category": "Bug",
+      "created_at": "2025-04-03T13:11:30Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
+      "updated_at": "2025-05-20T18:35:33Z"
+    },
     "3058": {
       "category": "Question",
       "created_at": "2025-04-29T21:46:35Z",
@@ -3618,6 +3604,20 @@
       "status": "done",
       "title": "[Feature Request] _once_ behavior for instantiate",
       "updated_at": "2026-05-16T02:12:49Z"
+    },
+    "3065": {
+      "category": "Documentation",
+      "created_at": "2025-05-22T18:28:07Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [
+        "3205"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Doc tutorial issue?",
+      "updated_at": "2026-06-10T11:59:17Z"
     },
     "3067": {
       "category": "Bug",

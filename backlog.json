@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-10",
-  "generated_at": "2026-06-10T13:00:27Z",
+  "generated_at": "2026-06-10T19:39:18Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 282,
+    "open_total": 280,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 111,
-        "percentage": 39.4
+        "count": 110,
+        "percentage": 39.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 139,
-        "percentage": 49.3
+        "percentage": 49.6
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 14,
-        "percentage": 5.0
+        "count": 13,
+        "percentage": 4.6
       },
       {
         "category": "Question",
@@ -46,12 +46,12 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 2
       },
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 12
+        "count": 11
       },
       {
         "status": "blocked",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 16
+        "count": 18
       }
     ]
   },
@@ -112,26 +112,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 3065,
-      "title": "Doc tutorial issue?",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3205,
-          "url": "https://github.com/facebookresearch/hydra/pull/3205"
-        }
-      ],
-      "created": "2025-05-22",
-      "updated": "2026-06-10",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3065"
     },
     {
       "number": 845,
@@ -283,28 +263,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2268"
-    },
-    {
-      "number": 2293,
-      "title": "Modify Trial when using a Sweeper",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 2718,
-          "url": "https://github.com/facebookresearch/hydra/pull/2718"
-        }
-      ],
-      "created": "2022-07-14",
-      "updated": "2022-12-02",
-      "labels": [
-        "enhancement",
-        "optuna",
-        "sweep"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2293"
     },
     {
       "number": 2435,
@@ -4142,21 +4100,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3047"
     },
     {
-      "number": 3050,
-      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-04-03",
-      "updated": "2025-05-20",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3050"
-    },
-    {
       "number": 3055,
       "title": "[Feature Request] -- is there a way to sweep in nested folder inside config group?",
       "category": "Enhancement",
@@ -4469,6 +4412,23 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
     },
     {
+      "number": 2293,
+      "title": "Modify Trial when using a Sweeper",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-07-14",
+      "updated": "2026-06-10",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2293"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4745,9 +4705,74 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
+    },
+    {
+      "number": 3050,
+      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-04-03",
+      "updated": "2025-05-20",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3050"
+    },
+    {
+      "number": 3065,
+      "title": "Doc tutorial issue?",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3205,
+          "url": "https://github.com/facebookresearch/hydra/pull/3205"
+        }
+      ],
+      "created": "2025-05-22",
+      "updated": "2026-06-10",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3065"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-10T19:39:18Z",
+      "kind": "pr",
+      "issue": 2293,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2293",
+      "title": "Modify Trial when using a Sweeper",
+      "detail": "unlinked #2718"
+    },
+    {
+      "ts": "2026-06-10T19:39:18Z",
+      "kind": "closed",
+      "issue": 3065,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3065",
+      "title": "Doc tutorial issue?"
+    },
+    {
+      "ts": "2026-06-10T19:39:18Z",
+      "kind": "closed",
+      "issue": 3050,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3050",
+      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation"
+    },
+    {
+      "ts": "2026-06-10T19:39:18Z",
+      "kind": "status",
+      "issue": 2293,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2293",
+      "title": "Modify Trial when using a Sweeper",
+      "detail": "community PR → not started"
+    },
     {
       "ts": "2026-06-10T13:00:27Z",
       "kind": "new",
