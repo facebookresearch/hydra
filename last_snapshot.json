@@ -16,7 +16,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-09T13:22:47Z",
+  "generated_at": "2026-06-10T04:05:53Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1785,12 +1785,14 @@
     "2664": {
       "category": "Bug",
       "created_at": "2023-05-16T15:10:07Z",
-      "labels": [],
+      "labels": [
+        "bug"
+      ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "[Not sure if bug/feature] Where does submitit error output go?",
-      "updated_at": "2024-04-12T22:35:25Z"
+      "updated_at": "2026-06-10T04:04:27Z"
     },
     "2669": {
       "category": "Bug",

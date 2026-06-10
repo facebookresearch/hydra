@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-06-09",
-  "generated_at": "2026-06-09T13:22:47Z",
+  "generated_on": "2026-06-10",
+  "generated_at": "2026-06-10T04:05:53Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 282,
@@ -2571,8 +2571,10 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2023-05-16",
-      "updated": "2024-04-12",
-      "labels": [],
+      "updated": "2026-06-10",
+      "labels": [
+        "bug"
+      ],
       "url": "https://github.com/facebookresearch/hydra/issues/2664"
     },
     {
@@ -4608,6 +4610,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3062"
     },
     {
+      "number": 3068,
+      "title": "[Bug] Unexpected string conversion when overriding an interpolated sibling config group",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-06-20",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3068"
+    },
+    {
       "number": 3075,
       "title": "What is the project status given the last release was in 2023",
       "category": "Build",
@@ -4706,25 +4724,17 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
-    },
-    {
-      "number": 3068,
-      "title": "[Bug] Unexpected string conversion when overriding an interpolated sibling config group",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2025-06-20",
-      "updated": "2026-05-16",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3068"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-10T04:05:53Z",
+      "kind": "label",
+      "issue": 2664,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2664",
+      "title": "[Not sure if bug/feature] Where does submitit error output go?",
+      "detail": "added \"bug\""
+    },
     {
       "ts": "2026-06-09T13:22:47Z",
       "kind": "closed",
