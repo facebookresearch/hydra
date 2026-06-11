@@ -1,21 +1,21 @@
 {
-  "generated_on": "2026-06-10",
-  "generated_at": "2026-06-10T19:49:39Z",
+  "generated_on": "2026-06-11",
+  "generated_at": "2026-06-11T01:15:58Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 281,
+    "open_total": 280,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 111,
-        "percentage": 39.5
+        "percentage": 39.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 139,
-        "percentage": 49.5
+        "count": 138,
+        "percentage": 49.3
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 268
+        "count": 267
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 17
+        "count": 18
       }
     ]
   },
@@ -4117,6 +4117,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3047"
     },
     {
+      "number": 3050,
+      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2025-04-03",
+      "updated": "2026-06-10",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3050"
+    },
+    {
       "number": 3055,
       "title": "[Feature Request] -- is there a way to sweep in nested folder inside config group?",
       "category": "Enhancement",
@@ -4257,21 +4272,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3103"
-    },
-    {
-      "number": 3129,
-      "title": "[Feature Request] outputs/.gitignore",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-02-07",
-      "updated": "2026-06-08",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3129"
     },
     {
       "number": 3158,
@@ -4427,21 +4427,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
-    },
-    {
-      "number": 3050,
-      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-04-03",
-      "updated": "2026-06-10",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3050"
     },
     {
       "number": 692,
@@ -4740,9 +4725,31 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
+    },
+    {
+      "number": 3129,
+      "title": "[Feature Request] outputs/.gitignore",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-02-07",
+      "updated": "2026-06-08",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3129"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-11T01:15:58Z",
+      "kind": "closed",
+      "issue": 3129,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3129",
+      "title": "[Feature Request] outputs/.gitignore"
+    },
     {
       "ts": "2026-06-10T19:49:39Z",
       "kind": "new",

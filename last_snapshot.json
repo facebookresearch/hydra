@@ -13,12 +13,13 @@
     "3075": "2026-05-27",
     "3104": "2026-06-08",
     "3118": "2026-06-08",
+    "3129": "2026-06-11",
     "3176": "2026-05-17",
     "3192": "2026-06-07",
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-10T19:49:39Z",
+  "generated_at": "2026-06-11T01:15:58Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3047,7 +3048,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
-      "updated_at": "2026-06-10T19:48:20Z"
+      "updated_at": "2026-06-10T20:53:47Z"
     },
     "3053": {
       "category": "Bug",
@@ -3192,18 +3193,6 @@
       "status": "community PR",
       "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
       "updated_at": "2026-06-08T05:44:45Z"
-    },
-    "3129": {
-      "category": "Enhancement",
-      "created_at": "2026-02-07T06:24:54Z",
-      "labels": [
-        "enhancement"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] outputs/.gitignore",
-      "updated_at": "2026-06-08T05:11:13Z"
     },
     "3158": {
       "category": "Build",
@@ -3681,6 +3670,18 @@
       "status": "done",
       "title": "[Bug] update `antlr4` dependency to 4.13 :)",
       "updated_at": "2026-05-16T02:12:56Z"
+    },
+    "3129": {
+      "category": "Enhancement",
+      "created_at": "2026-02-07T06:24:54Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] outputs/.gitignore",
+      "updated_at": "2026-06-08T05:11:13Z"
     },
     "3176": {
       "category": "Enhancement",
