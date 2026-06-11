@@ -1,39 +1,39 @@
 {
   "generated_on": "2026-06-11",
-  "generated_at": "2026-06-11T08:36:24Z",
+  "generated_at": "2026-06-11T20:25:48Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 279,
+    "open_total": 280,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 110,
-        "percentage": 39.4
+        "percentage": 39.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 138,
-        "percentage": 49.5
+        "percentage": 49.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.7
+        "percentage": 4.6
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 13,
-        "percentage": 4.7
+        "percentage": 4.6
       },
       {
         "category": "Refactor",
         "emoji": "🔧",
-        "count": 1,
-        "percentage": 0.4
+        "count": 2,
+        "percentage": 0.7
       },
       {
         "category": "Build",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 266
+        "count": 267
       },
       {
         "status": "done",
@@ -4406,12 +4406,25 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-10",
-      "updated": "2026-06-10",
+      "updated": "2026-06-11",
       "labels": [
         "documentation",
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
+    },
+    {
+      "number": 3210,
+      "title": "Modernize Optuna Sweeper",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-11",
+      "updated": "2026-06-11",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3210"
     },
     {
       "number": 692,
@@ -4756,6 +4769,13 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-11T20:25:48Z",
+      "kind": "new",
+      "issue": 3210,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3210",
+      "title": "Modernize Optuna Sweeper"
+    },
     {
       "ts": "2026-06-11T06:03:44Z",
       "kind": "closed",

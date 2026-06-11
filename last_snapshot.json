@@ -21,7 +21,7 @@
     "3207": "2026-06-11",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-11T08:36:24Z",
+  "generated_at": "2026-06-11T20:25:48Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3307,7 +3307,17 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Create website surfaces for ecosystem and featured projects",
-      "updated_at": "2026-06-10T12:58:57Z"
+      "updated_at": "2026-06-11T19:18:51Z"
+    },
+    "3210": {
+      "category": "Refactor",
+      "created_at": "2026-06-11T20:24:10Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Modernize Optuna Sweeper",
+      "updated_at": "2026-06-11T20:25:17Z"
     },
     "385": {
       "category": "Enhancement",
