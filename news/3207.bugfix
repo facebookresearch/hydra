@@ -1,0 +1,1 @@
+Remove the setup.py dependency on pkg_resources for source builds.
