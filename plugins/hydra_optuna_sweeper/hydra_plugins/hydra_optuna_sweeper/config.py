@@ -50,7 +50,6 @@ class TPESamplerConfig(SamplerConfig):
     n_startup_trials: int = 10
     n_ei_candidates: int = 24
     multivariate: bool = False
-    warn_independent_sampling: bool = True
 
 
 @dataclass
@@ -75,12 +74,12 @@ class CmaEsSamplerConfig(SamplerConfig):
     x0: Optional[Dict[str, Any]] = None
     sigma0: Optional[float] = None
     independent_sampler: Optional[Any] = None
-    warn_independent_sampling: bool = True
     consider_pruned_trials: bool = False
     restart_strategy: Optional[Any] = None
     inc_popsize: int = 2
     use_separable_cma: bool = False
     source_trials: Optional[Any] = None
+    with_margin: bool = False
 
 
 @dataclass
@@ -114,6 +113,7 @@ class MOTPESamplerConfig(SamplerConfig):
     consider_endpoints: bool = False
     n_startup_trials: int = 10
     n_ehvi_candidates: int = 24
+    constraints_func: Optional[Any] = None
 
 
 @dataclass
