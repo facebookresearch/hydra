@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-11",
-  "generated_at": "2026-06-11T01:15:58Z",
+  "generated_at": "2026-06-11T02:53:16Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 280,
+    "open_total": 281,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 111,
-        "percentage": 39.6
+        "percentage": 39.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 138,
-        "percentage": 49.3
+        "percentage": 49.1
       },
       {
         "category": "Documentation",
@@ -38,8 +38,8 @@
       {
         "category": "Build",
         "emoji": "🏗️",
-        "count": 4,
-        "percentage": 1.4
+        "count": 5,
+        "percentage": 1.8
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 267
+        "count": 268
       },
       {
         "status": "done",
@@ -4429,6 +4429,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
     },
     {
+      "number": 3207,
+      "title": "Released sdist (1.3.2) fails to install from source under setuptools >= 82 — fix exists at HEAD, please cut a release",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-11",
+      "updated": "2026-06-11",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3207"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4674,6 +4687,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3118"
     },
     {
+      "number": 3129,
+      "title": "[Feature Request] outputs/.gitignore",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-02-07",
+      "updated": "2026-06-08",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3129"
+    },
+    {
       "number": 3176,
       "title": "Upgrade and modernize Ax Sweeper",
       "category": "Enhancement",
@@ -4725,24 +4753,16 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
-    },
-    {
-      "number": 3129,
-      "title": "[Feature Request] outputs/.gitignore",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2026-02-07",
-      "updated": "2026-06-08",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3129"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-11T02:53:16Z",
+      "kind": "new",
+      "issue": 3207,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3207",
+      "title": "Released sdist (1.3.2) fails to install from source under setuptools >= 82 — fix exists at HEAD, please cut a release"
+    },
     {
       "ts": "2026-06-11T01:15:58Z",
       "kind": "closed",
