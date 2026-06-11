@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-06-11",
-  "generated_at": "2026-06-11T03:00:10Z",
+  "generated_at": "2026-06-11T06:03:44Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 280,
+    "open_total": 279,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 110,
-        "percentage": 39.3
+        "percentage": 39.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 138,
-        "percentage": 49.3
+        "percentage": 49.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.6
+        "percentage": 4.7
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 13,
-        "percentage": 4.6
+        "percentage": 4.7
       },
       {
         "category": "Refactor",
@@ -38,8 +38,8 @@
       {
         "category": "Build",
         "emoji": "🏗️",
-        "count": 5,
-        "percentage": 1.8
+        "count": 4,
+        "percentage": 1.4
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 267
+        "count": 266
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 19
+        "count": 20
       }
     ]
   },
@@ -4414,19 +4414,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
     },
     {
-      "number": 3207,
-      "title": "Released sdist (1.3.2) fails to install from source under setuptools >= 82 — fix exists at HEAD, please cut a release",
-      "category": "Build",
-      "category_emoji": "🏗️",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-11",
-      "updated": "2026-06-11",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3207"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4535,6 +4522,21 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2940"
+    },
+    {
+      "number": 3050,
+      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-04-03",
+      "updated": "2026-06-10",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3050"
     },
     {
       "number": 3058,
@@ -4740,22 +4742,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
     },
     {
-      "number": 3050,
-      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "number": 3207,
+      "title": "Released sdist (1.3.2) fails to install from source under setuptools >= 82 — fix exists at HEAD, please cut a release",
+      "category": "Build",
+      "category_emoji": "🏗️",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2025-04-03",
-      "updated": "2026-06-10",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3050"
+      "created": "2026-06-11",
+      "updated": "2026-06-11",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3207"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-11T06:03:44Z",
+      "kind": "closed",
+      "issue": 3207,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3207",
+      "title": "Released sdist (1.3.2) fails to install from source under setuptools >= 82 — fix exists at HEAD, please cut a release"
+    },
     {
       "ts": "2026-06-11T03:00:10Z",
       "kind": "closed",
