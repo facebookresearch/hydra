@@ -5,6 +5,7 @@
     "2479": "2026-06-07",
     "2502": "2026-06-07",
     "2940": "2026-05-30",
+    "3050": "2026-06-11",
     "3058": "2026-06-07",
     "3062": "2026-06-08",
     "3065": "2026-06-10",
@@ -19,7 +20,7 @@
     "3195": "2026-05-30",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-11T02:53:16Z",
+  "generated_at": "2026-06-11T03:00:10Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3038,18 +3039,6 @@
       "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?",
       "updated_at": "2025-04-08T14:54:37Z"
     },
-    "3050": {
-      "category": "Bug",
-      "created_at": "2025-04-03T13:11:30Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
-      "updated_at": "2026-06-10T20:53:47Z"
-    },
     "3053": {
       "category": "Bug",
       "created_at": "2025-04-13T14:15:26Z",
@@ -3575,6 +3564,18 @@
       "status": "done",
       "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
       "updated_at": "2025-08-17T22:53:33Z"
+    },
+    "3050": {
+      "category": "Bug",
+      "created_at": "2025-04-03T13:11:30Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
+      "updated_at": "2026-06-10T20:53:47Z"
     },
     "3058": {
       "category": "Question",

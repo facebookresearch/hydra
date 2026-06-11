@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-11",
-  "generated_at": "2026-06-11T02:53:16Z",
+  "generated_at": "2026-06-11T03:00:10Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 281,
+    "open_total": 280,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 111,
-        "percentage": 39.5
+        "count": 110,
+        "percentage": 39.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 138,
-        "percentage": 49.1
+        "percentage": 49.3
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 268
+        "count": 267
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 18
+        "count": 19
       }
     ]
   },
@@ -4117,21 +4117,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3047"
     },
     {
-      "number": 3050,
-      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-04-03",
-      "updated": "2026-06-10",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3050"
-    },
-    {
       "number": 3055,
       "title": "[Feature Request] -- is there a way to sweep in nested folder inside config group?",
       "category": "Enhancement",
@@ -4753,9 +4738,31 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3195"
+    },
+    {
+      "number": 3050,
+      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-04-03",
+      "updated": "2026-06-10",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3050"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-11T03:00:10Z",
+      "kind": "closed",
+      "issue": 3050,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3050",
+      "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation"
+    },
     {
       "ts": "2026-06-11T02:53:16Z",
       "kind": "new",
