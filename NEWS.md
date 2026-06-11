@@ -1,3 +1,11 @@
+1.3.3 (2026-06-11)
+==================
+
+### Bug Fixes
+
+- Remove the setup.py dependency on pkg_resources for source builds. ([#3207](https://github.com/facebookresearch/hydra/issues/3207))
+
+
 1.3.2 (2023-02-22)
 ==================
 
