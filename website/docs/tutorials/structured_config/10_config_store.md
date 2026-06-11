@@ -88,7 +88,12 @@ that is not the only way! We can also use `ConfigStore` to make another config g
 To achieve this, we add a few lines (highlighted) in the above `my_app.py` file:
 
 
-```python title="my_app.py" {1-9}
+```python title="my_app.py" {6-14}
+import hydra
+from omegaconf import OmegaConf, DictConfig
+from hydra.core.config_store import ConfigStore
+from dataclasses import dataclass
+
 @dataclass
 class PostgresSQLConfig:
     driver: str = "postgresql"

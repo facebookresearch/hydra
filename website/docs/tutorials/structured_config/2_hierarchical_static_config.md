@@ -11,7 +11,7 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 Dataclasses can be nested and then accessed via a common root.  The entire tree is type checked.
 
 ```python
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import hydra
 from hydra.core.config_store import ConfigStore
