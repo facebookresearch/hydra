@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-06-11",
-  "generated_at": "2026-06-11T20:25:48Z",
+  "generated_at": "2026-06-11T20:29:33Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 280,
+    "open_total": 279,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 110,
-        "percentage": 39.3
+        "percentage": 39.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 138,
-        "percentage": 49.3
+        "count": 137,
+        "percentage": 49.1
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.6
+        "percentage": 4.7
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 13,
-        "percentage": 4.6
+        "percentage": 4.7
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 267
+        "count": 266
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 20
+        "count": 21
       }
     ]
   },
@@ -1655,23 +1655,6 @@
         "documentation"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2149"
-    },
-    {
-      "number": 2162,
-      "title": "Upgrading Optuna from v2.x.x to v3.0.0",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-04-20",
-      "updated": "2025-01-22",
-      "labels": [
-        "enhancement",
-        "optuna",
-        "sweep"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2162"
     },
     {
       "number": 2170,
@@ -4766,9 +4749,33 @@
       "updated": "2026-06-11",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3207"
+    },
+    {
+      "number": 2162,
+      "title": "Upgrading Optuna from v2.x.x to v3.0.0",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-04-20",
+      "updated": "2025-01-22",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2162"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-11T20:29:33Z",
+      "kind": "closed",
+      "issue": 2162,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2162",
+      "title": "Upgrading Optuna from v2.x.x to v3.0.0"
+    },
     {
       "ts": "2026-06-11T20:25:48Z",
       "kind": "new",

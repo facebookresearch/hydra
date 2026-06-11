@@ -1,6 +1,7 @@
 {
   "closed_at": {
     "1892": "2026-06-07",
+    "2162": "2026-06-11",
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
@@ -21,7 +22,7 @@
     "3207": "2026-06-11",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-11T20:25:48Z",
+  "generated_at": "2026-06-11T20:29:33Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -997,20 +998,6 @@
       "status": "not started",
       "title": "[Bug] Documentation Binder link is broken.",
       "updated_at": "2022-04-19T19:30:09Z"
-    },
-    "2162": {
-      "category": "Enhancement",
-      "created_at": "2022-04-20T06:39:32Z",
-      "labels": [
-        "enhancement",
-        "optuna",
-        "sweep"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Upgrading Optuna from v2.x.x to v3.0.0",
-      "updated_at": "2025-01-22T23:55:03Z"
     },
     "2170": {
       "category": "Bug",
@@ -3510,6 +3497,20 @@
       "status": "done",
       "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
       "updated_at": "2021-11-22T21:10:28Z"
+    },
+    "2162": {
+      "category": "Enhancement",
+      "created_at": "2022-04-20T06:39:32Z",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "sweep"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Upgrading Optuna from v2.x.x to v3.0.0",
+      "updated_at": "2025-01-22T23:55:03Z"
     },
     "2477": {
       "category": "Bug",
