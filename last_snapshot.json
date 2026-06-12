@@ -22,7 +22,7 @@
     "3207": "2026-06-11",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-11T20:29:33Z",
+  "generated_at": "2026-06-12T08:33:54Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -278,11 +278,9 @@
         "plugin",
         "wishlist"
       ],
-      "pr_numbers": [
-        "2647"
-      ],
+      "pr_numbers": [],
       "state": "OPEN",
-      "status": "community PR",
+      "status": "not started",
       "title": "[Feature Request] Resume study and avoid OOM when optimizing with Optuna plugin",
       "updated_at": "2022-10-21T20:42:29Z"
     },
@@ -1128,11 +1126,9 @@
         "plugin",
         "sweep"
       ],
-      "pr_numbers": [
-        "2225"
-      ],
+      "pr_numbers": [],
       "state": "OPEN",
-      "status": "community PR",
+      "status": "not started",
       "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
       "updated_at": "2022-05-26T16:27:50Z"
     },
@@ -1495,11 +1491,9 @@
         "plugin",
         "sweep"
       ],
-      "pr_numbers": [
-        "2461"
-      ],
+      "pr_numbers": [],
       "state": "OPEN",
-      "status": "community PR",
+      "status": "not started",
       "title": "[Feature Request] Optuna experiment stream processing",
       "updated_at": "2022-10-27T15:14:54Z"
     },
