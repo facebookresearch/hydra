@@ -22,7 +22,7 @@
     "3207": "2026-06-11",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-12T08:33:54Z",
+  "generated_at": "2026-06-13T08:10:39Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3294,9 +3294,11 @@
       "category": "Refactor",
       "created_at": "2026-06-11T20:24:10Z",
       "labels": [],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3211"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "Modernize Optuna Sweeper",
       "updated_at": "2026-06-11T20:25:17Z"
     },

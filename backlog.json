@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-06-12",
-  "generated_at": "2026-06-12T08:33:54Z",
+  "generated_on": "2026-06-13",
+  "generated_at": "2026-06-13T08:10:39Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 279,
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 8
+        "count": 9
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 269
+        "count": 268
       },
       {
         "status": "done",
@@ -278,6 +278,24 @@
         "awaiting_response"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3106"
+    },
+    {
+      "number": 3210,
+      "title": "Modernize Optuna Sweeper",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3211,
+          "url": "https://github.com/facebookresearch/hydra/pull/3211"
+        }
+      ],
+      "created": "2026-06-11",
+      "updated": "2026-06-11",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3210"
     },
     {
       "number": 385,
@@ -784,6 +802,24 @@
         "documentation"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1636"
+    },
+    {
+      "number": 1679,
+      "title": "[Feature Request] Resume study and avoid OOM when optimizing with Optuna plugin",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-06-17",
+      "updated": "2022-10-21",
+      "labels": [
+        "enhancement",
+        "help wanted",
+        "wishlist",
+        "plugin"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1679"
     },
     {
       "number": 1749,
@@ -1737,6 +1773,24 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2236"
     },
     {
+      "number": 2237,
+      "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-05-26",
+      "updated": "2022-05-26",
+      "labels": [
+        "bug",
+        "plugin",
+        "optuna",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2237"
+    },
+    {
       "number": 2241,
       "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir",
       "category": "Bug",
@@ -2151,6 +2205,25 @@
         "structured config"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2416"
+    },
+    {
+      "number": 2435,
+      "title": "[Feature Request] Optuna experiment stream processing",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-10-24",
+      "updated": "2022-10-27",
+      "labels": [
+        "enhancement",
+        "plugin",
+        "optuna",
+        "sweep",
+        "launchers"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2435"
     },
     {
       "number": 2445,
@@ -4327,74 +4400,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
     },
     {
-      "number": 3210,
-      "title": "Modernize Optuna Sweeper",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-11",
-      "updated": "2026-06-11",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3210"
-    },
-    {
-      "number": 1679,
-      "title": "[Feature Request] Resume study and avoid OOM when optimizing with Optuna plugin",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-06-17",
-      "updated": "2022-10-21",
-      "labels": [
-        "enhancement",
-        "help wanted",
-        "wishlist",
-        "plugin"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1679"
-    },
-    {
-      "number": 2237,
-      "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-05-26",
-      "updated": "2022-05-26",
-      "labels": [
-        "bug",
-        "plugin",
-        "optuna",
-        "sweep"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2237"
-    },
-    {
-      "number": 2435,
-      "title": "[Feature Request] Optuna experiment stream processing",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-10-24",
-      "updated": "2022-10-27",
-      "labels": [
-        "enhancement",
-        "plugin",
-        "optuna",
-        "sweep",
-        "launchers"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2435"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4754,6 +4759,26 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-13T08:10:39Z",
+      "kind": "pr",
+      "issue": 3210,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3210",
+      "title": "Modernize Optuna Sweeper",
+      "detail": "linked #3211"
+    },
+    {
+      "ts": "2026-06-13T08:10:39Z",
+      "kind": "status",
+      "issue": 3210,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3210",
+      "title": "Modernize Optuna Sweeper",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3211,
+        "url": "https://github.com/facebookresearch/hydra/pull/3211"
+      }
+    },
     {
       "ts": "2026-06-12T08:33:54Z",
       "kind": "pr",
