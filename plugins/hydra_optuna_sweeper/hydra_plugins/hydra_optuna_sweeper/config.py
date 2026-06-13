@@ -125,8 +125,11 @@ class GPSamplerConfig(SamplerConfig):
     _target_: str = "optuna.samplers.GPSampler"
     seed: Optional[int] = None
 
+    independent_sampler: Optional[Any] = None
     n_startup_trials: int = 10
     deterministic_objective = False
+    constraints_func: Optional[Any] = None
+    warn_independent_sampling: bool = True
 
 
 @dataclass
