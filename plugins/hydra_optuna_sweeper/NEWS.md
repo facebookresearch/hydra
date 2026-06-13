@@ -5,6 +5,7 @@
 
 - Updated to be compatible with Optuna 4.7.0+
 - Added GPSampler support for Gaussian Process based optimization ([Optuna GPSampler](https://optuna.readthedocs.io/en/stable/reference/samplers/generated/optuna.samplers.GPSampler.html))
+- Added QMCSampler support for Quasi Monte Carlo based optimization ([Optuna QMCSampler](https://optuna.readthedocs.io/en/stable/reference/samplers/generated/optuna.samplers.QMCSampler.html))
 
 1.2.0 (2022-05-17)
 ======================

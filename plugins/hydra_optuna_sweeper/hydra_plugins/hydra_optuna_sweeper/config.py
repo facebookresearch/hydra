@@ -130,6 +130,22 @@ class GPSamplerConfig(SamplerConfig):
 
 
 @dataclass
+class QMCSamplerConfig(SamplerConfig):
+    """
+    https://optuna.readthedocs.io/en/stable/reference/samplers/generated/optuna.samplers.QMCSampler.html
+    """
+
+    _target_: str = "optuna.samplers.QMCSampler"
+    seed: Optional[int] = None
+
+    qmc_type: str = "sobol"
+    scramble: bool = False
+    independent_sampler: Optional[Any] = None
+    warn_asynchronous_seeding: bool = True
+    warn_independent_sampling: bool = True
+
+
+@dataclass
 class DistributionConfig:
     # Type of distribution. "int", "float" or "categorical"
     type: DistributionType
@@ -252,5 +268,12 @@ ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="gp",
     node=GPSamplerConfig,
+    provider="optuna_sweeper",
+)
+
+ConfigStore.instance().store(
+    group="hydra/sweeper/sampler",
+    name="qmc",
+    node=QMCSamplerConfig,
     provider="optuna_sweeper",
 )
