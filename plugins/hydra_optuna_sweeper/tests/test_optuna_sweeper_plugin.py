@@ -19,8 +19,8 @@ from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
     CategoricalDistribution,
-    IntDistribution,
     FloatDistribution,
+    IntDistribution,
 )
 from optuna.samplers import RandomSampler
 from pytest import mark, warns

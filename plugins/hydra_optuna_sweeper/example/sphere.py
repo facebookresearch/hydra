@@ -1,8 +1,8 @@
+import warnings
+
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import hydra
 from omegaconf import DictConfig
-
-import warnings
 from optuna.exceptions import ExperimentalWarning
 
 warnings.filterwarnings("ignore", category=ExperimentalWarning)
