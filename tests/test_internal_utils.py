@@ -5,6 +5,7 @@ from omegaconf import DictConfig, OmegaConf
 from pytest import mark, param
 
 from hydra._internal import utils
+from hydra._internal.utils import get_args
 from tests import data
 
 
@@ -53,3 +54,46 @@ def test_detect_calling_file_or_module_from_task_function(
     file, module = utils.detect_calling_file_or_module_from_task_function(task_function)
     assert file == expected_file
     assert module == expected_module
+
+
+@mark.parametrize(
+    "args, expected_overrides, expected_multirun",
+    [
+        param(
+            ["--multirun", "task=1", "db=mysql"],
+            ["task=1", "db=mysql"],
+            True,
+            id="multirun-first",
+        ),
+        param(
+            ["task=1", "db=mysql", "--multirun"],
+            ["task=1", "db=mysql"],
+            True,
+            id="multirun-last",
+        ),
+        param(
+            ["task=1", "--multirun", "db=mysql"],
+            ["task=1", "db=mysql"],
+            True,
+            id="multirun-between-overrides",
+        ),
+        param(
+            ["task=1", "-m", "db=mysql"],
+            ["task=1", "db=mysql"],
+            True,
+            id="short-flag-between-overrides",
+        ),
+        param(
+            ["task=1", "db=mysql"],
+            ["task=1", "db=mysql"],
+            False,
+            id="no-multirun",
+        ),
+    ],
+)
+def test_get_args_override_ordering(
+    args: Any, expected_overrides: Any, expected_multirun: bool
+) -> None:
+    parsed = get_args(args)
+    assert parsed.overrides == expected_overrides
+    assert parsed.multirun == expected_multirun

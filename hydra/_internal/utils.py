@@ -619,7 +619,29 @@ def get_args_parser() -> argparse.ArgumentParser:
 
 
 def get_args(args: Optional[Sequence[str]] = None) -> Any:
-    return get_args_parser().parse_args(args=args)
+    return _parse_args(get_args_parser(), args)
+
+
+def _parse_args(
+    parser: argparse.ArgumentParser, args: Optional[Sequence[str]] = None
+) -> argparse.Namespace:
+    """Parse arguments, handling overrides that appear after optional flags.
+
+    Python's argparse does not correctly collect positional arguments
+    (nargs="*") when an optional flag like ``--multirun`` appears between
+    them.  For example::
+
+        python app.py task=1 --multirun db=mysql
+
+    would only see ``task=1`` as an override, leaving ``db=mysql`` as
+    unrecognised.  This helper uses ``parse_known_args`` and appends the
+    remaining tokens to the ``overrides`` list so that flag ordering no
+    longer matters.
+    """
+    parsed, remaining = parser.parse_known_args(args=args)
+    if remaining:
+        parsed.overrides.extend(remaining)
+    return parsed
 
 
 def get_column_widths(matrix: List[List[str]]) -> List[int]:
