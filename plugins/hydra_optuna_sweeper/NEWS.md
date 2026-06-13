@@ -7,6 +7,11 @@
 - Added GPSampler support for Gaussian Process based optimization ([Optuna GPSampler](https://optuna.readthedocs.io/en/stable/reference/samplers/generated/optuna.samplers.GPSampler.html))
 - Added QMCSampler support for Quasi Monte Carlo based optimization ([Optuna QMCSampler](https://optuna.readthedocs.io/en/stable/reference/samplers/generated/optuna.samplers.QMCSampler.html))
 
+### API Change (Renames, deprecations and removals)
+
+- Removed the `consider_prior`, `prior_weight`, `consider_magic_clip`, `consider_endpoints`, and `warn_independent_sampling` options from the TPE sampler config, as they are deprecated in Optuna 4.x
+- Removed MOTPESampler support, as it has been removed in Optuna 4.x
+
 1.2.0 (2022-05-17)
 ======================
 

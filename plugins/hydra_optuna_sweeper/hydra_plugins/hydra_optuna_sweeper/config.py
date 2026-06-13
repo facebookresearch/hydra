@@ -43,14 +43,9 @@ class TPESamplerConfig(SamplerConfig):
     _target_: str = "optuna.samplers.TPESampler"
     seed: Optional[int] = None
 
-    consider_prior: bool = True
-    prior_weight: float = 1.0
-    consider_magic_clip: bool = True
-    consider_endpoints: bool = False
     n_startup_trials: int = 10
     n_ei_candidates: int = 24
     multivariate: bool = False
-    warn_independent_sampling: bool = True
 
 
 @dataclass
@@ -97,23 +92,6 @@ class NSGAIISamplerConfig(SamplerConfig):
     crossover_prob: float = 0.9
     swapping_prob: float = 0.5
     constraints_func: Optional[Any] = None
-
-
-@dataclass
-class MOTPESamplerConfig(SamplerConfig):
-    """
-    https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.MOTPESampler.html
-    """
-
-    _target_: str = "optuna.samplers.MOTPESampler"
-    seed: Optional[int] = None
-
-    consider_prior: bool = True
-    prior_weight: float = 1.0
-    consider_magic_clip: bool = True
-    consider_endpoints: bool = False
-    n_startup_trials: int = 10
-    n_ehvi_candidates: int = 24
 
 
 @dataclass
@@ -250,13 +228,6 @@ ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="nsgaii",
     node=NSGAIISamplerConfig,
-    provider="optuna_sweeper",
-)
-
-ConfigStore.instance().store(
-    group="hydra/sweeper/sampler",
-    name="motpe",
-    node=MOTPESamplerConfig,
     provider="optuna_sweeper",
 )
 
