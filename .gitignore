@@ -18,3 +18,8 @@ pip-wheel-metadata
 /.dmypy.json
 TODO.txt
 /venv
+/.venv
+
+# agents
+.codex
+.awd

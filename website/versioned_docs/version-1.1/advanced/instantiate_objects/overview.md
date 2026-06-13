@@ -18,39 +18,40 @@ Call/instantiate supports:
 - Constructing an object by calling the `__init__` method
 - Calling functions, static functions, class methods and other callable global objects
 
-<details><summary>Instantiate API (Expand for details)</summary>
+<details>
+  <summary>Instantiate API (Expand for details)</summary>
 
-```python
-def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
-    """
-    :param config: An config object describing what to call and what params to use.
-                   In addition to the parameters, the config must contain:
-                   _target_ : target class or callable name (str)
-                   And may contain:
-                   _args_: List-like of positional arguments to pass to the target
-                   _recursive_: Construct nested objects as well (bool).
-                                True by default.
-                                may be overridden via a _recursive_ key in
-                                the kwargs
-                   _convert_: Conversion strategy
-                        none    : Passed objects are DictConfig and ListConfig, default
-                        partial : Passed objects are converted to dict and list, with
-                                  the exception of Structured Configs (and their fields).
-                        all     : Passed objects are dicts, lists and primitives without
-                                  a trace of OmegaConf containers
-    :param args: Optional positional parameters pass-through
-    :param kwargs: Optional named parameters to override
-                   parameters in the config object. Parameters not present
-                   in the config objects are being passed as is to the target.
-                   IMPORTANT: dataclasses instances in kwargs are interpreted as config
-                              and cannot be used as passthrough
-    :return: if _target_ is a class name: the instantiated object
-             if _target_ is a callable: the return value of the call
-    """
+    ```python
+    def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
+        """
+        :param config: An config object describing what to call and what params to use.
+                       In addition to the parameters, the config must contain:
+                       _target_ : target class or callable name (str)
+                       And may contain:
+                       _args_: List-like of positional arguments to pass to the target
+                       _recursive_: Construct nested objects as well (bool).
+                                    True by default.
+                                    may be overridden via a _recursive_ key in
+                                    the kwargs
+                       _convert_: Conversion strategy
+                            none    : Passed objects are DictConfig and ListConfig, default
+                            partial : Passed objects are converted to dict and list, with
+                                      the exception of Structured Configs (and their fields).
+                            all     : Passed objects are dicts, lists and primitives without
+                                      a trace of OmegaConf containers
+        :param args: Optional positional parameters pass-through
+        :param kwargs: Optional named parameters to override
+                       parameters in the config object. Parameters not present
+                       in the config objects are being passed as is to the target.
+                       IMPORTANT: dataclasses instances in kwargs are interpreted as config
+                                  and cannot be used as passthrough
+        :return: if _target_ is a class name: the instantiated object
+                 if _target_ is a callable: the return value of the call
+        """
 
-# Alias for instantiate
-call = instantiate
-```
+    # Alias for instantiate
+    call = instantiate
+    ```
 
 </details><br/>
 
@@ -172,7 +173,7 @@ Similarly, positional arguments of nested objects can be overridden:
 obj = instantiate(
     cfg.object,
     # pass 1 and 2 as positional arguments to the target object
-    1, 2,  
+    1, 2,
     # pass 3 and 4 as positional arguments to a nested child object
     child={"_args_": [3, 4]},
 )
@@ -277,7 +278,7 @@ obj_all = instantiate(cfg_all)
 
 ### Partial Instantiation (for Hydra version >= 1.1.2)
 Sometimes you may not set all parameters needed to instantiate an object from the configuration, in this case you can set
-`_partial_` to be `True` to get a `functools.partial` wrapped object or method, then complete initializing the object in 
+`_partial_` to be `True` to get a `functools.partial` wrapped object or method, then complete initializing the object in
 the application code. Here is an example:
 
 ```python title="Example classes"

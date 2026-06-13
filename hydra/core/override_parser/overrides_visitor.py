@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import sys
 import warnings
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 from omegaconf.vendor.antlr4 import (  # type: ignore[attr-defined]
     ParserRuleContext,
@@ -274,23 +274,27 @@ class HydraOverrideVisitor(OverrideParserVisitor):
         num = last_idx - first_idx
         if num > 1:
             # Concatenate, while un-escaping as needed.
-            tokens = []
+            tokens: List[str] = []
             for i, n in enumerate(ctx.getChildren()):  # type: ignore[attr-defined]
+                assert isinstance(n, TerminalNodeImpl)
+                symbol_text = cast(str, n.symbol.text)
                 if n.symbol.type == OverrideLexer.WS and (
                     i < first_idx or i >= last_idx
                 ):
                     # Skip leading / trailing whitespaces.
                     continue
                 tokens.append(
-                    n.symbol.text[1::2]  # un-escape by skipping every other char
+                    symbol_text[1::2]  # un-escape by skipping every other char
                     if n.symbol.type == OverrideLexer.ESC
-                    else n.symbol.text
+                    else symbol_text
                 )
             ret = "".join(tokens)
         else:
             node = ctx.getChild(first_idx)  # type: ignore[attr-defined]
+            assert isinstance(node, TerminalNodeImpl)
+            symbol_text = cast(str, node.symbol.text)
             if node.symbol.type == OverrideLexer.QUOTED_VALUE:
-                text = node.getText()
+                text = cast(str, node.getText())
                 qc = text[0]
                 if qc == "'":
                     quote = Quote.single
@@ -301,15 +305,15 @@ class HydraOverrideVisitor(OverrideParserVisitor):
                 text = self._unescape_quoted_string(text)
                 return QuotedString(text=text, quote=quote)
             elif node.symbol.type in (OverrideLexer.ID, OverrideLexer.INTERPOLATION):
-                ret = node.symbol.text
+                ret = symbol_text
             elif node.symbol.type == OverrideLexer.INT:
-                ret = int(node.symbol.text)
+                ret = int(symbol_text)
             elif node.symbol.type == OverrideLexer.FLOAT:
-                ret = float(node.symbol.text)
+                ret = float(symbol_text)
             elif node.symbol.type == OverrideLexer.NULL:
                 ret = None
             elif node.symbol.type == OverrideLexer.BOOL:
-                text = node.getText().lower()
+                text = cast(str, node.getText()).lower()
                 if text == "true":
                     ret = True
                 elif text == "false":
@@ -317,9 +321,9 @@ class HydraOverrideVisitor(OverrideParserVisitor):
                 else:
                     assert False
             elif node.symbol.type == OverrideLexer.ESC:
-                ret = node.symbol.text[1::2]
+                ret = symbol_text[1::2]
             else:
-                return node.getText()  # type: ignore
+                return cast(str, node.getText())
         return ret
 
     def _unescape_quoted_string(self, text: str) -> str:
@@ -376,7 +380,7 @@ class HydraErrorListener(ErrorListener):
     def syntaxError(
         self,
         recognizer: Any,
-        offending_symbol: Any,
+        offendingSymbol: Any,
         line: Any,
         column: Any,
         msg: Any,

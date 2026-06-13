@@ -126,27 +126,28 @@ Hydra provides a override parser that support rich syntax. Please refer to [Over
 
 By default, `interval` is converted to [`UniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.UniformDistribution.html). You can use [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html), [`LogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.LogUniformDistribution.html) or [`IntLogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntLogUniformDistribution.html) by casting the interval to `int` and tagging it with `log`.
 
-<details><summary>Example for interval override</summary>
+<details>
+  <summary>Example for interval override</summary>
 
-```commandline
-python example/sphere.py --multirun 'x=int(interval(-5.0, 5.0))' 'y=tag(log, interval(1, 10))'
-```
+  ```commandline
+  python example/sphere.py --multirun 'x=int(interval(-5.0, 5.0))' 'y=tag(log, interval(1, 10))'
+  ```
 
-The output is as follows:
+  The output is as follows:
 
-```commandline
-[HYDRA] Study name: sphere
-[HYDRA] Storage: None
-[HYDRA] Sampler: TPESampler
-[HYDRA] Directions: ['minimize']
-[HYDRA] Launching 1 jobs locally
-[HYDRA] 	#0 : x=-3 y=1.6859762540733367
-[HYDRA] Launching 1 jobs locally
-[HYDRA] 	#1 : x=1 y=5.237816870668193
-...
-[HYDRA] Best parameters: {'x': 0, 'y': 1.0929184723430116}
-[HYDRA] Best value: 1.1944707871885822
-```
+  ```commandline
+  [HYDRA] Study name: sphere
+  [HYDRA] Storage: None
+  [HYDRA] Sampler: TPESampler
+  [HYDRA] Directions: ['minimize']
+  [HYDRA] Launching 1 jobs locally
+  [HYDRA] 	#0 : x=-3 y=1.6859762540733367
+  [HYDRA] Launching 1 jobs locally
+  [HYDRA] 	#1 : x=1 y=5.237816870668193
+  ...
+  [HYDRA] Best parameters: {'x': 0, 'y': 1.0929184723430116}
+  [HYDRA] Best value: 1.1944707871885822
+  ```
 
 </details>
 
@@ -154,27 +155,28 @@ The output is as follows:
 
 `range` is converted to [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html). If you apply `shuffle` to `range`, [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html) is used instead.
 
-<details><summary>Example for range override</summary>
+<details>
+  <summary>Example for range override</summary>
 
-```commandline
-python example/sphere.py --multirun 'x=range(-5.0, 5.0)' 'y=shuffle(range(-5, 5))'
-```
+  ```commandline
+  python example/sphere.py --multirun 'x=range(-5.0, 5.0)' 'y=shuffle(range(-5, 5))'
+  ```
 
-The output is as follows:
+  The output is as follows:
 
-```commandline
-[HYDRA] Study name: sphere
-[HYDRA] Storage: None
-[HYDRA] Sampler: TPESampler
-[HYDRA] Directions: ['minimize']
-[HYDRA] Launching 1 jobs locally
-[HYDRA] 	#0 : x=-3 y=-4
-[HYDRA] Launching 1 jobs locally
-[HYDRA] 	#1 : x=1 y=-1
-...
-[HYDRA] Best parameters: {'x': 0, 'y': -1}
-[HYDRA] Best value: 1.0
-```
+  ```commandline
+  [HYDRA] Study name: sphere
+  [HYDRA] Storage: None
+  [HYDRA] Sampler: TPESampler
+  [HYDRA] Directions: ['minimize']
+  [HYDRA] Launching 1 jobs locally
+  [HYDRA] 	#0 : x=-3 y=-4
+  [HYDRA] Launching 1 jobs locally
+  [HYDRA] 	#1 : x=1 y=-1
+  ...
+  [HYDRA] Best parameters: {'x': 0, 'y': -1}
+  [HYDRA] Best value: 1.0
+  ```
 
 </details>
 
@@ -182,27 +184,28 @@ The output is as follows:
 
 `choice` is converted to [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html).
 
-<details><summary>Example for choice override</summary>
+<details>
+  <summary>Example for choice override</summary>
 
-```commandline
-python example/sphere.py --multirun 'x=choice(-5.0, 0.0, 5.0)' 'y=choice(0, 1, 2, 3, 4, 5)'
-```
+  ```commandline
+  python example/sphere.py --multirun 'x=choice(-5.0, 0.0, 5.0)' 'y=choice(0, 1, 2, 3, 4, 5)'
+  ```
 
-The output is as follows:
+  The output is as follows:
 
-```commandline
-[HYDRA] Study name: sphere
-[HYDRA] Storage: None
-[HYDRA] Sampler: TPESampler
-[HYDRA] Directions: ['minimize']
-[HYDRA] Launching 1 jobs locally
-[HYDRA] 	#0 : x=5.0 y=5
-[HYDRA] Launching 1 jobs locally
-[HYDRA] 	#1 : x=5.0 y=2
-...
-[HYDRA] Best parameters: {'x': 0.0, 'y': 0}
-[HYDRA] Best value: 0.0
-```
+  ```commandline
+  [HYDRA] Study name: sphere
+  [HYDRA] Storage: None
+  [HYDRA] Sampler: TPESampler
+  [HYDRA] Directions: ['minimize']
+  [HYDRA] Launching 1 jobs locally
+  [HYDRA] 	#0 : x=5.0 y=5
+  [HYDRA] Launching 1 jobs locally
+  [HYDRA] 	#1 : x=5.0 y=2
+  ...
+  [HYDRA] Best parameters: {'x': 0.0, 'y': 0}
+  [HYDRA] Best value: 0.0
+  ```
 
 </details>
 
@@ -252,38 +255,39 @@ You can discover the Optuna sweeper parameters with:
 python example/multi-objective.py hydra/sweeper=optuna --cfg hydra -p hydra.sweeper
 ```
 
-<details><summary>Configuration of the multi-objective optimization example</summary>
+<details>
+  <summary>Configuration of the multi-objective optimization example</summary>
 
-```yaml
-# @package hydra.sweeper
-sampler:
-  _target_: optuna.samplers.NSGAIISampler
-  seed: 123
-  population_size: 50
-  mutation_prob: null
-  crossover_prob: 0.9
-  swapping_prob: 0.5
-  constraints_func: null
-_target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
-direction:
-- minimize
-- minimize
-storage: null
-study_name: multi-objective
-n_trials: 20
-n_jobs: 1
-search_space:
-  x:
-    type: float
-    low: 0
-    high: 5
-    step: 0.5
-  'y':
-    type: float
-    low: 0
-    high: 3
-    step: 0.5
-```
+  ```yaml
+  # @package hydra.sweeper
+  sampler:
+    _target_: optuna.samplers.NSGAIISampler
+    seed: 123
+    population_size: 50
+    mutation_prob: null
+    crossover_prob: 0.9
+    swapping_prob: 0.5
+    constraints_func: null
+  _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
+  direction:
+  - minimize
+  - minimize
+  storage: null
+  study_name: multi-objective
+  n_trials: 20
+  n_jobs: 1
+  search_space:
+    x:
+      type: float
+      low: 0
+      high: 5
+      step: 0.5
+    'y':
+      type: float
+      low: 0
+      high: 3
+      step: 0.5
+  ```
 </details>
 
 

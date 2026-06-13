@@ -6,7 +6,7 @@ title: Specializing configuration
 
 In some cases the desired configuration should depend on other configuration choices.
 For example, You may want to use only 5 layers in your Alexnet model if the dataset of choice is cifar10, and the default 7 otherwise.
- 
+
 We can start with a config that looks like this:
 ### initial config.yaml
 ```yaml
@@ -33,7 +33,7 @@ Let's break this down:
 #### dataset_model
 The key `dataset_model` is an arbitrary directory, it can be anything unique that makes sense, including nested directory like `dataset/model`.
 
-#### ${defaults.0.dataset}_${defaults.1.model}
+#### $\{defaults.0.dataset}_$\{defaults.1.model}
 the value `${defaults.0.dataset}_${defaults.1.model}` is using OmegaConf's [variable interpolation](https://omegaconf.readthedocs.io/en/latest/usage.html#variable-interpolation).
 At runtime, that value would resolve to *imagenet_alexnet*, or *cifar_resnet* - depending on the values of defaults.dataset and defaults.model.
 This a bit clunky because defaults contains a list (I hope to improve this in the future)
@@ -51,11 +51,11 @@ We want the model for alexnet, when trained on cifar - to have 5 layers.
 model:
   num_layers: 5
 ```
- 
+
 Let's check. Running with the default uses imagenet, so we don't get the specialized version of:
 
 ```yaml
-$ python example.py 
+$ python example.py
 dataset:
   name: imagenet
   path: /datasets/imagenet

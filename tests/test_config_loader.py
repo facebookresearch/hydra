@@ -2,9 +2,9 @@
 import re
 from dataclasses import dataclass, field
 from textwrap import dedent
-from typing import Any, List
+from typing import Any, List, cast
 
-from omegaconf import MISSING, OmegaConf, ValidationError, open_dict
+from omegaconf import MISSING, DictConfig, OmegaConf, ValidationError, open_dict
 from pytest import mark, param, raises, warns
 
 from hydra import version
@@ -329,13 +329,11 @@ class TestConfigLoader:
             config_search_path=create_config_search_path(path)
         )
 
-        msg = dedent(
-            """\
+        msg = dedent("""\
             In 'schema_validation_error': ValidationError raised while composing config:
             Value 'not_an_int'( of type 'str')? could not be converted to Integer
                 full_key: port
-                object_type=MySQLConfig"""
-        )
+                object_type=MySQLConfig""")
         with raises(ConfigCompositionException, match=msg):
             config_loader.load_configuration(
                 config_name="schema_validation_error",
@@ -353,13 +351,11 @@ class TestConfigLoader:
             config_search_path=create_config_search_path(path)
         )
 
-        msg = dedent(
-            """\
+        msg = dedent("""\
             In 'schema_key_error': ConfigKeyError raised while composing config:
             Key 'foo' not in 'MySQLConfig'
                 full_key: foo
-                object_type=MySQLConfig"""
-        )
+                object_type=MySQLConfig""")
         with raises(ConfigCompositionException, match=re.escape(msg)):
             config_loader.load_configuration(
                 config_name="schema_key_error",
@@ -409,10 +405,10 @@ class TestConfigLoader:
         )
 
         # trigger resolution by type assertion
-        assert type(master_cfg.time) == str
-        assert type(master_cfg.test_env) == str
-        assert type(master_cfg.test_cached) == str  # "1st"
-        assert type(master_cfg.test_uncached) == str  # "2nd"
+        assert type(master_cfg.time) is str
+        assert type(master_cfg.test_env) is str
+        assert type(master_cfg.test_cached) is str  # "1st"
+        assert type(master_cfg.test_uncached) is str  # "2nd"
 
         master_cfg_cache = OmegaConf.get_cache(master_cfg)
         assert "now" in master_cfg_cache.keys()
@@ -736,6 +732,8 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
         param({"x": {"y": 10}}, ["~x.y=10"], {"x": {}}, id="delete_strict"),
         param({"x": [1, 2, 3]}, ["~x"], {}, id="delete:list"),
         param({"x": [1, 2, 3]}, ["~x=[1,2,3]"], {}, id="delete:list"),
+        param({"x": [1, 2, 3]}, ["~x.0"], {"x": [2, 3]}, id="delete:list_item"),
+        param({"x": [1, 2, 3]}, ["~x.1"], {"x": [1, 3]}, id="delete:list_item_middle"),
         param(
             {"x": 20},
             ["~z"],
@@ -773,7 +771,7 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
 def test_apply_overrides_to_config(
     input_cfg: Any, overrides: List[str], expected: Any
 ) -> None:
-    cfg = OmegaConf.create(input_cfg)
+    cfg = cast(DictConfig, OmegaConf.create(input_cfg))
     OmegaConf.set_struct(cfg, True)
     parser = OverridesParser.create()
     parsed = parser.parse_overrides(overrides=overrides)

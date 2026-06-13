@@ -25,10 +25,13 @@ setup(
     packages=find_namespace_packages(include=["hydra_plugins.*"]),
     classifiers=[
         "License :: OSI Approved :: MIT Apache License, Version 2.0",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
     ],
+    python_requires=">=3.10",
     install_requires=["torch>=1.11.0", "hydra-core>=1.1.1"],
     include_package_data=True,
 )

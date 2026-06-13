@@ -1,12 +1,12 @@
 {
-  "version-0.11/docs": [
+  "docs": [
     {
       "type": "category",
       "label": "About",
       "items": [
         {
           "type": "doc",
-          "id": "version-0.11/intro"
+          "id": "intro"
         }
       ]
     },
@@ -16,43 +16,43 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-0.11/tutorial/simple_cli"
+          "id": "tutorial/simple_cli"
         },
         {
           "type": "doc",
-          "id": "version-0.11/tutorial/config_file"
+          "id": "tutorial/config_file"
         },
         {
           "type": "doc",
-          "id": "version-0.11/tutorial/config_groups"
+          "id": "tutorial/config_groups"
         },
         {
           "type": "doc",
-          "id": "version-0.11/tutorial/defaults"
+          "id": "tutorial/defaults"
         },
         {
           "type": "doc",
-          "id": "version-0.11/tutorial/composition"
+          "id": "tutorial/composition"
         },
         {
           "type": "doc",
-          "id": "version-0.11/tutorial/multi-run"
+          "id": "tutorial/multi-run"
         },
         {
           "type": "doc",
-          "id": "version-0.11/tutorial/tab_completion"
+          "id": "tutorial/tab_completion"
         },
         {
           "type": "doc",
-          "id": "version-0.11/tutorial/working_directory"
+          "id": "tutorial/working_directory"
         },
         {
           "type": "doc",
-          "id": "version-0.11/tutorial/logging"
+          "id": "tutorial/logging"
         },
         {
           "type": "doc",
-          "id": "version-0.11/tutorial/debugging"
+          "id": "tutorial/debugging"
         }
       ]
     },
@@ -62,11 +62,11 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-0.11/patterns/objects"
+          "id": "patterns/objects"
         },
         {
           "type": "doc",
-          "id": "version-0.11/patterns/specializing_config"
+          "id": "patterns/specializing_config"
         }
       ]
     },
@@ -76,19 +76,19 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-0.11/configure_hydra/intro"
+          "id": "configure_hydra/intro"
         },
         {
           "type": "doc",
-          "id": "version-0.11/configure_hydra/logging"
+          "id": "configure_hydra/logging"
         },
         {
           "type": "doc",
-          "id": "version-0.11/configure_hydra/workdir"
+          "id": "configure_hydra/workdir"
         },
         {
           "type": "doc",
-          "id": "version-0.11/configure_hydra/app_help"
+          "id": "configure_hydra/app_help"
         }
       ]
     },
@@ -98,7 +98,7 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-0.11/plugins/colorlog"
+          "id": "plugins/colorlog"
         }
       ]
     },
@@ -108,23 +108,23 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-0.11/advanced/app_packaging"
+          "id": "advanced/app_packaging"
         },
         {
           "type": "doc",
-          "id": "version-0.11/advanced/search_path"
+          "id": "advanced/search_path"
         },
         {
           "type": "doc",
-          "id": "version-0.11/advanced/plugins"
+          "id": "advanced/plugins"
         },
         {
           "type": "doc",
-          "id": "version-0.11/advanced/compose_api"
+          "id": "advanced/compose_api"
         },
         {
           "type": "doc",
-          "id": "version-0.11/advanced/ray_example"
+          "id": "advanced/ray_example"
         }
       ]
     },
@@ -134,11 +134,11 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-0.11/development/contributing"
+          "id": "development/contributing"
         },
         {
           "type": "doc",
-          "id": "version-0.11/development/release"
+          "id": "development/release"
         }
       ]
     }

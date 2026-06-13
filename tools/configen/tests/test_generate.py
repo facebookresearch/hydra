@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import os
 import sys
 
 from difflib import unified_diff
@@ -292,9 +293,12 @@ def test_example_application(monkeypatch: Any, tmpdir: Path):
         "hydra.job.chdir=True",
         "user.name=Batman",
     ]
-    result, _err = run_python_script(cmd)
-    assert result == dedent(
-        """\
-    User: name=Batman, age=7
-    Admin: name=Lex Luthor, age=10, private_key=deadbeef"""
+    python_path = (
+        f"%PYTHONPATH%;{';'.join(sys.path)}"
+        if sys.platform.startswith("win")
+        else f"$PYTHONPATH:{':'.join(sys.path)}"
     )
+    result, _err = run_python_script(cmd, dict(os.environ, PYTHONPATH=python_path))
+    assert result == dedent("""\
+    User: name=Batman, age=7
+    Admin: name=Lex Luthor, age=10, private_key=deadbeef""")

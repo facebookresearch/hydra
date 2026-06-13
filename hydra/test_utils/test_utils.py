@@ -2,6 +2,7 @@
 """
 Utilities used by tests
 """
+
 import copy
 import logging
 import os
@@ -276,8 +277,7 @@ def integration_test(
         prints = [prints]
     prints = [f'f.write({p} + "\\n")' for p in prints]
 
-    s = string.Template(
-        """import hydra
+    s = string.Template("""import hydra
 import os
 from hydra.core.hydra_config import HydraConfig
 
@@ -290,8 +290,7 @@ $PRINTS
 
 if __name__ == "__main__":
     experiment()
-"""
-    )
+""")
 
     print_code = _get_statements(indent="        ", statements=prints)
     prolog_code = _get_statements(indent="", statements=prolog)

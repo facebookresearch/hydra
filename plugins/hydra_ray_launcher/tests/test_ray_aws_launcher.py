@@ -6,11 +6,11 @@ import string
 import subprocess
 import sys
 import tempfile
+from importlib.metadata import version as metadata_version
 from pathlib import Path
 from typing import Any, Dict, Generator, Optional
 
 import boto3  # type: ignore
-import pkg_resources
 from botocore.exceptions import (  # type: ignore
     ClientError,
     NoCredentialsError,
@@ -28,7 +28,7 @@ from pytest import fixture, mark
 
 from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import RayAWSLauncher
 
-# mypy complains about "unused type: ignore comment" on macos
+# Static type checkers can complain about "unused type: ignore comment" on macos
 # workaround adapted from: https://github.com/twisted/twisted/pull/1416
 try:
     import importlib
@@ -201,7 +201,7 @@ def validate_lib_version(connect_config: Dict[Any, Any]) -> None:
     # a few lib versions that we care about
     libs = ["ray", "cloudpickle", "pickle5"]
     for lib in libs:
-        local_version = f"{pkg_resources.get_distribution(lib).version}"
+        local_version = metadata_version(lib)
         out = sdk.run_on_cluster(
             connect_config, cmd=f"pip show {lib} | grep Version", with_output=True
         ).decode()

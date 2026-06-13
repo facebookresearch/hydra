@@ -1,0 +1,36 @@
+packages:
+  - "."
+
+minimumReleaseAge: 14400
+minimumReleaseAgeExclude:
+  - "@babel/plugin-transform-modules-systemjs@7.29.4"
+  - "fast-uri@3.1.2"
+blockExoticSubdeps: true
+strictDepBuilds: true
+
+overrides:
+  "@babel/plugin-transform-modules-systemjs": "7.29.4"
+  "@babel/traverse": "^7.25.7"
+  body-parser: "^1.20.3"
+  cookie: "^1.0.1"
+  cross-spawn: "^7.0.5"
+  dompurify: "^3.2.4"
+  express: "^4.21.1"
+  fast-uri: "3.1.2"
+  follow-redirects: "^1.15.6"
+  micromatch: "^4.0.8"
+  path-to-regexp: "^1.9.0"
+  postcss: "^8.4.31"
+  react-live: "^3.2.0"
+  send: "^0.19.0"
+  serialize-javascript: "^7.0.5"
+  serve-static: "^1.16.2"
+  string-width: "4.2.0"
+  strip-ansi: "6.0.0"
+  webpack: "^5.94"
+  webpack-dev-middleware: "^7.4.2"
+  webpack-dev-server: "^5.2.3"
+
+allowBuilds:
+  core-js: false
+  core-js-pure: false

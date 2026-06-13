@@ -6,7 +6,7 @@ hide_title: true
 
 ##  Extended Override syntax
 Hydra Overrides supports functions.
-When calling a function, one can optionally name parameters. This is following the Python 
+When calling a function, one can optionally name parameters. This is following the Python
 convention of naming parameters.
 
 <div className="row">
@@ -41,9 +41,9 @@ another function added, please file an issue and explain the use case.
 :::
 
 ## Sweeps
-Sweep overrides are used by Sweepers to determine what to do. For example, 
-one can instruct the Basic Sweeper to sweep over all combinations of the 
-ranges `num1=range(0,3)` and `num2=range(0,3)` - resulting in `9` jobs, each getting a 
+Sweep overrides are used by Sweepers to determine what to do. For example,
+one can instruct the Basic Sweeper to sweep over all combinations of the
+ranges `num1=range(0,3)` and `num2=range(0,3)` - resulting in `9` jobs, each getting a
 different pair of numbers from `0`, `1` and `2`.
 
 ### Choice sweep
@@ -58,7 +58,7 @@ def choice(
 Choice sweeps are the most common sweeps.
 A choice sweep is described in one of two equivalent forms.
 ```python title="Examples"
-db=mysql,postgresql          # a comma separated list of two or more elements. 
+db=mysql,postgresql          # a comma separated list of two or more elements.
 db=choice(mysql,postgresql)  # choice
 ```
 ### Glob choice sweep
@@ -108,7 +108,7 @@ num=range(-5,step=-1)                 # 0,-1,-2,-3,-4
 ### Interval sweep
 An interval sweep represents all the floating point value between two values.
 This is used by optimizing sweepers like Ax and Nevergrad. The basic sweeper does not support interval.
- 
+
 ```python title="Signature"
 def interval(start: Union[int, float], end: Union[int, float]) -> IntervalSweep:
     """
@@ -183,7 +183,7 @@ def shuffle(
 shuffle(a,b,c)                                       # shuffled a,b,c
 shuffle(choice(a,b,c)), shuffle(sweep=choice(a,b,c)) # shuffled choice(a,b,c)
 shuffle(range(1,10))                                 # shuffled range(1,10)
-shuffle([a,b,c]), shuffle(list=[a,b,c])              # shuffled list [a,b,c] 
+shuffle([a,b,c]), shuffle(list=[a,b,c])              # shuffled list [a,b,c]
 ```
 
 ## Type casting
@@ -221,7 +221,7 @@ def bool(value: Any) -> bool:
 
 <div className="col  col--6">
 
-```python title="Hydra" 
+```python title="Hydra"
 def bool(s: str) -> bool:
     if isinstance(value, str):
         if value.lower() == "false":
@@ -256,7 +256,7 @@ def cast_int(value: Any):
 
 <div className="col  col--6">
 
-```python title="Hydra" 
+```python title="Hydra"
 def cast_int(value: Any):
     if isinstance(v, list):
         return list(map(cast_int, v))
@@ -290,7 +290,7 @@ def cast_int(value: Any):
 
 <div className="col  col--6">
 
-```python title="Hydra" 
+```python title="Hydra"
 def cast_int(value: Any):
     if isinstance(value, dict):
         return apply_to_values(
@@ -324,7 +324,7 @@ def cast_int(value: Any):
 
 <div className="col  col--6">
 
-```python title="Hydra" 
+```python title="Hydra"
 def cast_int(value: Any):
     if isinstance(value, RangeSweep):
         return RangeSweep(
@@ -362,17 +362,17 @@ Input are grouped by type.
 |       “true”       	| error       	| error             	| “true”            	| true                  	|
 |       “false”      	| error       	| error             	| “false”           	| false                 	|
 |      “[1,2,3]”     	| error       	| error             	| “[1,2,3]”         	| error                 	|
-|      “{a:10}”      	| error       	| error             	| “{a:10}”          	| error                 	|
+|      “\{a:10}”      	| error       	| error             	| “\{a:10}”          	| error                 	|
 |        true        	| 1           	| 1.0               	| “true”            	| true                  	|
 |        false       	| 0           	| 0.0               	| “false”           	| false                 	|
 |         []         	| []          	| []                	| []                	| []                    	|
 |       [0,1,2]      	| [0,1,2]     	| [0.0,1.0,2.0]     	| [“0”,”1”,”2”]     	| [false,true,true]     	|
 |       [1,[2]]      	| [1,[2]]     	| [1.0,[2.0]]       	| [“1”,[“2”]]       	| [true,[true]]         	|
 |        [a,1]       	| error       	| error             	| [“a”,”1”]         	| error                 	|
-|         {}         	| {}          	| {}                	| {}                	| {}                    	|
-|       {a:10}       	| {a:10}      	| {a:10.0}          	| {a:”10”}          	| {a: true}               	|
-|     {a:[0,1,2]}    	| {a:[0,1,2]} 	| {a:[0.0,1.0,2.-]} 	| {a:[“0”,”1”,”2”]} 	| {a:[false,true,true]} 	|
-|    {a:10,b:xyz}    	| error       	| error             	| {a:”10”,b:”xyz”}  	| error                 	|
+|         \{}         	| \{}          	| \{}                	| \{}                	| \{}                    	|
+|       \{a:10}       	| \{a:10}      	| \{a:10.0}          	| \{a:”10”}          	| \{a: true}               	|
+|     \{a:[0,1,2]}    	| \{a:[0,1,2]} 	| \{a:[0.0,1.0,2.-]} 	| \{a:[“0”,”1”,”2”]} 	| \{a:[false,true,true]} 	|
+|    \{a:10,b:xyz}    	| error       	| error             	| \{a:”10”,b:”xyz”}  	| error                 	|
 |     choice(0,1)    	| choice(0,1) 	| choice(0.0,1.0)   	| choice(“0”,“1”)   	| choice(false,true)    	|
 |     choice(a,b)    	| error       	| error             	| choice(“a”,”b”)   	| error                 	|
 |     choice(1,a)    	| error       	| error             	| choice(“1”,”a”)   	| error                 	|
@@ -380,4 +380,3 @@ Input are grouped by type.
 | interval(1, 2)     	| interval(1, 2)| interval(1.0, 2.0)   	| error             	| error                 	|
 |     range(1,10)    	| range(1,10) 	| range(1.0,10.0)   	| error             	| error                 	|
 |  range(1.0, 10.0)  	| range(1,10) 	| range(1.0,10.0)   	| error             	| error                 	|
-

@@ -5,9 +5,16 @@ import re
 import sys
 import warnings
 from textwrap import dedent
-from typing import Any, List, MutableSequence, Optional, Tuple
+from typing import Any, List, MutableSequence, Optional, Tuple, Union
 
-from omegaconf import Container, DictConfig, OmegaConf, flag_override, open_dict
+from omegaconf import (
+    Container,
+    DictConfig,
+    ListConfig,
+    OmegaConf,
+    flag_override,
+    open_dict,
+)
 from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
@@ -69,13 +76,11 @@ class ConfigLoaderImpl(ConfigLoader):
                         else:
                             example_override = f"key='{vals}'"
 
-                        msg = dedent(
-                            f"""\
+                        msg = dedent(f"""\
                             Ambiguous value for argument '{x.input_line}'
                             1. To use it as a list, use key=[value1,value2]
                             2. To use it as string, quote the value: {example_override}
-                            3. To sweep over it, add --multirun to your command line"""
-                        )
+                            3. To sweep over it, add --multirun to your command line""")
                         raise ConfigCompositionException(msg)
                     else:
                         raise ConfigCompositionException(
@@ -365,7 +370,10 @@ class ConfigLoaderImpl(ConfigLoader):
                             del cfg[key]
                         else:
                             node = OmegaConf.select(cfg, key[0:last_dot])
-                            del node[key[last_dot + 1 :]]
+                            node_key: Union[str, int] = key[last_dot + 1 :]
+                            if isinstance(node, ListConfig):
+                                node_key = int(node_key)
+                            del node[node_key]
 
                 elif override.is_add():
                     if OmegaConf.select(
@@ -374,15 +382,11 @@ class ConfigLoaderImpl(ConfigLoader):
                         OmegaConf.update(cfg, key, value, merge=True, force_add=True)
                     else:
                         assert override.input_line is not None
-                        raise ConfigCompositionException(
-                            dedent(
-                                f"""\
+                        raise ConfigCompositionException(dedent(f"""\
                         Could not append to config. An item is already at '{override.key_or_group}'.
                         Either remove + prefix: '{override.input_line[1:]}'
                         Or add a second + to add or override '{override.key_or_group}': '+{override.input_line}'
-                        """
-                            )
-                        )
+                        """))
                 elif override.is_force_add():
                     OmegaConf.update(cfg, key, value, merge=True, force_add=True)
                 elif override.is_list_extend():
@@ -436,25 +440,19 @@ class ConfigLoaderImpl(ConfigLoader):
                 try:
                     url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/automatic_schema_matching"
                     if "defaults" in schema.config:
-                        raise ConfigCompositionException(
-                            dedent(
-                                f"""\
+                        raise ConfigCompositionException(dedent(f"""\
                             '{config_path}' is validated against ConfigStore schema with the same name.
                             This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
                             In addition, the automatically matched schema contains a defaults list.
                             This combination is no longer supported.
-                            See {url} for migration instructions."""
-                            )
-                        )
+                            See {url} for migration instructions."""))
                     else:
                         deprecation_warning(
-                            dedent(
-                                f"""\
+                            dedent(f"""\
 
                                 '{config_path}' is validated against ConfigStore schema with the same name.
                                 This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
-                                See {url} for migration instructions."""
-                            ),
+                                See {url} for migration instructions."""),
                             stacklevel=11,
                         )
 

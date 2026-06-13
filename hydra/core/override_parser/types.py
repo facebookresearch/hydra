@@ -33,12 +33,12 @@ class QuotedString:
     def with_quotes(self) -> str:
         qc = "'" if self.quote == Quote.single else '"'
         esc_qc = rf"\{qc}"
+        text = self.text + qc  # add the closing quote
+        pattern = _ESC_QUOTED_STR[qc]
 
         match = None
         if "\\" in self.text:
-            text = self.text + qc  # add the closing quote
             # Are there \ preceding a quote (including the closing one)?
-            pattern = _ESC_QUOTED_STR[qc]
             match = pattern.search(text)
 
         if match is None:
@@ -303,12 +303,15 @@ class Override:
         if isinstance(value, list):
             return [Override._convert_value(x) for x in value]
         elif isinstance(value, dict):
-            return {
-                # We ignore potential type mismatch here so as to let OmegaConf
-                # raise an explicit error in case of invalid type.
-                Override._convert_value(k): Override._convert_value(v)  # type: ignore
-                for k, v in value.items()
-            }
+            return cast(
+                Dict[str, Any],
+                {
+                    # We ignore potential type mismatch here so as to let OmegaConf
+                    # raise an explicit error in case of invalid type.
+                    Override._convert_value(k): Override._convert_value(v)
+                    for k, v in value.items()
+                },
+            )
         elif isinstance(value, QuotedString):
             return value.text
         else:
@@ -463,7 +466,10 @@ class Override:
             return str(value)
         elif is_structured_config(value):
             return Override._get_value_element_as_str(
-                OmegaConf.to_container(OmegaConf.structured(value))
+                cast(
+                    ParsedElementType,
+                    OmegaConf.to_container(OmegaConf.structured(value)),
+                )
             )
         else:
             assert False
@@ -498,9 +504,7 @@ class Override:
             if self.package is not None and "_name_" in self.package:
                 url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
                 deprecation_warning(
-                    message=dedent(
-                        f"""\
+                    message=dedent(f"""\
                         In override {self.input_line}: _name_ keyword is deprecated in packages, see {url}
-                        """
-                    ),
+                        """),
                 )

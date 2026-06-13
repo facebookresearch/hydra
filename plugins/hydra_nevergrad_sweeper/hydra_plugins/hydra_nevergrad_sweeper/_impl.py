@@ -33,7 +33,7 @@ log = logging.getLogger(__name__)
 
 
 def create_nevergrad_param_from_config(
-    config: Union[MutableSequence[Any], MutableMapping[str, Any]]
+    config: Union[MutableSequence[Any], MutableMapping[str, Any]],
 ) -> Any:
     if isinstance(config, MutableSequence):
         if isinstance(config, ListConfig):
@@ -146,7 +146,11 @@ class NevergradSweeperImpl(Sweeper):
         )
         log.info(f"with parametrization {parametrization}")
         log.info(f"Sweep output dir: {self.config.hydra.sweep.dir}")
-        optimizer = ng.optimizers.registry[opt](parametrization, remaining_budget, nw)
+        optimizer = ng.optimizers.registry[opt](
+            parametrization=parametrization,
+            budget=remaining_budget,
+            num_workers=nw,
+        )
         # loop!
         all_returns: List[Any] = []
         best: Tuple[float, ng.p.Parameter] = (float("inf"), parametrization)

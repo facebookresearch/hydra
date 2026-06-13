@@ -1,0 +1,34 @@
+{
+  "files": [
+    {
+      "branch": "default",
+      "path": ".github/workflows/update-backlog-atlas.yml",
+      "remove": "uninstall"
+    },
+    {
+      "branch": "default",
+      "path": ".github/backlog-atlas/manifest.json",
+      "remove": "uninstall"
+    },
+    {
+      "branch": "default",
+      "optional": true,
+      "path": ".github/backlog-atlas/config.yaml",
+      "remove": "clean"
+    },
+    {
+      "branch": "default",
+      "optional": true,
+      "path": ".github/backlog-atlas/atlas.yaml",
+      "remove": "clean"
+    }
+  ],
+  "install": {
+    "install_source": "backlog-atlas==0.16",
+    "installed_version": "0.16",
+    "source_type": "pypi",
+    "workflow_path": ".github/workflows/update-backlog-atlas.yml"
+  },
+  "schema_version": 1,
+  "tool": "backlog-atlas"
+}

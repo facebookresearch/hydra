@@ -1,0 +1,55 @@
+# Backlog Atlas configuration
+# Set done_expire_days to null to keep done items indefinitely.
+done_expire_days: 365
+
+# Categories control how issues are classified. Each category has:
+#   labels:   GitHub labels that map directly to this category (exact match)
+#   keywords: words/phrases matched against the issue title (word-boundary match)
+# Label match takes priority over keyword match. Within each tier, categories
+# are checked in the order defined in CATEGORY_ORDER (Bug first, then Enhancement, …).
+categories:
+  Bug:
+    labels: [bug]
+    keywords: [bug, error, fail, broken, crash, exception, runtimeerror, assertionerror]
+  Enhancement:
+    labels:
+      - enhancement
+      - good first issue
+      - help wanted
+      - performance
+      - duplicate
+      - invalid
+      - wontfix
+      - discussion
+      - awaiting response
+      - wishlist
+    keywords:
+      - feature
+      - add
+      - support
+      - allow
+      - enable
+      - implement
+      - enhancement
+      - request
+      - wishlist
+      - consider
+      - performance
+      - speed
+      - slow
+      - optimize
+      - memory
+      - cpu
+      - latency
+  Documentation:
+    labels: [documentation]
+    keywords: [doc, documentation, readme, comment, typo, spelling]
+  Question:
+    labels: [question]
+    keywords: [question, "how to", help, confused, unclear, wonder]
+  Refactor:
+    labels: [refactor]
+    keywords: [refactor, cleanup, "clean up", remove, delete, deprecated, modernize]
+  Build:
+    labels: [build, dependencies]
+    keywords: [build, package, release, ci, "github actions", setup.py, pyproject, wheel, packaging]

@@ -1,0 +1,122 @@
+# This workflow uploads Hydra to PyPI using Trusted Publishers
+# Basics: https://docs.pypi.org/trusted-publishers/adding-a-publisher/
+# Security model: https://docs.pypi.org/trusted-publishers/security-model/
+name: Publish to PyPI
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish to PyPI after building artifacts"
+        required: true
+        type: boolean
+        default: false
+
+# Use separate jobs for building and publishing so that write
+# permissions are only accessible minimally.
+#
+# Both jobs are run under the pypi-publish environment,
+# which is configured to require review and approval from authorized
+# maintainers.
+jobs:
+  build-artifacts:
+    name: Build distribution artifacts
+    runs-on: ubuntu-latest
+    environment: pypi-publish
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+
+    - name: Set up Java
+      uses: actions/setup-java@v5
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements/requirements.txt build read-version requests twine
+
+    - name: Build distributions
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: |
+        python tools/release/release.py \
+          action=build \
+          set=hydra-full-release \
+          repository=pypi \
+          clean_build_dir=true \
+          require_artifacts=true \
+          build_dir="${{ github.workspace }}/dist"
+
+    - name: Verify build artifacts
+      run: |
+        ls -lah dist/
+        twine check dist/*
+
+    - name: Write release summary
+      env:
+        PUBLISH_ENABLED: ${{ github.event_name == 'release' || inputs.publish == true }}
+        TARGET_REPOSITORY: PyPI
+      run: |
+        if [[ "${PUBLISH_ENABLED}" == "true" ]]; then
+          mode="publish"
+          outcome="Artifacts will be uploaded to ${TARGET_REPOSITORY}."
+        else
+          mode="dry run"
+          outcome="Artifacts were built and checked only; no upload will run."
+        fi
+
+        {
+          echo "## Release summary"
+          echo
+          echo "- Target repository: ${TARGET_REPOSITORY}"
+          echo "- Mode: ${mode}"
+          echo "- Trigger: ${GITHUB_EVENT_NAME}"
+          echo "- Ref: \`${GITHUB_REF_NAME}\`"
+          echo "- Commit: \`${GITHUB_SHA}\`"
+          echo "- Outcome: ${outcome}"
+          echo
+          echo "### Artifacts"
+          echo
+          echo "| Artifact | Size |"
+          echo "| --- | ---: |"
+          find dist -maxdepth 1 -type f -printf '%f\t%s\n' \
+            | sort \
+            | while IFS=$'\t' read -r artifact bytes; do
+                size="$(numfmt --to=iec --suffix=B "${bytes}")"
+                echo "| \`${artifact}\` | ${size} |"
+              done
+        } >> "${GITHUB_STEP_SUMMARY}"
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist/
+        retention-days: 0
+
+  pypi-publish:
+    needs: build-artifacts
+    name: Upload release to PyPI
+    if: ${{ github.event_name == 'release' || inputs.publish == true }}
+    runs-on: ubuntu-latest
+    environment: pypi-publish
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v5
+      with:
+        name: dist
+        path: dist/
+
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1

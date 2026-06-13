@@ -18,7 +18,7 @@ from omegaconf import (
     OmegaConf,
     ListConfig,
 )
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple, cast
 
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
@@ -115,7 +115,9 @@ class CompletionPlugin(Plugin):
                     conf_node = ""
                 if conf_node is not None:
                     if OmegaConf.is_config(conf_node):
-                        key_matches = CompletionPlugin._get_matches(conf_node, "")
+                        key_matches = CompletionPlugin._get_matches(
+                            cast(Container, conf_node), ""
+                        )
                     else:
                         # primitive
                         if isinstance(conf_node, bool):

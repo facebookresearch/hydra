@@ -53,7 +53,7 @@ class IncompatibleLauncher(Launcher):
     def launch(  # type: ignore[empty-body]
         self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
     ) -> Sequence[JobReturn]:
-        pass
+        raise NotImplementedError
 
 
 @mark.parametrize(
@@ -91,10 +91,8 @@ def test_setup_plugins(
 
 def test_run_job() -> None:
     hydra_context = None
-    msg = dedent(
-        """
+    msg = dedent("""
         run_job's signature has changed: the `hydra_context` arg is now required.
-        For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
-    )
+        For more info, check https://github.com/facebookresearch/hydra/pull/1581.""")
     with raises(TypeError, match=msg):
         _check_hydra_context(hydra_context)

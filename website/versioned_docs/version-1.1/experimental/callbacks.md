@@ -21,61 +21,62 @@ appropriate time, the subclass must be registered with Hydra in the `hydra.callb
 
 The full API exposed by the `hydra.experimental.callback.Callback` class is listed below:
 
-<details><summary>Events supported (Click to expand)</summary>
+<details>
+  <summary>Events supported (Click to expand)</summary>
 
-```python
-class Callback:
-    def on_run_start(self, config: DictConfig, **kwargs: Any) -> None:
-        """
-        Called in RUN mode before job/application code starts. `config` is composed with overrides.
-        Some `hydra.runtime` configs are not populated yet.
-        See hydra.core.utils.run_job for more info.
-        """
-        ...
+    ```python
+    class Callback:
+        def on_run_start(self, config: DictConfig, **kwargs: Any) -> None:
+            """
+            Called in RUN mode before job/application code starts. `config` is composed with overrides.
+            Some `hydra.runtime` configs are not populated yet.
+            See hydra.core.utils.run_job for more info.
+            """
+            ...
 
-    def on_run_end(self, config: DictConfig, **kwargs: Any) -> None:
-        """
-        Called in RUN mode after job/application code returns.
-        """
-        ...
+        def on_run_end(self, config: DictConfig, **kwargs: Any) -> None:
+            """
+            Called in RUN mode after job/application code returns.
+            """
+            ...
 
-    def on_multirun_start(self, config: DictConfig, **kwargs: Any) -> None:
-        """
-        Called in MULTIRUN mode before any job starts.
-        When using a launcher, this will be executed on local machine before any Sweeper/Launcher is initialized.
-        """
-        ...
+        def on_multirun_start(self, config: DictConfig, **kwargs: Any) -> None:
+            """
+            Called in MULTIRUN mode before any job starts.
+            When using a launcher, this will be executed on local machine before any Sweeper/Launcher is initialized.
+            """
+            ...
 
-    def on_multirun_end(self, config: DictConfig, **kwargs: Any) -> None:
-        """
-        Called in MULTIRUN mode after all jobs returns.
-        When using a launcher, this will be executed on local machine.
-        """
-        ...
+        def on_multirun_end(self, config: DictConfig, **kwargs: Any) -> None:
+            """
+            Called in MULTIRUN mode after all jobs returns.
+            When using a launcher, this will be executed on local machine.
+            """
+            ...
 
-    def on_job_start(self, config: DictConfig, **kwargs: Any) -> None:
-        """
-        Called in both RUN and MULTIRUN modes, once for each Hydra job (before running application code).
-        This is called from within `hydra.core.utils.run_job`. In the case of remote launching, this will be executed
-        on the remote server along with your application code.
-        """
-        ...
+        def on_job_start(self, config: DictConfig, **kwargs: Any) -> None:
+            """
+            Called in both RUN and MULTIRUN modes, once for each Hydra job (before running application code).
+            This is called from within `hydra.core.utils.run_job`. In the case of remote launching, this will be executed
+            on the remote server along with your application code.
+            """
+            ...
 
-    def on_job_end(
-        self, config: DictConfig, job_return: JobReturn, **kwargs: Any
-    ) -> None:
-        """
-        Called in both RUN and MULTIRUN modes, once for each Hydra job (after running
-        application code).
-        This is called from within `hydra.core.utils.run_job`. In the case of remote launching, this will be executed
-        on the remote server after your application code.
+        def on_job_end(
+            self, config: DictConfig, job_return: JobReturn, **kwargs: Any
+        ) -> None:
+            """
+            Called in both RUN and MULTIRUN modes, once for each Hydra job (after running
+            application code).
+            This is called from within `hydra.core.utils.run_job`. In the case of remote launching, this will be executed
+            on the remote server after your application code.
 
-        `job_return` contains info that could be useful for logging or post-processing.
-        See hydra.core.utils.JobReturn for more.
-        """
-        ...
+            `job_return` contains info that could be useful for logging or post-processing.
+            See hydra.core.utils.JobReturn for more.
+            """
+            ...
 
-```
+    ```
 </details>
 
 ### Configure Callback
@@ -105,7 +106,7 @@ def my_app(cfg: DictConfig) -> None:
 
 if __name__ == "__main__":
     my_app()
-``` 
+```
 </div>
 <div className="col col--3" >
 
@@ -130,7 +131,7 @@ Job ended,uploading...
 </div>
 </div>
 
-Now let's take a look at the configurations. 
+Now let's take a look at the configurations.
 
 <div className="row">
 <div className="col col--4">

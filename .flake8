@@ -1,6 +1,9 @@
 [flake8]
 exclude = 
     .git
+    ,.hg
+    ,.sl
+    ,website
     ,.nox,build
     ,hydra/grammar/gen
     ,dist
@@ -19,4 +22,4 @@ max-line-length = 119
 copyright-check = True
 select = E,F,W,C
 copyright-regexp=Copyright \(c\) Facebook, Inc. and its affiliates. All Rights Reserved
-ignore=W503,E203,E701,E704
+ignore=W503,E203,E231,E241,E701,E704

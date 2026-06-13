@@ -3,7 +3,7 @@ import logging
 import os
 from contextlib import contextmanager
 from subprocess import PIPE, Popen
-from typing import Any, Dict, Generator, List, Tuple
+from typing import Any, Dict, Generator, List, Tuple, cast
 
 import ray
 from hydra.core.hydra_config import HydraConfig
@@ -12,7 +12,7 @@ from hydra.core.utils import JobReturn, run_job, setup_globals
 from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf
 
-# mypy complains about "unused type: ignore comment" on macos
+# Static type checkers can complain about "unused type: ignore comment" on macos
 # workaround adapted from: https://github.com/twisted/twisted/pull/1416
 try:
     import importlib
@@ -31,7 +31,9 @@ def start_ray(init_cfg: DictConfig) -> None:
     if not ray.is_initialized():
         log.info(f"Initializing ray with config: {init_cfg}")
         if init_cfg:
-            ray.init(**OmegaConf.to_container(init_cfg, resolve=True))
+            ray.init(
+                **cast(Dict[str, Any], OmegaConf.to_container(init_cfg, resolve=True))
+            )
         else:
             ray.init()
     else:
@@ -64,9 +66,9 @@ def launch_job_on_ray(
     singleton_state: Any,
 ) -> Any:
     if ray_remote:
-        run_job_ray = ray.remote(**OmegaConf.to_container(ray_remote, resolve=True))(
-            _run_job
-        )
+        run_job_ray = ray.remote(
+            **cast(Dict[str, Any], OmegaConf.to_container(ray_remote, resolve=True))
+        )(_run_job)
     else:
         run_job_ray = ray.remote(_run_job)
 

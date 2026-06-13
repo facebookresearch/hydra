@@ -11,7 +11,11 @@ module.exports = {
     url: 'https://hydra.cc',
     baseUrl: '/',
     onBrokenLinks: 'throw',
-    onBrokenMarkdownLinks: 'warn',
+    markdown: {
+        hooks: {
+            onBrokenMarkdownLinks: 'warn',
+        },
+    },
     trailingSlash: true,
     favicon: 'img/Hydra-head.svg',
     organizationName: 'facebookresearch', // Usually your GitHub org/user name.
@@ -26,21 +30,11 @@ module.exports = {
             "1.0": "https://github.com/facebookresearch/hydra/blob/1.0_branch/",
             current: "https://github.com/facebookresearch/hydra/blob/main/",
         },
-    },    
+    },
     themeConfig: {
-        announcementBar: {
-            id: 'support_ukraine',
-            content:
-              'Support Ukraine 🇺🇦 <a target="_blank" rel="noopener noreferrer" href="https://opensource.fb.com/support-ukraine"> Help Provide Humanitarian Aid to Ukraine</a>.',
-            backgroundColor: '#20232a',
-            textColor: '#fff',
-            isCloseable: false,
-        },
-        googleAnalytics: {
-            trackingID: 'UA-149862507-1',
-        },
         algolia: {
-            apiKey: '8e04f3376c4e6e060f9d8d56734fa67b',
+            appId: 'KVTVP1D78C',
+            apiKey: '9585f41bc128c5a99dd9f22827e1e836',
             indexName: 'hydra',
             algoliaOptions: {},
         },
@@ -48,7 +42,7 @@ module.exports = {
         //   id: 'supportus',
         //   content:
         //     '⭐️ If you like Hydra, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/facebookresearch/hydra">GitHub</a>! ⭐️',
-        // },        
+        // },
 		prism: {
 		  additionalLanguages: ['antlr4'],
 		},
@@ -73,7 +67,7 @@ module.exports = {
                     items: [
                         {
                             label: 'Blog',
-                            to: 'Blog'
+                            to: 'blog'
                         },
                         {
                             label: 'Docs',
@@ -125,17 +119,20 @@ module.exports = {
     },
     presets: [
         [
-            require.resolve('docusaurus-plugin-internaldocs-fb/docusaurus-preset'),
+            '@docusaurus/preset-classic',
             {
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
-                    showLastUpdateAuthor: true,
-                    showLastUpdateTime: true,
+                    showLastUpdateAuthor: false,
+                    showLastUpdateTime: false,
                     editUrl: 'https://github.com/facebookresearch/hydra/edit/main/website/',
                     lastVersion: 'current',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
+                },
+                googleAnalytics: {
+                    trackingID: 'UA-149862507-1',
                 },
             },
         ],

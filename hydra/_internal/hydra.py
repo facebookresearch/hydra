@@ -7,7 +7,15 @@ from argparse import ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type, Union
 
-from omegaconf import Container, DictConfig, OmegaConf, flag_override
+from omegaconf import (
+    MISSING,
+    Container,
+    DictConfig,
+    ListConfig,
+    OmegaConf,
+    flag_override,
+)
+from omegaconf.errors import InterpolationToMissingValueError
 
 from hydra._internal.utils import get_column_widths, run_and_report
 from hydra.core.config_loader import ConfigLoader
@@ -35,6 +43,39 @@ from .config_loader_impl import ConfigLoaderImpl
 from .utils import create_automatic_config_search_path
 
 log: Optional[logging.Logger] = None
+
+
+def _resolve_node_interpolations(cfg: Any) -> None:
+    if cfg._is_missing() or cfg._is_none():
+        return
+
+    if isinstance(cfg, DictConfig):
+        keys: Sequence[Any] = list(cfg.keys())
+    else:
+        assert isinstance(cfg, ListConfig)
+        keys = range(len(cfg))
+
+    for key in keys:
+        if OmegaConf.is_missing(cfg, key):
+            continue
+
+        node = cfg._get_node(key)
+        if isinstance(node, Container):
+            _resolve_node_interpolations(node)
+            continue
+
+        try:
+            cfg[key] = cfg[key]
+        except InterpolationToMissingValueError:
+            cfg[key] = MISSING
+
+
+def _resolve_for_cfg_output(cfg: Container) -> None:
+    try:
+        OmegaConf.resolve(cfg)
+    except InterpolationToMissingValueError:
+        with flag_override(cfg, ["readonly", "struct"], False):
+            _resolve_node_interpolations(cfg)
 
 
 class Hydra:
@@ -90,6 +131,7 @@ class Hydra:
                 with_log_configuration=False,
                 run_mode=RunMode.MULTIRUN,
                 validate_sweep_overrides=False,
+                run_callback=False,
             )
             return cfg.hydra.mode
         except Exception:
@@ -197,6 +239,7 @@ class Hydra:
             overrides=overrides,
             run_mode=RunMode.RUN,
             with_log_configuration=False,
+            run_callback=False,
         )
         HydraConfig.instance().set_config(cfg)
         OmegaConf.set_readonly(cfg.hydra, None)
@@ -218,7 +261,7 @@ class Hydra:
             if package is not None:
                 print(f"# @package {package}")
             if resolve:
-                OmegaConf.resolve(ret)
+                _resolve_for_cfg_output(ret)
             sys.stdout.write(OmegaConf.to_yaml(ret))
 
     @staticmethod
@@ -276,7 +319,9 @@ class Hydra:
                 overrides = action
             else:
                 s += f"{','.join(action.option_strings)} : {action.help}\n"
-        s += "Overrides : " + overrides.help
+        overrides_help = overrides.help
+        assert isinstance(overrides_help, str)
+        s += "Overrides : " + overrides_help
         return s
 
     def list_all_config_groups(self, parent: str = "") -> Sequence[str]:
@@ -422,6 +467,7 @@ class Hydra:
             overrides=overrides,
             run_mode=run_mode,
             with_log_configuration=False,
+            run_callback=False,
         )
         HydraConfig.instance().set_config(cfg)
         cfg = self.get_sanitized_cfg(cfg, cfg_type="hydra")
@@ -501,6 +547,7 @@ class Hydra:
                 overrides=overrides,
                 run_mode=run_mode,
                 with_log_configuration=False,
+                run_callback=False,
             )
         )
         HydraConfig.instance().set_config(cfg)
@@ -581,6 +628,7 @@ class Hydra:
         with_log_configuration: bool = False,
         from_shell: bool = True,
         validate_sweep_overrides: bool = True,
+        run_callback: bool = True,
     ) -> DictConfig:
         """
         :param config_name:
@@ -588,6 +636,9 @@ class Hydra:
         :param run_mode: compose config for run or for multirun?
         :param with_log_configuration: True to configure logging subsystem from the loaded config
         :param from_shell: True if the parameters are passed from the shell. used for more helpful error messages
+        :param validate_sweep_overrides: True if sweep overrides should be validated
+        :param run_callback: True if the on_compose_config callback should be called, generally should always
+                             be True except for internal use cases
         :return:
         """
 
@@ -603,6 +654,13 @@ class Hydra:
             global log
             log = logging.getLogger(__name__)
             self._print_debug_info(config_name, overrides, run_mode)
+        if run_callback:
+            callbacks = Callbacks(cfg, check_cache=False)
+            callbacks.on_compose_config(
+                config=cfg,
+                config_name=config_name,
+                overrides=overrides,
+            )
         return cfg
 
     def _print_plugins_info(

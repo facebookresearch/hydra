@@ -32,52 +32,54 @@ the launching host and the target host.
 
 The Submitit Plugin implements 2 different launchers: `submitit_slurm` to run on a SLURM cluster, and `submitit_local` for basic local tests.
 
-<details><summary>Discover the SLURM Launcher parameters <b>(Expand)</b></summary>
+<details>
+  <summary>Discover the SLURM Launcher parameters <b>(Expand)</b></summary>
 
-```yaml title="$ python your_app.py hydra/launcher=submitit_slurm --cfg hydra -p hydra.launcher"
-# @package hydra.launcher
-submitit_folder: ${hydra.sweep.dir}/.submitit/%j
-timeout_min: 60
-cpus_per_task: null
-gpus_per_node: null
-tasks_per_node: 1
-mem_gb: null
-nodes: 1
-name: ${hydra.job.name}
-_target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
-partition: null
-qos: null
-comment: null
-constraint: null
-exclude: null
-gres: null
-cpus_per_gpu: null
-gpus_per_task: null
-mem_per_gpu: null
-mem_per_cpu: null
-account: null
-signal_delay_s: 120
-max_num_timeout: 0
-additional_parameters: {}
-array_parallelism: 256
-setup: null
-srun_args: null
-```
+  ```yaml title="$ python your_app.py hydra/launcher=submitit_slurm --cfg hydra -p hydra.launcher"
+  # @package hydra.launcher
+  submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+  timeout_min: 60
+  cpus_per_task: null
+  gpus_per_node: null
+  tasks_per_node: 1
+  mem_gb: null
+  nodes: 1
+  name: ${hydra.job.name}
+  _target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
+  partition: null
+  qos: null
+  comment: null
+  constraint: null
+  exclude: null
+  gres: null
+  cpus_per_gpu: null
+  gpus_per_task: null
+  mem_per_gpu: null
+  mem_per_cpu: null
+  account: null
+  signal_delay_s: 120
+  max_num_timeout: 0
+  additional_parameters: {}
+  array_parallelism: 256
+  setup: null
+  srun_args: null
+  ```
 </details>
-<details><summary>Discover the Local Launcher parameters <b>(Expand)</b></summary>
+<details>
+  <summary>Discover the Local Launcher parameters <b>(Expand)</b></summary>
 
-```yaml title="$ python example/my_app.py hydra/launcher=submitit_local --cfg hydra -p hydra.launcher"
-# @package hydra.launcher
-_target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher
-submitit_folder: ${hydra.sweep.dir}/.submitit/%j
-timeout_min: 60
-cpus_per_task: 1
-gpus_per_node: 0
-tasks_per_node: 1
-mem_gb: 4
-nodes: 1
-name: ${hydra.job.name}
-```
+  ```yaml title="$ python example/my_app.py hydra/launcher=submitit_local --cfg hydra -p hydra.launcher"
+  # @package hydra.launcher
+  _target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.LocalLauncher
+  submitit_folder: ${hydra.sweep.dir}/.submitit/%j
+  timeout_min: 60
+  cpus_per_task: 1
+  gpus_per_node: 0
+  tasks_per_node: 1
+  mem_gb: 4
+  nodes: 1
+  name: ${hydra.job.name}
+  ```
 </details>
 
 <br/>
@@ -86,7 +88,7 @@ You can set all these parameters in your configuration file and/or override them
 ```text
 python foo.py --multirun hydra/launcher=submitit_slurm hydra.launcher.timeout_min=3
 ```
-For more details, including descriptions for each parameter, check out the <GithubLink to="plugins/hydra_submitit_launcher/hydra_plugins/hydra_submitit_launcher/config.py">config file</GithubLink>. 
+For more details, including descriptions for each parameter, check out the <GithubLink to="plugins/hydra_submitit_launcher/hydra_plugins/hydra_submitit_launcher/config.py">config file</GithubLink>.
 You can also check the [Submitit documentation](https://github.com/facebookincubator/submitit).
 
 
@@ -117,8 +119,7 @@ $ tree
 │   └── my_app.log
 └── multirun.yaml
 
-$ cat 0/my_app.log 
+$ cat 0/my_app.log
 [2020-05-28 15:05:23,511][__main__][INFO] - Process ID 15887 executing task 1 ...
 [2020-05-28 15:05:24,514][submitit][INFO] - Job completed successfully
 ```
-

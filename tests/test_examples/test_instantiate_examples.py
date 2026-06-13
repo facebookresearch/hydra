@@ -85,15 +85,13 @@ def test_instantiate_schema(tmpdir: Path, overrides: List[str], output: str) -> 
     [
         (
             [],
-            dedent(
-                """\
+            dedent("""\
                 root(1)
                   left(20)
                     right(30)
                       left(400)
                       right(300)
-                """
-            ),
+                """),
         ),
     ],
 )
@@ -114,8 +112,7 @@ def test_instantiate_schema_recursive(
     [
         param(
             [],
-            dedent(
-                """\
+            dedent("""\
                 Optimizer(algo=SGD,lr=0.01)
                 Optimizer(algo=SGD,lr=0.2)
                 Trainer(
@@ -130,8 +127,7 @@ def test_instantiate_schema_recursive(
                   optimizer={'_target_': 'my_app.Optimizer', 'algo': 'SGD', 'lr': 0.01},
                   dataset={'_target_': 'my_app.Dataset', 'name': 'Imagenet', 'path': '/datasets/imagenet'}
                 )
-                """
-            ),
+                """),
             id="default-output",
         ),
     ],

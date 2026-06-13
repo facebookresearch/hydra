@@ -1,6 +1,6 @@
 defaults:
   - config_schema
-  - set: all
+  - set: hydra-full-release
   - _self_
 
 hydra:

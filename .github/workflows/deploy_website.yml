@@ -1,7 +1,7 @@
 name: Deploy website
 
 on:
-   push:
+  push:
     branches:
       - main
       - deploy_website_hydra
@@ -9,13 +9,20 @@ on:
     branches:
       - main
 
+
+permissions:
+  contents: read
+
 jobs:
   deploy:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v5
+    - uses: actions/setup-node@v6
+      with:
+        node-version: "24"
     - name: Deploy website
       env:
         WEBSITE_GITHUB_TOKEN: ${{ secrets.WEBSITE_GITHUB_TOKEN }}
@@ -29,11 +36,12 @@ jobs:
         if [[ ! $(git rev-parse --verify -q "$REV^{commit}") ||  $(git diff-index $REV -- $SUBDIR) ]]; then
           echo "Changes detected in directory $SUBDIR between origin/main and this diff"
           cd $SUBDIR
-          yarn --no-progress
+          corepack enable
+          corepack pnpm install --frozen-lockfile
           git config --global user.email omry@users.noreply.github.com
           git config --global user.name omry
           echo "machine github.com login docusaurus-bot password $WEBSITE_GITHUB_TOKEN" > ~/.netrc
-          yarn install && GIT_USER=docusaurus-bot yarn deploy
+          GIT_USER=docusaurus-bot corepack pnpm run deploy
         else
           echo "No changes detected in directory $SUBDIR between origin/main and this diff"
         fi

@@ -8,48 +8,49 @@ hide_title: true
 The job configuration resides in `hydra.job`.
 The structure definition is below, the latest definition [in the code](https://github.com/facebookresearch/hydra/blob/master/hydra/conf/__init__.py).
 
-<details><summary>Expand definition</summary>
+<details>
+  <summary>Expand definition</summary>
 
-```python
-# job runtime information will be populated here
-@dataclass
-class JobConf:
-    # Job name, populated automatically unless specified by the user (in config or cli)
-    name: str = MISSING
+  ```python
+  # job runtime information will be populated here
+  @dataclass
+  class JobConf:
+      # Job name, populated automatically unless specified by the user (in config or cli)
+      name: str = MISSING
 
-    # Concatenation of job overrides that can be used as a part
-    # of the directory name.
-    # This can be configured in hydra.job.config.override_dirname
-    override_dirname: str = MISSING
+      # Concatenation of job overrides that can be used as a part
+      # of the directory name.
+      # This can be configured in hydra.job.config.override_dirname
+      override_dirname: str = MISSING
 
-    # Job ID in underlying scheduling system
-    id: str = MISSING
+      # Job ID in underlying scheduling system
+      id: str = MISSING
 
-    # Job number if job is a part of a sweep
-    num: int = MISSING
+      # Job number if job is a part of a sweep
+      num: int = MISSING
 
-    # The config name used by the job
-    config_name: Optional[str] = MISSING
+      # The config name used by the job
+      config_name: Optional[str] = MISSING
 
-    # Environment variables to set remotely
-    env_set: Dict[str, str] = field(default_factory=dict)
-    # Environment variables to copy from the launching machine
-    env_copy: List[str] = field(default_factory=list)
+      # Environment variables to set remotely
+      env_set: Dict[str, str] = field(default_factory=dict)
+      # Environment variables to copy from the launching machine
+      env_copy: List[str] = field(default_factory=list)
 
-    # Job config
-    @dataclass
-    class JobConfig:
-        @dataclass
-        # configuration for the ${hydra.job.override_dirname} runtime variable
-        class OverrideDirname:
-            kv_sep: str = "="
-            item_sep: str = ","
-            exclude_keys: List[str] = field(default_factory=list)
+      # Job config
+      @dataclass
+      class JobConfig:
+          @dataclass
+          # configuration for the ${hydra.job.override_dirname} runtime variable
+          class OverrideDirname:
+              kv_sep: str = "="
+              item_sep: str = ","
+              exclude_keys: List[str] = field(default_factory=list)
 
-        override_dirname: OverrideDirname = field(default_factory=OverrideDirname)
+          override_dirname: OverrideDirname = field(default_factory=OverrideDirname)
 
-    config: JobConfig = field(default_factory=JobConfig)
-```
+      config: JobConfig = field(default_factory=JobConfig)
+  ```
 </details>
 
 ## Documentation
@@ -58,18 +59,18 @@ class JobConf:
 
 The job name is used by different things in Hydra, such as the log file name (`${hydra.job.name}.log`).
 It is normally derived from the Python file name (file: `train.py` -> name: `train`).
-You can override it via the command line or your config file. 
+You can override it via the command line or your config file.
 
 ### hydra.job.override_dirname
-This field is populated automatically using your command line arguments and is typically being used as a part of your 
+This field is populated automatically using your command line arguments and is typically being used as a part of your
 output directory pattern.
 For example, the command line arguments:
 ```bash
 $ python foo.py a=10 b=20
 ```
 Would result in `hydra.job.override_dirname` getting the value a=10,b=20.
-When used with the output directory override, it can automatically generate directories that represent the 
-command line arguments used in your run.   
+When used with the output directory override, it can automatically generate directories that represent the
+command line arguments used in your run.
 ```yaml
 hydra:
   run:
@@ -123,9 +124,9 @@ hydra:
 ```
 Disables multithreading in Intel IPP and MKL.
 
-Another example, is to use interpolation to automatically set the rank 
-for [Torch Distributed](https://pytorch.org/tutorials/intermediate/dist_tuto.html) run to match the job number 
-in the sweep. 
+Another example, is to use interpolation to automatically set the rank
+for [Torch Distributed](https://pytorch.org/tutorials/intermediate/dist_tuto.html) run to match the job number
+in the sweep.
 
 ```yaml
 hydra:

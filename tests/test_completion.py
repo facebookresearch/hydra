@@ -30,16 +30,22 @@ def is_fish_supported() -> bool:
     proc = subprocess.run(
         ["fish", "--version"], stdout=subprocess.PIPE, encoding="utf-8"
     )
-    matches = re.match(r".*version\s+(\d\.\d\.\d)(.*)", proc.stdout)
+    matches = re.match(r".*version\s+(\d+(?:\.\d+){2})(.*)", proc.stdout)
     if not matches:
         return False
 
     fish_version, git_version = matches.groups()
 
+    fish_version_parsed = version.parse(fish_version)
+    min_fish_version = version.parse("3.1.2")
+    max_fish_version = version.parse("4.0.0")
+
     # Release after 3.1.2 or git build after 3.1.2 contain space fix.
-    if version.parse(fish_version) > version.parse("3.1.2"):
+    # Fish 4.x changed completion behavior enough that these integration tests no
+    # longer register completions correctly.
+    if min_fish_version < fish_version_parsed < max_fish_version:
         return True
-    elif version.parse(fish_version) >= version.parse("3.1.2") and git_version:
+    elif min_fish_version <= fish_version_parsed < max_fish_version and git_version:
         return True
     else:
         return False

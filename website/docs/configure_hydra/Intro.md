@@ -15,7 +15,7 @@ Hydra is highly configurable. Many of its aspects and subsystems can be configur
 
 The Hydra config can be customized using the same methods you are already familiar with from the tutorial.
 You can include some Hydra config snippet in your own config to override it directly, or compose in different
-configurations provided by plugins or by your own code. You can also override everything in Hydra from the command 
+configurations provided by plugins or by your own code. You can also override everything in Hydra from the command
 line just like with your own configuration.
 
 The Hydra configuration itself is composed from multiple config files. here is a partial list:
@@ -32,23 +32,23 @@ You can view the Hydra config using `--cfg hydra`:
 <details>
 <summary> $ python my_app.py <b>--cfg hydra</b> (Click to expand)</summary>
 
-```yaml
-hydra:
-  run:
-    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
-  sweep:
-    dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
-    subdir: ${hydra.job.num}
-  launcher:
-    _target_: hydra._internal.core_plugins.basic_launcher.BasicLauncher
-  sweeper:
-    _target_: hydra._internal.core_plugins.basic_sweeper.BasicSweeper
-    max_batch_size: null
-  hydra_logging:
-    version: 1
-    formatters:
-    ...
-```
+  ```yaml
+  hydra:
+    run:
+      dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    sweep:
+      dir: multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+      subdir: ${hydra.job.num}
+    launcher:
+      _target_: hydra._internal.core_plugins.basic_launcher.BasicLauncher
+    sweeper:
+      _target_: hydra._internal.core_plugins.basic_sweeper.BasicSweeper
+      max_batch_size: null
+    hydra_logging:
+      version: 1
+      formatters:
+      ...
+  ```
 </details>
 
 
@@ -91,8 +91,8 @@ The following fields are present at the top level of the Hydra Config.
   See [logging](/tutorials/basic/running_your_app/4_logging.md).
 
 ### hydra.job:
-The **hydra.job** node is used for configuring some aspects of your job. 
-Below is a short summary of the fields in **hydra.job**. 
+The **hydra.job** node is used for configuring some aspects of your job.
+Below is a short summary of the fields in **hydra.job**.
 You can find more details in the [Job Configuration](job.md) page.
 
 Fields under **hydra.job**:
@@ -140,7 +140,7 @@ Hydra provides the following [OmegaConf resolvers](https://omegaconf.readthedocs
 
 **hydra**: Interpolates into the `hydra` config node. e.g. Use `${hydra:job.name}` to get the Hydra job name.
 
-**now**: Creates a string representing the current time using 
+**now**: Creates a string representing the current time using
 [strftime](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior).
 e.g. for formatting the time you can use something like`${now:%H-%M-%S}`.
 
@@ -148,10 +148,10 @@ e.g. for formatting the time you can use something like`${now:%H-%M-%S}`.
 Takes an optional argument of a string with the values major, minor or macro.
 e.g:
 ```yaml
-default: ${python_version:}          # 3.8
+default: ${python_version:}          # 3.10
 major:   ${python_version:major}     # 3
-minor:   ${python_version:minor}     # 3.8
-micro:   ${python_version:micro}     # 3.8.2
+minor:   ${python_version:minor}     # 3.10
+micro:   ${python_version:micro}     # 3.10.1
 ```
 
 Additionally hydra supports OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/custom_resolvers.html#custom-resolvers" target="_blank">custom resolvers</a>

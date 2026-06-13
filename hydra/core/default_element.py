@@ -122,11 +122,9 @@ class InputDefault:
                 path = self.get_config_path()
                 url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
                 deprecation_warning(
-                    message=dedent(
-                        f"""\
+                    message=dedent(f"""\
                         In '{path}': Usage of deprecated keyword in package header '# @package {package_header}'.
-                        See {url} for more information"""
-                    ),
+                        See {url} for more information"""),
                 )
 
             if package_header == "_group_":

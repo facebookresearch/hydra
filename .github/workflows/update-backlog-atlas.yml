@@ -1,0 +1,118 @@
+name: Update Backlog Atlas
+run-name: "backlog: ${{ github.event_name }}.${{ github.event.action }} #${{ github.event.issue.number || github.event.pull_request.number || 'n/a' }} ${{ github.event.issue.title || github.event.pull_request.title }}"
+
+on:
+  issues:
+    types: [opened, closed, labeled, unlabeled, reopened]
+  pull_request:
+    types: [opened, closed, labeled, unlabeled, reopened]
+  schedule:
+    - cron: '0 7 * * *'  # daily fallback
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: read
+  pull-requests: read
+
+env:
+  BACKLOG_ATLAS_PIP: backlog-atlas==0.16
+  BACKLOG_ATLAS_BRANCH: backlog-atlas
+
+jobs:
+  ensure-backlog-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure Backlog Atlas branch exists
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          remote_url="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git ls-remote --exit-code --heads "$remote_url" "$BACKLOG_ATLAS_BRANCH" >/dev/null 2>&1; then
+            exit 0
+          fi
+
+          workdir="$(mktemp -d)"
+          git init "$workdir"
+          cd "$workdir"
+          git checkout --orphan "$BACKLOG_ATLAS_BRANCH"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          mkdir -p .backlog-atlas
+          : > .backlog-atlas/.keep
+          git add .backlog-atlas/.keep
+          git commit -m "backlog: initialize $BACKLOG_ATLAS_BRANCH branch"
+          if git push "$remote_url" HEAD:"$BACKLOG_ATLAS_BRANCH"; then
+            exit 0
+          fi
+          git ls-remote --exit-code --heads "$remote_url" "$BACKLOG_ATLAS_BRANCH" >/dev/null
+
+  process:
+    needs: ensure-backlog-branch
+    concurrency:
+      group: update-backlog-atlas
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BACKLOG_ATLAS_BRANCH }}
+          path: backlog-atlas-branch
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Backlog Atlas
+        run: pip install "$BACKLOG_ATLAS_PIP"
+      - name: Debounce (event-triggered runs only)
+        if: github.event_name != 'schedule' && github.event_name != 'workflow_dispatch'
+        run: sleep 60
+      - name: Refresh Backlog Atlas branch after debounce
+        run: |
+          cd backlog-atlas-branch
+          git pull --rebase origin "$BACKLOG_ATLAS_BRANCH"
+      - name: Update backlog
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          backlog-atlas update \
+            --snapshot-path backlog-atlas-branch/last_snapshot.json \
+            --data-json-path backlog-atlas-branch/backlog.json \
+            --updates-jsonl-path backlog-atlas-branch/updates.jsonl \
+            --commit-msg-path /tmp/backlog_commit_msg.txt
+      - name: Stage web assets on Backlog Atlas branch
+        run: |
+          backlog-atlas dump-web --output backlog-atlas-branch
+      - name: Stage multi-repo atlas manifest
+        run: |
+          if [ -f .github/backlog-atlas/atlas.yaml ]; then
+            backlog-atlas dump-atlas \
+              --config .github/backlog-atlas/atlas.yaml \
+              --output backlog-atlas-branch
+          else
+            rm -f backlog-atlas-branch/atlas.json
+          fi
+      - name: Commit to Backlog Atlas branch
+        run: |
+          cd backlog-atlas-branch
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git rm --ignore-unmatch BACKLOG.md BACKLOG-UPDATES.md
+          git add .backlog-atlas last_snapshot.json backlog.json updates.jsonl index.html favicon.svg
+          if [ -f atlas.json ]; then
+            git add atlas.json
+          else
+            git rm --ignore-unmatch atlas.json
+          fi
+          git diff --cached --quiet && exit 0
+          COMMIT_MSG=$(cat /tmp/backlog_commit_msg.txt 2>/dev/null || echo "backlog: sync [skip ci]")
+          git commit -m "$COMMIT_MSG"
+          for i in 1 2 3; do
+            if git pull --rebase origin "$BACKLOG_ATLAS_BRANCH" && git push origin HEAD:"$BACKLOG_ATLAS_BRANCH"; then
+              exit 0
+            fi
+            sleep $((i * 3))
+          done
+          exit 1

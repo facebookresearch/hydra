@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import functools
+import importlib.util
 import os
 import platform
 import subprocess
@@ -15,7 +16,8 @@ from nox.logger import logger
 
 BASE = os.path.abspath(os.path.dirname(__file__))
 
-DEFAULT_PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11"]
+DEFAULT_PYTHON_VERSIONS = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+LINT_PYTHON_VERSIONS = ["3.10"]
 DEFAULT_OS_NAMES = ["Linux", "MacOS", "Windows"]
 
 PYTHON_VERSIONS = os.environ.get(
@@ -41,6 +43,10 @@ SILENT = VERBOSE == "0"
 
 nox.options.error_on_missing_interpreters = True
 
+PYREFLY_POSITIONAL_EXCLUDES = [
+    "**/build/**",
+]
+
 
 @dataclass
 class Plugin:
@@ -60,15 +66,15 @@ def get_current_os() -> str:
     return current_os
 
 
-print(f"Operating system\t:\t{get_current_os()}")
-print(f"NOX_PYTHON_VERSIONS\t:\t{PYTHON_VERSIONS}")
-print(f"PLUGINS\t\t\t:\t{PLUGINS}")
-print(f"SKIP_PLUGINS\t\t\t:\t{SKIP_PLUGINS}")
-print(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
-print(f"FIX\t\t\t:\t{FIX}")
-print(f"VERBOSE\t\t\t:\t{VERBOSE}")
-print(f"INSTALL_EDITABLE_MODE\t:\t{INSTALL_EDITABLE_MODE}")
-print(f"USE_OMEGACONF_DEV_VERSION\t:\t{USE_OMEGACONF_DEV_VERSION}")
+logger.info(f"Operating system\t:\t{get_current_os()}")
+logger.info(f"NOX_PYTHON_VERSIONS\t:\t{PYTHON_VERSIONS}")
+logger.info(f"PLUGINS\t\t\t:\t{PLUGINS}")
+logger.info(f"SKIP_PLUGINS\t\t\t:\t{SKIP_PLUGINS}")
+logger.info(f"SKIP_CORE_TESTS\t\t:\t{SKIP_CORE_TESTS}")
+logger.info(f"FIX\t\t\t:\t{FIX}")
+logger.info(f"VERBOSE\t\t\t:\t{VERBOSE}")
+logger.info(f"INSTALL_EDITABLE_MODE\t:\t{INSTALL_EDITABLE_MODE}")
+logger.info(f"USE_OMEGACONF_DEV_VERSION\t:\t{USE_OMEGACONF_DEV_VERSION}")
 
 
 def _upgrade_basic(session: Session) -> None:
@@ -83,11 +89,11 @@ def find_dirs(path: str) -> Iterator[str]:
             yield fullname
 
 
-def print_installed_package_version(session: Session, package_name: str) -> None:
+def log_installed_package_version(session: Session, package_name: str) -> None:
     pip_list: str = session.run("pip", "list", silent=True)
     for line in pip_list.split("\n"):
         if package_name in line:
-            print(f"Installed {package_name} version: {line}")
+            session.log(f"Installed {package_name} version: {line}")
 
 
 def install_hydra(session: Session, cmd: List[str]) -> None:
@@ -98,7 +104,7 @@ def install_hydra(session: Session, cmd: List[str]) -> None:
     if USE_OMEGACONF_DEV_VERSION:
         session.install("--pre", "omegaconf", silent=SILENT)
     session.run(*cmd, ".", silent=SILENT)
-    print_installed_package_version(session, "omegaconf")
+    log_installed_package_version(session, "omegaconf")
     if not SILENT:
         session.install("pipdeptree", silent=SILENT)
         session.run("pipdeptree", "-p", "hydra-core")
@@ -116,7 +122,7 @@ def install_selected_plugins(
 
 
 def install_plugin(session: Session, install_cmd: List[str], plugin: Plugin) -> None:
-    maybe_install_torch(session, plugin)
+    install_plugin_test_requirements(session, plugin)
     cmd = install_cmd + [plugin.abspath]
     session.run(*cmd, silent=SILENT)
     if not SILENT:
@@ -125,26 +131,10 @@ def install_plugin(session: Session, install_cmd: List[str], plugin: Plugin) -> 
     session.run("python", "-c", f"import {plugin.module}")
 
 
-def maybe_install_torch(session: Session, plugin: Plugin) -> None:
-    if plugin_requires_torch(plugin):
-        install_cpu_torch(session)
-        print_installed_package_version(session, "torch")
-
-
-def plugin_requires_torch(plugin: Plugin) -> bool:
-    """Determine whether the given plugin depends on pytorch as a requirement"""
-    return '"torch"' in Path(plugin.setup_py).read_text()
-
-
-def install_cpu_torch(session: Session) -> None:
-    """
-    Install the CPU version of pytorch.
-    This is a much smaller download size than the normal version `torch` package hosted on pypi.
-    The smaller download prevents our CI jobs from timing out.
-    """
-    session.install(
-        "torch", "--extra-index-url", "https://download.pytorch.org/whl/cpu"
-    )
+def install_plugin_test_requirements(session: Session, plugin: Plugin) -> None:
+    requirements = Path(plugin.abspath) / "test-requirements.txt"
+    if requirements.exists():
+        session.install("-r", str(requirements), silent=SILENT)
 
 
 def pytest_args(*args: str) -> List[str]:
@@ -193,16 +183,19 @@ def list_plugins(directory: str) -> List[Plugin]:
     ]
 
     # Install bootstrap deps in base python environment
-    subprocess.check_output(
-        [
-            sys.executable,
-            "-m",
-            "pip",
-            "install",
-            "read-version",  # needed to read data from setup.py
-            "toml",  # so read-version can read pyproject.toml
-        ],
-    )
+    bootstrap_deps = {
+        "read_version": "read-version",  # needed to read data from setup.py
+        "toml": "toml",  # so read-version can read pyproject.toml
+    }
+    missing_deps = [
+        package
+        for module, package in bootstrap_deps.items()
+        if importlib.util.find_spec(module) is None
+    ]
+    if missing_deps:
+        subprocess.check_output(
+            [sys.executable, "-m", "pip", "install", "--no-cache-dir", *missing_deps],
+        )
 
     plugins: List[Plugin] = []
     for dir_name in _plugin_directories:
@@ -301,29 +294,82 @@ def _black_cmd() -> List[str]:
     return black
 
 
+def _is_github_actions() -> bool:
+    return os.environ.get("GITHUB_ACTIONS") == "true"
+
+
 def _isort_cmd() -> List[str]:
     isort = ["isort", "."]
     if not FIX:
         isort += ["--check", "--diff"]
+    if _is_github_actions():
+        isort += ["--format-error", "::error::isort {message}"]
     return isort
 
 
-def _mypy_cmd(strict: bool, python_version: Optional[str] = "3.8") -> List[str]:
-    mypy = [
-        "mypy",
-        "--install-types",
-        "--non-interactive",
-        "--config-file",
-        f"{BASE}/.mypy.ini",
+def _flake8_cmd(*paths: str) -> List[str]:
+    flake8 = ["flake8", "--config", ".flake8"]
+    if _is_github_actions():
+        flake8 += [
+            "--format",
+            "::error file=%(path)s,line=%(row)d,col=%(col)d::%(code)s %(text)s",
+        ]
+    flake8.extend(paths)
+    return flake8
+
+
+def _yamllint_cmd() -> List[str]:
+    yamllint = ["yamllint", "--strict", "."]
+    if _is_github_actions():
+        yamllint += ["--format", "github"]
+    return yamllint
+
+
+def _bandit_cmd() -> List[str]:
+    bandit = [
+        "bandit",
+        "--exclude",
+        "./.nox/**,./.sl/**,./website/**",
+        "-ll",
+        "-r",
+        ".",
     ]
-    if strict:
-        mypy.append("--strict")
+    if _is_github_actions():
+        bandit += [
+            "--format",
+            "custom",
+            "--msg-template",
+            "::error file={relpath},line={line}::{test_id} {severity}: {msg}",
+        ]
+    return bandit
+
+
+def _pyrefly_cmd(
+    python_version: Optional[str] = "3.10",
+    extra_search_paths: Optional[List[str]] = None,
+) -> List[str]:
+    pyrefly = [
+        "pyrefly",
+        "check",
+        "--config",
+        f"{BASE}/pyproject.toml",
+        "--python-interpreter-path",
+        "python",
+    ]
+    if _is_github_actions():
+        pyrefly.extend(["--output-format", "github"])
     if python_version is not None:
-        mypy.append(f"--python-version={python_version}")
-    return mypy
+        pyrefly.append(f"--python-version={python_version}")
+    if extra_search_paths is not None:
+        pyrefly.extend(["--search-path", f"{BASE}/.stubs"])
+        for path in extra_search_paths:
+            pyrefly.extend(["--search-path", path])
+        for path in PYREFLY_POSITIONAL_EXCLUDES:
+            pyrefly.extend(["--project-excludes", path])
+    return pyrefly
 
 
-@nox.session(python=PYTHON_VERSIONS)  # type: ignore
+@nox.session(python=LINT_PYTHON_VERSIONS)  # type: ignore
 def lint(session: Session) -> None:
     _upgrade_basic(session)
     install_dev_deps(session)
@@ -341,6 +387,7 @@ def lint(session: Session) -> None:
 
     skiplist = apps + [
         ".git",
+        ".sl",
         "website",
         "plugins",
         "tools",
@@ -356,20 +403,16 @@ def lint(session: Session) -> None:
 
     session.run(*isort, silent=SILENT)
 
+    # No positional target: Pyrefly uses the core project scope from pyproject.toml.
+    # Examples, tools, and plugins are checked below with explicit import roots.
     session.run(
-        *_mypy_cmd(strict=True),
-        ".",
-        "--exclude=^examples/",
-        "--exclude=^tests/standalone_apps/",
-        "--exclude=^tests/test_apps/",
-        "--exclude=^tools/",
-        "--exclude=^plugins/",
+        *_pyrefly_cmd(python_version=session.python),
         silent=SILENT,
     )
-    session.run("flake8", "--config", ".flake8")
-    session.run("yamllint", "--strict", ".")
+    session.run(*_flake8_cmd())
+    session.run(*_yamllint_cmd())
 
-    mypy_check_subdirs = [
+    pyrefly_check_subdirs = [
         "examples/advanced",
         "examples/configure_hydra",
         "examples/patterns",
@@ -380,11 +423,11 @@ def lint(session: Session) -> None:
         "tests/standalone_apps",
         "tests/test_apps",
     ]
-    for sdir in mypy_check_subdirs:
+    for sdir in pyrefly_check_subdirs:
         dirs = find_dirs(path=sdir)
         for d in dirs:
             session.run(
-                *_mypy_cmd(strict=True),
+                *_pyrefly_cmd(extra_search_paths=[d]),
                 d,
                 silent=SILENT,
             )
@@ -393,7 +436,7 @@ def lint(session: Session) -> None:
         dirs = find_dirs(path=sdir)
         for d in dirs:
             session.run(
-                *_mypy_cmd(strict=False),  # no --strict flag for tools
+                *_pyrefly_cmd(extra_search_paths=[d]),
                 d,
                 silent=SILENT,
             )
@@ -402,7 +445,7 @@ def lint(session: Session) -> None:
     lint_plugins_in_dir(session=session, directory="examples/plugins")
 
     # bandit static security analysis
-    session.run("bandit", "--exclude", "./.nox/**", "-ll", "-r", ".", silent=SILENT)
+    session.run(*_bandit_cmd(), silent=SILENT)
 
 
 def lint_plugins_in_dir(session: Session, directory: str) -> None:
@@ -411,7 +454,7 @@ def lint_plugins_in_dir(session: Session, directory: str) -> None:
         lint_plugin(session, plugin)
 
 
-@nox.session(python=PYTHON_VERSIONS)  # type: ignore
+@nox.session(python=LINT_PYTHON_VERSIONS)  # type: ignore
 @nox.parametrize("plugin", list_plugins("plugins"), ids=[p.name for p in list_plugins("plugins")])  # type: ignore
 def lint_plugins(session: Session, plugin: Plugin) -> None:
     if not is_plugin_compatible(session, plugin):
@@ -429,7 +472,7 @@ def lint_plugin(session: Session, plugin: Plugin) -> None:
 
     install_dev_deps(session)
 
-    session.run("flake8", "--config", ".flake8", plugin.abspath)
+    session.run(*_flake8_cmd(plugin.abspath))
     path = plugin.abspath
     source_dir = plugin.source_dir
     session.chdir(path)
@@ -443,17 +486,16 @@ def lint_plugin(session: Session, plugin: Plugin) -> None:
         if os.path.exists(abs):
             files.append(abs)
 
-    # Mypy for plugin
+    # Pyrefly for plugin
     session.run(
-        *_mypy_cmd(
-            strict=True,
-            # Don't pass --python-version flag when linting plugins, as mypy may
+        *_pyrefly_cmd(
+            # Don't pass --python-version flag when linting plugins, as Pyrefly may
             # report syntax errors if the passed --python-version is different
             # from the python version that was used to install the plugin's
             # dependencies.
             python_version=None,
+            extra_search_paths=[path],
         ),
-        "--follow-imports=silent",
         f"{path}/{source_dir}",
         *files,
         silent=SILENT,
@@ -480,6 +522,10 @@ def test_tools(session: Session) -> None:
             cmd = list(install_cmd) + ["-e", tool_path]
             session.run(*cmd, silent=SILENT)
             session.run("pytest", tool_path)
+        elif any(Path(tool_path).glob("test_*.py")):
+            if tool == "release":
+                session.install("requests", silent=SILENT)
+            session.run("pytest", tool_path, env={"PYTHONPATH": BASE})
 
     session.chdir(BASE)
 
@@ -504,7 +550,6 @@ def test_core(session: Session) -> None:
             session,
             "build_helpers",
             "tests",
-            "-W ignore:pkg_resources is deprecated as an API:DeprecationWarning",
             *session.posargs,
         )
     else:
@@ -577,7 +622,7 @@ def test_selected_plugins(session: Session, selected_plugins: List[Plugin]) -> N
         run_pytest(session)
 
 
-@nox.session(python="3.8")  # type: ignore
+@nox.session(python="3.10")  # type: ignore
 def coverage(session: Session) -> None:
     _upgrade_basic(session)
     coverage_env = {
@@ -661,12 +706,3 @@ def test_jupyter_notebooks(session: Session) -> None:
         )
         args = [x for x in args if x != "-Werror"]
         session.run(*args, silent=SILENT)
-
-
-@nox.session(python=PYTHON_VERSIONS)  # type: ignore
-def benchmark(session: Session) -> None:
-    _upgrade_basic(session)
-    install_dev_deps(session)
-    install_hydra(session, INSTALL_COMMAND)
-    session.install("pytest")
-    run_pytest(session, "build_helpers", "tests/benchmark.py", *session.posargs)

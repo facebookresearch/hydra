@@ -45,7 +45,7 @@
 
 [tool.black]
 line-length = 88
-target-version = ['py38']
+target-version = ['py310']
 include = '\.pyi?$'
 exclude = '''
 (
@@ -53,13 +53,14 @@ exclude = '''
       .eggs         # exclude a few common directories in the
     | .git          # root of the project
     | .hg
-    | .mypy_cache
+    | .sl
     | hydra/grammar/gen
     | tools/configen/example/gen
     | .tox
     | .nox
     | website
     | .venv
+    | temp
     | _build
     | dist
     | build
@@ -67,3 +68,34 @@ exclude = '''
   )
 )
 '''
+
+[tool.pyrefly]
+project-includes = [
+    "*.py",
+    "build_helpers/**/*.py",
+    "hydra/**/*.py",
+    "tests/**/*.py",
+]
+project-excludes = [
+    "hydra/grammar/gen/**",
+    "tests/standalone_apps/**",
+    "tests/test_apps/**",
+]
+search-path = [
+    ".stubs",
+]
+ignore-missing-imports = [
+    "antlr4",
+    "antlr4.*",
+    "nevergrad",
+    "nevergrad.*",
+    "rq",
+    "rq.*",
+]
+replace-imports-with-any = [
+    "hydra.grammar.gen.*",
+]
+enabled-ignores = [
+    "type",
+    "pyrefly",
+]

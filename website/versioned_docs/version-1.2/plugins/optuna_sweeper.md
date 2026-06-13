@@ -120,27 +120,28 @@ Hydra provides a override parser that support rich syntax. Please refer to [Over
 
 By default, `interval` is converted to [`UniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.UniformDistribution.html). You can use [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html), [`LogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.LogUniformDistribution.html) or [`IntLogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntLogUniformDistribution.html) by casting the interval to `int` and tagging it with `log`.
 
-<details><summary>Example for interval override</summary>
+<details>
+  <summary>Example for interval override</summary>
 
-```commandline
-python example/sphere.py --multirun 'x=int(interval(-5.0, 5.0))' 'y=tag(log, interval(1, 10))'
-```
+  ```commandline
+  python example/sphere.py --multirun 'x=int(interval(-5.0, 5.0))' 'y=tag(log, interval(1, 10))'
+  ```
 
-The output is as follows:
+  The output is as follows:
 
-```commandline
-[HYDRA] Study name: sphere
-[HYDRA] Storage: None
-[HYDRA] Sampler: TPESampler
-[HYDRA] Directions: ['minimize']
-[HYDRA] Launching 1 jobs locally
-[HYDRA] 	#0 : x=-3 y=1.6859762540733367
-[HYDRA] Launching 1 jobs locally
-[HYDRA] 	#1 : x=1 y=5.237816870668193
-...
-[HYDRA] Best parameters: {'x': 0, 'y': 1.0929184723430116}
-[HYDRA] Best value: 1.1944707871885822
-```
+  ```commandline
+  [HYDRA] Study name: sphere
+  [HYDRA] Storage: None
+  [HYDRA] Sampler: TPESampler
+  [HYDRA] Directions: ['minimize']
+  [HYDRA] Launching 1 jobs locally
+  [HYDRA] 	#0 : x=-3 y=1.6859762540733367
+  [HYDRA] Launching 1 jobs locally
+  [HYDRA] 	#1 : x=1 y=5.237816870668193
+  ...
+  [HYDRA] Best parameters: {'x': 0, 'y': 1.0929184723430116}
+  [HYDRA] Best value: 1.1944707871885822
+  ```
 
 </details>
 
@@ -149,27 +150,28 @@ The output is as follows:
 `range` is converted to [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html). If you apply `shuffle` to `range`, [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html) is used instead.
 If any of `range`'s start, stop or step is of type float, it will be converted to [`DiscreteUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.DiscreteUniformDistribution.html)
 
-<details><summary>Example for range override</summary>
+<details>
+  <summary>Example for range override</summary>
 
-```commandline
-python example/sphere.py --multirun 'x=range(-5.0, 5.0)' 'y=shuffle(range(-5, 5))'
-```
+  ```commandline
+  python example/sphere.py --multirun 'x=range(-5.0, 5.0)' 'y=shuffle(range(-5, 5))'
+  ```
 
-The output is as follows:
+  The output is as follows:
 
-```commandline
-[HYDRA] Study name: sphere
-[HYDRA] Storage: None
-[HYDRA] Sampler: TPESampler
-[HYDRA] Directions: ['minimize']
-[HYDRA] Launching 1 jobs locally
-[HYDRA] 	#0 : x=-3 y=-4
-[HYDRA] Launching 1 jobs locally
-[HYDRA] 	#1 : x=1 y=-1
-...
-[HYDRA] Best parameters: {'x': 0, 'y': -1}
-[HYDRA] Best value: 1.0
-```
+  ```commandline
+  [HYDRA] Study name: sphere
+  [HYDRA] Storage: None
+  [HYDRA] Sampler: TPESampler
+  [HYDRA] Directions: ['minimize']
+  [HYDRA] Launching 1 jobs locally
+  [HYDRA] 	#0 : x=-3 y=-4
+  [HYDRA] Launching 1 jobs locally
+  [HYDRA] 	#1 : x=1 y=-1
+  ...
+  [HYDRA] Best parameters: {'x': 0, 'y': -1}
+  [HYDRA] Best value: 1.0
+  ```
 
 </details>
 
@@ -177,33 +179,34 @@ The output is as follows:
 
 `choice` is converted to [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html).
 
-<details><summary>Example for choice override</summary>
+<details>
+  <summary>Example for choice override</summary>
 
-```commandline
-python example/sphere.py --multirun 'x=choice(-5.0, 0.0, 5.0)' 'y=choice(0, 1, 2, 3, 4, 5)'
-```
+  ```commandline
+  python example/sphere.py --multirun 'x=choice(-5.0, 0.0, 5.0)' 'y=choice(0, 1, 2, 3, 4, 5)'
+  ```
 
-The output is as follows:
+  The output is as follows:
 
-```commandline
-[HYDRA] Study name: sphere
-[HYDRA] Storage: None
-[HYDRA] Sampler: TPESampler
-[HYDRA] Directions: ['minimize']
-[HYDRA] Launching 1 jobs locally
-[HYDRA] 	#0 : x=5.0 y=5
-[HYDRA] Launching 1 jobs locally
-[HYDRA] 	#1 : x=5.0 y=2
-...
-[HYDRA] Best parameters: {'x': 0.0, 'y': 0}
-[HYDRA] Best value: 0.0
-```
+  ```commandline
+  [HYDRA] Study name: sphere
+  [HYDRA] Storage: None
+  [HYDRA] Sampler: TPESampler
+  [HYDRA] Directions: ['minimize']
+  [HYDRA] Launching 1 jobs locally
+  [HYDRA] 	#0 : x=5.0 y=5
+  [HYDRA] Launching 1 jobs locally
+  [HYDRA] 	#1 : x=5.0 y=2
+  ...
+  [HYDRA] Best parameters: {'x': 0.0, 'y': 0}
+  [HYDRA] Best value: 0.0
+  ```
 
 </details>
 
 ### Configuring through config file
 
-The syntax in config file is consistent with the above commandline override. For example, a commandline override 
+The syntax in config file is consistent with the above commandline override. For example, a commandline override
 `x=range(1,4)` can be expressed in config file as `x: range(1,4)` under the `hydra.sweeper.params` node.
 
 ## Example 2:  Multi-Objective Optimization
@@ -216,30 +219,31 @@ You can discover the Optuna sweeper parameters with:
 python example/multi-objective.py hydra/sweeper=optuna --cfg hydra -p hydra.sweeper
 ```
 
-<details><summary>Configuration of the multi-objective optimization example</summary>
+<details>
+  <summary>Configuration of the multi-objective optimization example</summary>
 
-```yaml
-# @package hydra.sweeper
-sampler:
-  _target_: optuna.samplers.NSGAIISampler
-  seed: 123
-  population_size: 50
-  mutation_prob: null
-  crossover_prob: 0.9
-  swapping_prob: 0.5
-  constraints_func: null
-_target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
-direction:
-- minimize
-- minimize
-storage: null
-study_name: multi-objective
-n_trials: 20
-n_jobs: 1
-params:
-  x: range(0, 5, step=0.5)
-  y: range(0, 3, step=0.5)
-```
+  ```yaml
+  # @package hydra.sweeper
+  sampler:
+    _target_: optuna.samplers.NSGAIISampler
+    seed: 123
+    population_size: 50
+    mutation_prob: null
+    crossover_prob: 0.9
+    swapping_prob: 0.5
+    constraints_func: null
+  _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
+  direction:
+  - minimize
+  - minimize
+  storage: null
+  study_name: multi-objective
+  n_trials: 20
+  n_jobs: 1
+  params:
+    x: range(0, 5, step=0.5)
+    y: range(0, 3, step=0.5)
+  ```
 </details>
 
 
@@ -264,50 +268,51 @@ You can find a full example in the same directory as before, where `example/cust
 The example shows the use of Optuna's [pythonic search spaces](https://optuna.readthedocs.io/en/stable/tutorial/10_key_features/002_configurations.html) in combination with Hydra.
 Part of the search space configuration is defined in config files, and part of it is written in Python.
 
-<details><summary>Example: Custom search space configuration</summary>
+<details>
+  <summary>Example: Custom search space configuration</summary>
 
-```yaml
-defaults:
-  - override hydra/sweeper: optuna
+  ```yaml
+  defaults:
+    - override hydra/sweeper: optuna
 
-hydra:
-  sweeper:
-    sampler:
-      seed: 123
-    direction: minimize
-    study_name: custom-search-space
-    storage: null
-    n_trials: 20
-    n_jobs: 1
+  hydra:
+    sweeper:
+      sampler:
+        seed: 123
+      direction: minimize
+      study_name: custom-search-space
+      storage: null
+      n_trials: 20
+      n_jobs: 1
 
-    params:
-      x: range(-5.5, 5.5, 0.5)
-      y: choice(-5, 0, 5)
-    # `custom_search_space` should be a dotpath pointing to a
-    # callable that provides search-space configuration logic:
-    custom_search_space: .custom-search-space-objective.configure
+      params:
+        x: range(-5.5, 5.5, 0.5)
+        y: choice(-5, 0, 5)
+      # `custom_search_space` should be a dotpath pointing to a
+      # callable that provides search-space configuration logic:
+      custom_search_space: .custom-search-space-objective.configure
 
-x: 1
-y: 1
-z: 100
-max_z_difference_from_x: 0.5
-```
-```python
-# example/custom-search-space-objective.py
+  x: 1
+  y: 1
+  z: 100
+  max_z_difference_from_x: 0.5
+  ```
+  ```python
+  # example/custom-search-space-objective.py
 
-...
+  ...
 
-def configure(cfg: DictConfig, trial: Trial) -> None:
-    x_value = trial.params["x"]
-    trial.suggest_float(
-        "z",
-        x_value - cfg.max_z_difference_from_x,
-        x_value + cfg.max_z_difference_from_x,
-    )
-    trial.suggest_float("+w", 0.0, 1.0)  # note +w here, not w as w is a new parameter
+  def configure(cfg: DictConfig, trial: Trial) -> None:
+      x_value = trial.params["x"]
+      trial.suggest_float(
+          "z",
+          x_value - cfg.max_z_difference_from_x,
+          x_value + cfg.max_z_difference_from_x,
+      )
+      trial.suggest_float("+w", 0.0, 1.0)  # note +w here, not w as w is a new parameter
 
-...
-```
+  ...
+  ```
 
 </details>
 

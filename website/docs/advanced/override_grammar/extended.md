@@ -404,17 +404,17 @@ Input are grouped by type.
 |       “true”       	| error       	| error             	| “true”            	| true                  	| '“true”'               |
 |       “false”      	| error       	| error             	| “false”           	| false                 	| '“false”'              |
 |      “[1,2,3]”     	| error       	| error             	| “[1,2,3]”         	| error                 	| '“[1,2,3]”'            |
-|      “{a:10}”      	| error       	| error             	| “{a:10}”          	| error                 	| '“{a:10}”'             |
+|      “\{a:10}”      	| error       	| error             	| “\{a:10}”          	| error                 	| '“\{a:10}”'             |
 |        true        	| 1           	| 1.0               	| “true”            	| true                  	| “true”                 |
 |        false       	| 0           	| 0.0               	| “false”           	| false                 	| “false”                |
 |         []         	| []          	| []                	| []                	| []                    	| “[]”                   |
 |       [0,1,2]      	| [0,1,2]     	| [0.0,1.0,2.0]     	| [“0”,”1”,”2”]     	| [false,true,true]     	| “[1, 2, 3]”            |
 |       [1,[2]]      	| [1,[2]]     	| [1.0,[2.0]]       	| [“1”,[“2”]]       	| [true,[true]]         	| “[1, [2]]”             |
 |        [a,1]       	| error       	| error             	| [“a”,”1”]         	| error                 	| '[“a”, 1]'             |
-|         {}         	| {}          	| {}                	| {}                	| {}                    	| “{}”                   |
-|       {a:10}       	| {a:10}      	| {a:10.0}          	| {a:”10”}          	| {a: true}               	| '{“a”: 10}'            |
-|     {a:[0,1,2]}    	| {a:[0,1,2]} 	| {a:[0.0,1.0,2.-]} 	| {a:[“0”,”1”,”2”]} 	| {a:[false,true,true]} 	| '{“a”: [1, 2, 3]}'     |
-|    {a:10,b:xyz}    	| error       	| error             	| {a:”10”,b:”xyz”}  	| error                 	| '{“a”: 10, “b”: “xyz”}'|
+|         \{}         	| \{}          	| \{}                	| \{}                	| \{}                    	| “\{}”                   |
+|       \{a:10}       	| \{a:10}      	| \{a:10.0}          	| \{a:”10”}          	| \{a: true}               	| '\{“a”: 10}'            |
+|     \{a:[0,1,2]}    	| \{a:[0,1,2]} 	| \{a:[0.0,1.0,2.-]} 	| \{a:[“0”,”1”,”2”]} 	| \{a:[false,true,true]} 	| '\{“a”: [1, 2, 3]}'     |
+|    \{a:10,b:xyz}    	| error       	| error             	| \{a:”10”,b:”xyz”}  	| error                 	| '\{“a”: 10, “b”: “xyz”}'|
 |     choice(0,1)    	| choice(0,1) 	| choice(0.0,1.0)   	| choice(“0”,“1”)   	| choice(false,true)    	| choice(“0”, “1”)       |
 |     choice(a,b)    	| error       	| error             	| choice(“a”,”b”)   	| error                 	| choice('“a”', '“b”')   |
 |     choice(1,a)    	| error       	| error             	| choice(“1”,”a”)   	| error                 	| choice(“1”, '“a”')     |
