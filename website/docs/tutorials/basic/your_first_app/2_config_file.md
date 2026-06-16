@@ -1,3 +1,8 @@
+from hydra.core.hydra_config import HydraConfig
+
+cfg = HydraConfig.get()
+config_name = cfg.job.config_name
+config_path = [path["path"] for path in cfg.runtime.config_sources if path["schema"] == "file"][0]
 ---
 id: config_file
 title: Specifying a config file
