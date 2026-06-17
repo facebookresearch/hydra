@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-06-17",
-  "generated_at": "2026-06-17T12:17:24Z",
+  "generated_at": "2026-06-17T18:10:17Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 280,
+    "open_total": 279,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 110,
-        "percentage": 39.3
+        "percentage": 39.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 138,
-        "percentage": 49.3
+        "count": 137,
+        "percentage": 49.1
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.6
+        "percentage": 4.7
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 13,
-        "percentage": 4.6
+        "percentage": 4.7
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 269
+        "count": 268
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 21
+        "count": 22
       }
     ]
   },
@@ -4400,21 +4400,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
     },
     {
-      "number": 3213,
-      "title": "[Feature Request] Allow the config path in initialize to be absolute",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-17",
-      "updated": "2026-06-17",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3213"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4771,9 +4756,31 @@
       "updated": "2026-06-11",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3207"
+    },
+    {
+      "number": 3213,
+      "title": "[Feature Request] Allow the config path in initialize to be absolute",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-06-17",
+      "updated": "2026-06-17",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3213"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-17T18:10:17Z",
+      "kind": "closed",
+      "issue": 3213,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3213",
+      "title": "[Feature Request] Allow the config path in initialize to be absolute"
+    },
     {
       "ts": "2026-06-17T12:17:24Z",
       "kind": "new",

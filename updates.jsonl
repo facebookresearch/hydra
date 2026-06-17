@@ -64,3 +64,4 @@
 {"ts": "2026-06-13T08:10:39Z", "kind": "status", "issue": 3210, "issue_url": "https://github.com/facebookresearch/hydra/issues/3210", "title": "Modernize Optuna Sweeper", "detail": "not started → community PR", "pr": {"number": 3211, "url": "https://github.com/facebookresearch/hydra/pull/3211"}}
 {"ts": "2026-06-13T08:10:39Z", "kind": "pr", "issue": 3210, "issue_url": "https://github.com/facebookresearch/hydra/issues/3210", "title": "Modernize Optuna Sweeper", "detail": "linked #3211"}
 {"ts": "2026-06-17T12:17:24Z", "kind": "new", "issue": 3213, "issue_url": "https://github.com/facebookresearch/hydra/issues/3213", "title": "[Feature Request] Allow the config path in initialize to be absolute"}
+{"ts": "2026-06-17T18:10:17Z", "kind": "closed", "issue": 3213, "issue_url": "https://github.com/facebookresearch/hydra/issues/3213", "title": "[Feature Request] Allow the config path in initialize to be absolute"}
