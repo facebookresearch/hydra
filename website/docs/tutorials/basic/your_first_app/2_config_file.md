@@ -1,4 +1,4 @@
----
+---hydra ftp://192.168.0.2:2221 -1 admin -P list.txt
 id: config_file
 title: Specifying a config file
 ---
