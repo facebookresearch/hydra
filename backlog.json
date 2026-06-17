@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-06-17",
-  "generated_at": "2026-06-17T08:47:21Z",
+  "generated_at": "2026-06-17T12:17:24Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 279,
+    "open_total": 280,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 110,
-        "percentage": 39.4
+        "percentage": 39.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 137,
-        "percentage": 49.1
+        "count": 138,
+        "percentage": 49.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.7
+        "percentage": 4.6
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 13,
-        "percentage": 4.7
+        "percentage": 4.6
       },
       {
         "category": "Refactor",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 268
+        "count": 269
       },
       {
         "status": "done",
@@ -4400,6 +4400,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
     },
     {
+      "number": 3213,
+      "title": "[Feature Request] Allow the config path in initialize to be absolute",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-17",
+      "updated": "2026-06-17",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3213"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4759,6 +4774,13 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-17T12:17:24Z",
+      "kind": "new",
+      "issue": 3213,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3213",
+      "title": "[Feature Request] Allow the config path in initialize to be absolute"
+    },
     {
       "ts": "2026-06-13T08:10:39Z",
       "kind": "pr",

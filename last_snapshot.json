@@ -22,7 +22,7 @@
     "3207": "2026-06-11",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-17T08:47:21Z",
+  "generated_at": "2026-06-17T12:17:24Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3301,6 +3301,18 @@
       "status": "community PR",
       "title": "Modernize Optuna Sweeper",
       "updated_at": "2026-06-11T20:25:17Z"
+    },
+    "3213": {
+      "category": "Enhancement",
+      "created_at": "2026-06-17T12:15:42Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Feature Request] Allow the config path in initialize to be absolute",
+      "updated_at": "2026-06-17T12:15:42Z"
     },
     "385": {
       "category": "Enhancement",
