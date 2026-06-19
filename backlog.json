@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-06-19",
-  "generated_at": "2026-06-19T15:59:52Z",
+  "generated_at": "2026-06-19T16:24:02Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 280,
+    "open_total": 279,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 110,
-        "percentage": 39.3
+        "count": 109,
+        "percentage": 39.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 138,
-        "percentage": 49.3
+        "percentage": 49.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.6
+        "percentage": 4.7
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 13,
-        "percentage": 4.6
+        "percentage": 4.7
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 271
+        "count": 270
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 23
+        "count": 24
       }
     ]
   },
@@ -4050,21 +4050,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3036"
     },
     {
-      "number": 3038,
-      "title": "[Bug] nemo logger breaks submitit launcher usage for hydra multirun parameter sweep",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-03-10",
-      "updated": "2025-05-04",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3038"
-    },
-    {
       "number": 3047,
       "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?",
       "category": "Enhancement",
@@ -4533,6 +4518,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2940"
     },
     {
+      "number": 3045,
+      "title": "[Bug] Potential Error in get_config_path() For Absolute Paths",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-03-23",
+      "updated": "2025-11-07",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3045"
+    },
+    {
       "number": 3050,
       "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
       "category": "Bug",
@@ -4779,22 +4779,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3213"
     },
     {
-      "number": 3045,
-      "title": "[Bug] Potential Error in get_config_path() For Absolute Paths",
+      "number": 3038,
+      "title": "[Bug] nemo logger breaks submitit launcher usage for hydra multirun parameter sweep",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2025-03-23",
-      "updated": "2025-11-07",
+      "created": "2025-03-10",
+      "updated": "2025-05-04",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3045"
+      "url": "https://github.com/facebookresearch/hydra/issues/3038"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-19T16:24:02Z",
+      "kind": "closed",
+      "issue": 3038,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3038",
+      "title": "[Bug] nemo logger breaks submitit launcher usage for hydra multirun parameter sweep"
+    },
     {
       "ts": "2026-06-19T15:59:52Z",
       "kind": "closed",

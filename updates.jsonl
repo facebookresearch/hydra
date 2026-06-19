@@ -72,3 +72,4 @@
 {"ts": "2026-06-19T06:47:02Z", "kind": "pr", "issue": 1758, "issue_url": "https://github.com/facebookresearch/hydra/issues/1758", "title": "[Feature Request] Recursive config interpolation with custom object resolvers", "detail": "unlinked #2269"}
 {"ts": "2026-06-19T06:47:02Z", "kind": "pr", "issue": 2268, "issue_url": "https://github.com/facebookresearch/hydra/issues/2268", "title": "Enable instantiations without resolution", "detail": "unlinked #2269"}
 {"ts": "2026-06-19T15:59:52Z", "kind": "closed", "issue": 3045, "issue_url": "https://github.com/facebookresearch/hydra/issues/3045", "title": "[Bug] Potential Error in get_config_path() For Absolute Paths"}
+{"ts": "2026-06-19T16:24:02Z", "kind": "closed", "issue": 3038, "issue_url": "https://github.com/facebookresearch/hydra/issues/3038", "title": "[Bug] nemo logger breaks submitit launcher usage for hydra multirun parameter sweep"}
