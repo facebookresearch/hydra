@@ -8,11 +8,35 @@ on:
     types: [created]
   workflow_dispatch:
     inputs:
+      package_set:
+        description: "Release package set"
+        required: true
+        type: choice
+        default: hydra-full-release
+        options:
+          - hydra-core
+          - hydra-plugins
+          - hydra-full-release
+          - configen
+          - all
+      expected_version:
+        description: "Optional version to validate before publishing"
+        required: false
+        type: string
+        default: ""
+      github_release_tag:
+        description: "Optional draft GitHub Release tag to promote after publishing"
+        required: false
+        type: string
+        default: ""
       publish:
         description: "Publish to PyPI after building artifacts"
         required: true
         type: boolean
         default: false
+
+permissions:
+  contents: read
 
 # Use separate jobs for building and publishing so that write
 # permissions are only accessible minimally.
@@ -21,12 +45,106 @@ on:
 # which is configured to require review and approval from authorized
 # maintainers.
 jobs:
+  release-plan:
+    name: Validate release plan
+    runs-on: ubuntu-latest
+    outputs:
+      checkout_ref: ${{ steps.plan.outputs.checkout_ref }}
+      expected_version: ${{ steps.plan.outputs.expected_version }}
+      package_set: ${{ steps.plan.outputs.package_set }}
+      publish_enabled: ${{ steps.plan.outputs.publish_enabled }}
+      release_is_draft: ${{ steps.plan.outputs.release_is_draft }}
+      release_tag: ${{ steps.plan.outputs.release_tag }}
+    steps:
+    - name: Derive publish plan
+      id: plan
+      env:
+        EVENT_NAME: ${{ github.event_name }}
+        REF_NAME: ${{ github.ref_name }}
+        INPUT_PACKAGE_SET: ${{ inputs.package_set }}
+        INPUT_EXPECTED_VERSION: ${{ inputs.expected_version }}
+        INPUT_GITHUB_RELEASE_TAG: ${{ inputs.github_release_tag }}
+        INPUT_PUBLISH: ${{ inputs.publish }}
+        RELEASE_TAG: ${{ github.event.release.tag_name }}
+        RELEASE_IS_DRAFT: ${{ github.event.release.draft }}
+      run: |
+        python <<'PY'
+        import os
+        import re
+        import sys
+
+        event_name = os.environ["EVENT_NAME"]
+        ref_name = os.environ["REF_NAME"]
+        input_package_set = os.environ["INPUT_PACKAGE_SET"].strip()
+        input_expected_version = os.environ["INPUT_EXPECTED_VERSION"].strip()
+        input_github_release_tag = os.environ["INPUT_GITHUB_RELEASE_TAG"].strip()
+        input_publish = os.environ["INPUT_PUBLISH"].strip()
+        release_tag = os.environ["RELEASE_TAG"].strip()
+        release_is_draft = os.environ["RELEASE_IS_DRAFT"].strip()
+
+        def fail(message: str) -> None:
+            print(f"::error::{message}")
+            sys.exit(1)
+
+        if event_name == "release":
+            package_set = "hydra-full-release"
+            if not release_tag:
+                fail("Release event did not include a tag name")
+            checkout_ref = release_tag
+            expected_version = release_tag[1:] if release_tag.startswith("v") else release_tag
+            publish_enabled = "true"
+            draft = release_is_draft.lower() == "true"
+        else:
+            package_set = input_package_set or "hydra-full-release"
+            release_tag = input_github_release_tag
+            checkout_ref = release_tag or ref_name
+            expected_version = input_expected_version
+            if not expected_version and release_tag:
+                expected_version = release_tag[1:] if release_tag.startswith("v") else release_tag
+            publish_enabled = "true" if input_publish.lower() == "true" else "false"
+            draft = False
+
+        if expected_version and not re.fullmatch(
+            r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"
+            r"(?:(?:rc\d+)|(?:\.dev\d+))?",
+            expected_version,
+        ):
+            fail(
+                "expected_version must look like 1.4.0.dev2, 1.4.0rc1, "
+                f"1.4.0, or 1.4.1; got {expected_version!r}"
+            )
+
+        with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+            print(f"checkout_ref={checkout_ref}", file=output)
+            print(f"expected_version={expected_version}", file=output)
+            print(f"package_set={package_set}", file=output)
+            print(f"publish_enabled={publish_enabled}", file=output)
+            print(f"release_is_draft={'true' if draft else 'false'}", file=output)
+            print(f"release_tag={release_tag}", file=output)
+
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+            print("## Publish plan", file=summary)
+            print("", file=summary)
+            print(f"- Package set: `{package_set}`", file=summary)
+            print(f"- Checkout ref: `{checkout_ref}`", file=summary)
+            version = expected_version or "<not provided>"
+            print(f"- Expected version: `{version}`", file=summary)
+            print(f"- Publish enabled: `{publish_enabled}`", file=summary)
+            if release_tag:
+                print(f"- GitHub Release tag: `{release_tag}`", file=summary)
+            if event_name == "release":
+                print(f"- Release draft: `{'true' if draft else 'false'}`", file=summary)
+        PY
+
   build-artifacts:
     name: Build distribution artifacts
+    needs: release-plan
     runs-on: ubuntu-latest
     environment: pypi-publish
     steps:
     - uses: actions/checkout@v5
+      with:
+        ref: ${{ needs.release-plan.outputs.checkout_ref }}
 
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -44,13 +162,23 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements/requirements.txt build read-version requests twine
 
+    - name: Validate prepared package versions
+      if: ${{ needs.release-plan.outputs.expected_version != '' }}
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: |
+        python tools/release/release.py \
+          action=validate_versions \
+          set=${{ needs.release-plan.outputs.package_set }} \
+          version=${{ needs.release-plan.outputs.expected_version }}
+
     - name: Build distributions
       env:
         PYTHONPATH: ${{ github.workspace }}
       run: |
         python tools/release/release.py \
           action=build \
-          set=hydra-full-release \
+          set=${{ needs.release-plan.outputs.package_set }} \
           repository=pypi \
           clean_build_dir=true \
           require_artifacts=true \
@@ -61,9 +189,17 @@ jobs:
         ls -lah dist/
         twine check dist/*
 
+    - name: Smoke install built wheels
+      run: |
+        python -m venv smoke-venv
+        smoke-venv/bin/python -m pip install --upgrade pip
+        smoke-venv/bin/python -m pip install --no-deps dist/*.whl
+
     - name: Write release summary
       env:
-        PUBLISH_ENABLED: ${{ github.event_name == 'release' || inputs.publish == true }}
+        PUBLISH_ENABLED: ${{ needs.release-plan.outputs.publish_enabled }}
+        PACKAGE_SET: ${{ needs.release-plan.outputs.package_set }}
+        EXPECTED_VERSION: ${{ needs.release-plan.outputs.expected_version }}
         TARGET_REPOSITORY: PyPI
       run: |
         if [[ "${PUBLISH_ENABLED}" == "true" ]]; then
@@ -79,6 +215,10 @@ jobs:
           echo
           echo "- Target repository: ${TARGET_REPOSITORY}"
           echo "- Mode: ${mode}"
+          echo "- Package set: \`${PACKAGE_SET}\`"
+          if [[ -n "${EXPECTED_VERSION}" ]]; then
+            echo "- Expected version: \`${EXPECTED_VERSION}\`"
+          fi
           echo "- Trigger: ${GITHUB_EVENT_NAME}"
           echo "- Ref: \`${GITHUB_REF_NAME}\`"
           echo "- Commit: \`${GITHUB_SHA}\`"
@@ -104,13 +244,16 @@ jobs:
         retention-days: 0
 
   pypi-publish:
-    needs: build-artifacts
+    needs:
+      - release-plan
+      - build-artifacts
     name: Upload release to PyPI
-    if: ${{ github.event_name == 'release' || inputs.publish == true }}
+    if: ${{ needs.release-plan.outputs.publish_enabled == 'true' }}
     runs-on: ubuntu-latest
     environment: pypi-publish
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
+      contents: read
     steps:
     - name: Download artifacts
       uses: actions/download-artifact@v5
@@ -120,3 +263,21 @@ jobs:
 
     - name: Publish package distributions to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
+
+  promote-github-release:
+    needs:
+      - release-plan
+      - pypi-publish
+    name: Promote draft GitHub Release
+    if: ${{ needs.release-plan.outputs.release_tag != '' && (github.event_name == 'workflow_dispatch' || needs.release-plan.outputs.release_is_draft == 'true') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - name: Publish draft release
+      env:
+        GH_TOKEN: ${{ github.token }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        RELEASE_TAG: ${{ needs.release-plan.outputs.release_tag }}
+      run: |
+        gh release edit "${RELEASE_TAG}" --draft=false --repo "${GITHUB_REPOSITORY}"
