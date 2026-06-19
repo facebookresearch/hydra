@@ -1,5 +1,3 @@
-import warnings
-
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import hydra
 from omegaconf import DictConfig
