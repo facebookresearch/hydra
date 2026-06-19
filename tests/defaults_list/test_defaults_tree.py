@@ -2013,6 +2013,51 @@ def test_placeholder(
             id="interpolation_config_default",
         ),
         param(
+            "interpolation_config_default_in_nested",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_config_default_in_nested"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="group1", value="config_default_interpolation"
+                        ),
+                        children=[
+                            ConfigDefault(path="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="group2", value="file1"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_config_default_in_nested",
+        ),
+        param(
+            "interpolation_config_default_absolute_in_nested",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(
+                    path="interpolation_config_default_absolute_in_nested"
+                ),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="group1",
+                            value="config_default_absolute_interpolation",
+                        ),
+                        children=[
+                            ConfigDefault(path="/file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="group2", value="file1"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_config_default_absolute_in_nested",
+        ),
+        param(
             "interpolation_bad_key",
             [],
             raises(
