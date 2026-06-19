@@ -421,7 +421,8 @@ class ConfigDefault(InputDefault):
         return node._is_interpolation()
 
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
-        path = self.get_config_path()
+        assert self.path is not None
+        path = self.path[1:] if self.path.startswith("/") else self.path
         self.path = self._resolve_interpolation_impl(known_choices, path)
 
     def is_missing(self) -> bool:
