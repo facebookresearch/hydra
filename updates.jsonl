@@ -66,3 +66,8 @@
 {"ts": "2026-06-17T12:17:24Z", "kind": "new", "issue": 3213, "issue_url": "https://github.com/facebookresearch/hydra/issues/3213", "title": "[Feature Request] Allow the config path in initialize to be absolute"}
 {"ts": "2026-06-17T18:10:17Z", "kind": "closed", "issue": 3213, "issue_url": "https://github.com/facebookresearch/hydra/issues/3213", "title": "[Feature Request] Allow the config path in initialize to be absolute"}
 {"ts": "2026-06-19T05:32:28Z", "kind": "new", "issue": 3215, "issue_url": "https://github.com/facebookresearch/hydra/issues/3215", "title": "Log multirun job failures in per-job logs"}
+{"ts": "2026-06-19T06:47:02Z", "kind": "new", "issue": 3216, "issue_url": "https://github.com/facebookresearch/hydra/issues/3216", "title": "Evaluate opt-out from eager resolution in instantiate"}
+{"ts": "2026-06-19T06:47:02Z", "kind": "status", "issue": 1758, "issue_url": "https://github.com/facebookresearch/hydra/issues/1758", "title": "[Feature Request] Recursive config interpolation with custom object resolvers", "detail": "community PR → not started"}
+{"ts": "2026-06-19T06:47:02Z", "kind": "status", "issue": 2268, "issue_url": "https://github.com/facebookresearch/hydra/issues/2268", "title": "Enable instantiations without resolution", "detail": "community PR → not started"}
+{"ts": "2026-06-19T06:47:02Z", "kind": "pr", "issue": 1758, "issue_url": "https://github.com/facebookresearch/hydra/issues/1758", "title": "[Feature Request] Recursive config interpolation with custom object resolvers", "detail": "unlinked #2269"}
+{"ts": "2026-06-19T06:47:02Z", "kind": "pr", "issue": 2268, "issue_url": "https://github.com/facebookresearch/hydra/issues/2268", "title": "Enable instantiations without resolution", "detail": "unlinked #2269"}

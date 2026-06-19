@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-19",
-  "generated_at": "2026-06-19T05:32:28Z",
+  "generated_at": "2026-06-19T06:47:02Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 280,
+    "open_total": 281,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 111,
-        "percentage": 39.6
+        "percentage": 39.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 137,
-        "percentage": 48.9
+        "count": 138,
+        "percentage": 49.1
       },
       {
         "category": "Documentation",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 9
+        "count": 7
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 269
+        "count": 272
       },
       {
         "status": "done",
@@ -135,28 +135,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/845"
     },
     {
-      "number": 1758,
-      "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 2269,
-          "url": "https://github.com/facebookresearch/hydra/pull/2269"
-        }
-      ],
-      "created": "2021-08-10",
-      "updated": "2022-11-06",
-      "labels": [
-        "enhancement",
-        "instantiate_api",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1758"
-    },
-    {
       "number": 1890,
       "title": "HPO config standardization",
       "category": "Enhancement",
@@ -197,26 +175,6 @@
         "submitit"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1898"
-    },
-    {
-      "number": 2268,
-      "title": "Enable instantiations without resolution",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 2269,
-          "url": "https://github.com/facebookresearch/hydra/pull/2269"
-        }
-      ],
-      "created": "2022-06-20",
-      "updated": "2022-11-06",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2268"
     },
     {
       "number": 2889,
@@ -4415,6 +4373,54 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3215"
     },
     {
+      "number": 1758,
+      "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-08-10",
+      "updated": "2022-11-06",
+      "labels": [
+        "enhancement",
+        "instantiate_api",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1758"
+    },
+    {
+      "number": 2268,
+      "title": "Enable instantiations without resolution",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-06-20",
+      "updated": "2022-11-06",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2268"
+    },
+    {
+      "number": 3216,
+      "title": "Evaluate opt-out from eager resolution in instantiate",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-19",
+      "updated": "2026-06-19",
+      "labels": [
+        "enhancement",
+        "instantiate_api"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3216"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4789,6 +4795,45 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-19T06:47:02Z",
+      "kind": "pr",
+      "issue": 2268,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2268",
+      "title": "Enable instantiations without resolution",
+      "detail": "unlinked #2269"
+    },
+    {
+      "ts": "2026-06-19T06:47:02Z",
+      "kind": "pr",
+      "issue": 1758,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1758",
+      "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
+      "detail": "unlinked #2269"
+    },
+    {
+      "ts": "2026-06-19T06:47:02Z",
+      "kind": "status",
+      "issue": 2268,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2268",
+      "title": "Enable instantiations without resolution",
+      "detail": "community PR → not started"
+    },
+    {
+      "ts": "2026-06-19T06:47:02Z",
+      "kind": "status",
+      "issue": 1758,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1758",
+      "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
+      "detail": "community PR → not started"
+    },
+    {
+      "ts": "2026-06-19T06:47:02Z",
+      "kind": "new",
+      "issue": 3216,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3216",
+      "title": "Evaluate opt-out from eager resolution in instantiate"
+    },
     {
       "ts": "2026-06-19T05:32:28Z",
       "kind": "new",
