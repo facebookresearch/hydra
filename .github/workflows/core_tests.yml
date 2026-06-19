@@ -52,7 +52,7 @@ jobs:
           conda activate hydra
           pip install nox --progress-bar off
             nox -s test_tools test_core \
-              test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
+              test_jupyter_notebooks test_plugins -ts
   test_linux:
     runs-on: ubuntu-latest
     strategy:
@@ -74,7 +74,7 @@ jobs:
           export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
           pip install nox --progress-bar off
           nox -s test_tools test_core \
-           test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
+           test_jupyter_notebooks test_plugins -ts
   test_win:
     runs-on: windows-latest
     strategy:
@@ -97,5 +97,5 @@ jobs:
           $env:NOX_PYTHON_VERSIONS = "${{ matrix.py_version }}"
           $env:ConEmuDefaultCp = "65001"
           $env:PYTHONIOENCODING = "utf_8"
-          conda run -n hydra nox -s test_tools test_core test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
+          conda run -n hydra nox -s test_tools test_core test_jupyter_notebooks test_plugins -ts
           exit $LASTEXITCODE

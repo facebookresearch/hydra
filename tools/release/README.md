@@ -26,8 +26,7 @@ python tools/release/release.py \
 ```
 
 This reports whether each local version already exists on the selected
-repository, with the latest non-yanked wheel shown as context. Use
-`repository=testpypi` when preparing a TestPyPI upload.
+repository, with the latest non-yanked wheel shown as context.
 
 ### Set an explicit version
 
@@ -40,6 +39,19 @@ python tools/release/release.py \
 
 Use this for coordinated dev releases where `hydra-core` and the bundled plugins
 should share the same version.
+
+### Validate prepared versions
+
+```shell
+python tools/release/release.py \
+  action=validate_versions \
+  set=hydra-full-release \
+  version=1.4.0
+```
+
+This fails if any selected package is not already at the expected version. The
+publish workflow uses this to verify prepared release state before building and
+uploading artifacts.
 
 ### Bump published packages
 
@@ -65,8 +77,6 @@ python tools/release/release.py \
   build_dir="${PWD}/dist"
 ```
 
-Use `repository=testpypi` to compare against TestPyPI instead.
-
 Build every package in a set, ignoring repository state:
 
 ```shell
@@ -83,3 +93,39 @@ files are not uploaded again.
 
 The workflows also write a release summary listing the target repository,
 publish mode, trigger, ref, commit, and every artifact that was built.
+
+### Prepare and publish workflow responsibilities
+
+Hydra release automation is split into prepare and publish phases.
+
+Prepare release should:
+
+- accept a release line, selected package set, and target version changes;
+- derive the release kind from the selected target versions;
+- derive the target branch from the release line and release kind;
+- validate package versions against the release line and selected package set;
+- compare selected packages against PyPI;
+- produce a release-validation matrix;
+- run release-only checks such as the core suite with all selected compatible
+  plugins installed;
+- create or update release-prep PRs and draft GitHub Releases when needed.
+
+Publish should:
+
+- revalidate the prepared release state;
+- build selected package artifacts;
+- check built artifacts;
+- publish only selected package artifacts through GitHub Actions Trusted
+  Publishing;
+- promote prepared draft GitHub Releases after successful publishing when a
+  release tag is supplied.
+
+The local release tool owns package metadata, version checks, repository
+comparison, and artifact building. GitHub Actions owns release validation,
+Trusted Publishing, and GitHub Release state transitions.
+
+The current `Prepare Release` workflow implements the validation part of this
+split: it derives release kind and target branch, applies the target version
+inside the disposable workflow checkout, checks selected packages against PyPI,
+builds artifacts, and runs release validation. Release-prep PR and draft GitHub
+Release automation are planned but not implemented yet.
