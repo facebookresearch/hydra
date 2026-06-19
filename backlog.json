@@ -1,33 +1,33 @@
 {
-  "generated_on": "2026-06-18",
-  "generated_at": "2026-06-18T08:36:07Z",
+  "generated_on": "2026-06-19",
+  "generated_at": "2026-06-19T05:32:28Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 279,
+    "open_total": 280,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 110,
-        "percentage": 39.4
+        "count": 111,
+        "percentage": 39.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 49.1
+        "percentage": 48.9
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.7
+        "percentage": 4.6
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 13,
-        "percentage": 4.7
+        "percentage": 4.6
       },
       {
         "category": "Refactor",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 268
+        "count": 269
       },
       {
         "status": "done",
@@ -4400,6 +4400,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
     },
     {
+      "number": 3215,
+      "title": "Log multirun job failures in per-job logs",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-19",
+      "updated": "2026-06-19",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3215"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4774,6 +4789,13 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-19T05:32:28Z",
+      "kind": "new",
+      "issue": 3215,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3215",
+      "title": "Log multirun job failures in per-job logs"
+    },
     {
       "ts": "2026-06-17T18:10:17Z",
       "kind": "closed",
