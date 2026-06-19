@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-19",
-  "generated_at": "2026-06-19T08:50:08Z",
+  "generated_at": "2026-06-19T15:59:52Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 281,
+    "open_total": 280,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 111,
-        "percentage": 39.5
+        "count": 110,
+        "percentage": 39.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 138,
-        "percentage": 49.1
+        "percentage": 49.3
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 272
+        "count": 271
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 22
+        "count": 23
       }
     ]
   },
@@ -4065,21 +4065,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3038"
     },
     {
-      "number": 3045,
-      "title": "[Bug] Potential Error in get_config_path() For Absolute Paths",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-03-23",
-      "updated": "2025-11-07",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3045"
-    },
-    {
       "number": 3047,
       "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?",
       "category": "Enhancement",
@@ -4792,9 +4777,31 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3213"
+    },
+    {
+      "number": 3045,
+      "title": "[Bug] Potential Error in get_config_path() For Absolute Paths",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-03-23",
+      "updated": "2025-11-07",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3045"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-19T15:59:52Z",
+      "kind": "closed",
+      "issue": 3045,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3045",
+      "title": "[Bug] Potential Error in get_config_path() For Absolute Paths"
+    },
     {
       "ts": "2026-06-19T06:47:02Z",
       "kind": "pr",
