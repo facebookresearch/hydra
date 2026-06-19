@@ -5,6 +5,22 @@ possible.
 Please see the [developer guide](https://hydra.cc/docs/development/overview/) on the website.
 Maintainers can find the release process in the [release guide](website/docs/development/release.md).
 
+## Development Environment
+
+Use a project-local virtual environment at `.venv` for Hydra development:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements/dev.txt
+pip install -e .
+```
+
+The core Hydra framework supports multiple Python versions. Use additional
+environments when you need to reproduce or validate behavior on a specific
+supported Python version, but keep the default local checkout environment in
+`.venv`.
+
 ## Pull Requests
 We welcome your pull requests.
 
