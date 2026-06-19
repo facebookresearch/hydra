@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-19",
-  "generated_at": "2026-06-19T19:43:30Z",
+  "generated_at": "2026-06-19T20:14:38Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 279,
+    "open_total": 278,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 109,
-        "percentage": 39.1
+        "count": 108,
+        "percentage": 38.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 138,
-        "percentage": 49.5
+        "percentage": 49.6
       },
       {
         "category": "Documentation",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 2
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 24
+        "count": 25
       }
     ]
   },
@@ -112,26 +112,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 3036,
-      "title": "[Bug] Child defaults list with interpolation fails with a constructed path with too many group names",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3217,
-          "url": "https://github.com/facebookresearch/hydra/pull/3217"
-        }
-      ],
-      "created": "2025-02-27",
-      "updated": "2025-03-01",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3036"
     },
     {
       "number": 845,
@@ -4797,9 +4777,36 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3213"
+    },
+    {
+      "number": 3036,
+      "title": "[Bug] Child defaults list with interpolation fails with a constructed path with too many group names",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3217,
+          "url": "https://github.com/facebookresearch/hydra/pull/3217"
+        }
+      ],
+      "created": "2025-02-27",
+      "updated": "2025-03-01",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3036"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-19T20:14:38Z",
+      "kind": "closed",
+      "issue": 3036,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3036",
+      "title": "[Bug] Child defaults list with interpolation fails with a constructed path with too many group names"
+    },
     {
       "ts": "2026-06-19T17:10:01Z",
       "kind": "pr",
