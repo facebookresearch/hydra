@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-19",
-  "generated_at": "2026-06-19T06:47:02Z",
+  "generated_at": "2026-06-19T08:50:08Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 281,
@@ -810,6 +810,23 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1753"
+    },
+    {
+      "number": 1758,
+      "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-08-10",
+      "updated": "2022-11-06",
+      "labels": [
+        "enhancement",
+        "instantiate_api",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1758"
     },
     {
       "number": 1764,
@@ -1871,6 +1888,21 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2267"
+    },
+    {
+      "number": 2268,
+      "title": "Enable instantiations without resolution",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2022-06-20",
+      "updated": "2022-11-06",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2268"
     },
     {
       "number": 2274,
@@ -4371,38 +4403,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3215"
-    },
-    {
-      "number": 1758,
-      "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-08-10",
-      "updated": "2022-11-06",
-      "labels": [
-        "enhancement",
-        "instantiate_api",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1758"
-    },
-    {
-      "number": 2268,
-      "title": "Enable instantiations without resolution",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-06-20",
-      "updated": "2022-11-06",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2268"
     },
     {
       "number": 3216,
