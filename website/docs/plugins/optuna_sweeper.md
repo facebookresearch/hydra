@@ -104,19 +104,6 @@ best_value: 0.0
 This plugin supports Optuna's [samplers](https://optuna.readthedocs.io/en/stable/reference/samplers.html).
 You can change the sampler by overriding `hydra/sweeper/sampler` or change sampler settings within `hydra.sweeper.sampler`.
 
-### Experimental Samplers
-
-GASampler and QMCSampler are experimental features in Optuna.
-When you use these samplers, you might want to suppress the warnings from Optuna.
-You can do this by adding the following code to your script:
-
-```python
-import warnings
-from optuna.exceptions import ExperimentalWarning
-
-warnings.filterwarnings("ignore", category=ExperimentalWarning)
-```
-
 ## Search space configuration
 
 This plugin supports Optuna's [distributions](https://optuna.readthedocs.io/en/stable/reference/distributions.html) to configure search spaces. They can be defined either through commandline override or config file.
