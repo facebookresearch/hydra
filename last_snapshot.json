@@ -7,6 +7,7 @@
     "2479": "2026-06-07",
     "2502": "2026-06-07",
     "2940": "2026-05-30",
+    "3034": "2026-06-20",
     "3036": "2026-06-19",
     "3038": "2026-06-19",
     "3045": "2026-06-19",
@@ -30,7 +31,7 @@
     "3223": "2026-06-20",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-20T20:54:47Z",
+  "generated_at": "2026-06-20T20:57:02Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2945,18 +2946,6 @@
       "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path",
       "updated_at": "2025-02-27T01:51:59Z"
     },
-    "3034": {
-      "category": "Bug",
-      "created_at": "2025-02-27T18:26:36Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Default List Packaged to Root Level Not Configurable from CLI",
-      "updated_at": "2025-03-04T01:27:27Z"
-    },
     "3035": {
       "category": "Enhancement",
       "created_at": "2025-02-27T19:03:00Z",
@@ -3579,6 +3568,18 @@
       "status": "done",
       "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
       "updated_at": "2025-08-17T22:53:33Z"
+    },
+    "3034": {
+      "category": "Bug",
+      "created_at": "2025-02-27T18:26:36Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Default List Packaged to Root Level Not Configurable from CLI",
+      "updated_at": "2025-03-04T01:27:27Z"
     },
     "3036": {
       "category": "Bug",

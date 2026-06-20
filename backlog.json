@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-20",
-  "generated_at": "2026-06-20T20:54:47Z",
+  "generated_at": "2026-06-20T20:57:02Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 279,
+    "open_total": 278,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 107,
-        "percentage": 38.4
+        "count": 106,
+        "percentage": 38.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 140,
-        "percentage": 50.2
+        "percentage": 50.4
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 270
+        "count": 269
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 29
+        "count": 30
       }
     ]
   },
@@ -3992,21 +3992,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3033"
     },
     {
-      "number": 3034,
-      "title": "[Bug] Default List Packaged to Root Level Not Configurable from CLI",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-02-27",
-      "updated": "2025-03-04",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3034"
-    },
-    {
       "number": 3035,
       "title": "weird behaviour when inheriting configs",
       "category": "Enhancement",
@@ -4423,6 +4408,21 @@
       "updated": "2021-11-22",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
+      "number": 2032,
+      "title": "[Feature Request]Config aliases",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-02-16",
+      "updated": "2024-08-25",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2032"
     },
     {
       "number": 2162,
@@ -4861,22 +4861,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
     },
     {
-      "number": 2032,
-      "title": "[Feature Request]Config aliases",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 3034,
+      "title": "[Bug] Default List Packaged to Root Level Not Configurable from CLI",
+      "category": "Bug",
+      "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-02-16",
-      "updated": "2024-08-25",
+      "created": "2025-02-27",
+      "updated": "2025-03-04",
       "labels": [
-        "enhancement"
+        "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2032"
+      "url": "https://github.com/facebookresearch/hydra/issues/3034"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-20T20:57:02Z",
+      "kind": "closed",
+      "issue": 3034,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3034",
+      "title": "[Bug] Default List Packaged to Root Level Not Configurable from CLI"
+    },
     {
       "ts": "2026-06-20T20:54:47Z",
       "kind": "closed",
