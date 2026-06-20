@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-20",
-  "generated_at": "2026-06-20T20:38:37Z",
+  "generated_at": "2026-06-20T20:54:47Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 280,
+    "open_total": 279,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 107,
-        "percentage": 38.2
+        "percentage": 38.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 141,
-        "percentage": 50.4
+        "count": 140,
+        "percentage": 50.2
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.6
+        "percentage": 4.7
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 271
+        "count": 270
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 28
+        "count": 29
       }
     ]
   },
@@ -1420,21 +1420,6 @@
         "list composition"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2027"
-    },
-    {
-      "number": 2032,
-      "title": "[Feature Request]Config aliases",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-02-16",
-      "updated": "2024-08-25",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2032"
     },
     {
       "number": 2039,
@@ -4874,9 +4859,31 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
+    },
+    {
+      "number": 2032,
+      "title": "[Feature Request]Config aliases",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-02-16",
+      "updated": "2024-08-25",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2032"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-20T20:54:47Z",
+      "kind": "closed",
+      "issue": 2032,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2032",
+      "title": "[Feature Request]Config aliases"
+    },
     {
       "ts": "2026-06-20T20:38:37Z",
       "kind": "closed",

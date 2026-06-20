@@ -1,6 +1,7 @@
 {
   "closed_at": {
     "1892": "2026-06-07",
+    "2032": "2026-06-20",
     "2162": "2026-06-11",
     "2477": "2026-06-07",
     "2479": "2026-06-07",
@@ -29,7 +30,7 @@
     "3223": "2026-06-20",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-20T20:38:37Z",
+  "generated_at": "2026-06-20T20:54:47Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -858,18 +859,6 @@
       "status": "not started",
       "title": "[Feature Request] Concatenate Multiple Config List elements",
       "updated_at": "2024-07-15T14:43:25Z"
-    },
-    "2032": {
-      "category": "Enhancement",
-      "created_at": "2022-02-16T10:13:31Z",
-      "labels": [
-        "enhancement"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request]Config aliases",
-      "updated_at": "2024-08-25T14:04:43Z"
     },
     "2039": {
       "category": "Question",
@@ -3316,7 +3305,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Add hydra.override.aliases for explicit CLI override aliases",
-      "updated_at": "2026-06-20T20:38:08Z"
+      "updated_at": "2026-06-20T20:42:36Z"
     },
     "385": {
       "category": "Enhancement",
@@ -3509,6 +3498,18 @@
       "status": "done",
       "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
       "updated_at": "2021-11-22T21:10:28Z"
+    },
+    "2032": {
+      "category": "Enhancement",
+      "created_at": "2022-02-16T10:13:31Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request]Config aliases",
+      "updated_at": "2024-08-25T14:04:43Z"
     },
     "2162": {
       "category": "Enhancement",

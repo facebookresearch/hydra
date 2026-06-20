@@ -85,3 +85,4 @@
 {"ts": "2026-06-20T20:05:18Z", "kind": "new", "issue": 3223, "issue_url": "https://github.com/facebookresearch/hydra/issues/3223", "title": "Prevent duplicate-load defaults-list interpolation workaround"}
 {"ts": "2026-06-20T20:38:37Z", "kind": "new", "issue": 3224, "issue_url": "https://github.com/facebookresearch/hydra/issues/3224", "title": "Add hydra.override.aliases for explicit CLI override aliases"}
 {"ts": "2026-06-20T20:38:37Z", "kind": "closed", "issue": 3223, "issue_url": "https://github.com/facebookresearch/hydra/issues/3223", "title": "Prevent duplicate-load defaults-list interpolation workaround"}
+{"ts": "2026-06-20T20:54:47Z", "kind": "closed", "issue": 2032, "issue_url": "https://github.com/facebookresearch/hydra/issues/2032", "title": "[Feature Request]Config aliases"}
