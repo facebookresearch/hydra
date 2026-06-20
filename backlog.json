@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-20",
-  "generated_at": "2026-06-20T19:47:17Z",
+  "generated_at": "2026-06-20T20:05:18Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 279,
+    "open_total": 280,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 107,
-        "percentage": 38.4
+        "count": 108,
+        "percentage": 38.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 140,
-        "percentage": 50.2
+        "percentage": 50.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.7
+        "percentage": 4.6
       },
       {
         "category": "Question",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 270
+        "count": 271
       },
       {
         "status": "done",
@@ -4391,6 +4391,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3222"
     },
     {
+      "number": 3223,
+      "title": "Prevent duplicate-load defaults-list interpolation workaround",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-20",
+      "updated": "2026-06-20",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3223"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4596,6 +4612,22 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3058"
+    },
+    {
+      "number": 3060,
+      "title": "[Bug] Config path issue for second order nested group config",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-05-07",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3060"
     },
     {
       "number": 3062,
@@ -4827,25 +4859,16 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3213"
-    },
-    {
-      "number": 3060,
-      "title": "[Bug] Config path issue for second order nested group config",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2025-05-07",
-      "updated": "2026-05-16",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3060"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-20T20:05:18Z",
+      "kind": "new",
+      "issue": 3223,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3223",
+      "title": "Prevent duplicate-load defaults-list interpolation workaround"
+    },
     {
       "ts": "2026-06-20T19:47:17Z",
       "kind": "closed",

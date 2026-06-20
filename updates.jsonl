@@ -82,3 +82,4 @@
 {"ts": "2026-06-20T19:14:54Z", "kind": "new", "issue": 3221, "issue_url": "https://github.com/facebookresearch/hydra/issues/3221", "title": "Clean up deprecations older than Hydra 1.2"}
 {"ts": "2026-06-20T19:31:57Z", "kind": "new", "issue": 3222, "issue_url": "https://github.com/facebookresearch/hydra/issues/3222", "title": "Normalize slash-containing group default options"}
 {"ts": "2026-06-20T19:47:17Z", "kind": "closed", "issue": 3060, "issue_url": "https://github.com/facebookresearch/hydra/issues/3060", "title": "[Bug] Config path issue for second order nested group config"}
+{"ts": "2026-06-20T20:05:18Z", "kind": "new", "issue": 3223, "issue_url": "https://github.com/facebookresearch/hydra/issues/3223", "title": "Prevent duplicate-load defaults-list interpolation workaround"}
