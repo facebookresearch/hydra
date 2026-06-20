@@ -30,9 +30,6 @@ setup(
     install_requires=[
         "hydra-core>=1.1.0.dev7",
         "optuna>=4.7.0,<5.0.0",
-        "cmaes>=0.12.0",  # Required for `optuna.samplers.CmaEsSampler`
-        "torch",  # Required for `optuna.samplers.GPSampler`
-        "scipy",  # Required for `optuna.samplers.GPSampler`
     ],
     include_package_data=True,
 )
