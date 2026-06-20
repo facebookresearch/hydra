@@ -27,7 +27,7 @@
     "3213": "2026-06-17",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-20T19:10:47Z",
+  "generated_at": "2026-06-20T19:14:54Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3278,6 +3278,31 @@
       "status": "not started",
       "title": "Evaluate opt-out from eager resolution in instantiate",
       "updated_at": "2026-06-19T06:45:42Z"
+    },
+    "3220": {
+      "category": "Enhancement",
+      "created_at": "2026-06-20T19:13:09Z",
+      "labels": [
+        "callbacks",
+        "maintenance"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Consider promoting callbacks out of experimental",
+      "updated_at": "2026-06-20T19:13:09Z"
+    },
+    "3221": {
+      "category": "Refactor",
+      "created_at": "2026-06-20T19:13:17Z",
+      "labels": [
+        "maintenance"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Clean up deprecations older than Hydra 1.2",
+      "updated_at": "2026-06-20T19:13:18Z"
     },
     "385": {
       "category": "Enhancement",

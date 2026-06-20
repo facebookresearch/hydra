@@ -78,3 +78,5 @@
 {"ts": "2026-06-19T20:14:38Z", "kind": "closed", "issue": 3036, "issue_url": "https://github.com/facebookresearch/hydra/issues/3036", "title": "[Bug] Child defaults list with interpolation fails with a constructed path with too many group names"}
 {"ts": "2026-06-20T14:12:31Z", "kind": "label", "issue": 3078, "issue_url": "https://github.com/facebookresearch/hydra/issues/3078", "title": "[Bug]", "detail": "removed \"triage\""}
 {"ts": "2026-06-20T19:10:47Z", "kind": "closed", "issue": 3069, "issue_url": "https://github.com/facebookresearch/hydra/issues/3069", "title": "Callback composition unclear"}
+{"ts": "2026-06-20T19:14:54Z", "kind": "new", "issue": 3220, "issue_url": "https://github.com/facebookresearch/hydra/issues/3220", "title": "Consider promoting callbacks out of experimental"}
+{"ts": "2026-06-20T19:14:54Z", "kind": "new", "issue": 3221, "issue_url": "https://github.com/facebookresearch/hydra/issues/3221", "title": "Clean up deprecations older than Hydra 1.2"}

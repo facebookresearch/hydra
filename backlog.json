@@ -1,20 +1,20 @@
 {
   "generated_on": "2026-06-20",
-  "generated_at": "2026-06-20T19:10:47Z",
+  "generated_at": "2026-06-20T19:14:54Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 277,
+    "open_total": 279,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 108,
-        "percentage": 39.0
+        "percentage": 38.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 138,
+        "count": 139,
         "percentage": 49.8
       },
       {
@@ -32,8 +32,8 @@
       {
         "category": "Refactor",
         "emoji": "🔧",
-        "count": 2,
-        "percentage": 0.7
+        "count": 3,
+        "percentage": 1.1
       },
       {
         "category": "Build",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 268
+        "count": 270
       },
       {
         "status": "done",
@@ -4360,6 +4360,37 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3216"
     },
     {
+      "number": 3220,
+      "title": "Consider promoting callbacks out of experimental",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-20",
+      "updated": "2026-06-20",
+      "labels": [
+        "maintenance",
+        "callbacks"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3220"
+    },
+    {
+      "number": 3221,
+      "title": "Clean up deprecations older than Hydra 1.2",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-20",
+      "updated": "2026-06-20",
+      "labels": [
+        "maintenance"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3221"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4640,6 +4671,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3068"
     },
     {
+      "number": 3069,
+      "title": "Callback composition unclear",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-07-01",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3069"
+    },
+    {
       "number": 3075,
       "title": "What is the project status given the last release was in 2023",
       "category": "Build",
@@ -4781,24 +4827,23 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3213"
-    },
-    {
-      "number": 3069,
-      "title": "Callback composition unclear",
-      "category": "Question",
-      "category_emoji": "❓",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2025-07-01",
-      "updated": "2026-05-16",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3069"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-20T19:14:54Z",
+      "kind": "new",
+      "issue": 3221,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3221",
+      "title": "Clean up deprecations older than Hydra 1.2"
+    },
+    {
+      "ts": "2026-06-20T19:14:54Z",
+      "kind": "new",
+      "issue": 3220,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3220",
+      "title": "Consider promoting callbacks out of experimental"
+    },
     {
       "ts": "2026-06-20T19:10:47Z",
       "kind": "closed",
