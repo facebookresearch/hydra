@@ -1,7 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, NoReturn, Optional
 
 from hydra.core.config_store import ConfigStore
 from omegaconf import MISSING
@@ -97,6 +97,19 @@ class NSGAIISamplerConfig(SamplerConfig):
     crossover_prob: float = 0.9
     swapping_prob: float = 0.5
     constraints_func: Optional[Any] = None
+
+
+def _motpe_removed(*args: Any, **kwargs: Any) -> NoReturn:
+    raise ValueError(
+        "The 'motpe' sampler was removed in Optuna 4.0. "
+        "Use 'hydra/sweeper/sampler=tpe' instead. "
+        "TPESampler now handles multi-objective optimization."
+    )
+
+
+@dataclass
+class MOTPESamplerConfig(SamplerConfig):
+    _target_: str = "hydra_plugins.hydra_optuna_sweeper.config._motpe_removed"
 
 
 @dataclass
@@ -233,6 +246,13 @@ ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="nsgaii",
     node=NSGAIISamplerConfig,
+    provider="optuna_sweeper",
+)
+
+ConfigStore.instance().store(
+    group="hydra/sweeper/sampler",
+    name="motpe",
+    node=MOTPESamplerConfig,
     provider="optuna_sweeper",
 )
 

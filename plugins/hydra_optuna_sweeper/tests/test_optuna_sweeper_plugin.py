@@ -8,6 +8,7 @@ from typing import Any, List, Optional
 import optuna
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
+from hydra.errors import InstantiationException
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import (
     TSweepRunner,
@@ -15,6 +16,7 @@ from hydra.test_utils.test_utils import (
     run_process,
     run_python_script,
 )
+from hydra.utils import instantiate
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
@@ -23,11 +25,11 @@ from optuna.distributions import (
     IntDistribution,
 )
 from optuna.samplers import RandomSampler
-from pytest import mark, warns
+from pytest import mark, raises, warns
 
 from hydra_plugins.hydra_optuna_sweeper import _impl
 from hydra_plugins.hydra_optuna_sweeper._impl import OptunaSweeperImpl
-from hydra_plugins.hydra_optuna_sweeper.config import Direction
+from hydra_plugins.hydra_optuna_sweeper.config import Direction, MOTPESamplerConfig
 from hydra_plugins.hydra_optuna_sweeper.optuna_sweeper import OptunaSweeper
 
 chdir_plugin_root()
@@ -46,6 +48,14 @@ def test_discovery() -> None:
     assert OptunaSweeper.__name__ in [
         x.__name__ for x in Plugins.instance().discover(Sweeper)
     ]
+
+
+def test_motpe_sampler_removed() -> None:
+    with raises(
+        InstantiationException,
+        match="The 'motpe' sampler was removed in Optuna 4.0",
+    ):
+        instantiate(OmegaConf.structured(MOTPESamplerConfig))
 
 
 def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> None:
