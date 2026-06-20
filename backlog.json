@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-20",
-  "generated_at": "2026-06-20T20:57:02Z",
+  "generated_at": "2026-06-20T21:08:54Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 278,
@@ -4518,6 +4518,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2940"
     },
     {
+      "number": 3034,
+      "title": "[Bug] Default List Packaged to Root Level Not Configurable from CLI",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-02-27",
+      "updated": "2025-03-04",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3034"
+    },
+    {
       "number": 3036,
       "title": "[Bug] Child defaults list with interpolation fails with a constructed path with too many group names",
       "category": "Bug",
@@ -4859,21 +4874,6 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
-    },
-    {
-      "number": 3034,
-      "title": "[Bug] Default List Packaged to Root Level Not Configurable from CLI",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2025-02-27",
-      "updated": "2025-03-04",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3034"
     }
   ],
   "updates": [
