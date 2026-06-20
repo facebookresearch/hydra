@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-20",
-  "generated_at": "2026-06-20T14:12:31Z",
+  "generated_at": "2026-06-20T19:10:47Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 278,
+    "open_total": 277,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 108,
-        "percentage": 38.8
+        "percentage": 39.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 138,
-        "percentage": 49.6
+        "percentage": 49.8
       },
       {
         "category": "Documentation",
@@ -26,8 +26,8 @@
       {
         "category": "Question",
         "emoji": "❓",
-        "count": 13,
-        "percentage": 4.7
+        "count": 12,
+        "percentage": 4.3
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 269
+        "count": 268
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 25
+        "count": 26
       }
     ]
   },
@@ -4112,21 +4112,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3066"
     },
     {
-      "number": 3069,
-      "title": "Callback composition unclear",
-      "category": "Question",
-      "category_emoji": "❓",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-07-01",
-      "updated": "2026-05-16",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3069"
-    },
-    {
       "number": 3078,
       "title": "[Bug]",
       "category": "Bug",
@@ -4796,9 +4781,31 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3213"
+    },
+    {
+      "number": 3069,
+      "title": "Callback composition unclear",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-07-01",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3069"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-20T19:10:47Z",
+      "kind": "closed",
+      "issue": 3069,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3069",
+      "title": "Callback composition unclear"
+    },
     {
       "ts": "2026-06-20T14:12:31Z",
       "kind": "label",
