@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-20",
-  "generated_at": "2026-06-20T08:12:22Z",
+  "generated_at": "2026-06-20T14:12:31Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 278,
@@ -4135,10 +4135,9 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2025-08-08",
-      "updated": "2026-05-16",
+      "updated": "2026-06-20",
       "labels": [
-        "bug",
-        "triage"
+        "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3078"
     },
@@ -4800,6 +4799,14 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-20T14:12:31Z",
+      "kind": "label",
+      "issue": 3078,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3078",
+      "title": "[Bug]",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-06-19T20:14:38Z",
       "kind": "closed",
