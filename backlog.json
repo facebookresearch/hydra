@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-20",
-  "generated_at": "2026-06-20T19:31:57Z",
+  "generated_at": "2026-06-20T19:47:17Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 280,
+    "open_total": 279,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 108,
-        "percentage": 38.6
+        "count": 107,
+        "percentage": 38.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 140,
-        "percentage": 50.0
+        "percentage": 50.2
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.6
+        "percentage": 4.7
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 271
+        "count": 270
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 26
+        "count": 27
       }
     ]
   },
@@ -4064,22 +4064,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3055"
     },
     {
-      "number": 3060,
-      "title": "[Bug] Config path issue for second order nested group config",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-05-07",
-      "updated": "2026-05-16",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3060"
-    },
-    {
       "number": 3064,
       "title": "[Feature Request] No sweepers are compatible with python >3.10 (NeverGrad, Ax, Optuna)",
       "category": "Enhancement",
@@ -4843,9 +4827,32 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3213"
+    },
+    {
+      "number": 3060,
+      "title": "[Bug] Config path issue for second order nested group config",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-05-07",
+      "updated": "2026-05-16",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3060"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-20T19:47:17Z",
+      "kind": "closed",
+      "issue": 3060,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3060",
+      "title": "[Bug] Config path issue for second order nested group config"
+    },
     {
       "ts": "2026-06-20T19:31:57Z",
       "kind": "new",

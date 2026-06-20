@@ -11,6 +11,7 @@
     "3045": "2026-06-19",
     "3050": "2026-06-11",
     "3058": "2026-06-07",
+    "3060": "2026-06-20",
     "3062": "2026-06-08",
     "3065": "2026-06-10",
     "3067": "2026-06-10",
@@ -27,7 +28,7 @@
     "3213": "2026-06-17",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-20T19:31:57Z",
+  "generated_at": "2026-06-20T19:47:17Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3013,19 +3014,6 @@
       "title": "[Feature Request] -- is there a way to sweep in nested folder inside config group?",
       "updated_at": "2026-05-16T02:12:47Z"
     },
-    "3060": {
-      "category": "Bug",
-      "created_at": "2025-05-07T15:32:22Z",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Config path issue for second order nested group config",
-      "updated_at": "2026-05-16T02:12:48Z"
-    },
     "3064": {
       "category": "Enhancement",
       "created_at": "2025-05-21T12:51:01Z",
@@ -3315,7 +3303,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Normalize slash-containing group default options",
-      "updated_at": "2026-06-20T19:30:36Z"
+      "updated_at": "2026-06-20T19:46:41Z"
     },
     "385": {
       "category": "Enhancement",
@@ -3638,6 +3626,19 @@
       "state": "CLOSED",
       "status": "done",
       "title": "[Question] How to Submit SLURM Jobs Eagerly?",
+      "updated_at": "2026-05-16T02:12:48Z"
+    },
+    "3060": {
+      "category": "Bug",
+      "created_at": "2025-05-07T15:32:22Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Config path issue for second order nested group config",
       "updated_at": "2026-05-16T02:12:48Z"
     },
     "3062": {
