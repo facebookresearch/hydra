@@ -1,0 +1,371 @@
+name: Prepare Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_line:
+        description: "Release line, for example 1.4"
+        required: true
+        type: string
+      target_version:
+        description: "Target package version, for example 1.4.0.dev2 or 1.4.0"
+        required: true
+        type: string
+      package_set:
+        description: "Release package set"
+        required: true
+        type: choice
+        default: hydra-full-release
+        options:
+          - hydra-core
+          - hydra-plugins
+          - hydra-full-release
+          - configen
+          - all
+      target_branch_override:
+        description: "Recovery/testing only. Leave empty for normal releases."
+        required: false
+        type: string
+        default: ""
+      release_date:
+        description: "UTC release date override, YYYY-MM-DD. Leave empty for today."
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ inputs.release_line }}-${{ inputs.target_version }}
+  cancel-in-progress: false
+
+jobs:
+  derive-release:
+    name: Derive release target
+    runs-on: ubuntu-latest
+    outputs:
+      release_kind: ${{ steps.derive.outputs.release_kind }}
+      target_branch: ${{ steps.derive.outputs.target_branch }}
+      release_date: ${{ steps.derive.outputs.release_date }}
+    steps:
+      - name: Derive release kind and target branch
+        id: derive
+        env:
+          RELEASE_LINE: ${{ inputs.release_line }}
+          TARGET_VERSION: ${{ inputs.target_version }}
+          INPUT_PACKAGE_SET: ${{ inputs.package_set }}
+          TARGET_BRANCH_OVERRIDE: ${{ inputs.target_branch_override }}
+          RELEASE_DATE: ${{ inputs.release_date }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python <<'PY'
+          import os
+          import re
+          import subprocess
+          import sys
+          from datetime import datetime, timezone
+
+          release_line = os.environ["RELEASE_LINE"].strip()
+          target_version = os.environ["TARGET_VERSION"].strip()
+          override = os.environ["TARGET_BRANCH_OVERRIDE"].strip()
+          release_date = os.environ["RELEASE_DATE"].strip() or datetime.now(
+              timezone.utc
+          ).date().isoformat()
+          repo = os.environ["GITHUB_REPOSITORY"]
+
+          def fail(message: str) -> None:
+              print(f"::error::{message}")
+              sys.exit(1)
+
+          if not re.fullmatch(r"\d+\.\d+", release_line):
+              fail(f"release_line must use x.y form, got {release_line!r}")
+
+          try:
+              datetime.strptime(release_date, "%Y-%m-%d")
+          except ValueError:
+              fail(f"release_date must use YYYY-MM-DD form, got {release_date!r}")
+
+          match = re.fullmatch(
+              r"(?P<major>0|[1-9]\d*)\.(?P<minor>0|[1-9]\d*)\."
+              r"(?P<micro>0|[1-9]\d*)(?:(?P<rc>rc\d+)|"
+              r"(?P<dev>\.dev\d+))?",
+              target_version,
+          )
+          if match is None:
+              fail(
+                  "target_version must look like 1.4.0.dev2, 1.4.0rc1, "
+                  f"1.4.0, or 1.4.1; got {target_version!r}"
+              )
+
+          version_line = f"{match.group('major')}.{match.group('minor')}"
+          if version_line != release_line:
+              fail(
+                  f"target_version {target_version!r} belongs to line "
+                  f"{version_line}, not {release_line}"
+              )
+
+          micro = int(match.group("micro"))
+          if match.group("dev"):
+              release_kind = "dev"
+          elif match.group("rc"):
+              release_kind = "rc"
+          elif micro == 0:
+              release_kind = "stable"
+          else:
+              release_kind = "patch"
+
+          def branch_exists(branch: str) -> bool:
+              result = subprocess.run(
+                  [
+                      "git",
+                      "ls-remote",
+                      "--exit-code",
+                      "--heads",
+                      f"https://github.com/{repo}.git",
+                      branch,
+                  ],
+                  stdout=subprocess.DEVNULL,
+                  stderr=subprocess.DEVNULL,
+                  check=False,
+              )
+              return result.returncode == 0
+
+          release_branch = f"{release_line}_branch"
+          if override:
+              if override != "main" and override != release_branch:
+                  fail(
+                      "target_branch_override must be either 'main' or "
+                      f"{release_branch!r} for release line {release_line}"
+                  )
+              if override == "main" and release_kind != "dev":
+                  fail("Only dev releases may override the target branch to main")
+              target_branch = override
+          elif branch_exists(release_branch):
+              target_branch = release_branch
+          elif release_kind == "dev":
+              target_branch = "main"
+          else:
+              fail(
+                  f"Release branch {release_branch!r} does not exist. "
+                  "Create the release branch or use a reviewed override."
+              )
+
+          if target_branch != "main" and not branch_exists(target_branch):
+              fail(f"Target branch {target_branch!r} does not exist")
+
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              print(f"release_kind={release_kind}", file=output)
+              print(f"target_branch={target_branch}", file=output)
+              print(f"release_date={release_date}", file=output)
+
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              print("## Derived release target", file=summary)
+              print("", file=summary)
+              print(f"- Release line: `{release_line}`", file=summary)
+              print(f"- Target version: `{target_version}`", file=summary)
+              print(f"- Release kind: `{release_kind}`", file=summary)
+              print(f"- Package set: `{os.environ['INPUT_PACKAGE_SET']}`", file=summary)
+              print(f"- Target branch: `{target_branch}`", file=summary)
+              print(f"- Release date: `{release_date}`", file=summary)
+          PY
+
+  release-tool-check:
+    name: Release tool check
+    needs: derive-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ needs.derive-release.outputs.target_branch }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install release-tool dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements/requirements.txt read-version requests
+
+      - name: Apply target version for validation
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python tools/release/release.py \
+            action=set_version \
+            set=${{ inputs.package_set }} \
+            version=${{ inputs.target_version }}
+
+      - name: Compare selected packages against PyPI
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python tools/release/release.py \
+            action=check \
+            set=${{ inputs.package_set }} \
+            repository=pypi
+
+  artifact-build-check:
+    name: Artifact build check
+    needs:
+      - derive-release
+      - release-tool-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ needs.derive-release.outputs.target_branch }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements/requirements.txt build read-version requests twine
+
+      - name: Apply target version for artifact checks
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python tools/release/release.py \
+            action=set_version \
+            set=${{ inputs.package_set }} \
+            version=${{ inputs.target_version }}
+
+      - name: Build publishable artifacts
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          python tools/release/release.py \
+            action=build \
+            set=${{ inputs.package_set }} \
+            repository=pypi \
+            clean_build_dir=true \
+            require_artifacts=true \
+            build_dir="${{ github.workspace }}/dist"
+
+      - name: Verify build artifacts
+        run: |
+          ls -lah dist/
+          twine check dist/*
+
+      - name: Upload checked artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-dist
+          path: dist/
+          retention-days: 14
+
+  release-validation:
+    name: Release validation (${{ matrix.os }}, py${{ matrix.py_version }})
+    needs: derive-release
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: Linux
+            runner: ubuntu-latest
+            py_version: '3.10'
+          - os: Linux
+            runner: ubuntu-latest
+            py_version: '3.11'
+          - os: Linux
+            runner: ubuntu-latest
+            py_version: '3.12'
+          - os: Linux
+            runner: ubuntu-latest
+            py_version: '3.13'
+          - os: Linux
+            runner: ubuntu-latest
+            py_version: '3.14'
+          - os: MacOS
+            runner: macos-latest
+            py_version: '3.10'
+          - os: MacOS
+            runner: macos-latest
+            py_version: '3.11'
+          - os: MacOS
+            runner: macos-latest
+            py_version: '3.12'
+          - os: MacOS
+            runner: macos-latest
+            py_version: '3.13'
+          - os: MacOS
+            runner: macos-latest
+            py_version: '3.14'
+          - os: Windows
+            runner: windows-latest
+            py_version: '3.10'
+          - os: Windows
+            runner: windows-latest
+            py_version: '3.11'
+          - os: Windows
+            runner: windows-latest
+            py_version: '3.12'
+          - os: Windows
+            runner: windows-latest
+            py_version: '3.13'
+          - os: Windows
+            runner: windows-latest
+            py_version: '3.14'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ needs.derive-release.outputs.target_branch }}
+
+      - name: Set up Linux
+        if: ${{ matrix.os == 'Linux' }}
+        uses: "./.github/actions/linux"
+        with:
+          py_version: "${{ matrix.py_version }}"
+
+      - name: Set up macOS
+        if: ${{ matrix.os == 'MacOS' }}
+        uses: "./.github/actions/macos"
+        with:
+          py_version: "${{ matrix.py_version }}"
+
+      - name: Set up Windows
+        if: ${{ matrix.os == 'Windows' }}
+        uses: "./.github/actions/windows"
+        with:
+          py_version: "${{ matrix.py_version }}"
+
+      - name: Run release validation on Linux and macOS
+        if: ${{ matrix.os != 'Windows' }}
+        shell: bash
+        run: |
+          if [[ "${{ matrix.os }}" == "MacOS" ]]; then
+            source "$HOME/.bash_profile"
+            conda activate hydra
+          else
+            export PATH="$HOME/miniconda3/envs/hydra/bin:$PATH"
+          fi
+          export NOX_PYTHON_VERSIONS=${{ matrix.py_version }}
+          pip install nox --progress-bar off
+          nox -s test_tools test_core \
+            test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
+
+      - name: Run release validation on Windows
+        if: ${{ matrix.os == 'Windows' }}
+        shell: pwsh
+        run: |
+          $env:CONDA_DLL_SEARCH_MODIFICATION_ENABLE = "1"
+          conda run -n hydra pip install nox --progress-bar off
+          $env:NOX_PYTHON_VERSIONS = "${{ matrix.py_version }}"
+          $env:ConEmuDefaultCp = "65001"
+          $env:PYTHONIOENCODING = "utf_8"
+          conda run -n hydra nox -s test_tools test_core test_jupyter_notebooks test_plugins test_plugins_vs_core -ts
+          exit $LASTEXITCODE

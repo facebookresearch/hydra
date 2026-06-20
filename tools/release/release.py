@@ -24,6 +24,7 @@ class Action(Enum):
     build = 2
     bump = 3
     set_version = 4
+    validate_versions = 5
 
 
 class BuildPolicy(Enum):
@@ -170,6 +171,13 @@ def get_package_info(repository: Repository, path: str) -> PackageInfo:
 
 def is_publishable(info: PackageInfo) -> bool:
     return not info.local_version_published
+
+
+def validate_local_version(info: LocalPackageInfo, expected_version: Version) -> None:
+    if info.local_version != expected_version:
+        raise ValueError(
+            f"{info.name} version is {info.local_version}; expected {expected_version}"
+        )
 
 
 def format_latest_version(version: Optional[Version]) -> str:
@@ -334,12 +342,24 @@ def main(cfg: Config) -> None:
             if ret.local_version == ret.latest_version:
                 bump_version(cfg, package, hydra_root)
     elif cfg.action == Action.set_version:
-        if cfg.version is None:
+        if not cfg.version:
             raise ValueError("action=set_version requires version=<target version>")
         parse_version(cfg.version)
         log.info(f"Setting package versions to {cfg.version}")
         for package in cfg.packages.values():
             bump_version(cfg, package, hydra_root, target_version=cfg.version)
+    elif cfg.action == Action.validate_versions:
+        if not cfg.version:
+            raise ValueError(
+                "action=validate_versions requires version=<target version>"
+            )
+        expected_version = parse_version(cfg.version)
+        log.info(f"Validating package versions match {expected_version}")
+        for package in cfg.packages.values():
+            pkg_path = os.path.normpath(os.path.join(hydra_root, package.path))
+            local = get_local_package_info(pkg_path)
+            validate_local_version(local, expected_version)
+            log.info(f"\U0000274a : {local.name} : {local.local_version}")
 
     else:
         raise ValueError("Unexpected action type")

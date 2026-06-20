@@ -5,11 +5,34 @@ sidebar_label: Release process
 ---
 
 Hydra publishes Python packages through GitHub Actions Trusted Publishing.
-Maintainers use the local release tool to set versions, compare local packages
-against PyPI or TestPyPI, and build artifacts. GitHub Actions performs the
-actual upload.
+Maintainers use the local release tool and GitHub Actions to prepare,
+validate, and publish releases. GitHub Actions performs the actual upload.
 
 Do not run `twine upload` locally for Hydra releases.
+
+## Release lines
+
+Hydra releases are organized by release line:
+
+- `main` prepares the active unreleased line.
+- `x.y_branch` carries release candidates, stable releases, patch releases, and
+  dev releases for an already-published `x.y` line.
+- Tags and GitHub Releases use package versions such as `v1.4.0.dev1`,
+  `v1.4.0rc1`, `v1.4.0`, or `v1.4.1`.
+- Stable docs are versioned by line, such as `version-1.3`.
+
+Release automation derives the target branch from the release line and target
+versions:
+
+- dev releases for the active unreleased line normally prepare from `main`;
+- dev releases for an already-published release line prepare from that line's
+  release branch;
+- release candidates, stable releases, and patch releases prepare from the
+  release branch, such as `1.4_branch`.
+
+Use a branch override only for unusual recovery or workflow-testing cases. The
+override is intentionally limited to `main` or the release line's
+`x.y_branch`.
 
 ## Package sets
 
@@ -41,7 +64,37 @@ python tools/release/release.py \
 
 Use PEP 440 version spelling, such as `1.4.0.dev2`, `1.4.0rc1`, or `1.4.0`.
 
-## Local checks
+The release kind is derived from the target version strings:
+
+- `.devN` versions are dev releases;
+- `rcN` versions are release candidates;
+- final `x.y.0` versions are stable releases for a line;
+- final `x.y.z` versions with `z > 0` are patch releases.
+
+## Prepare release
+
+Prepare release is the maintainer-controlled validation phase before publishing.
+It should validate the release line, derive release kind from target versions,
+derive the target branch, validate package versions against the selected package
+set, compare selected packages against PyPI, and run release-grade checks.
+
+Release-grade checks include the normal CI surface plus release-only checks such
+as running the core test suite with all selected compatible plugins installed.
+This keeps expensive low-yield checks out of normal PR CI while preserving them
+for release decisions.
+
+Use the `Prepare Release` workflow to run the current prepare checks. It accepts
+the release line, target version, package set, and optional recovery-only branch
+override. It derives the release kind and target branch, checks selected
+packages against PyPI for the requested target version, verifies build
+artifacts for that version, and runs the release validation matrix.
+
+Prepare release must not upload artifacts to PyPI. The current workflow is a
+validation step. It applies target versions only inside the disposable workflow
+checkout. Creating release-prep PRs and draft GitHub Releases is part of the
+intended prepare phase but is not automated yet.
+
+## Local checks and artifact builds
 
 Before publishing, compare the selected packages against the target repository:
 
@@ -51,8 +104,6 @@ python tools/release/release.py \
   set=hydra-full-release \
   repository=pypi
 ```
-
-Use `repository=testpypi` when preparing a TestPyPI upload.
 
 To build only artifacts whose exact local version is not already published to
 the selected repository:
@@ -71,56 +122,59 @@ twine check "${PWD}/dist"/*
 Use `build_policy=all` only for local smoke tests where you intentionally want
 to ignore repository state.
 
-## TestPyPI
+To verify that the selected package set is already prepared at the intended
+version:
 
-Use TestPyPI to rehearse a release without touching real PyPI.
-
-- Check out the branch or commit to test.
-- Set the intended version with `tools/release/release.py`.
-- Push the branch.
-- Run the `Publish to Test PyPI` workflow manually.
-- Select the branch containing the version bump.
-- Use `publish=false` for a dry run. This builds and checks artifacts, then
-  skips the upload job.
-- Use `publish=true` to upload the checked artifacts to TestPyPI.
-- Approve the `test-pypi-publish` environment if prompted.
-- Review the workflow release summary for the exact artifacts that were, or
-  would be, uploaded.
-- After `publish=true`, install from TestPyPI in a clean environment and smoke
-  test the packages.
+```shell
+python tools/release/release.py \
+  action=validate_versions \
+  set=hydra-full-release \
+  version=1.4.0
+```
 
 ## PyPI
 
 Use the PyPI workflow for real dev, release-candidate, and stable releases.
 
-- Check out `main`, or the release branch for a maintenance release.
+- Run prepare release for the target release line and package set.
+- Check out the prepared target branch.
 - Set the intended version with `tools/release/release.py`.
 - For stable releases, update `NEWS.md` with towncrier.
 - Commit and push the release changes.
 - For a dry run, run the `Publish to PyPI` workflow manually with
-  `publish=false`.
+  `publish=false`, selecting the package set and optional expected version.
 - Review the workflow release summary for the exact artifacts that would be
   uploaded.
-- To publish, create a GitHub release for the tag, for example `v1.4.0.dev2` or
-  `v1.4.0`.
+- To publish, use the prepared draft GitHub Release or create a GitHub Release
+  for the tag, for example `v1.4.0.dev2` or `v1.4.0`.
+- For manual publishing from a prepared draft GitHub Release, pass the release
+  tag as `github_release_tag` so the workflow builds that tag, infers the
+  expected version when needed, and promotes the draft after PyPI publishing
+  succeeds.
 - Mark dev and release-candidate GitHub releases as prereleases.
 - Approve the `pypi-publish` environment if prompted.
 
-The `Publish to PyPI` workflow runs automatically when a GitHub release is
-created. It builds artifacts whose local versions are newer than PyPI, checks
-them, and publishes them through Trusted Publishing.
+The `Publish to PyPI` workflow validates the selected package versions when an
+expected version is provided, builds artifacts whose local versions are newer
+than PyPI, checks them, smoke-installs built wheels without dependencies, and
+publishes them through Trusted Publishing.
 
 The PyPI workflow can also be triggered manually. Manual runs default to
 `publish=false`; set `publish=true` only when intentionally publishing from that
-manual run.
+manual run. GitHub Release-triggered runs infer the expected version from the
+release tag and use the default `hydra-full-release` package set. Manual runs
+can build and promote a draft GitHub Release after publishing when
+`github_release_tag` is provided.
 
 ## Release summaries
 
-Both publish workflows write a release summary to the GitHub Actions run. The
+The publish workflow writes a release summary to the GitHub Actions run. The
 summary includes:
 
 - target repository,
 - publish mode,
+- package set,
+- expected version, when provided,
 - trigger,
 - ref,
 - commit,
