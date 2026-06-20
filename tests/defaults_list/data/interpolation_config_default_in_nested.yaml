@@ -1,0 +1,3 @@
+defaults:
+  - group1: config_default_interpolation
+  - group2: file1

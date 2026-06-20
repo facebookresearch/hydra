@@ -37,6 +37,38 @@ link to the issue or discussion where the direction was agreed. Pull requests
 without prior design alignment may be redirected to discussion before
 implementation review.
 
+## News fragments
+
+All non-trivial user-visible changes should include a news fragment.
+
+Use the issue or pull request number as the filename, with one of these
+extensions:
+
+- `api_change`: API changes, renames, deprecations, and removals
+- `feature`: new features
+- `bugfix`: bug fixes
+- `docs`: documentation additions or updates
+- `config`: configuration structure changes
+- `maintenance`: maintainability improvements
+
+For Hydra core changes, place the fragment in `news/`, for example
+`news/1234.bugfix`. For plugin changes, place it in the relevant plugin's
+`news/` directory, for example
+`plugins/hydra_optuna_sweeper/news/1234.feature`.
+
+Pull requests can span multiple categories by creating multiple fragments. For
+example, if a pull request adds a feature and deprecates an old feature at the
+same time, create both `news/1234.feature` and `news/1234.api_change`.
+Likewise, if a pull request touches multiple issues or pull requests, you may
+create one fragment for each number with the same contents; the release tooling
+deduplicates them when rendering release notes.
+
+Keep the fragment concise and user-facing. Prefer sentence case, under 80
+characters, and imperative tone. A fragment should complete the sentence "This
+change will ...". You do not need to mention issue or pull request numbers in
+the fragment text; the release tooling adds references when rendering release
+notes.
+
 ## Contributor License Agreement ("CLA")
 In order to accept your pull request, we need you to submit a CLA. You only need
 to do this once to work on any of Facebook's open source projects.
