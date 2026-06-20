@@ -43,9 +43,14 @@ class TPESamplerConfig(SamplerConfig):
     _target_: str = "optuna.samplers.TPESampler"
     seed: Optional[int] = None
 
+    consider_prior: bool = True
+    prior_weight: float = 1.0
+    consider_magic_clip: bool = True
+    consider_endpoints: bool = False
     n_startup_trials: int = 10
     n_ei_candidates: int = 24
     multivariate: bool = False
+    warn_independent_sampling: bool = True
 
 
 @dataclass
