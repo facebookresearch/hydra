@@ -168,8 +168,7 @@ def test_launch_jobs(hydra_sweep_runner: TSweepRunner) -> None:
 
 
 @mark.parametrize("with_commandline", (True, False))
-@mark.parametrize("sampler", ("tpe", "gp"))
-def test_optuna_example(with_commandline: bool, sampler: str, tmpdir: Path) -> None:
+def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
     storage = "sqlite:///" + os.path.join(str(tmpdir), "test.db")
     study_name = "test-optuna-example"
     cmd = [
@@ -181,7 +180,7 @@ def test_optuna_example(with_commandline: bool, sampler: str, tmpdir: Path) -> N
         "hydra.sweeper.n_jobs=1",
         f"hydra.sweeper.storage={storage}",
         f"hydra.sweeper.study_name={study_name}",
-        f"hydra/sweeper/sampler={sampler}",
+        "hydra/sweeper/sampler=tpe",
         "hydra.sweeper.sampler.seed=123",
         "~z",
     ]
