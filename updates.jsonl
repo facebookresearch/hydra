@@ -83,3 +83,5 @@
 {"ts": "2026-06-20T19:31:57Z", "kind": "new", "issue": 3222, "issue_url": "https://github.com/facebookresearch/hydra/issues/3222", "title": "Normalize slash-containing group default options"}
 {"ts": "2026-06-20T19:47:17Z", "kind": "closed", "issue": 3060, "issue_url": "https://github.com/facebookresearch/hydra/issues/3060", "title": "[Bug] Config path issue for second order nested group config"}
 {"ts": "2026-06-20T20:05:18Z", "kind": "new", "issue": 3223, "issue_url": "https://github.com/facebookresearch/hydra/issues/3223", "title": "Prevent duplicate-load defaults-list interpolation workaround"}
+{"ts": "2026-06-20T20:38:37Z", "kind": "new", "issue": 3224, "issue_url": "https://github.com/facebookresearch/hydra/issues/3224", "title": "Add hydra.override.aliases for explicit CLI override aliases"}
+{"ts": "2026-06-20T20:38:37Z", "kind": "closed", "issue": 3223, "issue_url": "https://github.com/facebookresearch/hydra/issues/3223", "title": "Prevent duplicate-load defaults-list interpolation workaround"}

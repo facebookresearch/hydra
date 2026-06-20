@@ -26,9 +26,10 @@
     "3195": "2026-05-30",
     "3207": "2026-06-11",
     "3213": "2026-06-17",
+    "3223": "2026-06-20",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-20T20:05:18Z",
+  "generated_at": "2026-06-20T20:38:37Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3305,18 +3306,17 @@
       "title": "Normalize slash-containing group default options",
       "updated_at": "2026-06-20T19:47:38Z"
     },
-    "3223": {
-      "category": "Bug",
-      "created_at": "2026-06-20T20:03:55Z",
+    "3224": {
+      "category": "Enhancement",
+      "created_at": "2026-06-20T20:37:15Z",
       "labels": [
-        "bug",
-        "defaults list"
+        "enhancement"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
-      "title": "Prevent duplicate-load defaults-list interpolation workaround",
-      "updated_at": "2026-06-20T20:03:55Z"
+      "title": "Add hydra.override.aliases for explicit CLI override aliases",
+      "updated_at": "2026-06-20T20:38:08Z"
     },
     "385": {
       "category": "Enhancement",
@@ -3830,6 +3830,19 @@
       "status": "done",
       "title": "[Feature Request] Allow the config path in initialize to be absolute",
       "updated_at": "2026-06-17T12:15:42Z"
+    },
+    "3223": {
+      "category": "Bug",
+      "created_at": "2026-06-20T20:03:55Z",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Prevent duplicate-load defaults-list interpolation workaround",
+      "updated_at": "2026-06-20T20:03:55Z"
     },
     "692": {
       "category": "Enhancement",

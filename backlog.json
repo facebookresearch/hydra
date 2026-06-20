@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-20",
-  "generated_at": "2026-06-20T20:05:18Z",
+  "generated_at": "2026-06-20T20:38:37Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 280,
@@ -8,14 +8,14 @@
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 108,
-        "percentage": 38.6
+        "count": 107,
+        "percentage": 38.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 140,
-        "percentage": 50.0
+        "count": 141,
+        "percentage": 50.4
       },
       {
         "category": "Documentation",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 27
+        "count": 28
       }
     ]
   },
@@ -4391,20 +4391,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3222"
     },
     {
-      "number": 3223,
-      "title": "Prevent duplicate-load defaults-list interpolation workaround",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "number": 3224,
+      "title": "Add hydra.override.aliases for explicit CLI override aliases",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-20",
       "updated": "2026-06-20",
       "labels": [
-        "bug",
-        "defaults list"
+        "enhancement"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3223"
+      "url": "https://github.com/facebookresearch/hydra/issues/3224"
     },
     {
       "number": 692,
@@ -4859,9 +4858,39 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3213"
+    },
+    {
+      "number": 3223,
+      "title": "Prevent duplicate-load defaults-list interpolation workaround",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-06-20",
+      "updated": "2026-06-20",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3223"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-20T20:38:37Z",
+      "kind": "closed",
+      "issue": 3223,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3223",
+      "title": "Prevent duplicate-load defaults-list interpolation workaround"
+    },
+    {
+      "ts": "2026-06-20T20:38:37Z",
+      "kind": "new",
+      "issue": 3224,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3224",
+      "title": "Add hydra.override.aliases for explicit CLI override aliases"
+    },
     {
       "ts": "2026-06-20T20:05:18Z",
       "kind": "new",
