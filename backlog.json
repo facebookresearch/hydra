@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-20",
-  "generated_at": "2026-06-20T19:14:54Z",
+  "generated_at": "2026-06-20T19:31:57Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 279,
+    "open_total": 280,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 108,
-        "percentage": 38.7
+        "percentage": 38.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 139,
-        "percentage": 49.8
+        "count": 140,
+        "percentage": 50.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.7
+        "percentage": 4.6
       },
       {
         "category": "Question",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 270
+        "count": 271
       },
       {
         "status": "done",
@@ -4391,6 +4391,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3221"
     },
     {
+      "number": 3222,
+      "title": "Normalize slash-containing group default options",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-20",
+      "updated": "2026-06-20",
+      "labels": [
+        "maintenance",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3222"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4830,6 +4846,13 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-20T19:31:57Z",
+      "kind": "new",
+      "issue": 3222,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3222",
+      "title": "Normalize slash-containing group default options"
+    },
     {
       "ts": "2026-06-20T19:14:54Z",
       "kind": "new",
