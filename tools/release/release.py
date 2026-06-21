@@ -564,7 +564,7 @@ def dispatch_publish_workflow(
     inputs = {
         "package_set": package_set,
         "expected_version": str(target_version),
-        "publish": True,
+        "publish": "true",
     }
     _run_checked(
         [

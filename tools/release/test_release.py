@@ -143,7 +143,7 @@ def test_dispatch_publish_workflow_uses_json_boolean_input(monkeypatch) -> None:
             ],
             "/repo",
             '{"package_set": "hydra-full-release", '
-            '"expected_version": "1.4.0.dev3", "publish": true}',
+            '"expected_version": "1.4.0.dev3", "publish": "true"}',
         )
     ]
 
