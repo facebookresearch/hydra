@@ -374,7 +374,8 @@ def _sort_sweep(
             # could be very large: ``range`` supports O(1) len/indexing, and
             # ``FloatRange`` is iterated once while keeping only the last value.
             r = sweep.range()
-            if isinstance(r, range):
+            is_int_range = isinstance(r, range)
+            if is_int_range:
                 count = len(r)
                 last = r[-1] if count else None
             else:
@@ -384,9 +385,15 @@ def _sort_sweep(
                     count += 1
             if count > 1:
                 first = sweep.start
+                new_step = -sweep.step
                 sweep.start = last
-                sweep.stop = first - sweep.step
-                sweep.step = -sweep.step
+                # The reversed range ends just past ``first``. Integer ranges land
+                # exactly, so the boundary is ``first + new_step``. Float ranges
+                # accumulate with rounding, so use a half-step margin to avoid
+                # adding or dropping a boundary element for non-landing,
+                # non-representable steps (e.g. ``sort(range(1.3, 0, -0.5))``).
+                sweep.stop = first + new_step if is_int_range else first + new_step / 2
+                sweep.step = new_step
         return sweep
     else:
         assert False
