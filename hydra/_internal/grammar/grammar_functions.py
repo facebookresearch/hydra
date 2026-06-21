@@ -367,12 +367,25 @@ def _sort_sweep(
         # exclusive and need not coincide with the last element, so it produced
         # wrong values for ranges that do not land exactly on ``stop`` (e.g.
         # ``sort(range(0, 5, 2))`` yielded ``[3, 1, -1]`` instead of
-        # ``[4, 2, 0]``). Derive them from the actual first and last elements.
+        # ``[4, 2, 0]``). Derive the new endpoints from the actual first and
+        # last elements instead.
         if (sweep.step > 0) == reverse:
-            elements = list(sweep.range())
-            if len(elements) > 1:
-                sweep.start = elements[-1]
-                sweep.stop = elements[0] - sweep.step
+            # Find the last element without materializing the whole range, which
+            # could be very large: ``range`` supports O(1) len/indexing, and
+            # ``FloatRange`` is iterated once while keeping only the last value.
+            r = sweep.range()
+            if isinstance(r, range):
+                count = len(r)
+                last = r[-1] if count else None
+            else:
+                count = 0
+                last = None
+                for last in r:
+                    count += 1
+            if count > 1:
+                first = sweep.start
+                sweep.start = last
+                sweep.stop = first - sweep.step
                 sweep.step = -sweep.step
         return sweep
     else:
