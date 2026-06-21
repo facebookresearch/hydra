@@ -114,9 +114,15 @@ def test_dispatch_publish_workflow_uses_json_boolean_input(monkeypatch) -> None:
         return ""
 
     monkeypatch.setattr(release, "_run_checked", fake_run_checked)
+    monkeypatch.setattr(
+        release,
+        "get_remote_url",
+        lambda hydra_root, vcs: "https://github.com/facebookresearch/hydra",
+    )
 
     release.dispatch_publish_workflow(
         "/repo",
+        "sl",
         "hydra-full-release",
         parse_version("1.4.0.dev3"),
         "main",
@@ -129,6 +135,8 @@ def test_dispatch_publish_workflow_uses_json_boolean_input(monkeypatch) -> None:
                 "workflow",
                 "run",
                 "publish.yml",
+                "--repo",
+                "facebookresearch/hydra",
                 "--ref",
                 "main",
                 "--json",
@@ -159,3 +167,17 @@ def test_get_remote_url_accepts_sapling_path_output_formats(
     monkeypatch.setattr(release, "_single_line", lambda cmd, cwd: output)
 
     assert release.get_remote_url("/repo", "sl") == expected
+
+
+@pytest.mark.parametrize(
+    "remote_url",
+    [
+        "https://github.com/facebookresearch/hydra",
+        "https://github.com/facebookresearch/hydra.git",
+        "ssh://git@github.com/facebookresearch/hydra",
+        "ssh://git@github.com/facebookresearch/hydra.git",
+        "git@github.com:facebookresearch/hydra.git",
+    ],
+)
+def test_get_github_repo_slug_accepts_common_github_remote_urls(remote_url) -> None:
+    assert release.get_github_repo_slug(remote_url) == "facebookresearch/hydra"

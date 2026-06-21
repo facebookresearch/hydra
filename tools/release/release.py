@@ -500,6 +500,19 @@ def get_remote_branch_node(hydra_root: str, vcs: str, workflow_ref: str) -> str:
     return line.split()[0]
 
 
+def get_github_repo_slug(remote_url: str) -> str:
+    patterns = [
+        r"^https://github\.com/(?P<slug>[^/]+/[^/]+?)(?:\.git)?$",
+        r"^ssh://git@github\.com/(?P<slug>[^/]+/[^/]+?)(?:\.git)?$",
+        r"^git@github\.com:(?P<slug>[^/]+/[^/]+?)(?:\.git)?$",
+    ]
+    for pattern in patterns:
+        match = re.fullmatch(pattern, remote_url)
+        if match is not None:
+            return match.group("slug")
+    raise ValueError(f"Could not determine GitHub repo from remote URL: {remote_url}")
+
+
 def ensure_publish_base_matches_ref(hydra_root: str, vcs: str, workflow_ref: str) -> None:
     if vcs == "sl":
         current = _single_line(["sl", "log", "-r", ".", "-T", "{node}"], hydra_root)
@@ -541,8 +554,13 @@ def ensure_publish_tools(hydra_root: str, vcs: str) -> None:
 
 
 def dispatch_publish_workflow(
-    hydra_root: str, package_set: str, target_version: Version, workflow_ref: str
+    hydra_root: str,
+    vcs: str,
+    package_set: str,
+    target_version: Version,
+    workflow_ref: str,
 ) -> None:
+    repo_slug = get_github_repo_slug(get_remote_url(hydra_root, vcs))
     inputs = {
         "package_set": package_set,
         "expected_version": str(target_version),
@@ -554,6 +572,8 @@ def dispatch_publish_workflow(
             "workflow",
             "run",
             "publish.yml",
+            "--repo",
+            repo_slug,
             "--ref",
             workflow_ref,
             "--json",
@@ -628,7 +648,7 @@ def run_dev_release(
         push_current_ref(hydra_root, vcs, workflow_ref)
     else:
         log.info("Selected packages are already at %s; skipping commit", target_version)
-    dispatch_publish_workflow(hydra_root, package_set, target_version, workflow_ref)
+    dispatch_publish_workflow(hydra_root, vcs, package_set, target_version, workflow_ref)
 
 
 OmegaConf.register_new_resolver("parent_key", lambda _parent_: _parent_._key())
