@@ -138,3 +138,24 @@ def test_dispatch_publish_workflow_uses_json_boolean_input(monkeypatch) -> None:
             '"expected_version": "1.4.0.dev3", "publish": true}',
         )
     ]
+
+
+@pytest.mark.parametrize(
+    ("output", "expected"),
+    [
+        (
+            "https://github.com/facebookresearch/hydra",
+            "https://github.com/facebookresearch/hydra",
+        ),
+        (
+            "default = https://github.com/facebookresearch/hydra",
+            "https://github.com/facebookresearch/hydra",
+        ),
+    ],
+)
+def test_get_remote_url_accepts_sapling_path_output_formats(
+    monkeypatch, output, expected
+) -> None:
+    monkeypatch.setattr(release, "_single_line", lambda cmd, cwd: output)
+
+    assert release.get_remote_url("/repo", "sl") == expected

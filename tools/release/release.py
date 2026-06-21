@@ -487,9 +487,7 @@ def get_remote_url(hydra_root: str, vcs: str) -> str:
     if vcs == "sl":
         line = _single_line(["sl", "paths", "default"], hydra_root)
         prefix = "default = "
-        if not line.startswith(prefix):
-            raise ValueError(f"Unexpected sl paths output: {line}")
-        return line[len(prefix) :]
+        return line[len(prefix) :] if line.startswith(prefix) else line
     return _single_line(["git", "remote", "get-url", "origin"], hydra_root)
 
 
