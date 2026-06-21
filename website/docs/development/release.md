@@ -91,8 +91,15 @@ artifacts for that version, and runs the release validation matrix.
 
 Prepare release must not upload artifacts to PyPI. The current workflow is a
 validation step. It applies target versions only inside the disposable workflow
-checkout. Creating release-prep PRs and draft GitHub Releases is part of the
-intended prepare phase but is not automated yet.
+checkout. Creating release-prep PRs is part of the intended prepare phase but is
+not automated yet.
+
+For release candidates, stable releases, and patch releases, the generated
+release-prep PR is the maintainer approval surface for publishing. The PR body
+must say clearly what happens when the PR is merged. Once release-prep PR
+automation exists, merging such a PR should trigger publishing to PyPI, and the
+PR body must list the package set and exact version that will be published. Dev
+releases may use a lighter manual publish flow and do not require a prepare PR.
 
 ## Local checks and artifact builds
 
@@ -136,6 +143,38 @@ python tools/release/release.py \
 
 Use the PyPI workflow for real dev, release-candidate, and stable releases.
 
+For dev releases, use the release tool's dev-release action. By default this is
+a dry run: it shows the selected packages and versions, checks PyPI for the
+target version, builds artifacts in a temporary release workspace, runs
+`twine check`, smoke-installs the wheels without dependencies, and prints the
+exact publish workflow dispatch that would run:
+
+```shell
+python tools/release/release.py \
+  action=dev_release \
+  set=hydra-full-release \
+  version=1.4.0.dev3
+```
+
+To publish the dev release, rerun with `publish=true`. This requires a clean
+working tree whose current commit matches `remote/<workflow_ref>`, applies the
+version bump, commits and pushes it when the bump changes files, and dispatches
+`Publish to PyPI` with the selected package set and expected version:
+
+```shell
+python tools/release/release.py \
+  action=dev_release \
+  set=hydra-full-release \
+  version=1.4.0.dev3 \
+  publish=true
+```
+
+The dev-release action uses `workflow_ref=main` by default. Use
+`workflow_ref=<branch-or-tag>` for unusual cases such as publishing a dev release
+from an already-published release line.
+
+For release candidates, stable releases, and patch releases:
+
 - Run prepare release for the target release line and package set.
 - Check out the prepared target branch.
 - Set the intended version with `tools/release/release.py`.
@@ -145,12 +184,10 @@ Use the PyPI workflow for real dev, release-candidate, and stable releases.
   `publish=false`, selecting the package set and optional expected version.
 - Review the workflow release summary for the exact artifacts that would be
   uploaded.
-- To publish, use the prepared draft GitHub Release or create a GitHub Release
-  for the tag, for example `v1.4.0.dev2` or `v1.4.0`.
-- For manual publishing from a prepared draft GitHub Release, pass the release
-  tag as `github_release_tag` so the workflow builds that tag, infers the
-  expected version when needed, and promotes the draft after PyPI publishing
-  succeeds.
+- Dispatch `Publish to PyPI` manually after the prepared release state is
+  merged. The intended next step is to replace this with generated release-prep
+  PRs where merging the PR triggers publishing to PyPI for the package set and
+  version named in the PR body.
 - Mark dev and release-candidate GitHub releases as prereleases.
 - Approve the `pypi-publish` environment if prompted.
 
@@ -159,12 +196,10 @@ expected version is provided, builds artifacts whose local versions are newer
 than PyPI, checks them, smoke-installs built wheels without dependencies, and
 publishes them through Trusted Publishing.
 
-The PyPI workflow can also be triggered manually. Manual runs default to
-`publish=false`; set `publish=true` only when intentionally publishing from that
-manual run. GitHub Release-triggered runs infer the expected version from the
-release tag and use the default `hydra-full-release` package set. Manual runs
-can build and promote a draft GitHub Release after publishing when
-`github_release_tag` is provided.
+The PyPI workflow is manual-only. Manual runs default to `publish=false`; set
+`publish=true` only when intentionally publishing from that manual run. Direct
+GitHub Release creation or edits are not treated as publish approval and do not
+trigger publishing.
 
 ## Release summaries
 
