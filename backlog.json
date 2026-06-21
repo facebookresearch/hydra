@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-21",
-  "generated_at": "2026-06-21T13:36:58Z",
+  "generated_at": "2026-06-21T20:19:31Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 279,
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 30
+        "count": 31
       }
     ]
   },
@@ -4000,21 +4000,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3028"
     },
     {
-      "number": 3031,
-      "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-02-23",
-      "updated": "2025-08-17",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3031"
-    },
-    {
       "number": 3033,
       "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path",
       "category": "Bug",
@@ -4397,6 +4382,21 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3224"
+    },
+    {
+      "number": 3229,
+      "title": "Defaults-list overrides in appended configs do not override earlier overrides",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-21",
+      "updated": "2026-06-21",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3229"
     },
     {
       "number": 692,
@@ -4897,9 +4897,38 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
+    },
+    {
+      "number": 3031,
+      "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-02-23",
+      "updated": "2025-08-17",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3031"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-21T20:19:31Z",
+      "kind": "closed",
+      "issue": 3031,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3031",
+      "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_"
+    },
+    {
+      "ts": "2026-06-21T20:19:31Z",
+      "kind": "new",
+      "issue": 3229,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3229",
+      "title": "Defaults-list overrides in appended configs do not override earlier overrides"
+    },
     {
       "ts": "2026-06-21T13:36:58Z",
       "kind": "pr",
