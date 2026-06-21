@@ -92,3 +92,4 @@
 {"ts": "2026-06-21T13:36:58Z", "kind": "pr", "issue": 3215, "issue_url": "https://github.com/facebookresearch/hydra/issues/3215", "title": "Log multirun job failures in per-job logs", "detail": "linked #3227"}
 {"ts": "2026-06-21T20:19:31Z", "kind": "new", "issue": 3229, "issue_url": "https://github.com/facebookresearch/hydra/issues/3229", "title": "Defaults-list overrides in appended configs do not override earlier overrides"}
 {"ts": "2026-06-21T20:19:31Z", "kind": "closed", "issue": 3031, "issue_url": "https://github.com/facebookresearch/hydra/issues/3031", "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_"}
+{"ts": "2026-06-21T20:46:26Z", "kind": "new", "issue": 3230, "issue_url": "https://github.com/facebookresearch/hydra/issues/3230", "title": "Add Compose API initializer for multiple config search path entries"}

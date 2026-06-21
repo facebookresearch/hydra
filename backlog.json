@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-21",
-  "generated_at": "2026-06-21T20:19:31Z",
+  "generated_at": "2026-06-21T20:46:26Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 279,
+    "open_total": 280,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 106,
-        "percentage": 38.0
+        "percentage": 37.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 141,
-        "percentage": 50.5
+        "count": 142,
+        "percentage": 50.7
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.7
+        "percentage": 4.6
       },
       {
         "category": "Question",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 268
+        "count": 269
       },
       {
         "status": "done",
@@ -4399,6 +4399,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3229"
     },
     {
+      "number": 3230,
+      "title": "Add Compose API initializer for multiple config search path entries",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-21",
+      "updated": "2026-06-21",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3230"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4539,6 +4554,21 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2940"
+    },
+    {
+      "number": 3031,
+      "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-02-23",
+      "updated": "2025-08-17",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3031"
     },
     {
       "number": 3034,
@@ -4897,24 +4927,16 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
-    },
-    {
-      "number": 3031,
-      "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2025-02-23",
-      "updated": "2025-08-17",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3031"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-21T20:46:26Z",
+      "kind": "new",
+      "issue": 3230,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3230",
+      "title": "Add Compose API initializer for multiple config search path entries"
+    },
     {
       "ts": "2026-06-21T20:19:31Z",
       "kind": "closed",

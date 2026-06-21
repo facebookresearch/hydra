@@ -32,7 +32,7 @@
     "3223": "2026-06-20",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-21T20:19:31Z",
+  "generated_at": "2026-06-21T20:46:26Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3310,6 +3310,18 @@
       "status": "not started",
       "title": "Defaults-list overrides in appended configs do not override earlier overrides",
       "updated_at": "2026-06-21T20:17:17Z"
+    },
+    "3230": {
+      "category": "Enhancement",
+      "created_at": "2026-06-21T20:45:03Z",
+      "labels": [
+        "enhancement"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Add Compose API initializer for multiple config search path entries",
+      "updated_at": "2026-06-21T20:45:03Z"
     },
     "385": {
       "category": "Enhancement",
