@@ -94,6 +94,41 @@ files are not uploaded again.
 The workflows also write a release summary listing the target repository,
 publish mode, trigger, ref, commit, and every artifact that was built.
 
+### Dev release
+
+Run a dry run for a coordinated dev release:
+
+```shell
+python tools/release/release.py \
+  action=dev_release \
+  set=hydra-full-release \
+  version=1.4.0.dev3
+```
+
+The dry run prints the selected packages, current local versions, target
+versions, PyPI status for the target version, and the exact publish workflow
+dispatch that would run. It also builds artifacts in a temporary release
+workspace, runs `twine check`, and smoke-installs the built wheels without
+dependencies. It does not commit, push, dispatch GitHub Actions, create or edit
+a GitHub Release, or upload anything to PyPI.
+
+To publish the dev release:
+
+```shell
+python tools/release/release.py \
+  action=dev_release \
+  set=hydra-full-release \
+  version=1.4.0.dev3 \
+  publish=true
+```
+
+Publishing requires a clean working tree whose current commit matches
+`remote/<workflow_ref>`. The command applies the version bump, commits and
+pushes it when the bump changes files, and dispatches `Publish to PyPI` with the
+selected package set and expected version. It uses `workflow_ref=main` by
+default; use `workflow_ref=<branch-or-tag>` for unusual cases such as publishing
+a dev release from an already-published release line.
+
 ### Prepare and publish workflow responsibilities
 
 Hydra release automation is split into prepare and publish phases.
@@ -108,7 +143,13 @@ Prepare release should:
 - produce a release-validation matrix;
 - run release-only checks such as the core suite with all selected compatible
   plugins installed;
-- create or update release-prep PRs and draft GitHub Releases when needed.
+- create or update release-prep PRs when needed.
+
+For release candidates, stable releases, and patch releases, generated
+release-prep PRs are the maintainer approval surface for publishing. The PR body
+must state clearly what happens when the PR is merged. Once release-prep PR
+automation exists, merging such a PR should trigger PyPI publishing, and the PR
+body must list the exact package set and version that will be published.
 
 Publish should:
 
@@ -117,15 +158,17 @@ Publish should:
 - check built artifacts;
 - publish only selected package artifacts through GitHub Actions Trusted
   Publishing;
-- promote prepared draft GitHub Releases after successful publishing when a
-  release tag is supplied.
+- eventually create or update the GitHub Release as a record of the published
+  release.
 
 The local release tool owns package metadata, version checks, repository
-comparison, and artifact building. GitHub Actions owns release validation,
-Trusted Publishing, and GitHub Release state transitions.
+comparison, and artifact building. GitHub Actions owns release validation and
+Trusted Publishing. GitHub Release state transitions are intended release
+automation work, but are not wired into the current publish workflow.
 
 The current `Prepare Release` workflow implements the validation part of this
 split: it derives release kind and target branch, applies the target version
 inside the disposable workflow checkout, checks selected packages against PyPI,
-builds artifacts, and runs release validation. Release-prep PR and draft GitHub
-Release automation are planned but not implemented yet.
+builds artifacts, and runs release validation. The current `Publish to PyPI`
+workflow is manual-only. GitHub Release creation or edits do not trigger
+publishing. Release-prep PR automation is planned but not implemented yet.
