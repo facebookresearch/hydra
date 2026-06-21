@@ -184,10 +184,19 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
       - name: Install release-tool dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements/requirements.txt read-version requests
+
+      - name: Generate parser sources
+        run: python setup.py antlr
 
       - name: Apply target version for validation
         env:
@@ -233,6 +242,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements/requirements.txt build read-version requests twine
+
+      - name: Generate parser sources
+        run: python setup.py antlr
 
       - name: Apply target version for artifact checks
         env:
