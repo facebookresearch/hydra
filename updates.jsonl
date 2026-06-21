@@ -87,3 +87,6 @@
 {"ts": "2026-06-20T20:38:37Z", "kind": "closed", "issue": 3223, "issue_url": "https://github.com/facebookresearch/hydra/issues/3223", "title": "Prevent duplicate-load defaults-list interpolation workaround"}
 {"ts": "2026-06-20T20:54:47Z", "kind": "closed", "issue": 2032, "issue_url": "https://github.com/facebookresearch/hydra/issues/2032", "title": "[Feature Request]Config aliases"}
 {"ts": "2026-06-20T20:57:02Z", "kind": "closed", "issue": 3034, "issue_url": "https://github.com/facebookresearch/hydra/issues/3034", "title": "[Bug] Default List Packaged to Root Level Not Configurable from CLI"}
+{"ts": "2026-06-21T13:36:58Z", "kind": "new", "issue": 3228, "issue_url": "https://github.com/facebookresearch/hydra/issues/3228", "title": "sort() of a range() that does not land exactly on stop returns wrong values"}
+{"ts": "2026-06-21T13:36:58Z", "kind": "status", "issue": 3215, "issue_url": "https://github.com/facebookresearch/hydra/issues/3215", "title": "Log multirun job failures in per-job logs", "detail": "not started → community PR", "pr": {"number": 3227, "url": "https://github.com/facebookresearch/hydra/pull/3227"}}
+{"ts": "2026-06-21T13:36:58Z", "kind": "pr", "issue": 3215, "issue_url": "https://github.com/facebookresearch/hydra/issues/3215", "title": "Log multirun job failures in per-job logs", "detail": "linked #3227"}

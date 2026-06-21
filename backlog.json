@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-21",
-  "generated_at": "2026-06-21T09:46:29Z",
+  "generated_at": "2026-06-21T13:36:58Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 278,
+    "open_total": 279,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 106,
-        "percentage": 38.1
+        "percentage": 38.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 140,
-        "percentage": 50.4
+        "count": 141,
+        "percentage": 50.5
       },
       {
         "category": "Documentation",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 7
+        "count": 9
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 269
+        "count": 268
       },
       {
         "status": "done",
@@ -254,6 +254,44 @@
       "updated": "2026-06-11",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3210"
+    },
+    {
+      "number": 3215,
+      "title": "Log multirun job failures in per-job logs",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3227,
+          "url": "https://github.com/facebookresearch/hydra/pull/3227"
+        }
+      ],
+      "created": "2026-06-19",
+      "updated": "2026-06-19",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3215"
+    },
+    {
+      "number": 3228,
+      "title": "sort() of a range() that does not land exactly on stop returns wrong values",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3219,
+          "url": "https://github.com/facebookresearch/hydra/pull/3219"
+        }
+      ],
+      "created": "2026-06-21",
+      "updated": "2026-06-21",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3228"
     },
     {
       "number": 385,
@@ -4283,21 +4321,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
     },
     {
-      "number": 3215,
-      "title": "Log multirun job failures in per-job logs",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-19",
-      "updated": "2026-06-19",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3215"
-    },
-    {
       "number": 3216,
       "title": "Evaluate opt-out from eager resolution in instantiate",
       "category": "Enhancement",
@@ -4877,6 +4900,33 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-21T13:36:58Z",
+      "kind": "pr",
+      "issue": 3215,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3215",
+      "title": "Log multirun job failures in per-job logs",
+      "detail": "linked #3227"
+    },
+    {
+      "ts": "2026-06-21T13:36:58Z",
+      "kind": "status",
+      "issue": 3215,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3215",
+      "title": "Log multirun job failures in per-job logs",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3227,
+        "url": "https://github.com/facebookresearch/hydra/pull/3227"
+      }
+    },
+    {
+      "ts": "2026-06-21T13:36:58Z",
+      "kind": "new",
+      "issue": 3228,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3228",
+      "title": "sort() of a range() that does not land exactly on stop returns wrong values"
+    },
     {
       "ts": "2026-06-20T20:57:02Z",
       "kind": "closed",

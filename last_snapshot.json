@@ -31,7 +31,7 @@
     "3223": "2026-06-20",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-21T09:46:29Z",
+  "generated_at": "2026-06-21T13:36:58Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3227,9 +3227,11 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3227"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "Log multirun job failures in per-job logs",
       "updated_at": "2026-06-19T05:31:01Z"
     },
@@ -3295,6 +3297,18 @@
       "status": "not started",
       "title": "Add hydra.override.aliases for explicit CLI override aliases",
       "updated_at": "2026-06-20T20:42:36Z"
+    },
+    "3228": {
+      "category": "Enhancement",
+      "created_at": "2026-06-21T13:35:36Z",
+      "labels": [],
+      "pr_numbers": [
+        "3219"
+      ],
+      "state": "OPEN",
+      "status": "community PR",
+      "title": "sort() of a range() that does not land exactly on stop returns wrong values",
+      "updated_at": "2026-06-21T13:35:36Z"
     },
     "385": {
       "category": "Enhancement",
