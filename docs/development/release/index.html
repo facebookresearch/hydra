@@ -13,7 +13,7 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.313883d4.css">
-<script src="/assets/js/runtime~main.c85c86bb.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.67534cdd.js" defer="defer"></script>
 <script src="/assets/js/main.12c9c409.js" defer="defer"></script>
 </head>
 <body>
@@ -87,8 +87,14 @@ packages against PyPI for the requested target version, verifies build
 artifacts for that version, and runs the release validation matrix.</p>
 <p>Prepare release must not upload artifacts to PyPI. The current workflow is a
 validation step. It applies target versions only inside the disposable workflow
-checkout. Creating release-prep PRs and draft GitHub Releases is part of the
-intended prepare phase but is not automated yet.</p>
+checkout. Creating release-prep PRs is part of the intended prepare phase but is
+not automated yet.</p>
+<p>For release candidates, stable releases, and patch releases, the generated
+release-prep PR is the maintainer approval surface for publishing. The PR body
+must say clearly what happens when the PR is merged. Once release-prep PR
+automation exists, merging such a PR should trigger publishing to PyPI, and the
+PR body must list the package set and exact version that will be published. Dev
+releases may use a lighter manual publish flow and do not require a prepare PR.</p>
 <h2 class="anchor anchorTargetStickyNavbar_UHn8" id="local-checks-and-artifact-builds">Local checks and artifact builds<a href="#local-checks-and-artifact-builds" class="hash-link" aria-label="Direct link to Local checks and artifact builds" title="Direct link to Local checks and artifact builds" translate="no">​</a></h2>
 <p>Before publishing, compare the selected packages against the target repository:</p>
 <div class="language-shell codeBlockContainer_uPDW theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_d_Pi"><pre tabindex="0" class="prism-code language-shell codeBlock_q2pc thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_S7n8"><div class="token-line" style="color:#bfc7d5"><span class="token plain">python tools/release/release.py \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  action=check \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  set=hydra-full-release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  repository=pypi</span><br></div></code></pre></div></div>
@@ -102,6 +108,21 @@ version:</p>
 <div class="language-shell codeBlockContainer_uPDW theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_d_Pi"><pre tabindex="0" class="prism-code language-shell codeBlock_q2pc thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_S7n8"><div class="token-line" style="color:#bfc7d5"><span class="token plain">python tools/release/release.py \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  action=validate_versions \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  set=hydra-full-release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  version=1.4.0</span><br></div></code></pre></div></div>
 <h2 class="anchor anchorTargetStickyNavbar_UHn8" id="pypi">PyPI<a href="#pypi" class="hash-link" aria-label="Direct link to PyPI" title="Direct link to PyPI" translate="no">​</a></h2>
 <p>Use the PyPI workflow for real dev, release-candidate, and stable releases.</p>
+<p>For dev releases, use the release tool&#x27;s dev-release action. By default this is
+a dry run: it shows the selected packages and versions, checks PyPI for the
+target version, builds artifacts in a temporary release workspace, runs
+<code>twine check</code>, smoke-installs the wheels without dependencies, and prints the
+exact publish workflow dispatch that would run:</p>
+<div class="language-shell codeBlockContainer_uPDW theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_d_Pi"><pre tabindex="0" class="prism-code language-shell codeBlock_q2pc thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_S7n8"><div class="token-line" style="color:#bfc7d5"><span class="token plain">python tools/release/release.py \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  action=dev_release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  set=hydra-full-release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  version=1.4.0.dev3</span><br></div></code></pre></div></div>
+<p>To publish the dev release, rerun with <code>publish=true</code>. This requires a clean
+working tree whose current commit matches <code>remote/&lt;workflow_ref&gt;</code>, applies the
+version bump, commits and pushes it when the bump changes files, and dispatches
+<code>Publish to PyPI</code> with the selected package set and expected version:</p>
+<div class="language-shell codeBlockContainer_uPDW theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_d_Pi"><pre tabindex="0" class="prism-code language-shell codeBlock_q2pc thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_S7n8"><div class="token-line" style="color:#bfc7d5"><span class="token plain">python tools/release/release.py \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  action=dev_release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  set=hydra-full-release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  version=1.4.0.dev3 \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  publish=true</span><br></div></code></pre></div></div>
+<p>The dev-release action uses <code>workflow_ref=main</code> by default. Use
+<code>workflow_ref=&lt;branch-or-tag&gt;</code> for unusual cases such as publishing a dev release
+from an already-published release line.</p>
+<p>For release candidates, stable releases, and patch releases:</p>
 <ul>
 <li class="">Run prepare release for the target release line and package set.</li>
 <li class="">Check out the prepared target branch.</li>
@@ -112,12 +133,10 @@ version:</p>
 <code>publish=false</code>, selecting the package set and optional expected version.</li>
 <li class="">Review the workflow release summary for the exact artifacts that would be
 uploaded.</li>
-<li class="">To publish, use the prepared draft GitHub Release or create a GitHub Release
-for the tag, for example <code>v1.4.0.dev2</code> or <code>v1.4.0</code>.</li>
-<li class="">For manual publishing from a prepared draft GitHub Release, pass the release
-tag as <code>github_release_tag</code> so the workflow builds that tag, infers the
-expected version when needed, and promotes the draft after PyPI publishing
-succeeds.</li>
+<li class="">Dispatch <code>Publish to PyPI</code> manually after the prepared release state is
+merged. The intended next step is to replace this with generated release-prep
+PRs where merging the PR triggers publishing to PyPI for the package set and
+version named in the PR body.</li>
 <li class="">Mark dev and release-candidate GitHub releases as prereleases.</li>
 <li class="">Approve the <code>pypi-publish</code> environment if prompted.</li>
 </ul>
@@ -125,12 +144,10 @@ succeeds.</li>
 expected version is provided, builds artifacts whose local versions are newer
 than PyPI, checks them, smoke-installs built wheels without dependencies, and
 publishes them through Trusted Publishing.</p>
-<p>The PyPI workflow can also be triggered manually. Manual runs default to
-<code>publish=false</code>; set <code>publish=true</code> only when intentionally publishing from that
-manual run. GitHub Release-triggered runs infer the expected version from the
-release tag and use the default <code>hydra-full-release</code> package set. Manual runs
-can build and promote a draft GitHub Release after publishing when
-<code>github_release_tag</code> is provided.</p>
+<p>The PyPI workflow is manual-only. Manual runs default to <code>publish=false</code>; set
+<code>publish=true</code> only when intentionally publishing from that manual run. Direct
+GitHub Release creation or edits are not treated as publish approval and do not
+trigger publishing.</p>
 <h2 class="anchor anchorTargetStickyNavbar_UHn8" id="release-summaries">Release summaries<a href="#release-summaries" class="hash-link" aria-label="Direct link to Release summaries" title="Direct link to Release summaries" translate="no">​</a></h2>
 <p>The publish workflow writes a release summary to the GitHub Actions run. The
 summary includes:</p>
