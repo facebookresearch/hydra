@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import pytest
 
+from tools.release import release
 from tools.release.release import (
     DevReleasePackageInfo,
     LocalPackageInfo,
@@ -103,3 +104,37 @@ def test_fail_if_any_target_version_published_rejects_published_package() -> Non
         match="Target version is already published for selected packages: hydra-core",
     ):
         fail_if_any_target_version_published(infos)
+
+
+def test_dispatch_publish_workflow_uses_json_boolean_input(monkeypatch) -> None:
+    calls = []
+
+    def fake_run_checked(cmd, cwd=None, stdin=None):
+        calls.append((cmd, cwd, stdin))
+        return ""
+
+    monkeypatch.setattr(release, "_run_checked", fake_run_checked)
+
+    release.dispatch_publish_workflow(
+        "/repo",
+        "hydra-full-release",
+        parse_version("1.4.0.dev3"),
+        "main",
+    )
+
+    assert calls == [
+        (
+            [
+                "gh",
+                "workflow",
+                "run",
+                "publish.yml",
+                "--ref",
+                "main",
+                "--json",
+            ],
+            "/repo",
+            '{"package_set": "hydra-full-release", '
+            '"expected_version": "1.4.0.dev3", "publish": true}',
+        )
+    ]

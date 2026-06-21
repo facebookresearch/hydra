@@ -1,4 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import json
 import logging
 import os
 import re
@@ -367,18 +368,28 @@ def set_package_versions(cfg: Config, hydra_root: str, target_version: str) -> N
         bump_version(cfg, package, hydra_root, target_version=target_version)
 
 
-def _run_checked(cmd: List[str], cwd: Optional[str] = None) -> str:
+def _run_checked(
+    cmd: List[str], cwd: Optional[str] = None, stdin: Optional[str] = None
+) -> str:
     log.info("Running: %s", " ".join(cmd))
     result = subprocess.run(
         cmd,
         cwd=cwd,
-        check=True,
+        check=False,
         encoding="utf-8",
+        input=stdin,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
     )
     if result.stdout:
         log.info(result.stdout.rstrip())
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(
+            result.returncode,
+            cmd,
+            output=result.stdout,
+            stderr=None,
+        )
     return result.stdout
 
 
@@ -472,16 +483,31 @@ def _single_line(cmd: List[str], cwd: str) -> str:
     return value.splitlines()[-1].strip()
 
 
+def get_remote_url(hydra_root: str, vcs: str) -> str:
+    if vcs == "sl":
+        line = _single_line(["sl", "paths", "default"], hydra_root)
+        prefix = "default = "
+        if not line.startswith(prefix):
+            raise ValueError(f"Unexpected sl paths output: {line}")
+        return line[len(prefix) :]
+    return _single_line(["git", "remote", "get-url", "origin"], hydra_root)
+
+
+def get_remote_branch_node(hydra_root: str, vcs: str, workflow_ref: str) -> str:
+    remote_url = get_remote_url(hydra_root, vcs)
+    line = _single_line(
+        ["git", "ls-remote", remote_url, f"refs/heads/{workflow_ref}"],
+        hydra_root,
+    )
+    return line.split()[0]
+
+
 def ensure_publish_base_matches_ref(hydra_root: str, vcs: str, workflow_ref: str) -> None:
     if vcs == "sl":
         current = _single_line(["sl", "log", "-r", ".", "-T", "{node}"], hydra_root)
-        expected = _single_line(
-            ["sl", "log", "-r", f"remote/{workflow_ref}", "-T", "{node}"],
-            hydra_root,
-        )
     else:
         current = _single_line(["git", "rev-parse", "HEAD"], hydra_root)
-        expected = _single_line(["git", "rev-parse", f"origin/{workflow_ref}"], hydra_root)
+    expected = get_remote_branch_node(hydra_root, vcs, workflow_ref)
 
     if current != expected:
         raise ValueError(
@@ -519,6 +545,11 @@ def ensure_publish_tools(hydra_root: str, vcs: str) -> None:
 def dispatch_publish_workflow(
     hydra_root: str, package_set: str, target_version: Version, workflow_ref: str
 ) -> None:
+    inputs = {
+        "package_set": package_set,
+        "expected_version": str(target_version),
+        "publish": True,
+    }
     _run_checked(
         [
             "gh",
@@ -527,14 +558,10 @@ def dispatch_publish_workflow(
             "publish.yml",
             "--ref",
             workflow_ref,
-            "-f",
-            f"package_set={package_set}",
-            "-f",
-            f"expected_version={target_version}",
-            "-f",
-            "publish=true",
+            "--json",
         ],
         cwd=hydra_root,
+        stdin=json.dumps(inputs),
     )
 
 
