@@ -1404,12 +1404,12 @@ def test_tag_sweep(value: str, expected: str) -> None:
         ),
         param(
             "sort(range(1.5,-0.5,-0.5))",
-            RangeSweep(start=0.0, stop=2.0, step=0.5),
+            RangeSweep(start=0.0, stop=1.75, step=0.5),
             id="sort(range(1.5,-0.5,-0.5))",
         ),
         param(
             "sort(range(0,2,0.5),reverse=true)",
-            RangeSweep(start=1.5, stop=-0.5, step=-0.5),
+            RangeSweep(start=1.5, stop=-0.25, step=-0.5),
             id="range:sort:reverse)",
         ),
         # ranges that do not land exactly on ``stop`` (last element != stop - step)
@@ -1449,6 +1449,7 @@ def test_sort(value: str, expected: str) -> None:
         param(1, 10, 1, id="int:landing"),
         param(0, 2, 0.5, id="float:landing"),
         param(0, 1.3, 0.5, id="float:non_landing"),
+        param(1.3, 0, -0.5, id="float:non_landing:neg_step"),
     ],
 )
 def test_sort_range_materializes_to_sorted_values(
