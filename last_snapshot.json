@@ -41,9 +41,10 @@
     "3207": "2026-06-11",
     "3213": "2026-06-17",
     "3223": "2026-06-20",
+    "3228": "2026-06-22",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-22T20:37:10Z",
+  "generated_at": "2026-06-22T21:33:16Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3168,18 +3169,6 @@
       "title": "Add hydra.override.aliases for explicit CLI override aliases",
       "updated_at": "2026-06-20T20:42:36Z"
     },
-    "3228": {
-      "category": "Enhancement",
-      "created_at": "2026-06-21T13:35:36Z",
-      "labels": [],
-      "pr_numbers": [
-        "3219"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "sort() of a range() that does not land exactly on stop returns wrong values",
-      "updated_at": "2026-06-21T13:35:36Z"
-    },
     "3229": {
       "category": "Bug",
       "created_at": "2026-06-21T20:16:59Z",
@@ -3909,6 +3898,18 @@
       "status": "done",
       "title": "Prevent duplicate-load defaults-list interpolation workaround",
       "updated_at": "2026-06-20T20:03:55Z"
+    },
+    "3228": {
+      "category": "Enhancement",
+      "created_at": "2026-06-21T13:35:36Z",
+      "labels": [],
+      "pr_numbers": [
+        "3219"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "sort() of a range() that does not land exactly on stop returns wrong values",
+      "updated_at": "2026-06-21T13:35:36Z"
     },
     "692": {
       "category": "Enhancement",
