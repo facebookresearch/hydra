@@ -94,3 +94,4 @@
 {"ts": "2026-06-21T20:19:31Z", "kind": "closed", "issue": 3031, "issue_url": "https://github.com/facebookresearch/hydra/issues/3031", "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_"}
 {"ts": "2026-06-21T20:46:26Z", "kind": "new", "issue": 3230, "issue_url": "https://github.com/facebookresearch/hydra/issues/3230", "title": "Add Compose API initializer for multiple config search path entries"}
 {"ts": "2026-06-22T05:01:45Z", "kind": "closed", "issue": 3033, "issue_url": "https://github.com/facebookresearch/hydra/issues/3033", "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path"}
+{"ts": "2026-06-22T11:26:15Z", "kind": "closed", "issue": 2989, "issue_url": "https://github.com/facebookresearch/hydra/issues/2989", "title": "[Bug]"}
