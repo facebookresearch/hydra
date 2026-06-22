@@ -7,6 +7,7 @@
     "2479": "2026-06-07",
     "2502": "2026-06-07",
     "2940": "2026-05-30",
+    "2945": "2026-06-22",
     "2946": "2026-06-22",
     "2953": "2026-06-22",
     "2958": "2026-06-22",
@@ -41,7 +42,7 @@
     "3223": "2026-06-20",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-22T15:16:17Z",
+  "generated_at": "2026-06-22T15:35:42Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2648,18 +2649,6 @@
       "title": "[Feature Request] I would like resolvers to access the decorated main function's docstring and the name of the running script, as well as some other capabilities.",
       "updated_at": "2024-09-03T00:52:17Z"
     },
-    "2945": {
-      "category": "Bug",
-      "created_at": "2024-09-03T00:45:21Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] The \"Contributing\" link in the GitHub template for feature requests points to a 404 error",
-      "updated_at": "2024-09-03T00:45:21Z"
-    },
     "2949": {
       "category": "Enhancement",
       "created_at": "2024-09-10T16:13:54Z",
@@ -3236,7 +3225,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Guard against Hydra launcher overrides inside swept job configs",
-      "updated_at": "2026-06-22T15:00:26Z"
+      "updated_at": "2026-06-22T15:25:04Z"
     },
     "385": {
       "category": "Enhancement",
@@ -3510,6 +3499,18 @@
       "status": "done",
       "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
       "updated_at": "2025-08-17T22:53:33Z"
+    },
+    "2945": {
+      "category": "Bug",
+      "created_at": "2024-09-03T00:45:21Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] The \"Contributing\" link in the GitHub template for feature requests points to a 404 error",
+      "updated_at": "2024-09-03T00:45:21Z"
     },
     "2946": {
       "category": "Bug",

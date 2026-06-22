@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-22",
-  "generated_at": "2026-06-22T15:16:17Z",
+  "generated_at": "2026-06-22T15:35:42Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 272,
+    "open_total": 271,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 99,
-        "percentage": 36.4
+        "count": 98,
+        "percentage": 36.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 141,
-        "percentage": 51.8
+        "percentage": 52.0
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 261
+        "count": 260
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 40
+        "count": 41
       }
     ]
   },
@@ -3641,21 +3641,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2944"
     },
     {
-      "number": 2945,
-      "title": "[Bug] The \"Contributing\" link in the GitHub template for feature requests points to a 404 error",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-09-03",
-      "updated": "2024-09-03",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2945"
-    },
-    {
       "number": 2949,
       "title": "[Feature Request] Use @hydra.main() decorator for multiple python scripts from one bash script",
       "category": "Enhancement",
@@ -4438,6 +4423,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2940"
     },
     {
+      "number": 2946,
+      "title": "[Bug] Joblib multirun not working when specified within the experiment file",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-09-04",
+      "updated": "2024-09-18",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2946"
+    },
+    {
       "number": 2953,
       "title": "[Bug] Depercated warning regarding __self__ in defaults list",
       "category": "Bug",
@@ -4929,22 +4929,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
     },
     {
-      "number": 2946,
-      "title": "[Bug] Joblib multirun not working when specified within the experiment file",
+      "number": 2945,
+      "title": "[Bug] The \"Contributing\" link in the GitHub template for feature requests points to a 404 error",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2024-09-04",
-      "updated": "2024-09-18",
+      "created": "2024-09-03",
+      "updated": "2024-09-03",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2946"
+      "url": "https://github.com/facebookresearch/hydra/issues/2945"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-22T15:35:42Z",
+      "kind": "closed",
+      "issue": 2945,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2945",
+      "title": "[Bug] The \"Contributing\" link in the GitHub template for feature requests points to a 404 error"
+    },
     {
       "ts": "2026-06-22T15:16:17Z",
       "kind": "closed",
