@@ -1,27 +1,27 @@
 {
-  "generated_on": "2026-06-21",
-  "generated_at": "2026-06-21T20:46:26Z",
+  "generated_on": "2026-06-22",
+  "generated_at": "2026-06-22T05:01:45Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 280,
+    "open_total": 279,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 106,
-        "percentage": 37.9
+        "count": 105,
+        "percentage": 37.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 142,
-        "percentage": 50.7
+        "percentage": 50.9
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.6
+        "percentage": 4.7
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 269
+        "count": 268
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 31
+        "count": 32
       }
     ]
   },
@@ -4000,21 +4000,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3028"
     },
     {
-      "number": 3033,
-      "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-02-27",
-      "updated": "2025-02-27",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3033"
-    },
-    {
       "number": 3035,
       "title": "weird behaviour when inheriting configs",
       "category": "Enhancement",
@@ -4927,9 +4912,31 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
+    },
+    {
+      "number": 3033,
+      "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-02-27",
+      "updated": "2025-02-27",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3033"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-22T05:01:45Z",
+      "kind": "closed",
+      "issue": 3033,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3033",
+      "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path"
+    },
     {
       "ts": "2026-06-21T20:46:26Z",
       "kind": "new",

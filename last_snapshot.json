@@ -8,6 +8,7 @@
     "2502": "2026-06-07",
     "2940": "2026-05-30",
     "3031": "2026-06-21",
+    "3033": "2026-06-22",
     "3034": "2026-06-20",
     "3036": "2026-06-19",
     "3038": "2026-06-19",
@@ -32,7 +33,7 @@
     "3223": "2026-06-20",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-21T20:46:26Z",
+  "generated_at": "2026-06-22T05:01:45Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2923,18 +2924,6 @@
       "title": "Is there a way to get the current file location within the config file?",
       "updated_at": "2025-02-28T09:28:34Z"
     },
-    "3033": {
-      "category": "Bug",
-      "created_at": "2025-02-27T01:51:59Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path",
-      "updated_at": "2025-02-27T01:51:59Z"
-    },
     "3035": {
       "category": "Enhancement",
       "created_at": "2025-02-27T19:03:00Z",
@@ -3607,6 +3596,18 @@
       "status": "done",
       "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_",
       "updated_at": "2025-08-17T22:47:27Z"
+    },
+    "3033": {
+      "category": "Bug",
+      "created_at": "2025-02-27T01:51:59Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path",
+      "updated_at": "2025-02-27T01:51:59Z"
     },
     "3034": {
       "category": "Bug",
