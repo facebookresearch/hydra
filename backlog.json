@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-22",
-  "generated_at": "2026-06-22T13:23:37Z",
+  "generated_at": "2026-06-22T13:41:40Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 274,
+    "open_total": 273,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 100,
-        "percentage": 36.5
+        "count": 99,
+        "percentage": 36.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 142,
-        "percentage": 51.8
+        "percentage": 52.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.7
+        "percentage": 4.8
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 263
+        "count": 262
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 37
+        "count": 38
       }
     ]
   },
@@ -3686,21 +3686,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2949"
     },
     {
-      "number": 2963,
-      "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-10-03",
-      "updated": "2024-10-03",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2963"
-    },
-    {
       "number": 2972,
       "title": "How to get the application config file path inside application code?",
       "category": "Question",
@@ -4468,6 +4453,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2940"
     },
     {
+      "number": 2953,
+      "title": "[Bug] Depercated warning regarding __self__ in defaults list",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-09-13",
+      "updated": "2024-09-13",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2953"
+    },
+    {
       "number": 2958,
       "title": "[Bug] Misleading overriding behavior for \"empty\" (null) keys",
       "category": "Bug",
@@ -4916,20 +4914,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
     },
     {
-      "number": 2953,
-      "title": "[Bug] Depercated warning regarding __self__ in defaults list",
+      "number": 2963,
+      "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2024-09-13",
-      "updated": "2024-09-13",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/2953"
+      "created": "2024-10-03",
+      "updated": "2024-10-03",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2963"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-22T13:41:40Z",
+      "kind": "closed",
+      "issue": 2963,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2963",
+      "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource"
+    },
     {
       "ts": "2026-06-22T13:23:37Z",
       "kind": "closed",

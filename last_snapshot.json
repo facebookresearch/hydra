@@ -11,6 +11,7 @@
     "2958": "2026-06-22",
     "2959": "2026-06-22",
     "2961": "2026-06-22",
+    "2963": "2026-06-22",
     "2989": "2026-06-22",
     "3031": "2026-06-21",
     "3033": "2026-06-22",
@@ -38,7 +39,7 @@
     "3223": "2026-06-20",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-22T13:23:37Z",
+  "generated_at": "2026-06-22T13:41:40Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2681,18 +2682,6 @@
       "title": "[Feature Request] Use @hydra.main() decorator for multiple python scripts from one bash script",
       "updated_at": "2024-09-11T06:11:22Z"
     },
-    "2963": {
-      "category": "Bug",
-      "created_at": "2024-10-03T12:54:31Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource",
-      "updated_at": "2024-10-03T12:54:31Z"
-    },
     "2972": {
       "category": "Question",
       "created_at": "2024-10-16T09:36:34Z",
@@ -3577,6 +3566,18 @@
       "status": "done",
       "title": "[Bug] Google Colab: MissingConfigException: Primary config directory not found. Check that the config directory '/tmp/ipykernel_3309' exists and readable",
       "updated_at": "2024-09-29T00:29:27Z"
+    },
+    "2963": {
+      "category": "Bug",
+      "created_at": "2024-10-03T12:54:31Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource",
+      "updated_at": "2024-10-03T12:54:31Z"
     },
     "2989": {
       "category": "Bug",

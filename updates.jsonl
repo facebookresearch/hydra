@@ -99,3 +99,4 @@
 {"ts": "2026-06-22T12:56:18Z", "kind": "closed", "issue": 2959, "issue_url": "https://github.com/facebookresearch/hydra/issues/2959", "title": "[Bug] Deleting a key via CLI doesn't affect `_self_`"}
 {"ts": "2026-06-22T13:15:40Z", "kind": "closed", "issue": 2958, "issue_url": "https://github.com/facebookresearch/hydra/issues/2958", "title": "[Bug] Misleading overriding behavior for \"empty\" (null) keys"}
 {"ts": "2026-06-22T13:23:37Z", "kind": "closed", "issue": 2953, "issue_url": "https://github.com/facebookresearch/hydra/issues/2953", "title": "[Bug] Depercated warning regarding __self__ in defaults list"}
+{"ts": "2026-06-22T13:41:40Z", "kind": "closed", "issue": 2963, "issue_url": "https://github.com/facebookresearch/hydra/issues/2963", "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource"}
