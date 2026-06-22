@@ -326,6 +326,10 @@ class ConfigLoaderImpl(ConfigLoader):
             overrides=overrides,
             run_mode=RunMode.RUN,
         )
+        ConfigLoaderImpl._ensure_no_sweep_config_controller_override(
+            master_config=master_config,
+            sweep_config=sweep_config,
+        )
 
         # Copy old config cache to ensure we get the same resolved values (for things
         # like timestamps etc). Since `oc.env` does not cache environment variables
@@ -333,6 +337,24 @@ class ConfigLoaderImpl(ConfigLoader):
         OmegaConf.copy_cache(from_config=master_config, to_config=sweep_config)
 
         return sweep_config
+
+    @staticmethod
+    def _ensure_no_sweep_config_controller_override(
+        master_config: DictConfig, sweep_config: DictConfig
+    ) -> None:
+        controller_groups = ("hydra/launcher", "hydra/sweeper")
+        master_choices = master_config.hydra.runtime.choices
+        sweep_choices = sweep_config.hydra.runtime.choices
+        for group in controller_groups:
+            master_choice = master_choices.get(group)
+            sweep_choice = sweep_choices.get(group)
+            if master_choice != sweep_choice:
+                raise ConfigCompositionException(
+                    f"'{group}' must be selected before the sweep starts, "
+                    f"but a swept job config changed it from "
+                    f"'{master_choice}' to '{sweep_choice}'. Select it in "
+                    "the primary config or from the command line."
+                )
 
     def get_search_path(self) -> ConfigSearchPath:
         return self.config_search_path
