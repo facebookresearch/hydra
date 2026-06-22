@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import builtins
+import decimal
 import json
 import random
 from copy import copy
@@ -361,42 +362,55 @@ def _sort_sweep(
     elif isinstance(sweep, RangeSweep):
         assert sweep.start is not None
         assert sweep.stop is not None
-        # Reverse the range only when its natural direction (ascending when
-        # step > 0) does not already match the requested order. The previous
-        # implementation derived the new endpoints from ``stop``, which is
-        # exclusive and need not coincide with the last element, so it produced
-        # wrong values for ranges that do not land exactly on ``stop`` (e.g.
-        # ``sort(range(0, 5, 2))`` yielded ``[3, 1, -1]`` instead of
-        # ``[4, 2, 0]``). Derive the new endpoints from the actual first and
-        # last elements instead.
         if (sweep.step > 0) == reverse:
-            # Find the last element without materializing the whole range, which
-            # could be very large: ``range`` supports O(1) len/indexing, and
-            # ``FloatRange`` is iterated once while keeping only the last value.
-            r = sweep.range()
-            is_int_range = isinstance(r, range)
-            if is_int_range:
-                count = len(r)
-                last = r[-1] if count else None
-            else:
-                count = 0
-                last = None
-                for last in r:
-                    count += 1
-            if count > 1:
-                first = sweep.start
-                new_step = -sweep.step
-                sweep.start = last
-                # The reversed range ends just past ``first``. Integer ranges land
-                # exactly, so the boundary is ``first + new_step``. Float ranges
-                # accumulate with rounding, so use a half-step margin to avoid
-                # adding or dropping a boundary element for non-landing,
-                # non-representable steps (e.g. ``sort(range(1.3, 0, -0.5))``).
-                sweep.stop = first + new_step if is_int_range else first + new_step / 2
-                sweep.step = new_step
+            _reverse_range_sweep(sweep)
         return sweep
     else:
         assert False
+
+
+def _reverse_range_sweep(sweep: RangeSweep) -> None:
+    r = sweep.range()
+    if isinstance(r, builtins.range):
+        count = len(r)
+        if count > 1:
+            first = r[0]
+            last = r[-1]
+            sweep.start = last
+            sweep.step = -sweep.step
+            sweep.stop = first + sweep.step
+    else:
+        start = decimal.Decimal(str(sweep.start))
+        stop = decimal.Decimal(str(sweep.stop))
+        step = decimal.Decimal(str(sweep.step))
+        count = _float_range_count(start=start, stop=stop, step=step)
+        if count > 1:
+            first = start
+            last = start + (count - 1) * step
+            sweep.start = last
+            sweep.step = -step
+            sweep.stop = first + sweep.step / 2
+
+
+def _float_range_count(
+    start: decimal.Decimal, stop: decimal.Decimal, step: decimal.Decimal
+) -> int:
+    if step == 0:
+        return 0
+    if step > 0:
+        if start >= stop:
+            return 0
+        distance = stop - start
+    else:
+        if start <= stop:
+            return 0
+        distance = start - stop
+    step = abs(step)
+    quotient, remainder = divmod(distance, step)
+    count = int(quotient)
+    if remainder != 0:
+        count += 1
+    return count
 
 
 def glob(

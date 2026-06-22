@@ -89,14 +89,15 @@ class ChoiceSweep(Sweep):
 
 @dataclass
 class FloatRange:
-    start: Union[decimal.Decimal, float]
-    stop: Union[decimal.Decimal, float]
-    step: Union[decimal.Decimal, float]
+    start: Union[decimal.Decimal, float, int]
+    stop: Union[decimal.Decimal, float, int]
+    step: Union[decimal.Decimal, float, int]
+    _idx: int = field(default=0, init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
-        self.start = decimal.Decimal(self.start)
-        self.stop = decimal.Decimal(self.stop)
-        self.step = decimal.Decimal(self.step)
+        self.start = decimal.Decimal(str(self.start))
+        self.stop = decimal.Decimal(str(self.stop))
+        self.step = decimal.Decimal(str(self.step))
 
     def __iter__(self) -> Any:
         return self
@@ -105,18 +106,17 @@ class FloatRange:
         assert isinstance(self.start, decimal.Decimal)
         assert isinstance(self.stop, decimal.Decimal)
         assert isinstance(self.step, decimal.Decimal)
+        current = self.start + self.step * self._idx
         if self.step > 0:
-            if self.start < self.stop:
-                ret = float(self.start)
-                self.start += self.step
-                return ret
+            if current < self.stop:
+                self._idx += 1
+                return float(current)
             else:
                 raise StopIteration
         elif self.step < 0:
-            if self.start > self.stop:
-                ret = float(self.start)
-                self.start += self.step
-                return ret
+            if current > self.stop:
+                self._idx += 1
+                return float(current)
             else:
                 raise StopIteration
         else:
@@ -131,9 +131,9 @@ class RangeSweep(Sweep):
     Discrete range of numbers
     """
 
-    start: Optional[Union[int, float]] = None
-    stop: Optional[Union[int, float]] = None
-    step: Union[int, float] = 1
+    start: Optional[Union[int, float, decimal.Decimal]] = None
+    stop: Optional[Union[int, float, decimal.Decimal]] = None
+    step: Union[int, float, decimal.Decimal] = 1
 
     shuffle: bool = False
 
