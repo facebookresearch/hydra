@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-22",
-  "generated_at": "2026-06-22T15:35:42Z",
+  "generated_at": "2026-06-22T19:08:20Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 271,
+    "open_total": 270,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 98,
-        "percentage": 36.2
+        "count": 97,
+        "percentage": 35.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 141,
-        "percentage": 52.0
+        "percentage": 52.2
       },
       {
         "category": "Documentation",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 9
+        "count": 10
       },
       {
         "status": "blocked",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 260
+        "count": 258
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 41
+        "count": 42
       }
     ]
   },
@@ -292,6 +292,26 @@
       "updated": "2026-06-21",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3228"
+    },
+    {
+      "number": 3231,
+      "title": "Guard against Hydra launcher overrides inside swept job configs",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3232,
+          "url": "https://github.com/facebookresearch/hydra/pull/3232"
+        }
+      ],
+      "created": "2026-06-22",
+      "updated": "2026-06-22",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
       "number": 385,
@@ -3581,21 +3601,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2938"
     },
     {
-      "number": 2939,
-      "title": "[Bug]RQ Launcher Plugin under Python 3.11 got ValueError: mutable default for field enqueue is not allowed: use default_factory",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-08-22",
-      "updated": "2024-08-22",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2939"
-    },
-    {
       "number": 2942,
       "title": "[Feature Request] I'd like to be able to do multirun over files matching a glob (ideally a glob that depends on other, non-sweeped params in the config file)",
       "category": "Enhancement",
@@ -4266,21 +4271,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3230"
     },
     {
-      "number": 3231,
-      "title": "Guard against Hydra launcher overrides inside swept job configs",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-22",
-      "updated": "2026-06-22",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3231"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4421,6 +4411,21 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2940"
+    },
+    {
+      "number": 2945,
+      "title": "[Bug] The \"Contributing\" link in the GitHub template for feature requests points to a 404 error",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-09-03",
+      "updated": "2024-09-03",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2945"
     },
     {
       "number": 2946,
@@ -4929,22 +4934,49 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
     },
     {
-      "number": 2945,
-      "title": "[Bug] The \"Contributing\" link in the GitHub template for feature requests points to a 404 error",
+      "number": 2939,
+      "title": "[Bug]RQ Launcher Plugin under Python 3.11 got ValueError: mutable default for field enqueue is not allowed: use default_factory",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2024-09-03",
-      "updated": "2024-09-03",
+      "created": "2024-08-22",
+      "updated": "2024-08-22",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2945"
+      "url": "https://github.com/facebookresearch/hydra/issues/2939"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-22T19:08:20Z",
+      "kind": "pr",
+      "issue": 3231,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3231",
+      "title": "Guard against Hydra launcher overrides inside swept job configs",
+      "detail": "linked #3232"
+    },
+    {
+      "ts": "2026-06-22T19:08:20Z",
+      "kind": "closed",
+      "issue": 2939,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2939",
+      "title": "[Bug]RQ Launcher Plugin under Python 3.11 got ValueError: mutable default for field enqueue is not allowed: use default_factory"
+    },
+    {
+      "ts": "2026-06-22T19:08:20Z",
+      "kind": "status",
+      "issue": 3231,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3231",
+      "title": "Guard against Hydra launcher overrides inside swept job configs",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3232,
+        "url": "https://github.com/facebookresearch/hydra/pull/3232"
+      }
+    },
     {
       "ts": "2026-06-22T15:35:42Z",
       "kind": "closed",
