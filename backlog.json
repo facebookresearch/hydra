@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-22",
-  "generated_at": "2026-06-22T12:56:18Z",
+  "generated_at": "2026-06-22T13:15:40Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 276,
+    "open_total": 275,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 102,
-        "percentage": 37.0
+        "count": 101,
+        "percentage": 36.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 142,
-        "percentage": 51.4
+        "percentage": 51.6
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 12,
-        "percentage": 4.3
+        "percentage": 4.4
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 4,
-        "percentage": 1.4
+        "percentage": 1.5
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 265
+        "count": 264
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 35
+        "count": 36
       }
     ]
   },
@@ -3699,21 +3699,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2953"
     },
     {
-      "number": 2958,
-      "title": "[Bug] Misleading overriding behavior for \"empty\" (null) keys",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-09-18",
-      "updated": "2024-09-18",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2958"
-    },
-    {
       "number": 2963,
       "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource",
       "category": "Bug",
@@ -4496,6 +4481,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2940"
     },
     {
+      "number": 2959,
+      "title": "[Bug] Deleting a key via CLI doesn't affect `_self_`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-09-19",
+      "updated": "2024-09-19",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2959"
+    },
+    {
       "number": 2961,
       "title": "[Bug] Google Colab: MissingConfigException: Primary config directory not found. Check that the config directory '/tmp/ipykernel_3309' exists and readable",
       "category": "Bug",
@@ -4914,22 +4914,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
     },
     {
-      "number": 2959,
-      "title": "[Bug] Deleting a key via CLI doesn't affect `_self_`",
+      "number": 2958,
+      "title": "[Bug] Misleading overriding behavior for \"empty\" (null) keys",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2024-09-19",
-      "updated": "2024-09-19",
+      "created": "2024-09-18",
+      "updated": "2024-09-18",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2959"
+      "url": "https://github.com/facebookresearch/hydra/issues/2958"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-22T13:15:40Z",
+      "kind": "closed",
+      "issue": 2958,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2958",
+      "title": "[Bug] Misleading overriding behavior for \"empty\" (null) keys"
+    },
     {
       "ts": "2026-06-22T12:56:18Z",
       "kind": "closed",

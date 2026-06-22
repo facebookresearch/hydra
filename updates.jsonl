@@ -97,3 +97,4 @@
 {"ts": "2026-06-22T11:26:15Z", "kind": "closed", "issue": 2989, "issue_url": "https://github.com/facebookresearch/hydra/issues/2989", "title": "[Bug]"}
 {"ts": "2026-06-22T12:16:42Z", "kind": "closed", "issue": 2961, "issue_url": "https://github.com/facebookresearch/hydra/issues/2961", "title": "[Bug] Google Colab: MissingConfigException: Primary config directory not found. Check that the config directory '/tmp/ipykernel_3309' exists and readable"}
 {"ts": "2026-06-22T12:56:18Z", "kind": "closed", "issue": 2959, "issue_url": "https://github.com/facebookresearch/hydra/issues/2959", "title": "[Bug] Deleting a key via CLI doesn't affect `_self_`"}
+{"ts": "2026-06-22T13:15:40Z", "kind": "closed", "issue": 2958, "issue_url": "https://github.com/facebookresearch/hydra/issues/2958", "title": "[Bug] Misleading overriding behavior for \"empty\" (null) keys"}
