@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-22",
-  "generated_at": "2026-06-22T05:01:45Z",
+  "generated_at": "2026-06-22T09:06:49Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 279,
@@ -4556,6 +4556,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3031"
     },
     {
+      "number": 3033,
+      "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-02-27",
+      "updated": "2025-02-27",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3033"
+    },
+    {
       "number": 3034,
       "title": "[Bug] Default List Packaged to Root Level Not Configurable from CLI",
       "category": "Bug",
@@ -4912,21 +4927,6 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
-    },
-    {
-      "number": 3033,
-      "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2025-02-27",
-      "updated": "2025-02-27",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3033"
     }
   ],
   "updates": [
