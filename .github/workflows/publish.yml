@@ -2,6 +2,9 @@
 # Basics: https://docs.pypi.org/trusted-publishers/adding-a-publisher/
 # Security model: https://docs.pypi.org/trusted-publishers/security-model/
 name: Publish to PyPI
+run-name: >-
+  Publish ${{ inputs.package_set }} ${{ inputs.expected_version || '<version not checked>' }}
+  (${{ inputs.publish && 'upload' || 'dry run' }})
 
 on:
   workflow_dispatch:
