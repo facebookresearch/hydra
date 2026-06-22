@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-22",
-  "generated_at": "2026-06-22T14:51:22Z",
+  "generated_at": "2026-06-22T14:59:57Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 272,
@@ -4526,6 +4526,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2989"
     },
     {
+      "number": 2999,
+      "title": "[Feature Request] use slurm launcher without having to specify -m or --multirun",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-12-16",
+      "updated": "2025-04-29",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2999"
+    },
+    {
       "number": 3031,
       "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_",
       "category": "Bug",
@@ -4912,21 +4927,6 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
-    },
-    {
-      "number": 2999,
-      "title": "[Feature Request] use slurm launcher without having to specify -m or --multirun",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2024-12-16",
-      "updated": "2025-04-29",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2999"
     }
   ],
   "updates": [
