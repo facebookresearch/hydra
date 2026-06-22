@@ -101,3 +101,4 @@
 {"ts": "2026-06-22T13:23:37Z", "kind": "closed", "issue": 2953, "issue_url": "https://github.com/facebookresearch/hydra/issues/2953", "title": "[Bug] Depercated warning regarding __self__ in defaults list"}
 {"ts": "2026-06-22T13:41:40Z", "kind": "closed", "issue": 2963, "issue_url": "https://github.com/facebookresearch/hydra/issues/2963", "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource"}
 {"ts": "2026-06-22T14:51:22Z", "kind": "closed", "issue": 2999, "issue_url": "https://github.com/facebookresearch/hydra/issues/2999", "title": "[Feature Request] use slurm launcher without having to specify -m or --multirun"}
+{"ts": "2026-06-22T15:01:55Z", "kind": "new", "issue": 3231, "issue_url": "https://github.com/facebookresearch/hydra/issues/3231", "title": "Guard against Hydra launcher overrides inside swept job configs"}

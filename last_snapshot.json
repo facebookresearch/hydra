@@ -40,7 +40,7 @@
     "3223": "2026-06-20",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-22T14:59:57Z",
+  "generated_at": "2026-06-22T15:01:55Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3236,6 +3236,18 @@
       "status": "not started",
       "title": "Add Compose API initializer for multiple config search path entries",
       "updated_at": "2026-06-21T20:45:03Z"
+    },
+    "3231": {
+      "category": "Bug",
+      "created_at": "2026-06-22T15:00:26Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Guard against Hydra launcher overrides inside swept job configs",
+      "updated_at": "2026-06-22T15:00:26Z"
     },
     "385": {
       "category": "Enhancement",

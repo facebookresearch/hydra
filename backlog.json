@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-22",
-  "generated_at": "2026-06-22T14:59:57Z",
+  "generated_at": "2026-06-22T15:01:55Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 272,
+    "open_total": 273,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 99,
-        "percentage": 36.4
+        "count": 100,
+        "percentage": 36.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 141,
-        "percentage": 51.8
+        "percentage": 51.6
       },
       {
         "category": "Documentation",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 261
+        "count": 262
       },
       {
         "status": "done",
@@ -4296,6 +4296,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3230"
     },
     {
+      "number": 3231,
+      "title": "Guard against Hydra launcher overrides inside swept job configs",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-22",
+      "updated": "2026-06-22",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3231"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4930,6 +4945,13 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-22T15:01:55Z",
+      "kind": "new",
+      "issue": 3231,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3231",
+      "title": "Guard against Hydra launcher overrides inside swept job configs"
+    },
     {
       "ts": "2026-06-22T14:51:22Z",
       "kind": "closed",
