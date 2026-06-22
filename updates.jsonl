@@ -96,3 +96,4 @@
 {"ts": "2026-06-22T05:01:45Z", "kind": "closed", "issue": 3033, "issue_url": "https://github.com/facebookresearch/hydra/issues/3033", "title": "[Bug] Hydra can't find local config file, requires an extra slash be prepended to the local path"}
 {"ts": "2026-06-22T11:26:15Z", "kind": "closed", "issue": 2989, "issue_url": "https://github.com/facebookresearch/hydra/issues/2989", "title": "[Bug]"}
 {"ts": "2026-06-22T12:16:42Z", "kind": "closed", "issue": 2961, "issue_url": "https://github.com/facebookresearch/hydra/issues/2961", "title": "[Bug] Google Colab: MissingConfigException: Primary config directory not found. Check that the config directory '/tmp/ipykernel_3309' exists and readable"}
+{"ts": "2026-06-22T12:56:18Z", "kind": "closed", "issue": 2959, "issue_url": "https://github.com/facebookresearch/hydra/issues/2959", "title": "[Bug] Deleting a key via CLI doesn't affect `_self_`"}
