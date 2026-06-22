@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-22",
-  "generated_at": "2026-06-22T13:41:40Z",
+  "generated_at": "2026-06-22T14:51:22Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 273,
+    "open_total": 272,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 99,
-        "percentage": 36.3
+        "percentage": 36.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 142,
-        "percentage": 52.0
+        "count": 141,
+        "percentage": 51.8
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 262
+        "count": 261
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 38
+        "count": 39
       }
     ]
   },
@@ -3772,21 +3772,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2993"
     },
     {
-      "number": 2999,
-      "title": "[Feature Request] use slurm launcher without having to specify -m or --multirun",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-12-16",
-      "updated": "2025-04-29",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2999"
-    },
-    {
       "number": 3002,
       "title": "Implement parallel startup with startup intervals between multiple tasks in multirun mode",
       "category": "Enhancement",
@@ -4511,6 +4496,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2961"
     },
     {
+      "number": 2963,
+      "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-10-03",
+      "updated": "2024-10-03",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2963"
+    },
+    {
       "number": 2989,
       "title": "[Bug]",
       "category": "Bug",
@@ -4914,22 +4914,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
     },
     {
-      "number": 2963,
-      "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "number": 2999,
+      "title": "[Feature Request] use slurm launcher without having to specify -m or --multirun",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2024-10-03",
-      "updated": "2024-10-03",
+      "created": "2024-12-16",
+      "updated": "2025-04-29",
       "labels": [
-        "bug"
+        "enhancement"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2963"
+      "url": "https://github.com/facebookresearch/hydra/issues/2999"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-22T14:51:22Z",
+      "kind": "closed",
+      "issue": 2999,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2999",
+      "title": "[Feature Request] use slurm launcher without having to specify -m or --multirun"
+    },
     {
       "ts": "2026-06-22T13:41:40Z",
       "kind": "closed",
