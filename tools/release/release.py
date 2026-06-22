@@ -513,7 +513,9 @@ def get_github_repo_slug(remote_url: str) -> str:
     raise ValueError(f"Could not determine GitHub repo from remote URL: {remote_url}")
 
 
-def ensure_publish_base_matches_ref(hydra_root: str, vcs: str, workflow_ref: str) -> None:
+def ensure_publish_base_matches_ref(
+    hydra_root: str, vcs: str, workflow_ref: str
+) -> None:
     if vcs == "sl":
         current = _single_line(["sl", "log", "-r", ".", "-T", "{node}"], hydra_root)
     else:
@@ -648,7 +650,9 @@ def run_dev_release(
         push_current_ref(hydra_root, vcs, workflow_ref)
     else:
         log.info("Selected packages are already at %s; skipping commit", target_version)
-    dispatch_publish_workflow(hydra_root, vcs, package_set, target_version, workflow_ref)
+    dispatch_publish_workflow(
+        hydra_root, vcs, package_set, target_version, workflow_ref
+    )
 
 
 OmegaConf.register_new_resolver("parent_key", lambda _parent_: _parent_._key())

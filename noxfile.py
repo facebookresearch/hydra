@@ -329,7 +329,7 @@ def _bandit_cmd() -> List[str]:
     bandit = [
         "bandit",
         "--exclude",
-        "./.nox/**,./.sl/**,./website/**",
+        "./.nox/**,./.sl/**,./.venv/**,./build/**,./contrib/**,./temp/**,./website/**",
         "-ll",
         "-r",
         ".",
@@ -392,6 +392,7 @@ def lint(session: Session) -> None:
         "plugins",
         "tools",
         ".nox",
+        ".venv",
         "hydra/grammar/gen",
         "tools/configen/example/gen",
         "tools/configen/tests/test_modules/expected",
