@@ -361,21 +361,18 @@ def _sort_sweep(
     elif isinstance(sweep, RangeSweep):
         assert sweep.start is not None
         assert sweep.stop is not None
-        if not reverse:
-            # ascending
-            if sweep.start > sweep.stop:
-                start = sweep.stop + abs(sweep.step)
-                stop = sweep.start + abs(sweep.step)
-                sweep.start = start
-                sweep.stop = stop
-                sweep.step = -sweep.step
-        else:
-            # descending
-            if sweep.start < sweep.stop:
-                start = sweep.stop - abs(sweep.step)
-                stop = sweep.start - abs(sweep.step)
-                sweep.start = start
-                sweep.stop = stop
+        # Reverse the range only when its natural direction (ascending when
+        # step > 0) does not already match the requested order. The previous
+        # implementation derived the new endpoints from ``stop``, which is
+        # exclusive and need not coincide with the last element, so it produced
+        # wrong values for ranges that do not land exactly on ``stop`` (e.g.
+        # ``sort(range(0, 5, 2))`` yielded ``[3, 1, -1]`` instead of
+        # ``[4, 2, 0]``). Derive them from the actual first and last elements.
+        if (sweep.step > 0) == reverse:
+            elements = list(sweep.range())
+            if len(elements) > 1:
+                sweep.start = elements[-1]
+                sweep.stop = elements[0] - sweep.step
                 sweep.step = -sweep.step
         return sweep
     else:
