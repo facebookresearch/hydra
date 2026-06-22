@@ -7,6 +7,7 @@
     "2479": "2026-06-07",
     "2502": "2026-06-07",
     "2940": "2026-05-30",
+    "2946": "2026-06-22",
     "2953": "2026-06-22",
     "2958": "2026-06-22",
     "2959": "2026-06-22",
@@ -40,7 +41,7 @@
     "3223": "2026-06-20",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-22T15:01:55Z",
+  "generated_at": "2026-06-22T15:16:17Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2659,18 +2660,6 @@
       "title": "[Bug] The \"Contributing\" link in the GitHub template for feature requests points to a 404 error",
       "updated_at": "2024-09-03T00:45:21Z"
     },
-    "2946": {
-      "category": "Bug",
-      "created_at": "2024-09-04T15:42:33Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Joblib multirun not working when specified within the experiment file",
-      "updated_at": "2024-09-18T08:56:18Z"
-    },
     "2949": {
       "category": "Enhancement",
       "created_at": "2024-09-10T16:13:54Z",
@@ -3521,6 +3510,18 @@
       "status": "done",
       "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
       "updated_at": "2025-08-17T22:53:33Z"
+    },
+    "2946": {
+      "category": "Bug",
+      "created_at": "2024-09-04T15:42:33Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Joblib multirun not working when specified within the experiment file",
+      "updated_at": "2024-09-18T08:56:18Z"
     },
     "2953": {
       "category": "Bug",

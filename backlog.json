@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-22",
-  "generated_at": "2026-06-22T15:01:55Z",
+  "generated_at": "2026-06-22T15:16:17Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 273,
+    "open_total": 272,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 100,
-        "percentage": 36.6
+        "count": 99,
+        "percentage": 36.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 141,
-        "percentage": 51.6
+        "percentage": 51.8
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 262
+        "count": 261
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 39
+        "count": 40
       }
     ]
   },
@@ -3656,21 +3656,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2945"
     },
     {
-      "number": 2946,
-      "title": "[Bug] Joblib multirun not working when specified within the experiment file",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-09-04",
-      "updated": "2024-09-18",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2946"
-    },
-    {
       "number": 2949,
       "title": "[Feature Request] Use @hydra.main() decorator for multiple python scripts from one bash script",
       "category": "Enhancement",
@@ -4942,9 +4927,31 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
+    },
+    {
+      "number": 2946,
+      "title": "[Bug] Joblib multirun not working when specified within the experiment file",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-09-04",
+      "updated": "2024-09-18",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2946"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-22T15:16:17Z",
+      "kind": "closed",
+      "issue": 2946,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2946",
+      "title": "[Bug] Joblib multirun not working when specified within the experiment file"
+    },
     {
       "ts": "2026-06-22T15:01:55Z",
       "kind": "new",
