@@ -7,6 +7,7 @@
     "2479": "2026-06-07",
     "2502": "2026-06-07",
     "2940": "2026-05-30",
+    "2961": "2026-06-22",
     "2989": "2026-06-22",
     "3031": "2026-06-21",
     "3033": "2026-06-22",
@@ -34,7 +35,7 @@
     "3223": "2026-06-20",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-22T11:26:15Z",
+  "generated_at": "2026-06-22T12:16:42Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2711,18 +2712,6 @@
       "title": "[Bug] Deleting a key via CLI doesn't affect `_self_`",
       "updated_at": "2024-09-19T05:28:01Z"
     },
-    "2961": {
-      "category": "Bug",
-      "created_at": "2024-09-29T00:29:27Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Google Colab: MissingConfigException: Primary config directory not found. Check that the config directory '/tmp/ipykernel_3309' exists and readable",
-      "updated_at": "2024-09-29T00:29:27Z"
-    },
     "2963": {
       "category": "Bug",
       "created_at": "2024-10-03T12:54:31Z",
@@ -3573,6 +3562,18 @@
       "status": "done",
       "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
       "updated_at": "2025-08-17T22:53:33Z"
+    },
+    "2961": {
+      "category": "Bug",
+      "created_at": "2024-09-29T00:29:27Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Google Colab: MissingConfigException: Primary config directory not found. Check that the config directory '/tmp/ipykernel_3309' exists and readable",
+      "updated_at": "2024-09-29T00:29:27Z"
     },
     "2989": {
       "category": "Bug",

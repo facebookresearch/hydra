@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-22",
-  "generated_at": "2026-06-22T11:26:15Z",
+  "generated_at": "2026-06-22T12:16:42Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 278,
+    "open_total": 277,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 104,
-        "percentage": 37.4
+        "count": 103,
+        "percentage": 37.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 142,
-        "percentage": 51.1
+        "percentage": 51.3
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 267
+        "count": 266
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 33
+        "count": 34
       }
     ]
   },
@@ -3729,21 +3729,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2959"
     },
     {
-      "number": 2961,
-      "title": "[Bug] Google Colab: MissingConfigException: Primary config directory not found. Check that the config directory '/tmp/ipykernel_3309' exists and readable",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-09-29",
-      "updated": "2024-09-29",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2961"
-    },
-    {
       "number": 2963,
       "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource",
       "category": "Bug",
@@ -4526,6 +4511,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2940"
     },
     {
+      "number": 2989,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-11-18",
+      "updated": "2024-11-18",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2989"
+    },
+    {
       "number": 3031,
       "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_",
       "category": "Bug",
@@ -4914,22 +4914,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3223"
     },
     {
-      "number": 2989,
-      "title": "[Bug]",
+      "number": 2961,
+      "title": "[Bug] Google Colab: MissingConfigException: Primary config directory not found. Check that the config directory '/tmp/ipykernel_3309' exists and readable",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2024-11-18",
-      "updated": "2024-11-18",
+      "created": "2024-09-29",
+      "updated": "2024-09-29",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2989"
+      "url": "https://github.com/facebookresearch/hydra/issues/2961"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-22T12:16:42Z",
+      "kind": "closed",
+      "issue": 2961,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2961",
+      "title": "[Bug] Google Colab: MissingConfigException: Primary config directory not found. Check that the config directory '/tmp/ipykernel_3309' exists and readable"
+    },
     {
       "ts": "2026-06-22T11:26:15Z",
       "kind": "closed",
