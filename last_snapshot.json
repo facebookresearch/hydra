@@ -7,6 +7,7 @@
     "2479": "2026-06-07",
     "2502": "2026-06-07",
     "2940": "2026-05-30",
+    "2953": "2026-06-22",
     "2958": "2026-06-22",
     "2959": "2026-06-22",
     "2961": "2026-06-22",
@@ -37,7 +38,7 @@
     "3223": "2026-06-20",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-22T13:15:40Z",
+  "generated_at": "2026-06-22T13:23:37Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2680,16 +2681,6 @@
       "title": "[Feature Request] Use @hydra.main() decorator for multiple python scripts from one bash script",
       "updated_at": "2024-09-11T06:11:22Z"
     },
-    "2953": {
-      "category": "Bug",
-      "created_at": "2024-09-13T18:54:24Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Depercated warning regarding __self__ in defaults list",
-      "updated_at": "2024-09-13T18:54:46Z"
-    },
     "2963": {
       "category": "Bug",
       "created_at": "2024-10-03T12:54:31Z",
@@ -3540,6 +3531,16 @@
       "status": "done",
       "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi",
       "updated_at": "2025-08-17T22:53:33Z"
+    },
+    "2953": {
+      "category": "Bug",
+      "created_at": "2024-09-13T18:54:24Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Depercated warning regarding __self__ in defaults list",
+      "updated_at": "2024-09-13T18:54:46Z"
     },
     "2958": {
       "category": "Bug",
