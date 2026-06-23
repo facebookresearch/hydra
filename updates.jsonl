@@ -112,3 +112,4 @@
 {"ts": "2026-06-23T10:25:31Z", "kind": "closed", "issue": 2926, "issue_url": "https://github.com/facebookresearch/hydra/issues/2926", "title": "[Bug] hydra.utils.instantiate can not find modules in mtrl"}
 {"ts": "2026-06-23T12:56:07Z", "kind": "closed", "issue": 2915, "issue_url": "https://github.com/facebookresearch/hydra/issues/2915", "title": "[Bug] initialize() and compose() do not work on Databricks 13.3 LTS"}
 {"ts": "2026-06-23T13:25:27Z", "kind": "closed", "issue": 2913, "issue_url": "https://github.com/facebookresearch/hydra/issues/2913", "title": "[Bug] hydra.utils.instantiate fails with resolver returning list in defaults package"}
+{"ts": "2026-06-23T15:35:00Z", "kind": "new", "issue": 3237, "issue_url": "https://github.com/facebookresearch/hydra/issues/3237", "title": "Rework version_base into an opt-in compatibility lever"}
