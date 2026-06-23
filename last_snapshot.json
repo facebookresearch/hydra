@@ -45,9 +45,10 @@
     "3213": "2026-06-17",
     "3223": "2026-06-20",
     "3228": "2026-06-22",
+    "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-23T15:35:00Z",
+  "generated_at": "2026-06-23T17:31:26Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3160,20 +3161,6 @@
       "title": "Add Compose API initializer for multiple config search path entries",
       "updated_at": "2026-06-21T20:45:03Z"
     },
-    "3231": {
-      "category": "Bug",
-      "created_at": "2026-06-22T15:00:26Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [
-        "3232"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "Guard against Hydra launcher overrides inside swept job configs",
-      "updated_at": "2026-06-22T15:25:04Z"
-    },
     "3236": {
       "category": "Enhancement",
       "created_at": "2026-06-23T09:56:08Z",
@@ -3935,6 +3922,20 @@
       "status": "done",
       "title": "sort() of a range() that does not land exactly on stop returns wrong values",
       "updated_at": "2026-06-21T13:35:36Z"
+    },
+    "3231": {
+      "category": "Bug",
+      "created_at": "2026-06-22T15:00:26Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "3232"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Guard against Hydra launcher overrides inside swept job configs",
+      "updated_at": "2026-06-22T15:25:04Z"
     },
     "692": {
       "category": "Enhancement",
