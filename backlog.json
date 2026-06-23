@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-23",
-  "generated_at": "2026-06-23T09:57:29Z",
+  "generated_at": "2026-06-23T10:25:31Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 270,
+    "open_total": 269,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 97,
-        "percentage": 35.9
+        "count": 96,
+        "percentage": 35.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 141,
-        "percentage": 52.2
+        "percentage": 52.4
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 12,
-        "percentage": 4.4
+        "percentage": 4.5
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 259
+        "count": 258
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 43
+        "count": 44
       }
     ]
   },
@@ -3525,21 +3525,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2915"
     },
     {
-      "number": 2926,
-      "title": "[Bug] hydra.utils.instantiate can not find modules in mtrl",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-07-19",
-      "updated": "2024-07-30",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2926"
-    },
-    {
       "number": 2927,
       "title": "Ray Launcher:  Additional properties are not allowed",
       "category": "Bug",
@@ -3548,7 +3533,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2024-07-21",
-      "updated": "2024-10-24",
+      "updated": "2026-06-23",
       "labels": [
         "bug"
       ],
@@ -4960,9 +4945,31 @@
       "updated": "2026-06-21",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3228"
+    },
+    {
+      "number": 2926,
+      "title": "[Bug] hydra.utils.instantiate can not find modules in mtrl",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-07-19",
+      "updated": "2024-07-30",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2926"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-23T10:25:31Z",
+      "kind": "closed",
+      "issue": 2926,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2926",
+      "title": "[Bug] hydra.utils.instantiate can not find modules in mtrl"
+    },
     {
       "ts": "2026-06-23T09:57:29Z",
       "kind": "new",

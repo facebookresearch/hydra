@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2926": "2026-06-23",
     "2939": "2026-06-22",
     "2940": "2026-05-30",
     "2945": "2026-06-22",
@@ -44,7 +45,7 @@
     "3228": "2026-06-22",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-23T09:57:29Z",
+  "generated_at": "2026-06-23T10:25:31Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2557,18 +2558,6 @@
       "title": "[Bug] initialize() and compose() do not work on Databricks 13.3 LTS",
       "updated_at": "2024-07-10T13:18:50Z"
     },
-    "2926": {
-      "category": "Bug",
-      "created_at": "2024-07-19T13:39:27Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] hydra.utils.instantiate can not find modules in mtrl",
-      "updated_at": "2024-07-30T07:07:14Z"
-    },
     "2927": {
       "category": "Bug",
       "created_at": "2024-07-21T09:19:25Z",
@@ -2579,7 +2568,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Ray Launcher:  Additional properties are not allowed",
-      "updated_at": "2024-10-24T14:24:17Z"
+      "updated_at": "2026-06-23T10:04:16Z"
     },
     "2935": {
       "category": "Bug",
@@ -3477,6 +3466,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2926": {
+      "category": "Bug",
+      "created_at": "2024-07-19T13:39:27Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] hydra.utils.instantiate can not find modules in mtrl",
+      "updated_at": "2024-07-30T07:07:14Z"
     },
     "2939": {
       "category": "Bug",
