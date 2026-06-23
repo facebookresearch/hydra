@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2894": "2026-06-23",
     "2908": "2026-06-23",
     "2913": "2026-06-23",
     "2915": "2026-06-23",
@@ -49,7 +50,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-23T17:50:13Z",
+  "generated_at": "2026-06-23T17:54:07Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2502,18 +2503,6 @@
       "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
       "updated_at": "2025-04-10T11:13:10Z"
     },
-    "2894": {
-      "category": "Bug",
-      "created_at": "2024-04-23T16:26:18Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] ipykernel_launcher.py: error:",
-      "updated_at": "2024-06-04T17:15:39Z"
-    },
     "2898": {
       "category": "Enhancement",
       "created_at": "2024-04-30T15:35:59Z",
@@ -3432,6 +3421,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2894": {
+      "category": "Bug",
+      "created_at": "2024-04-23T16:26:18Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] ipykernel_launcher.py: error:",
+      "updated_at": "2024-06-04T17:15:39Z"
     },
     "2908": {
       "category": "Bug",

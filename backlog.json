@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-23",
-  "generated_at": "2026-06-23T17:50:13Z",
+  "generated_at": "2026-06-23T17:54:07Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 266,
+    "open_total": 265,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 92,
-        "percentage": 34.6
+        "count": 91,
+        "percentage": 34.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 142,
-        "percentage": 53.4
+        "percentage": 53.6
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 256
+        "count": 255
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 48
+        "count": 49
       }
     ]
   },
@@ -3430,21 +3430,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2893"
     },
     {
-      "number": 2894,
-      "title": "[Bug] ipykernel_launcher.py: error:",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-04-23",
-      "updated": "2024-06-04",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2894"
-    },
-    {
       "number": 2898,
       "title": "[Feature Request & Solution] Troublehooting guide to prevent duplicated log messages",
       "category": "Enhancement",
@@ -4328,6 +4313,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2908,
+      "title": "pytest fails on Windows due to an issue with the pytest-snail plugin that is included in requirements/dev.txt",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-06-04",
+      "updated": "2024-06-04",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2908"
+    },
+    {
       "number": 2913,
       "title": "[Bug] hydra.utils.instantiate fails with resolver returning list in defaults package",
       "category": "Bug",
@@ -4962,22 +4962,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
-      "number": 2908,
-      "title": "pytest fails on Windows due to an issue with the pytest-snail plugin that is included in requirements/dev.txt",
+      "number": 2894,
+      "title": "[Bug] ipykernel_launcher.py: error:",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2024-06-04",
+      "created": "2024-04-23",
       "updated": "2024-06-04",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2908"
+      "url": "https://github.com/facebookresearch/hydra/issues/2894"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-23T17:54:07Z",
+      "kind": "closed",
+      "issue": 2894,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2894",
+      "title": "[Bug] ipykernel_launcher.py: error:"
+    },
     {
       "ts": "2026-06-23T17:50:13Z",
       "kind": "closed",
