@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2908": "2026-06-23",
     "2913": "2026-06-23",
     "2915": "2026-06-23",
     "2926": "2026-06-23",
@@ -48,7 +49,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-23T17:31:26Z",
+  "generated_at": "2026-06-23T17:50:13Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2525,18 +2526,6 @@
       "title": "[Feature Request & Solution] Troublehooting guide to prevent duplicated log messages",
       "updated_at": "2024-04-30T16:42:38Z"
     },
-    "2908": {
-      "category": "Bug",
-      "created_at": "2024-06-04T05:17:40Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "pytest fails on Windows due to an issue with the pytest-snail plugin that is included in requirements/dev.txt",
-      "updated_at": "2024-06-04T05:20:49Z"
-    },
     "2927": {
       "category": "Bug",
       "created_at": "2024-07-21T09:19:25Z",
@@ -3443,6 +3432,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2908": {
+      "category": "Bug",
+      "created_at": "2024-06-04T05:17:40Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "pytest fails on Windows due to an issue with the pytest-snail plugin that is included in requirements/dev.txt",
+      "updated_at": "2024-06-04T05:20:49Z"
     },
     "2913": {
       "category": "Bug",

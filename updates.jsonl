@@ -114,3 +114,4 @@
 {"ts": "2026-06-23T13:25:27Z", "kind": "closed", "issue": 2913, "issue_url": "https://github.com/facebookresearch/hydra/issues/2913", "title": "[Bug] hydra.utils.instantiate fails with resolver returning list in defaults package"}
 {"ts": "2026-06-23T15:35:00Z", "kind": "new", "issue": 3237, "issue_url": "https://github.com/facebookresearch/hydra/issues/3237", "title": "Rework version_base into an opt-in compatibility lever"}
 {"ts": "2026-06-23T17:31:26Z", "kind": "closed", "issue": 3231, "issue_url": "https://github.com/facebookresearch/hydra/issues/3231", "title": "Guard against Hydra launcher overrides inside swept job configs"}
+{"ts": "2026-06-23T17:50:13Z", "kind": "closed", "issue": 2908, "issue_url": "https://github.com/facebookresearch/hydra/issues/2908", "title": "pytest fails on Windows due to an issue with the pytest-snail plugin that is included in requirements/dev.txt"}

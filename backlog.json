@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-23",
-  "generated_at": "2026-06-23T17:31:26Z",
+  "generated_at": "2026-06-23T17:50:13Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 267,
+    "open_total": 266,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 93,
-        "percentage": 34.8
+        "count": 92,
+        "percentage": 34.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 142,
-        "percentage": 53.2
+        "percentage": 53.4
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 257
+        "count": 256
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 47
+        "count": 48
       }
     ]
   },
@@ -3460,21 +3460,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2898"
     },
     {
-      "number": 2908,
-      "title": "pytest fails on Windows due to an issue with the pytest-snail plugin that is included in requirements/dev.txt",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-06-04",
-      "updated": "2024-06-04",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2908"
-    },
-    {
       "number": 2927,
       "title": "Ray Launcher:  Additional properties are not allowed",
       "category": "Bug",
@@ -4975,9 +4960,31 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
+    },
+    {
+      "number": 2908,
+      "title": "pytest fails on Windows due to an issue with the pytest-snail plugin that is included in requirements/dev.txt",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-06-04",
+      "updated": "2024-06-04",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2908"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-23T17:50:13Z",
+      "kind": "closed",
+      "issue": 2908,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2908",
+      "title": "pytest fails on Windows due to an issue with the pytest-snail plugin that is included in requirements/dev.txt"
+    },
     {
       "ts": "2026-06-23T17:31:26Z",
       "kind": "closed",
