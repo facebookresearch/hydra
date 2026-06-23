@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-23",
-  "generated_at": "2026-06-23T08:14:48Z",
+  "generated_at": "2026-06-23T09:57:29Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 269,
+    "open_total": 270,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 97,
-        "percentage": 36.1
+        "percentage": 35.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 140,
-        "percentage": 52.0
+        "count": 141,
+        "percentage": 52.2
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 12,
-        "percentage": 4.5
+        "percentage": 4.4
       },
       {
         "category": "Refactor",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 258
+        "count": 259
       },
       {
         "status": "done",
@@ -4253,6 +4253,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3230"
     },
     {
+      "number": 3236,
+      "title": "Clarify Ray AWS launcher support and validation expectations",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-23",
+      "updated": "2026-06-23",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3236"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4950,6 +4963,13 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-23T09:57:29Z",
+      "kind": "new",
+      "issue": 3236,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3236",
+      "title": "Clarify Ray AWS launcher support and validation expectations"
+    },
     {
       "ts": "2026-06-22T21:33:16Z",
       "kind": "closed",

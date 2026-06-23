@@ -44,7 +44,7 @@
     "3228": "2026-06-22",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-23T08:14:48Z",
+  "generated_at": "2026-06-23T09:57:29Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -3206,6 +3206,16 @@
       "status": "community PR",
       "title": "Guard against Hydra launcher overrides inside swept job configs",
       "updated_at": "2026-06-22T15:25:04Z"
+    },
+    "3236": {
+      "category": "Enhancement",
+      "created_at": "2026-06-23T09:56:08Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Clarify Ray AWS launcher support and validation expectations",
+      "updated_at": "2026-06-23T09:56:08Z"
     },
     "385": {
       "category": "Enhancement",
