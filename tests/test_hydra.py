@@ -640,13 +640,22 @@ def test_sweep_complex_defaults(
         assert sweep.returns[0][1].overrides == ["optimizer=nesterov"]
 
 
-def test_multirun_rejects_swept_config_hydra_launcher_override(
+@mark.parametrize(
+    "controller,experiment",
+    [
+        param("hydra/launcher", "custom_launcher", id="launcher"),
+        param("hydra/sweeper", "custom_sweeper", id="sweeper"),
+    ],
+)
+def test_multirun_rejects_swept_config_hydra_controller_override(
     hydra_restore_singletons: Any,
     hydra_sweep_runner: TSweepRunner,
+    controller: str,
+    experiment: str,
 ) -> None:
     with raises(
         ConfigCompositionException,
-        match="hydra/launcher.*must be selected before the sweep starts",
+        match=rf"{re.escape(controller)}.*must be selected before the sweep starts",
     ):
         with hydra_sweep_runner(
             calling_file="tests/test_apps/sweep_hydra_launcher_override/my_app.py",
@@ -654,7 +663,7 @@ def test_multirun_rejects_swept_config_hydra_launcher_override(
             config_path="conf",
             config_name="config.yaml",
             task_function=None,
-            overrides=["experiment=base,custom_launcher"],
+            overrides=[f"experiment=base,{experiment}"],
         ):
             pass
 
