@@ -12,6 +12,7 @@ from omegaconf import DictConfig, OmegaConf
 from pytest import mark, param, raises
 
 from hydra import MissingConfigException, version
+from hydra.errors import ConfigCompositionException
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
@@ -637,6 +638,36 @@ def test_sweep_complex_defaults(
         assert sweep.returns is not None and len(sweep.returns[0]) == 2
         assert sweep.returns[0][0].overrides == ["optimizer=adam"]
         assert sweep.returns[0][1].overrides == ["optimizer=nesterov"]
+
+
+@mark.parametrize(
+    "controller,experiment",
+    [
+        param("hydra/launcher", "custom_launcher", id="launcher"),
+        param("hydra/sweeper", "custom_sweeper", id="sweeper"),
+    ],
+)
+def test_multirun_rejects_swept_config_hydra_controller_override(
+    hydra_restore_singletons: Any,
+    hydra_sweep_runner: TSweepRunner,
+    tmpdir: Path,
+    controller: str,
+    experiment: str,
+) -> None:
+    with raises(
+        ConfigCompositionException,
+        match=rf"{re.escape(controller)}.*must be selected before the sweep starts",
+    ):
+        with hydra_sweep_runner(
+            calling_file="tests/test_apps/sweep_hydra_launcher_override/my_app.py",
+            calling_module=None,
+            config_path="conf",
+            config_name="config.yaml",
+            task_function=None,
+            overrides=[f"experiment=base,{experiment}"],
+            temp_dir=tmpdir,
+        ):
+            pass
 
 
 @mark.parametrize(
