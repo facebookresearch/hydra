@@ -1411,6 +1411,47 @@ def test_experiment_use_case(
     )
 
 
+@mark.parametrize("override", ["+nested/choice=two", "+nested/choice=[two]"])
+def test_external_append_is_rooted_at_search_path(override: str) -> None:
+    _test_defaults_list_impl(
+        config_name="nested/base",
+        overrides=[override],
+        expected=[
+            ResultDefault(
+                config_path="nested/base",
+                package="",
+                is_self=True,
+                primary=True,
+            ),
+            ResultDefault(
+                config_path="nested/choice/two",
+                package="",
+                parent="nested/base",
+            ),
+        ],
+    )
+
+
+def test_external_append_package_is_rooted_at_search_path() -> None:
+    _test_defaults_list_impl(
+        config_name="nested/base",
+        overrides=["+nested/choice=default_package"],
+        expected=[
+            ResultDefault(
+                config_path="nested/base",
+                package="",
+                is_self=True,
+                primary=True,
+            ),
+            ResultDefault(
+                config_path="nested/choice/default_package",
+                package="nested.choice",
+                parent="nested/base",
+            ),
+        ],
+    )
+
+
 @mark.parametrize(
     "config_name,overrides,expected",
     [
