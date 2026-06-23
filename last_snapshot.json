@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2888": "2026-06-23",
     "2894": "2026-06-23",
     "2908": "2026-06-23",
     "2913": "2026-06-23",
@@ -50,7 +51,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-23T17:54:07Z",
+  "generated_at": "2026-06-23T18:01:15Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2454,18 +2455,6 @@
       "title": "[Feature Request] Support relative paths in defaults keys.",
       "updated_at": "2026-04-23T13:57:24Z"
     },
-    "2888": {
-      "category": "Bug",
-      "created_at": "2024-04-09T08:05:06Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Failed to override configuration nodes in `--multirun`",
-      "updated_at": "2024-04-10T14:55:03Z"
-    },
     "2889": {
       "category": "Bug",
       "created_at": "2024-04-10T16:38:07Z",
@@ -2501,7 +2490,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
-      "updated_at": "2025-04-10T11:13:10Z"
+      "updated_at": "2026-06-23T17:54:47Z"
     },
     "2898": {
       "category": "Enhancement",
@@ -3421,6 +3410,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2888": {
+      "category": "Bug",
+      "created_at": "2024-04-09T08:05:06Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Failed to override configuration nodes in `--multirun`",
+      "updated_at": "2024-04-10T14:55:03Z"
     },
     "2894": {
       "category": "Bug",

@@ -116,3 +116,4 @@
 {"ts": "2026-06-23T17:31:26Z", "kind": "closed", "issue": 3231, "issue_url": "https://github.com/facebookresearch/hydra/issues/3231", "title": "Guard against Hydra launcher overrides inside swept job configs"}
 {"ts": "2026-06-23T17:50:13Z", "kind": "closed", "issue": 2908, "issue_url": "https://github.com/facebookresearch/hydra/issues/2908", "title": "pytest fails on Windows due to an issue with the pytest-snail plugin that is included in requirements/dev.txt"}
 {"ts": "2026-06-23T17:54:07Z", "kind": "closed", "issue": 2894, "issue_url": "https://github.com/facebookresearch/hydra/issues/2894", "title": "[Bug] ipykernel_launcher.py: error:"}
+{"ts": "2026-06-23T18:01:15Z", "kind": "closed", "issue": 2888, "issue_url": "https://github.com/facebookresearch/hydra/issues/2888", "title": "[Bug] Failed to override configuration nodes in `--multirun`"}
