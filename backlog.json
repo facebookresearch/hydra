@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-23",
-  "generated_at": "2026-06-23T18:01:15Z",
+  "generated_at": "2026-06-23T18:08:09Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 264,
+    "open_total": 263,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 90,
-        "percentage": 34.1
+        "count": 89,
+        "percentage": 33.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 142,
-        "percentage": 53.8
+        "percentage": 54.0
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 12,
-        "percentage": 4.5
+        "percentage": 4.6
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 254
+        "count": 253
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 50
+        "count": 51
       }
     ]
   },
@@ -3355,22 +3355,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2875"
     },
     {
-      "number": 2878,
-      "title": "[Bug] Config hierarchy contains empty strings when using relative path in defaults ",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-03-28",
-      "updated": "2026-02-22",
-      "labels": [
-        "bug",
-        "defaults list"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2878"
-    },
-    {
       "number": 2887,
       "title": "[Feature Request] Support relative paths in defaults keys.",
       "category": "Enhancement",
@@ -4298,6 +4282,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2888,
+      "title": "[Bug] Failed to override configuration nodes in `--multirun`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-04-09",
+      "updated": "2024-04-10",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2888"
+    },
+    {
       "number": 2894,
       "title": "[Bug] ipykernel_launcher.py: error:",
       "category": "Bug",
@@ -4962,22 +4961,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
-      "number": 2888,
-      "title": "[Bug] Failed to override configuration nodes in `--multirun`",
+      "number": 2878,
+      "title": "[Bug] Config hierarchy contains empty strings when using relative path in defaults ",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2024-04-09",
-      "updated": "2024-04-10",
+      "created": "2024-03-28",
+      "updated": "2026-02-22",
       "labels": [
-        "bug"
+        "bug",
+        "defaults list"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2888"
+      "url": "https://github.com/facebookresearch/hydra/issues/2878"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-23T18:08:09Z",
+      "kind": "closed",
+      "issue": 2878,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2878",
+      "title": "[Bug] Config hierarchy contains empty strings when using relative path in defaults "
+    },
     {
       "ts": "2026-06-23T18:01:15Z",
       "kind": "closed",

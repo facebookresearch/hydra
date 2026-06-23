@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2878": "2026-06-23",
     "2888": "2026-06-23",
     "2894": "2026-06-23",
     "2908": "2026-06-23",
@@ -51,7 +52,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-23T18:01:15Z",
+  "generated_at": "2026-06-23T18:08:09Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2430,19 +2431,6 @@
       "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
       "updated_at": "2024-03-22T15:26:49Z"
     },
-    "2878": {
-      "category": "Bug",
-      "created_at": "2024-03-28T16:16:52Z",
-      "labels": [
-        "bug",
-        "defaults list"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Config hierarchy contains empty strings when using relative path in defaults ",
-      "updated_at": "2026-02-22T04:44:26Z"
-    },
     "2887": {
       "category": "Enhancement",
       "created_at": "2024-04-08T11:40:58Z",
@@ -3410,6 +3398,19 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2878": {
+      "category": "Bug",
+      "created_at": "2024-03-28T16:16:52Z",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Config hierarchy contains empty strings when using relative path in defaults ",
+      "updated_at": "2026-02-22T04:44:26Z"
     },
     "2888": {
       "category": "Bug",
