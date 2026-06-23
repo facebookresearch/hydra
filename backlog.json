@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-23",
-  "generated_at": "2026-06-23T10:25:31Z",
+  "generated_at": "2026-06-23T12:56:07Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 269,
+    "open_total": 268,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 96,
-        "percentage": 35.7
+        "count": 95,
+        "percentage": 35.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 141,
-        "percentage": 52.4
+        "percentage": 52.6
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 4.8
+        "percentage": 4.9
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 258
+        "count": 257
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 44
+        "count": 45
       }
     ]
   },
@@ -3510,21 +3510,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2913"
     },
     {
-      "number": 2915,
-      "title": "[Bug] initialize() and compose() do not work on Databricks 13.3 LTS",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-06-10",
-      "updated": "2024-07-10",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2915"
-    },
-    {
       "number": 2927,
       "title": "Ray Launcher:  Additional properties are not allowed",
       "category": "Bug",
@@ -4378,6 +4363,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2926,
+      "title": "[Bug] hydra.utils.instantiate can not find modules in mtrl",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-07-19",
+      "updated": "2024-07-30",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2926"
+    },
+    {
       "number": 2939,
       "title": "[Bug]RQ Launcher Plugin under Python 3.11 got ValueError: mutable default for field enqueue is not allowed: use default_factory",
       "category": "Bug",
@@ -4947,22 +4947,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3228"
     },
     {
-      "number": 2926,
-      "title": "[Bug] hydra.utils.instantiate can not find modules in mtrl",
+      "number": 2915,
+      "title": "[Bug] initialize() and compose() do not work on Databricks 13.3 LTS",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2024-07-19",
-      "updated": "2024-07-30",
+      "created": "2024-06-10",
+      "updated": "2024-07-10",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2926"
+      "url": "https://github.com/facebookresearch/hydra/issues/2915"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-23T12:56:07Z",
+      "kind": "closed",
+      "issue": 2915,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2915",
+      "title": "[Bug] initialize() and compose() do not work on Databricks 13.3 LTS"
+    },
     {
       "ts": "2026-06-23T10:25:31Z",
       "kind": "closed",
