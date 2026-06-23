@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-23",
-  "generated_at": "2026-06-23T18:08:09Z",
+  "generated_at": "2026-06-23T19:14:39Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 263,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 3
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 253
+        "count": 252
       },
       {
         "status": "done",
@@ -112,6 +112,26 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 2875,
+      "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3238,
+          "url": "https://github.com/facebookresearch/hydra/pull/3238"
+        }
+      ],
+      "created": "2024-03-22",
+      "updated": "2024-03-22",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2875"
     },
     {
       "number": 845,
@@ -3340,21 +3360,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2874"
     },
     {
-      "number": 2875,
-      "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-03-22",
-      "updated": "2024-03-22",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2875"
-    },
-    {
       "number": 2887,
       "title": "[Feature Request] Support relative paths in defaults keys.",
       "category": "Enhancement",
@@ -4282,6 +4287,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2878,
+      "title": "[Bug] Config hierarchy contains empty strings when using relative path in defaults ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-03-28",
+      "updated": "2026-02-22",
+      "labels": [
+        "bug",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2878"
+    },
+    {
       "number": 2888,
       "title": "[Bug] Failed to override configuration nodes in `--multirun`",
       "category": "Bug",
@@ -4959,25 +4980,29 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
-    },
-    {
-      "number": 2878,
-      "title": "[Bug] Config hierarchy contains empty strings when using relative path in defaults ",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2024-03-28",
-      "updated": "2026-02-22",
-      "labels": [
-        "bug",
-        "defaults list"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2878"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-23T19:14:39Z",
+      "kind": "pr",
+      "issue": 2875,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2875",
+      "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
+      "detail": "linked #3238"
+    },
+    {
+      "ts": "2026-06-23T19:14:39Z",
+      "kind": "status",
+      "issue": 2875,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2875",
+      "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3238,
+        "url": "https://github.com/facebookresearch/hydra/pull/3238"
+      }
+    },
     {
       "ts": "2026-06-23T18:08:09Z",
       "kind": "closed",

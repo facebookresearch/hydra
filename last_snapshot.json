@@ -52,7 +52,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-23T18:08:09Z",
+  "generated_at": "2026-06-23T19:14:39Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2425,9 +2425,11 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3238"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
       "updated_at": "2024-03-22T15:26:49Z"
     },
