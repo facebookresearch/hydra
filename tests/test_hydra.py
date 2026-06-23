@@ -650,6 +650,7 @@ def test_sweep_complex_defaults(
 def test_multirun_rejects_swept_config_hydra_controller_override(
     hydra_restore_singletons: Any,
     hydra_sweep_runner: TSweepRunner,
+    tmpdir: Path,
     controller: str,
     experiment: str,
 ) -> None:
@@ -664,6 +665,7 @@ def test_multirun_rejects_swept_config_hydra_controller_override(
             config_name="config.yaml",
             task_function=None,
             overrides=[f"experiment=base,{experiment}"],
+            temp_dir=tmpdir,
         ):
             pass
 
