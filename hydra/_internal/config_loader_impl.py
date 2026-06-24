@@ -18,6 +18,7 @@ from omegaconf import (
 from omegaconf.errors import (
     ConfigAttributeError,
     ConfigKeyError,
+    MissingMandatoryValue,
     OmegaConfBaseException,
 )
 
@@ -374,31 +375,62 @@ class ConfigLoaderImpl(ConfigLoader):
             value = override.value()
             try:
                 if override.is_delete():
-                    config_val = OmegaConf.select(cfg, key, throw_on_missing=False)
-                    if config_val is None:
+                    config_val_not_found = object()
+                    config_val_missing = object()
+                    last_dot = key.rfind(".")
+                    parent: Container = cfg
+                    parent_missing = False
+                    if last_dot != -1:
+                        parent_key = key[0:last_dot]
+                        selected_parent = OmegaConf.select(
+                            cfg,
+                            parent_key,
+                            default=config_val_not_found,
+                            throw_on_missing=False,
+                        )
+                        if isinstance(selected_parent, Container):
+                            parent = selected_parent
+                        else:
+                            parent_missing = True
+
+                    try:
+                        config_val = OmegaConf.select(
+                            cfg,
+                            key,
+                            default=config_val_not_found,
+                            throw_on_missing=True,
+                        )
+                    except MissingMandatoryValue:
+                        config_val = config_val_missing
+
+                    if parent_missing or config_val is config_val_not_found:
                         # Bandit mistakes this user-facing message for a SQL snippet.
                         raise ConfigCompositionException(
                             f"Could not delete from config. '{override.key_or_group}'"  # nosec B608
                             " does not exist."
                         )
-                    elif value is not None and value != config_val:
+                    config_val_for_match = (
+                        "???" if config_val is config_val_missing else config_val
+                    )
+                    if (
+                        override.value_type is not None
+                        and value != config_val_for_match
+                    ):
                         # Bandit mistakes this user-facing message for a SQL snippet.
                         raise ConfigCompositionException(
                             "Could not delete from config. The value of"  # nosec B608
-                            f" '{override.key_or_group}' is {config_val} and not"
+                            f" '{override.key_or_group}' is {config_val_for_match} and not"
                             f" {value}."
                         )
 
-                    last_dot = key.rfind(".")
                     with open_dict(cfg):
                         if last_dot == -1:
                             del cfg[key]
                         else:
-                            node = OmegaConf.select(cfg, key[0:last_dot])
                             node_key: Union[str, int] = key[last_dot + 1 :]
-                            if isinstance(node, ListConfig):
+                            if isinstance(parent, ListConfig):
                                 node_key = int(node_key)
-                            del node[node_key]
+                            del parent[node_key]
 
                 elif override.is_add():
                     if OmegaConf.select(

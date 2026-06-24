@@ -734,6 +734,26 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
         param({"x": [1, 2, 3]}, ["~x=[1,2,3]"], {}, id="delete:list"),
         param({"x": [1, 2, 3]}, ["~x.0"], {"x": [2, 3]}, id="delete:list_item"),
         param({"x": [1, 2, 3]}, ["~x.1"], {"x": [1, 3]}, id="delete:list_item_middle"),
+        param({"x": [None, 1]}, ["~x.0"], {"x": [1]}, id="delete:list_item_null"),
+        param(
+            {"x": [None, 1]},
+            ["~x.0=null"],
+            {"x": [1]},
+            id="delete:list_item_null_strict",
+        ),
+        param({"x": [MISSING, 1]}, ["~x.0"], {"x": [1]}, id="delete:list_item_missing"),
+        param(
+            {"x": [MISSING, 1]},
+            ["~x.0=???"],
+            {"x": [1]},
+            id="delete:list_item_missing_strict",
+        ),
+        param({"x": None}, ["~x"], {}, id="delete:null"),
+        param({"x": {"y": None}}, ["~x.y"], {"x": {}}, id="delete:null_nested"),
+        param({"x": None}, ["~x=null"], {}, id="delete:null_strict"),
+        param({"x": MISSING}, ["~x=???"], {}, id="delete:missing_strict"),
+        param({"x": MISSING}, ["~x"], {}, id="delete:missing"),
+        param({"x": {"y": MISSING}}, ["~x.y"], {"x": {}}, id="delete:missing_nested"),
         param(
             {"x": 20},
             ["~z"],
@@ -742,6 +762,24 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
                 match=re.escape("Could not delete from config. 'z' does not exist."),
             ),
             id="delete_error_key",
+        ),
+        param(
+            {"x": MISSING},
+            ["~x.y"],
+            raises(
+                HydraException,
+                match=re.escape("Could not delete from config. 'x.y' does not exist."),
+            ),
+            id="delete_error_missing_parent",
+        ),
+        param(
+            {"x": None},
+            ["~x.y"],
+            raises(
+                HydraException,
+                match=re.escape("Could not delete from config. 'x.y' does not exist."),
+            ),
+            id="delete_error_null_parent",
         ),
         param(
             {"x": 20},
@@ -753,6 +791,17 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
                 ),
             ),
             id="delete_error_value",
+        ),
+        param(
+            {"x": 20},
+            ["~x=null"],
+            raises(
+                HydraException,
+                match=re.escape(
+                    "Could not delete from config. The value of 'x' is 20 and not None."
+                ),
+            ),
+            id="delete_error_value_null",
         ),
         param(
             {"x": 20},
