@@ -25,6 +25,7 @@
     "2963": "2026-06-22",
     "2989": "2026-06-22",
     "2999": "2026-06-22",
+    "3003": "2026-06-24",
     "3024": "2026-06-24",
     "3031": "2026-06-21",
     "3033": "2026-06-22",
@@ -54,7 +55,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T06:04:48Z",
+  "generated_at": "2026-06-24T06:50:17Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2644,16 +2645,6 @@
       "title": "Implement parallel startup with startup intervals between multiple tasks in multirun mode",
       "updated_at": "2025-01-20T09:33:10Z"
     },
-    "3003": {
-      "category": "Enhancement",
-      "created_at": "2025-01-06T08:09:17Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Primary config module'xxx'not found.",
-      "updated_at": "2025-01-06T13:16:35Z"
-    },
     "3011": {
       "category": "Build",
       "created_at": "2025-01-20T09:55:45Z",
@@ -3607,6 +3598,16 @@
       "status": "done",
       "title": "[Feature Request] use slurm launcher without having to specify -m or --multirun",
       "updated_at": "2025-04-29T15:40:18Z"
+    },
+    "3003": {
+      "category": "Enhancement",
+      "created_at": "2025-01-06T08:09:17Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Primary config module'xxx'not found.",
+      "updated_at": "2025-01-06T13:16:35Z"
     },
     "3024": {
       "category": "Enhancement",

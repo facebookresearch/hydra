@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-24",
-  "generated_at": "2026-06-24T06:04:48Z",
+  "generated_at": "2026-06-24T06:50:17Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 261,
+    "open_total": 260,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 88,
-        "percentage": 33.7
+        "percentage": 33.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 141,
-        "percentage": 54.0
+        "count": 140,
+        "percentage": 53.8
       },
       {
         "category": "Documentation",
@@ -33,7 +33,7 @@
         "category": "Refactor",
         "emoji": "🔧",
         "count": 3,
-        "percentage": 1.1
+        "percentage": 1.2
       },
       {
         "category": "Build",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 251
+        "count": 250
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 53
+        "count": 54
       }
     ]
   },
@@ -3603,19 +3603,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3002"
     },
     {
-      "number": 3003,
-      "title": "Primary config module'xxx'not found.",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-01-06",
-      "updated": "2025-01-06",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3003"
-    },
-    {
       "number": 3011,
       "title": "New release of hydra-colorlog?",
       "category": "Build",
@@ -4543,6 +4530,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2999"
     },
     {
+      "number": 3024,
+      "title": "Compatibility with Optuna dashboard",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-02-07",
+      "updated": "2025-02-28",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3024"
+    },
+    {
       "number": 3031,
       "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_",
       "category": "Bug",
@@ -4969,20 +4969,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
-      "number": 3024,
-      "title": "Compatibility with Optuna dashboard",
+      "number": 3003,
+      "title": "Primary config module'xxx'not found.",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2025-02-07",
-      "updated": "2025-02-28",
+      "created": "2025-01-06",
+      "updated": "2025-01-06",
       "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3024"
+      "url": "https://github.com/facebookresearch/hydra/issues/3003"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-24T06:50:17Z",
+      "kind": "closed",
+      "issue": 3003,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3003",
+      "title": "Primary config module'xxx'not found."
+    },
     {
       "ts": "2026-06-24T06:04:48Z",
       "kind": "closed",
