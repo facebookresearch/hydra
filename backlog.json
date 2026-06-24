@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-24",
-  "generated_at": "2026-06-24T04:17:12Z",
+  "generated_at": "2026-06-24T06:04:48Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 262,
+    "open_total": 261,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 88,
-        "percentage": 33.6
+        "percentage": 33.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 142,
-        "percentage": 54.2
+        "count": 141,
+        "percentage": 54.0
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 252
+        "count": 251
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 52
+        "count": 53
       }
     ]
   },
@@ -3672,19 +3672,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3018"
     },
     {
-      "number": 3024,
-      "title": "Compatibility with Optuna dashboard",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-02-07",
-      "updated": "2025-02-28",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3024"
-    },
-    {
       "number": 3026,
       "title": "[Feature Request] Allow for defaults list `override` to update the ordering of defaults?",
       "category": "Enhancement",
@@ -4265,6 +4252,26 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2875,
+      "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3238,
+          "url": "https://github.com/facebookresearch/hydra/pull/3238"
+        }
+      ],
+      "created": "2024-03-22",
+      "updated": "2024-03-22",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2875"
     },
     {
       "number": 2878,
@@ -4962,27 +4969,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
-      "number": 2875,
-      "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "number": 3024,
+      "title": "Compatibility with Optuna dashboard",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3238,
-          "url": "https://github.com/facebookresearch/hydra/pull/3238"
-        }
-      ],
-      "created": "2024-03-22",
-      "updated": "2024-03-22",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2875"
+      "prs": [],
+      "created": "2025-02-07",
+      "updated": "2025-02-28",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3024"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-24T06:04:48Z",
+      "kind": "closed",
+      "issue": 3024,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3024",
+      "title": "Compatibility with Optuna dashboard"
+    },
     {
       "ts": "2026-06-24T04:17:12Z",
       "kind": "closed",

@@ -25,6 +25,7 @@
     "2963": "2026-06-22",
     "2989": "2026-06-22",
     "2999": "2026-06-22",
+    "3024": "2026-06-24",
     "3031": "2026-06-21",
     "3033": "2026-06-22",
     "3034": "2026-06-20",
@@ -53,7 +54,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T04:17:12Z",
+  "generated_at": "2026-06-24T06:04:48Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2697,16 +2698,6 @@
       "title": "[Feature Request] Add option to replace \"/\" in hydra.job.override_dirname",
       "updated_at": "2025-02-01T11:43:35Z"
     },
-    "3024": {
-      "category": "Enhancement",
-      "created_at": "2025-02-07T04:24:38Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Compatibility with Optuna dashboard",
-      "updated_at": "2025-02-28T14:38:46Z"
-    },
     "3026": {
       "category": "Enhancement",
       "created_at": "2025-02-12T02:17:34Z",
@@ -3616,6 +3607,16 @@
       "status": "done",
       "title": "[Feature Request] use slurm launcher without having to specify -m or --multirun",
       "updated_at": "2025-04-29T15:40:18Z"
+    },
+    "3024": {
+      "category": "Enhancement",
+      "created_at": "2025-02-07T04:24:38Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Compatibility with Optuna dashboard",
+      "updated_at": "2025-02-28T14:38:46Z"
     },
     "3031": {
       "category": "Bug",
