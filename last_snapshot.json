@@ -39,6 +39,7 @@
     "3036": "2026-06-19",
     "3038": "2026-06-19",
     "3045": "2026-06-19",
+    "3047": "2026-06-24",
     "3050": "2026-06-11",
     "3058": "2026-06-07",
     "3060": "2026-06-20",
@@ -62,7 +63,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T19:23:54Z",
+  "generated_at": "2026-06-24T19:57:55Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2656,16 +2657,6 @@
       "title": "weird behaviour when inheriting configs",
       "updated_at": "2025-02-27T19:03:44Z"
     },
-    "3047": {
-      "category": "Enhancement",
-      "created_at": "2025-03-31T19:08:47Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?",
-      "updated_at": "2025-04-08T14:54:37Z"
-    },
     "3053": {
       "category": "Bug",
       "created_at": "2025-04-13T14:15:26Z",
@@ -2855,7 +2846,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Explore async execution model for launchers and sweepers",
-      "updated_at": "2026-06-08T20:18:37Z"
+      "updated_at": "2026-06-24T19:56:03Z"
     },
     "3202": {
       "category": "Enhancement",
@@ -3690,6 +3681,16 @@
       "status": "done",
       "title": "[Bug] Potential Error in get_config_path() For Absolute Paths",
       "updated_at": "2025-11-07T13:32:59Z"
+    },
+    "3047": {
+      "category": "Enhancement",
+      "created_at": "2025-03-31T19:08:47Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?",
+      "updated_at": "2025-04-08T14:54:37Z"
     },
     "3050": {
       "category": "Bug",

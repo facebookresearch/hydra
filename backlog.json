@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-06-24",
-  "generated_at": "2026-06-24T19:23:54Z",
+  "generated_at": "2026-06-24T19:57:55Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 253,
+    "open_total": 252,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 82,
-        "percentage": 32.4
+        "percentage": 32.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 139,
-        "percentage": 54.9
+        "count": 138,
+        "percentage": 54.8
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 5.1
+        "percentage": 5.2
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 12,
-        "percentage": 4.7
+        "percentage": 4.8
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 243
+        "count": 242
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 61
+        "count": 62
       }
     ]
   },
@@ -3610,19 +3610,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3035"
     },
     {
-      "number": 3047,
-      "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-03-31",
-      "updated": "2025-04-08",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3047"
-    },
-    {
       "number": 3055,
       "title": "[Feature Request] -- is there a way to sweep in nested folder inside config group?",
       "category": "Enhancement",
@@ -3814,7 +3801,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-07",
-      "updated": "2026-06-08",
+      "updated": "2026-06-24",
       "labels": [
         "enhancement",
         "wishlist",
@@ -4153,6 +4140,26 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2829"
+    },
+    {
+      "number": 2843,
+      "title": "[Bug] Unexpected behavior of tilde (~) when removing from default list of multiple choices",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3239,
+          "url": "https://github.com/facebookresearch/hydra/pull/3239"
+        }
+      ],
+      "created": "2024-01-25",
+      "updated": "2026-06-24",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2843"
     },
     {
       "number": 2869,
@@ -4774,6 +4781,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3075"
     },
     {
+      "number": 3103,
+      "title": "[Feature Request] Get swept list without `hydra.main`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-12-19",
+      "updated": "2026-05-16",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3103"
+    },
+    {
       "number": 3104,
       "title": "[Bug] Updating config group from a config group of another config group only works with full path",
       "category": "Bug",
@@ -4956,43 +4979,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
-      "number": 2843,
-      "title": "[Bug] Unexpected behavior of tilde (~) when removing from default list of multiple choices",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3239,
-          "url": "https://github.com/facebookresearch/hydra/pull/3239"
-        }
-      ],
-      "created": "2024-01-25",
-      "updated": "2026-06-24",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2843"
-    },
-    {
-      "number": 3103,
-      "title": "[Feature Request] Get swept list without `hydra.main`",
+      "number": 3047,
+      "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2025-12-19",
-      "updated": "2026-05-16",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3103"
+      "created": "2025-03-31",
+      "updated": "2025-04-08",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3047"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-24T19:57:55Z",
+      "kind": "closed",
+      "issue": 3047,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3047",
+      "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?"
+    },
     {
       "ts": "2026-06-24T19:23:54Z",
       "kind": "closed",
