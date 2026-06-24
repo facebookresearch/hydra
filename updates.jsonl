@@ -124,3 +124,4 @@
 {"ts": "2026-06-24T06:04:48Z", "kind": "closed", "issue": 3024, "issue_url": "https://github.com/facebookresearch/hydra/issues/3024", "title": "Compatibility with Optuna dashboard"}
 {"ts": "2026-06-24T06:50:17Z", "kind": "closed", "issue": 3003, "issue_url": "https://github.com/facebookresearch/hydra/issues/3003", "title": "Primary config module'xxx'not found."}
 {"ts": "2026-06-24T07:31:56Z", "kind": "closed", "issue": 2935, "issue_url": "https://github.com/facebookresearch/hydra/issues/2935", "title": "[Bug] Appending to Defaults List via command line doesn't work if config is in subfolder"}
+{"ts": "2026-06-24T07:52:31Z", "kind": "closed", "issue": 2873, "issue_url": "https://github.com/facebookresearch/hydra/issues/2873", "title": "Bug when debugging with vscode"}

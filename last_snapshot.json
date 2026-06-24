@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2873": "2026-06-24",
     "2875": "2026-06-24",
     "2878": "2026-06-23",
     "2888": "2026-06-23",
@@ -56,7 +57,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T07:31:56Z",
+  "generated_at": "2026-06-24T07:52:31Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2401,18 +2402,6 @@
       "title": "importlib-resources 6.2+ is breaking hydra",
       "updated_at": "2026-02-22T04:44:38Z"
     },
-    "2873": {
-      "category": "Bug",
-      "created_at": "2024-03-19T03:26:52Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Bug when debugging with vscode",
-      "updated_at": "2024-03-19T03:26:52Z"
-    },
     "2874": {
       "category": "Question",
       "created_at": "2024-03-21T03:42:35Z",
@@ -3358,6 +3347,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2873": {
+      "category": "Bug",
+      "created_at": "2024-03-19T03:26:52Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Bug when debugging with vscode",
+      "updated_at": "2024-03-19T03:26:52Z"
     },
     "2875": {
       "category": "Bug",
