@@ -119,11 +119,11 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
 @mark.parametrize(
     "input, expected",
     [
-        (["key=choice(1,2)"], ({"key": CategoricalDistribution([1, 2])}, {})),
-        (["key=5"], ({}, {"key": "5"})),
+        (["key=choice(1,2)"], ({"key": CategoricalDistribution([1, 2])}, {}, [])),
+        (["key=5"], ({}, {"key": "5"}, [])),
         (
             ["key1=choice(1,2)", "key2=5"],
-            ({"key1": CategoricalDistribution([1, 2])}, {"key2": "5"}),
+            ({"key1": CategoricalDistribution([1, 2])}, {"key2": "5"}, []),
         ),
         (
             ["key1=choice(1,2)", "key2=5", "key3=range(1,3)"],
@@ -133,8 +133,11 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
                     "key3": IntUniformDistribution(1, 3),
                 },
                 {"key2": "5"},
+                [],
             ),
         ),
+        (["~z"], ({}, {}, ["~z"])),
+        (["~z=10"], ({}, {}, ["~z=10"])),
     ],
 )
 def test_create_params_from_overrides(input: Any, expected: Any) -> None:
