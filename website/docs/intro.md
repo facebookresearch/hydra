@@ -25,14 +25,33 @@ The name Hydra comes from its ability to run multiple similar jobs - much like a
 Hydra supports Linux, Mac and Windows.  
 Use the version switcher in the top bar to switch between documentation versions.
  
-|        |          Version          |  Release notes                                                                      | Python Versions    |
-| -------|---------------------------|-------------------------------------------------------------------------------------| -------------------|
-| &#9658;| 1.3 (Stable)              | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.3.0)      | **3.6 - 3.11**     |
-|        | 1.2                       | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.2.0)      | **3.6 - 3.10**     |
-|        | 1.1                       | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.1.1)      | **3.6 - 3.9**      |
-|        | 1.0                       | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v1.0.7)      | **3.6 - 3.8**      |
-|        | 0.11                      | [Release notes](https://github.com/facebookresearch/hydra/releases/tag/v0.11.3)     | **2.7, 3.5 - 3.8** |
-
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>Version</th>
+      <th>Release notes</th>
+      <th>Python Versions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>&#9658;</td>
+      <td>1.4 (Development)</td>
+      <td>Development releases are available on PyPI.</td>
+      <td><strong>3.10 - 3.14</strong></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td>1.3 (Stable)</td>
+      <td><a href="https://github.com/facebookresearch/hydra/releases/tag/v1.3.0">Release notes</a></td>
+      <td><strong>3.6 - 3.11</strong></td>
+    </tr>
+    <tr>
+      <td colSpan="4" align="center"><Link to="/docs/version_archive">Older versions archive</Link></td>
+    </tr>
+  </tbody>
+</table>
 
 ## Quick start guide
 This guide will show you some of the most important features you get by writing your application as a Hydra app.
@@ -40,6 +59,15 @@ If you only want to use Hydra for config composition, check out Hydra's [compose
 Please also read the full [tutorial](tutorials/basic/your_first_app/1_simple_cli.md) to gain a deeper understanding.
 
 ### Installation
+Hydra 1.4 is coming soon. Until the stable release is available, you can try
+the development release:
+
+```commandline
+pip install --pre --upgrade hydra-core
+```
+
+For the latest stable Hydra release, install:
+
 ```commandline
 pip install hydra-core --upgrade
 ```

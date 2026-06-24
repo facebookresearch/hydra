@@ -17,11 +17,7 @@
   <i>A framework for elegantly configuring complex applications.</i>
 </p>
 <p align="center">
-  <i>Check the <a href="https://hydra.cc/">website</a> for more information,<br>
-  or click the thumbnail below for a one-minute video introduction to Hydra.</i>
-</p>
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=Slc3gRQpnBI" target="_blank"><img src="https://raw.githubusercontent.com/facebookresearch/hydra/main/website/static/img/Hydra-Readme-video-thumbnail.jpg" alt="1 minute overview" width="240" height="180" border="10" /></a>
+  <i>Check the <a href="https://hydra.cc/">website</a> for more information.</i>
 </p>
 
 ----------------------
@@ -31,8 +27,10 @@
 #### Development
 
 **Hydra 1.4** is the current development version of Hydra.
+- Hydra 1.4 is coming soon. Until the stable release is available, you can
+  install Hydra from development releases on PyPI.
 - [Documentation](https://hydra.cc/docs/intro/)
-- Installation from source : `pip install git+https://github.com/facebookresearch/hydra.git`
+- Installation: `pip install --pre --upgrade hydra-core`
 - Supported Python versions: 3.10 through 3.14.
 
 #### Stable
