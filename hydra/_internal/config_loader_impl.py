@@ -349,8 +349,9 @@ class ConfigLoaderImpl(ConfigLoader):
             master_choice = master_choices.get(group)
             sweep_choice = sweep_choices.get(group)
             if master_choice != sweep_choice:
+                # Bandit mistakes this user-facing message for a SQL snippet.
                 raise ConfigCompositionException(
-                    f"'{group}' must be selected before the sweep starts, "
+                    f"'{group}' must be selected before the sweep starts, "  # nosec B608
                     f"but a swept job config changed it from "
                     f"'{master_choice}' to '{sweep_choice}'. Select it in "
                     "the primary config or from the command line."
@@ -375,13 +376,15 @@ class ConfigLoaderImpl(ConfigLoader):
                 if override.is_delete():
                     config_val = OmegaConf.select(cfg, key, throw_on_missing=False)
                     if config_val is None:
+                        # Bandit mistakes this user-facing message for a SQL snippet.
                         raise ConfigCompositionException(
-                            f"Could not delete from config. '{override.key_or_group}'"
+                            f"Could not delete from config. '{override.key_or_group}'"  # nosec B608
                             " does not exist."
                         )
                     elif value is not None and value != config_val:
+                        # Bandit mistakes this user-facing message for a SQL snippet.
                         raise ConfigCompositionException(
-                            "Could not delete from config. The value of"
+                            "Could not delete from config. The value of"  # nosec B608
                             f" '{override.key_or_group}' is {config_val} and not"
                             f" {value}."
                         )

@@ -107,7 +107,9 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
             or isinstance(value.stop, float)
             or isinstance(value.step, float)
         ):
-            return DiscreteUniformDistribution(value.start, value.stop, value.step)
+            return DiscreteUniformDistribution(
+                float(value.start), float(value.stop), float(value.step)
+            )
         return IntUniformDistribution(
             int(value.start), int(value.stop), step=int(value.step)
         )
