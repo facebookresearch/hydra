@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-24",
-  "generated_at": "2026-06-24T07:52:31Z",
+  "generated_at": "2026-06-24T08:12:11Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 258,
@@ -4211,6 +4211,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2873,
+      "title": "Bug when debugging with vscode",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-03-19",
+      "updated": "2024-03-19",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2873"
+    },
+    {
       "number": 2875,
       "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
       "category": "Bug",
@@ -4965,21 +4980,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
-    },
-    {
-      "number": 2873,
-      "title": "Bug when debugging with vscode",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2024-03-19",
-      "updated": "2024-03-19",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2873"
     }
   ],
   "updates": [
