@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2875": "2026-06-24",
     "2878": "2026-06-23",
     "2888": "2026-06-23",
     "2894": "2026-06-23",
@@ -52,7 +53,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-23T19:14:39Z",
+  "generated_at": "2026-06-24T04:17:12Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2419,20 +2420,6 @@
       "title": "[Help requested] Dynamic hydra launcher configuration",
       "updated_at": "2024-03-21T03:42:35Z"
     },
-    "2875": {
-      "category": "Bug",
-      "created_at": "2024-03-22T15:24:15Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [
-        "3238"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
-      "updated_at": "2024-03-22T15:26:49Z"
-    },
     "2887": {
       "category": "Enhancement",
       "created_at": "2024-04-08T11:40:58Z",
@@ -3400,6 +3387,20 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2875": {
+      "category": "Bug",
+      "created_at": "2024-03-22T15:24:15Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "3238"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Broken discovery of config groups when using a config_name from a group in `hydra.main`",
+      "updated_at": "2024-03-22T15:26:49Z"
     },
     "2878": {
       "category": "Bug",
