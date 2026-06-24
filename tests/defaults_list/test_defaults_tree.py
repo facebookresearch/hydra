@@ -2269,6 +2269,19 @@ def test_override_nested_to_null(
             id="delete:include_nested_group:group1=wrong",
         ),
         param(
+            "two_config_items",
+            ["~group1/file1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="two_config_items"),
+                children=[
+                    ConfigDefault(path="group1/file1", deleted=True),
+                    ConfigDefault(path="group1/file2"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="delete:two_config_items:group1/file1",
+        ),
+        param(
             "two_group_defaults_different_pkgs",
             [],
             DefaultsTreeNode(
@@ -2984,6 +2997,20 @@ def test_deprecated_package_header_keywords(
                 children=[ConfigDefault(path="_self_")],
             ),
             id="select_multi:override_to_empty_list",
+        ),
+        param(
+            "select_multi",
+            ["~group1/file1"],
+            False,
+            DefaultsTreeNode(
+                node=ConfigDefault(path="select_multi"),
+                children=[
+                    ConfigDefault(path="group1/file1", deleted=True),
+                    ConfigDefault(path="group1/file2"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="select_multi:delete_config_path",
         ),
         param(
             "select_multi",

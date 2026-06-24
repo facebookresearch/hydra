@@ -135,6 +135,11 @@ A Config Group's option can also be overridden via the command line. e.g:
 $ python my_app.py server/db=sqlite
 ```
 
+A non-overridable *CONFIG* entry can also be deleted by exact config path. e.g:
+```
+$ python my_app.py ~server/apache
+```
+
 ## Composition order
 The Defaults List is ordered:
 - If multiple configs define the same value, the last one wins.
