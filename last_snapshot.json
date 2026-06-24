@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2829": "2026-06-24",
     "2869": "2026-06-24",
     "2870": "2026-06-24",
     "2873": "2026-06-24",
@@ -59,7 +60,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T18:05:30Z",
+  "generated_at": "2026-06-24T18:48:38Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2308,20 +2309,6 @@
       "title": "[Feature Request] Adding the best trial number in the `optimization_results.yaml` file",
       "updated_at": "2024-01-03T20:23:31Z"
     },
-    "2829": {
-      "category": "Bug",
-      "created_at": "2024-01-04T08:47:56Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [
-        "3240"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
-      "updated_at": "2024-02-05T15:10:28Z"
-    },
     "2843": {
       "category": "Bug",
       "created_at": "2024-01-25T16:00:47Z",
@@ -2819,7 +2806,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
-      "updated_at": "2026-05-16T02:12:57Z"
+      "updated_at": "2026-06-24T18:13:23Z"
     },
     "3162": {
       "category": "Documentation",
@@ -3329,6 +3316,20 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2829": {
+      "category": "Bug",
+      "created_at": "2024-01-04T08:47:56Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "3240"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
+      "updated_at": "2024-02-05T15:10:28Z"
     },
     "2869": {
       "category": "Bug",
