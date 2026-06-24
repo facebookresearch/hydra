@@ -8,6 +8,7 @@ from pytest import mark, param, raises
 
 from hydra._internal.config_repository import ConfigRepository
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
+from hydra._internal.core_plugins import importlib_resources_config_source
 from hydra._internal.core_plugins.file_config_source import FileConfigSource
 from hydra._internal.core_plugins.importlib_resources_config_source import (
     ImportlibResourcesConfigSource,
@@ -227,8 +228,8 @@ def test_importlib_resource_checks_do_not_require_exists(monkeypatch: Any) -> No
         provider="foo", path="pkg://hydra.conf"
     )
     monkeypatch.setattr(
-        "hydra._internal.core_plugins.importlib_resources_config_source"
-        ".resources.files",
+        importlib_resources_config_source.resources,
+        "files",
         lambda _: TraversableWithoutExists(),
     )
 
