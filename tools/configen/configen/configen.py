@@ -38,7 +38,8 @@ sys.path.append(os.getcwd())
 
 log = logging.getLogger(__name__)
 
-jinja_env = Environment(
+# Configen renders Python source, not HTML, so Jinja autoescape is not applicable.
+jinja_env = Environment(  # nosec B701
     loader=PackageLoader("configen", "templates"),
     keep_trailing_newline=True,
     trim_blocks=True,

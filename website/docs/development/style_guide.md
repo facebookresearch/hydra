@@ -11,14 +11,15 @@ The code need to pass verification by the following tools:
  - `pyrefly check` : Ensures code passes static type checking
  - `yamllint .` : Ensures that yaml files are syntactically correct and properly indented.
 
-The easiest way to run the required verifications is: 
- - `nox -s lint` : for the Hydra core
- - `nox -s lint_plugins` : for the included plugins
+The easiest way to run the required verifications is:
+ - `nox -s lint` : for everything
+ - `nox -s lint-core` : for the Hydra core
+ - `nox -s lint-plugins` : for the included plugins
 
 isort is a bit tricky to run for plugins. the best way to get it to sort the plugins imports is with the FIX environment
 variable:
 ```
-$ FIX=1 nox -s lint_plugins
+$ FIX=1 nox -s lint-plugins
 ```
 
 It is also recommended that you install pre-commit hooks (use `pre-commit install`).
