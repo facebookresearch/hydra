@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2870": "2026-06-24",
     "2873": "2026-06-24",
     "2875": "2026-06-24",
     "2878": "2026-06-23",
@@ -57,7 +58,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T08:12:11Z",
+  "generated_at": "2026-06-24T08:47:46Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2390,18 +2391,6 @@
       "title": "test_initialize_compat_version_base and test_app_with_error_exception_sanitized tests failed",
       "updated_at": "2024-05-03T11:51:07Z"
     },
-    "2870": {
-      "category": "Bug",
-      "created_at": "2024-03-13T17:06:37Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "importlib-resources 6.2+ is breaking hydra",
-      "updated_at": "2026-02-22T04:44:38Z"
-    },
     "2874": {
       "category": "Question",
       "created_at": "2024-03-21T03:42:35Z",
@@ -3347,6 +3336,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2870": {
+      "category": "Bug",
+      "created_at": "2024-03-13T17:06:37Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "importlib-resources 6.2+ is breaking hydra",
+      "updated_at": "2026-02-22T04:44:38Z"
     },
     "2873": {
       "category": "Bug",

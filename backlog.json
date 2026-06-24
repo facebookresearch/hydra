@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-24",
-  "generated_at": "2026-06-24T08:12:11Z",
+  "generated_at": "2026-06-24T08:47:46Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 258,
+    "open_total": 257,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 86,
-        "percentage": 33.3
+        "count": 85,
+        "percentage": 33.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 140,
-        "percentage": 54.3
+        "percentage": 54.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 5.0
+        "percentage": 5.1
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 248
+        "count": 247
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 56
+        "count": 57
       }
     ]
   },
@@ -3297,21 +3297,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2869"
     },
     {
-      "number": 2870,
-      "title": "importlib-resources 6.2+ is breaking hydra",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-03-13",
-      "updated": "2026-02-22",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2870"
-    },
-    {
       "number": 2874,
       "title": "[Help requested] Dynamic hydra launcher configuration",
       "category": "Question",
@@ -4980,9 +4965,31 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
+    },
+    {
+      "number": 2870,
+      "title": "importlib-resources 6.2+ is breaking hydra",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-03-13",
+      "updated": "2026-02-22",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2870"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-24T08:47:46Z",
+      "kind": "closed",
+      "issue": 2870,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2870",
+      "title": "importlib-resources 6.2+ is breaking hydra"
+    },
     {
       "ts": "2026-06-24T07:52:31Z",
       "kind": "closed",
