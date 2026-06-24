@@ -1986,6 +1986,19 @@ def test_with_none_primary_with_hydra(
             ],
             id="two_config_items",
         ),
+        param(
+            "two_config_items",
+            ["~group1/file1"],
+            [
+                ResultDefault(
+                    config_path="group1/file2",
+                    package="group1",
+                    parent="two_config_items",
+                ),
+                ResultDefault(config_path="two_config_items", package="", is_self=True),
+            ],
+            id="two_config_items:delete_config_path",
+        ),
     ],
 )
 def test_two_config_items(
