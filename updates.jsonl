@@ -136,3 +136,4 @@
 {"ts": "2026-06-24T19:23:54Z", "kind": "closed", "issue": 3103, "issue_url": "https://github.com/facebookresearch/hydra/issues/3103", "title": "[Feature Request] Get swept list without `hydra.main`"}
 {"ts": "2026-06-24T19:57:55Z", "kind": "closed", "issue": 3047, "issue_url": "https://github.com/facebookresearch/hydra/issues/3047", "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?"}
 {"ts": "2026-06-24T20:23:57Z", "kind": "closed", "issue": 3035, "issue_url": "https://github.com/facebookresearch/hydra/issues/3035", "title": "weird behaviour when inheriting configs"}
+{"ts": "2026-06-24T20:51:11Z", "kind": "closed", "issue": 3028, "issue_url": "https://github.com/facebookresearch/hydra/issues/3028", "title": "Is there a way to get the current file location within the config file?"}

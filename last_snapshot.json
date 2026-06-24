@@ -33,6 +33,7 @@
     "2999": "2026-06-22",
     "3003": "2026-06-24",
     "3024": "2026-06-24",
+    "3028": "2026-06-24",
     "3031": "2026-06-21",
     "3033": "2026-06-22",
     "3034": "2026-06-20",
@@ -64,7 +65,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T20:23:57Z",
+  "generated_at": "2026-06-24T20:51:11Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2638,16 +2639,6 @@
       "title": "[Feature Request] Allow for defaults list `override` to update the ordering of defaults?",
       "updated_at": "2025-02-12T02:18:14Z"
     },
-    "3028": {
-      "category": "Enhancement",
-      "created_at": "2025-02-14T10:37:06Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Is there a way to get the current file location within the config file?",
-      "updated_at": "2025-02-28T09:28:34Z"
-    },
     "3053": {
       "category": "Bug",
       "created_at": "2025-04-13T14:15:26Z",
@@ -3598,6 +3589,16 @@
       "status": "done",
       "title": "Compatibility with Optuna dashboard",
       "updated_at": "2025-02-28T14:38:46Z"
+    },
+    "3028": {
+      "category": "Enhancement",
+      "created_at": "2025-02-14T10:37:06Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Is there a way to get the current file location within the config file?",
+      "updated_at": "2025-02-28T09:28:34Z"
     },
     "3031": {
       "category": "Bug",

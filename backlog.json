@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-24",
-  "generated_at": "2026-06-24T20:23:57Z",
+  "generated_at": "2026-06-24T20:51:11Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 251,
+    "open_total": 250,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 82,
-        "percentage": 32.7
+        "percentage": 32.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 137,
-        "percentage": 54.6
+        "count": 136,
+        "percentage": 54.4
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 241
+        "count": 240
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 63
+        "count": 64
       }
     ]
   },
@@ -3584,19 +3584,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3026"
     },
     {
-      "number": 3028,
-      "title": "Is there a way to get the current file location within the config file?",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-02-14",
-      "updated": "2025-02-28",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3028"
-    },
-    {
       "number": 3055,
       "title": "[Feature Request] -- is there a way to sweep in nested folder inside config group?",
       "category": "Enhancement",
@@ -4569,6 +4556,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3034"
     },
     {
+      "number": 3035,
+      "title": "weird behaviour when inheriting configs",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-02-27",
+      "updated": "2025-02-27",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3035"
+    },
+    {
       "number": 3036,
       "title": "[Bug] Child defaults list with interpolation fails with a constructed path with too many group names",
       "category": "Bug",
@@ -4979,20 +4979,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
-      "number": 3035,
-      "title": "weird behaviour when inheriting configs",
+      "number": 3028,
+      "title": "Is there a way to get the current file location within the config file?",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2025-02-27",
-      "updated": "2025-02-27",
+      "created": "2025-02-14",
+      "updated": "2025-02-28",
       "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3035"
+      "url": "https://github.com/facebookresearch/hydra/issues/3028"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-24T20:51:11Z",
+      "kind": "closed",
+      "issue": 3028,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3028",
+      "title": "Is there a way to get the current file location within the config file?"
+    },
     {
       "ts": "2026-06-24T20:23:57Z",
       "kind": "closed",
