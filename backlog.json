@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-24",
-  "generated_at": "2026-06-24T11:09:11Z",
+  "generated_at": "2026-06-24T18:05:30Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 256,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 4
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 245
+        "count": 244
       },
       {
         "status": "done",
@@ -127,11 +127,31 @@
         }
       ],
       "created": "2024-01-25",
-      "updated": "2024-10-02",
+      "updated": "2026-06-24",
       "labels": [
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2843"
+    },
+    {
+      "number": 2829,
+      "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3240,
+          "url": "https://github.com/facebookresearch/hydra/pull/3240"
+        }
+      ],
+      "created": "2024-01-04",
+      "updated": "2024-02-05",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2829"
     },
     {
       "number": 845,
@@ -3212,21 +3232,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2828"
     },
     {
-      "number": 2829,
-      "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-01-04",
-      "updated": "2024-02-05",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2829"
-    },
-    {
       "number": 2846,
       "title": "[Feature Request] Conditionally disable the creation of output folders via callback",
       "category": "Enhancement",
@@ -4988,6 +4993,26 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-24T18:05:30Z",
+      "kind": "pr",
+      "issue": 2829,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2829",
+      "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
+      "detail": "linked #3240"
+    },
+    {
+      "ts": "2026-06-24T18:05:30Z",
+      "kind": "status",
+      "issue": 2829,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2829",
+      "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3240,
+        "url": "https://github.com/facebookresearch/hydra/pull/3240"
+      }
+    },
     {
       "ts": "2026-06-24T11:09:11Z",
       "kind": "pr",

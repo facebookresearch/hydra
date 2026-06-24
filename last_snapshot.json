@@ -59,7 +59,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T11:09:11Z",
+  "generated_at": "2026-06-24T18:05:30Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2314,9 +2314,11 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3240"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
       "updated_at": "2024-02-05T15:10:28Z"
     },
@@ -2332,7 +2334,7 @@
       "state": "OPEN",
       "status": "in progress",
       "title": "[Bug] Unexpected behavior of tilde (~) when removing from default list of multiple choices",
-      "updated_at": "2024-10-02T11:28:46Z"
+      "updated_at": "2026-06-24T11:14:02Z"
     },
     "2846": {
       "category": "Enhancement",
