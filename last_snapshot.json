@@ -14,6 +14,7 @@
     "2913": "2026-06-23",
     "2915": "2026-06-23",
     "2926": "2026-06-23",
+    "2935": "2026-06-24",
     "2939": "2026-06-22",
     "2940": "2026-05-30",
     "2945": "2026-06-22",
@@ -55,7 +56,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T06:50:17Z",
+  "generated_at": "2026-06-24T07:31:56Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2495,18 +2496,6 @@
       "title": "Ray Launcher:  Additional properties are not allowed",
       "updated_at": "2026-06-23T10:04:16Z"
     },
-    "2935": {
-      "category": "Bug",
-      "created_at": "2024-08-06T02:49:21Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Appending to Defaults List via command line doesn't work if config is in subfolder",
-      "updated_at": "2026-02-22T04:44:14Z"
-    },
     "2938": {
       "category": "Question",
       "created_at": "2024-08-20T16:45:05Z",
@@ -3468,6 +3457,18 @@
       "status": "done",
       "title": "[Bug] hydra.utils.instantiate can not find modules in mtrl",
       "updated_at": "2024-07-30T07:07:14Z"
+    },
+    "2935": {
+      "category": "Bug",
+      "created_at": "2024-08-06T02:49:21Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Appending to Defaults List via command line doesn't work if config is in subfolder",
+      "updated_at": "2026-02-22T04:44:14Z"
     },
     "2939": {
       "category": "Bug",

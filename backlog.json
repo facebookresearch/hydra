@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-24",
-  "generated_at": "2026-06-24T06:50:17Z",
+  "generated_at": "2026-06-24T07:31:56Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 260,
+    "open_total": 259,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 88,
-        "percentage": 33.8
+        "count": 87,
+        "percentage": 33.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 140,
-        "percentage": 53.8
+        "percentage": 54.1
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 250
+        "count": 249
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 54
+        "count": 55
       }
     ]
   },
@@ -3414,21 +3414,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2927"
     },
     {
-      "number": 2935,
-      "title": "[Bug] Appending to Defaults List via command line doesn't work if config is in subfolder",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-08-06",
-      "updated": "2026-02-22",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2935"
-    },
-    {
       "number": 2938,
       "title": "How to override the default model in main.yaml in code when testing different models",
       "category": "Question",
@@ -4530,6 +4515,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2999"
     },
     {
+      "number": 3003,
+      "title": "Primary config module'xxx'not found.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-01-06",
+      "updated": "2025-01-06",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3003"
+    },
+    {
       "number": 3024,
       "title": "Compatibility with Optuna dashboard",
       "category": "Enhancement",
@@ -4969,20 +4967,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
-      "number": 3003,
-      "title": "Primary config module'xxx'not found.",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 2935,
+      "title": "[Bug] Appending to Defaults List via command line doesn't work if config is in subfolder",
+      "category": "Bug",
+      "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2025-01-06",
-      "updated": "2025-01-06",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3003"
+      "created": "2024-08-06",
+      "updated": "2026-02-22",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2935"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-24T07:31:56Z",
+      "kind": "closed",
+      "issue": 2935,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2935",
+      "title": "[Bug] Appending to Defaults List via command line doesn't work if config is in subfolder"
+    },
     {
       "ts": "2026-06-24T06:50:17Z",
       "kind": "closed",
