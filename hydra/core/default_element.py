@@ -478,7 +478,7 @@ class GroupDefault(InputDefault):
             absolute = True
         else:
             group = self.group
-            absolute = False
+            absolute = self.external_append
 
         if self.parent_base_dir == "" or absolute:
             return group
@@ -508,7 +508,7 @@ class GroupDefault(InputDefault):
     def get_final_package(self, default_to_package_header: bool = True) -> str:
         name = self.get_name() if self.is_name() else None
         return self._get_final_package(
-            self._get_parent_package(),
+            "" if self.external_append else self._get_parent_package(),
             self.get_package(default_to_package_header=default_to_package_header),
             name,
         )

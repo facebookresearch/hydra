@@ -541,14 +541,23 @@ def _create_defaults_tree_impl(
                         )
 
                     assert d.group is not None
-                    node = ConfigDefault(
-                        path=d.group + "/" + item,
-                        package=d.package,
-                        optional=d.is_optional(),
-                    )
-                    node.update_parent(
-                        parent.get_group_path(), parent.get_final_package()
-                    )
+                    if d.is_external_append():
+                        node = ConfigDefault(
+                            path=f"{d.get_group_path()}/{item}",
+                            package=d.package,
+                            optional=d.is_optional(),
+                        )
+                        # External appends are already absolute in Hydra's config namespace.
+                        node.update_parent("", "")
+                    else:
+                        node = ConfigDefault(
+                            path=f"{d.group}/{item}",
+                            package=d.package,
+                            optional=d.is_optional(),
+                        )
+                        node.update_parent(
+                            parent.get_group_path(), parent.get_final_package()
+                        )
                     new_root = DefaultsTreeNode(node=node, parent=root)
                     add_child(children, new_root)
 
