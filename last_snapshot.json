@@ -7,6 +7,7 @@
     "2479": "2026-06-07",
     "2502": "2026-06-07",
     "2829": "2026-06-24",
+    "2843": "2026-06-24",
     "2869": "2026-06-24",
     "2870": "2026-06-24",
     "2873": "2026-06-24",
@@ -47,6 +48,7 @@
     "3068": "2026-06-09",
     "3069": "2026-06-20",
     "3075": "2026-05-27",
+    "3103": "2026-06-24",
     "3104": "2026-06-08",
     "3118": "2026-06-08",
     "3129": "2026-06-11",
@@ -60,7 +62,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T18:48:38Z",
+  "generated_at": "2026-06-24T19:23:54Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2309,20 +2311,6 @@
       "title": "[Feature Request] Adding the best trial number in the `optimization_results.yaml` file",
       "updated_at": "2024-01-03T20:23:31Z"
     },
-    "2843": {
-      "category": "Bug",
-      "created_at": "2024-01-25T16:00:47Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [
-        "3239"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "[Bug] Unexpected behavior of tilde (~) when removing from default list of multiple choices",
-      "updated_at": "2026-06-24T11:14:02Z"
-    },
     "2846": {
       "category": "Enhancement",
       "created_at": "2024-02-03T06:16:11Z",
@@ -2767,19 +2755,6 @@
       "status": "not started",
       "title": "Optuna sweeper n_jobs>1 is blocking",
       "updated_at": "2026-05-16T02:12:54Z"
-    },
-    "3103": {
-      "category": "Enhancement",
-      "created_at": "2025-12-19T12:33:16Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] Get swept list without `hydra.main`",
-      "updated_at": "2026-05-16T02:12:55Z"
     },
     "3106": {
       "category": "Bug",
@@ -3331,6 +3306,20 @@
       "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
       "updated_at": "2024-02-05T15:10:28Z"
     },
+    "2843": {
+      "category": "Bug",
+      "created_at": "2024-01-25T16:00:47Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "3239"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Unexpected behavior of tilde (~) when removing from default list of multiple choices",
+      "updated_at": "2026-06-24T11:14:02Z"
+    },
     "2869": {
       "category": "Bug",
       "created_at": "2024-03-13T08:09:39Z",
@@ -3817,6 +3806,19 @@
       "status": "done",
       "title": "What is the project status given the last release was in 2023",
       "updated_at": "2026-05-27T07:59:16Z"
+    },
+    "3103": {
+      "category": "Enhancement",
+      "created_at": "2025-12-19T12:33:16Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Get swept list without `hydra.main`",
+      "updated_at": "2026-05-16T02:12:55Z"
     },
     "3104": {
       "category": "Bug",

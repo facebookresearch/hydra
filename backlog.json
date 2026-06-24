@@ -1,20 +1,20 @@
 {
   "generated_on": "2026-06-24",
-  "generated_at": "2026-06-24T18:48:38Z",
+  "generated_at": "2026-06-24T19:23:54Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 255,
+    "open_total": 253,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 83,
-        "percentage": 32.5
+        "count": 82,
+        "percentage": 32.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 140,
+        "count": 139,
         "percentage": 54.9
       },
       {
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 2
       },
       {
         "status": "community PR",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 244
+        "count": 243
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 59
+        "count": 61
       }
     ]
   },
@@ -112,26 +112,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 2843,
-      "title": "[Bug] Unexpected behavior of tilde (~) when removing from default list of multiple choices",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3239,
-          "url": "https://github.com/facebookresearch/hydra/pull/3239"
-        }
-      ],
-      "created": "2024-01-25",
-      "updated": "2026-06-24",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2843"
     },
     {
       "number": 845,
@@ -3737,22 +3717,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3091"
     },
     {
-      "number": 3103,
-      "title": "[Feature Request] Get swept list without `hydra.main`",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-12-19",
-      "updated": "2026-05-16",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3103"
-    },
-    {
       "number": 3158,
       "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
       "category": "Build",
@@ -4169,6 +4133,26 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2829,
+      "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3240,
+          "url": "https://github.com/facebookresearch/hydra/pull/3240"
+        }
+      ],
+      "created": "2024-01-04",
+      "updated": "2024-02-05",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2829"
     },
     {
       "number": 2869,
@@ -4972,27 +4956,57 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
-      "number": 2829,
-      "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
+      "number": 2843,
+      "title": "[Bug] Unexpected behavior of tilde (~) when removing from default list of multiple choices",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [
         {
-          "number": 3240,
-          "url": "https://github.com/facebookresearch/hydra/pull/3240"
+          "number": 3239,
+          "url": "https://github.com/facebookresearch/hydra/pull/3239"
         }
       ],
-      "created": "2024-01-04",
-      "updated": "2024-02-05",
+      "created": "2024-01-25",
+      "updated": "2026-06-24",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2829"
+      "url": "https://github.com/facebookresearch/hydra/issues/2843"
+    },
+    {
+      "number": 3103,
+      "title": "[Feature Request] Get swept list without `hydra.main`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-12-19",
+      "updated": "2026-05-16",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3103"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-24T19:23:54Z",
+      "kind": "closed",
+      "issue": 3103,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3103",
+      "title": "[Feature Request] Get swept list without `hydra.main`"
+    },
+    {
+      "ts": "2026-06-24T19:23:54Z",
+      "kind": "closed",
+      "issue": 2843,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2843",
+      "title": "[Bug] Unexpected behavior of tilde (~) when removing from default list of multiple choices"
+    },
     {
       "ts": "2026-06-24T18:48:38Z",
       "kind": "closed",
