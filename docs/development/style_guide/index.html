@@ -13,7 +13,7 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.313883d4.css">
-<script src="/assets/js/runtime~main.abf557f1.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8bd7c1b9.js" defer="defer"></script>
 <script src="/assets/js/main.12c9c409.js" defer="defer"></script>
 </head>
 <body>
@@ -30,12 +30,13 @@
 </ul>
 <p>The easiest way to run the required verifications is:</p>
 <ul>
-<li class=""><code>nox -s lint</code> : for the Hydra core</li>
-<li class=""><code>nox -s lint_plugins</code> : for the included plugins</li>
+<li class=""><code>nox -s lint</code> : for everything</li>
+<li class=""><code>nox -s lint-core</code> : for the Hydra core</li>
+<li class=""><code>nox -s lint-plugins</code> : for the included plugins</li>
 </ul>
 <p>isort is a bit tricky to run for plugins. the best way to get it to sort the plugins imports is with the FIX environment
 variable:</p>
-<div class="language-text codeBlockContainer_uPDW theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_d_Pi"><pre tabindex="0" class="prism-code language-text codeBlock_q2pc thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_S7n8"><div class="token-line" style="color:#bfc7d5"><span class="token plain">$ FIX=1 nox -s lint_plugins</span><br></div></code></pre></div></div>
+<div class="language-text codeBlockContainer_uPDW theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_d_Pi"><pre tabindex="0" class="prism-code language-text codeBlock_q2pc thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_S7n8"><div class="token-line" style="color:#bfc7d5"><span class="token plain">$ FIX=1 nox -s lint-plugins</span><br></div></code></pre></div></div>
 <p>It is also recommended that you install pre-commit hooks (use <code>pre-commit install</code>).
 pre-commit will execute some of the above tests when you commit your code locally.
 You can disable it by appending <code>-n</code> to your commit command: <code>git commit -m wip -n</code></p>
