@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-24",
-  "generated_at": "2026-06-24T08:47:46Z",
+  "generated_at": "2026-06-24T09:10:44Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 257,
+    "open_total": 256,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 85,
-        "percentage": 33.1
+        "count": 84,
+        "percentage": 32.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 140,
-        "percentage": 54.5
+        "percentage": 54.7
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 247
+        "count": 246
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 57
+        "count": 58
       }
     ]
   },
@@ -3282,21 +3282,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2864"
     },
     {
-      "number": 2869,
-      "title": "test_initialize_compat_version_base and test_app_with_error_exception_sanitized tests failed",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-03-13",
-      "updated": "2024-05-03",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2869"
-    },
-    {
       "number": 2874,
       "title": "[Help requested] Dynamic hydra launcher configuration",
       "category": "Question",
@@ -4196,6 +4181,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2870,
+      "title": "importlib-resources 6.2+ is breaking hydra",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-03-13",
+      "updated": "2026-02-22",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2870"
+    },
+    {
       "number": 2873,
       "title": "Bug when debugging with vscode",
       "category": "Bug",
@@ -4967,22 +4967,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
-      "number": 2870,
-      "title": "importlib-resources 6.2+ is breaking hydra",
+      "number": 2869,
+      "title": "test_initialize_compat_version_base and test_app_with_error_exception_sanitized tests failed",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
       "created": "2024-03-13",
-      "updated": "2026-02-22",
+      "updated": "2024-05-03",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2870"
+      "url": "https://github.com/facebookresearch/hydra/issues/2869"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-24T09:10:44Z",
+      "kind": "closed",
+      "issue": 2869,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2869",
+      "title": "test_initialize_compat_version_base and test_app_with_error_exception_sanitized tests failed"
+    },
     {
       "ts": "2026-06-24T08:47:46Z",
       "kind": "closed",

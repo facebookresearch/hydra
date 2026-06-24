@@ -126,3 +126,4 @@
 {"ts": "2026-06-24T07:31:56Z", "kind": "closed", "issue": 2935, "issue_url": "https://github.com/facebookresearch/hydra/issues/2935", "title": "[Bug] Appending to Defaults List via command line doesn't work if config is in subfolder"}
 {"ts": "2026-06-24T07:52:31Z", "kind": "closed", "issue": 2873, "issue_url": "https://github.com/facebookresearch/hydra/issues/2873", "title": "Bug when debugging with vscode"}
 {"ts": "2026-06-24T08:47:46Z", "kind": "closed", "issue": 2870, "issue_url": "https://github.com/facebookresearch/hydra/issues/2870", "title": "importlib-resources 6.2+ is breaking hydra"}
+{"ts": "2026-06-24T09:10:44Z", "kind": "closed", "issue": 2869, "issue_url": "https://github.com/facebookresearch/hydra/issues/2869", "title": "test_initialize_compat_version_base and test_app_with_error_exception_sanitized tests failed"}

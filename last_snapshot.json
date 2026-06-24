@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2869": "2026-06-24",
     "2870": "2026-06-24",
     "2873": "2026-06-24",
     "2875": "2026-06-24",
@@ -58,7 +59,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T08:47:46Z",
+  "generated_at": "2026-06-24T09:10:44Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2379,18 +2380,6 @@
       "title": "[Feature Request] Generalize PickleJobInfoCallback to support YAML and/or JSON serialization ",
       "updated_at": "2024-03-03T17:15:45Z"
     },
-    "2869": {
-      "category": "Bug",
-      "created_at": "2024-03-13T08:09:39Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "test_initialize_compat_version_base and test_app_with_error_exception_sanitized tests failed",
-      "updated_at": "2024-05-03T11:51:07Z"
-    },
     "2874": {
       "category": "Question",
       "created_at": "2024-03-21T03:42:35Z",
@@ -3336,6 +3325,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2869": {
+      "category": "Bug",
+      "created_at": "2024-03-13T08:09:39Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "test_initialize_compat_version_base and test_app_with_error_exception_sanitized tests failed",
+      "updated_at": "2024-05-03T11:51:07Z"
     },
     "2870": {
       "category": "Bug",
