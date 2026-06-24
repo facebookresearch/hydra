@@ -135,3 +135,4 @@
 {"ts": "2026-06-24T19:23:54Z", "kind": "closed", "issue": 2843, "issue_url": "https://github.com/facebookresearch/hydra/issues/2843", "title": "[Bug] Unexpected behavior of tilde (~) when removing from default list of multiple choices"}
 {"ts": "2026-06-24T19:23:54Z", "kind": "closed", "issue": 3103, "issue_url": "https://github.com/facebookresearch/hydra/issues/3103", "title": "[Feature Request] Get swept list without `hydra.main`"}
 {"ts": "2026-06-24T19:57:55Z", "kind": "closed", "issue": 3047, "issue_url": "https://github.com/facebookresearch/hydra/issues/3047", "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?"}
+{"ts": "2026-06-24T20:23:57Z", "kind": "closed", "issue": 3035, "issue_url": "https://github.com/facebookresearch/hydra/issues/3035", "title": "weird behaviour when inheriting configs"}

@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-24",
-  "generated_at": "2026-06-24T19:57:55Z",
+  "generated_at": "2026-06-24T20:23:57Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 252,
+    "open_total": 251,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 82,
-        "percentage": 32.5
+        "percentage": 32.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 138,
-        "percentage": 54.8
+        "count": 137,
+        "percentage": 54.6
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 242
+        "count": 241
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 62
+        "count": 63
       }
     ]
   },
@@ -3597,19 +3597,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3028"
     },
     {
-      "number": 3035,
-      "title": "weird behaviour when inheriting configs",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-02-27",
-      "updated": "2025-02-27",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3035"
-    },
-    {
       "number": 3055,
       "title": "[Feature Request] -- is there a way to sweep in nested folder inside config group?",
       "category": "Enhancement",
@@ -4632,6 +4619,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3045"
     },
     {
+      "number": 3047,
+      "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-03-31",
+      "updated": "2025-04-08",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3047"
+    },
+    {
       "number": 3050,
       "title": "[Bug] \"import hydra\" triggers unexpected GPU memory allocation",
       "category": "Bug",
@@ -4979,20 +4979,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
-      "number": 3047,
-      "title": "[Feature Request] How to specify parameter sweep from group config rather than global config?",
+      "number": 3035,
+      "title": "weird behaviour when inheriting configs",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2025-03-31",
-      "updated": "2025-04-08",
+      "created": "2025-02-27",
+      "updated": "2025-02-27",
       "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3047"
+      "url": "https://github.com/facebookresearch/hydra/issues/3035"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-24T20:23:57Z",
+      "kind": "closed",
+      "issue": 3035,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3035",
+      "title": "weird behaviour when inheriting configs"
+    },
     {
       "ts": "2026-06-24T19:57:55Z",
       "kind": "closed",

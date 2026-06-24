@@ -36,6 +36,7 @@
     "3031": "2026-06-21",
     "3033": "2026-06-22",
     "3034": "2026-06-20",
+    "3035": "2026-06-24",
     "3036": "2026-06-19",
     "3038": "2026-06-19",
     "3045": "2026-06-19",
@@ -63,7 +64,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T19:57:55Z",
+  "generated_at": "2026-06-24T20:23:57Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2647,16 +2648,6 @@
       "title": "Is there a way to get the current file location within the config file?",
       "updated_at": "2025-02-28T09:28:34Z"
     },
-    "3035": {
-      "category": "Enhancement",
-      "created_at": "2025-02-27T19:03:00Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "weird behaviour when inheriting configs",
-      "updated_at": "2025-02-27T19:03:44Z"
-    },
     "3053": {
       "category": "Bug",
       "created_at": "2025-04-13T14:15:26Z",
@@ -3643,6 +3634,16 @@
       "status": "done",
       "title": "[Bug] Default List Packaged to Root Level Not Configurable from CLI",
       "updated_at": "2025-03-04T01:27:27Z"
+    },
+    "3035": {
+      "category": "Enhancement",
+      "created_at": "2025-02-27T19:03:00Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "weird behaviour when inheriting configs",
+      "updated_at": "2025-02-27T19:03:44Z"
     },
     "3036": {
       "category": "Bug",
