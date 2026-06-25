@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import os
-import re
 import sys
 import warnings
 from textwrap import dedent
@@ -280,13 +279,11 @@ class ConfigLoaderImpl(ConfigLoader):
 
         # Apply command line overrides after enabling strict flag
         ConfigLoaderImpl._apply_overrides_to_config(config_overrides, cfg)
-        app_overrides = []
         for override in parsed_overrides:
             if override.is_hydra_override():
                 cfg.hydra.overrides.hydra.append(override.input_line)
             else:
                 cfg.hydra.overrides.task.append(override.input_line)
-                app_overrides.append(override)
 
         with open_dict(cfg.hydra):
             cfg.hydra.runtime.choices.update(defaults_list.overrides.known_choices)
@@ -305,12 +302,6 @@ class ConfigLoaderImpl(ConfigLoader):
         if "name" not in cfg.hydra.job:
             cfg.hydra.job.name = JobRuntime().get("name")
 
-        cfg.hydra.job.override_dirname = get_overrides_dirname(
-            overrides=app_overrides,
-            kv_sep=cfg.hydra.job.config.override_dirname.kv_sep,
-            item_sep=cfg.hydra.job.config.override_dirname.item_sep,
-            exclude_keys=cfg.hydra.job.config.override_dirname.exclude_keys,
-        )
         cfg.hydra.job.config_name = config_name
 
         return cfg
@@ -647,18 +638,3 @@ class ConfigLoaderImpl(ConfigLoader):
             skip_missing=run_mode == RunMode.MULTIRUN,
         )
         return defaults_list
-
-
-def get_overrides_dirname(
-    overrides: List[Override], exclude_keys: List[str], item_sep: str, kv_sep: str
-) -> str:
-    lines = []
-    for override in overrides:
-        if override.key_or_group not in exclude_keys:
-            line = override.input_line
-            assert line is not None
-            lines.append(line)
-
-    lines.sort()
-    ret = re.sub(pattern="[=]", repl=kv_sep, string=item_sep.join(lines))
-    return ret
