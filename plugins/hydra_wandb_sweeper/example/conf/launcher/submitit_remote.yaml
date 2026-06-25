@@ -1,0 +1,42 @@
+# @package _global_
+defaults:
+  # Hydra's launcher API is synchronous and not async
+  # https://github.com/facebookresearch/hydra/issues/1377#issuecomment-773583397
+  # so all jobs in a batch must finish before launching next batch
+  #
+  # Refer to https://hydra.cc/docs/plugins/submitit_launcher/ and
+  # https://github.com/facebookincubator/submitit/blob/main/docs/examples.md
+  # for more information.
+  #
+  # Use submitit_local for local multiprocessing
+  - override /hydra/launcher: submitit_slurm
+
+hydra:
+  launcher:
+    # uses job array for submitting multiple tasks under a single job, each
+    # having the below config and not sharing resources between each other
+    _target_: hydra_plugins.launchers.my_submitit_launcher.MySlurmLauncher
+    timeout_min: 60
+    # partition: main  # place your SLURM partition here
+    cpus_per_task: 2  # task = process, cpus = threads if hyperthreading enabled
+    # gres: gpu:rtx8000:1  # place your SLURM gres config here
+    nodes: 1
+
+    # num of tasks to spawn in each node (will repeat each task in a job array
+    # in each node)
+    tasks_per_node: 1
+
+    mem_gb: 4  # RAM per node (not GPU memory) in GB
+    # max num of tasks to run in parallel (via job array) with above config
+    array_parallelism: 256
+
+    additional_parameters:
+      time: 0-00:20:00  # maximum wall time allocated for the job (D-H:MM:SS)
+
+    # Change this only after you confirmed your code can handle re-submission
+    # by properly resuming from the latest stored checkpoint.
+    # check the following for more info on slurm_max_num_timeout
+    # https://github.com/facebookincubator/submitit/blob/master/docs/checkpointing.md
+    # checkpointed and requeued at most max_num_timeout times if timed out
+    # (and any number of time if preempted)
+    max_num_timeout: 3
