@@ -65,7 +65,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-24T20:51:11Z",
+  "generated_at": "2026-06-25T08:11:43Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2931,7 +2931,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Clean up deprecations older than Hydra 1.2",
-      "updated_at": "2026-06-20T19:13:18Z"
+      "updated_at": "2026-06-25T03:00:01Z"
     },
     "3222": {
       "category": "Enhancement",

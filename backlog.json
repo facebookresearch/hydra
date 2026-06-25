@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-06-24",
-  "generated_at": "2026-06-24T20:51:11Z",
+  "generated_on": "2026-06-25",
+  "generated_at": "2026-06-25T08:11:43Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 250,
@@ -3873,7 +3873,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-20",
-      "updated": "2026-06-20",
+      "updated": "2026-06-25",
       "labels": [
         "maintenance"
       ],
@@ -4511,6 +4511,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3024"
     },
     {
+      "number": 3028,
+      "title": "Is there a way to get the current file location within the config file?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-02-14",
+      "updated": "2025-02-28",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3028"
+    },
+    {
       "number": 3031,
       "title": "[Bug] Global /hydra/launcher Override Fails in +train=experiment Config Without # @package _global_",
       "category": "Bug",
@@ -4977,19 +4990,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
-    },
-    {
-      "number": 3028,
-      "title": "Is there a way to get the current file location within the config file?",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2025-02-14",
-      "updated": "2025-02-28",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3028"
     }
   ],
   "updates": [
