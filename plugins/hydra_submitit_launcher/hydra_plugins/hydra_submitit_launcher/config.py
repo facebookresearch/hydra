@@ -18,7 +18,7 @@ class BaseQueueConf:
     # number of gpus to use on each node
     gpus_per_node: Optional[int] = None
     # number of tasks to spawn on each node
-    tasks_per_node: int = 1
+    tasks_per_node: Optional[int] = None
     # memory to reserve for the job on each node (in GB)
     mem_gb: Optional[int] = None
     # number of nodes to use for the job
