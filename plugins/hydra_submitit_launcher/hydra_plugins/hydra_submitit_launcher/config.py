@@ -27,6 +27,12 @@ class BaseQueueConf:
     name: str = "${hydra.job.name}"
     # redirect stderr to stdout
     stderr_to_stdout: bool = False
+    # _________________________________ NEW PARAMETER _________________________________ #
+    # Whether to wait for job completion before returning
+    # If False, jobs are submitted and the launcher returns immediately
+    # with JobStatus.UNKNOWN
+    wait_for_completion: bool = True
+    # _________________________________________________________________________________ #
 
 
 @dataclass
@@ -38,7 +44,7 @@ class SlurmQueueConf(BaseQueueConf):
     )
 
     # Params are used to configure sbatch, for more info check:
-    # https://github.com/facebookincubator/submitit/blob/main/submitit/slurm/slurm.py
+    # https://github.com/facebookincubator/submitit/blob/master/submitit/slurm/slurm.py
 
     # Following parameters are slurm specific
     # More information: https://slurm.schedmd.com/sbatch.html
@@ -64,7 +70,7 @@ class SlurmQueueConf(BaseQueueConf):
     # Change this only after you confirmed your code can handle re-submission
     # by properly resuming from the latest stored checkpoint.
     # check the following for more info on slurm_max_num_timeout
-    # https://github.com/facebookincubator/submitit/blob/main/docs/checkpointing.md
+    # https://github.com/facebookincubator/submitit/blob/master/docs/checkpointing.md
     max_num_timeout: int = 0
     # Useful to add parameters which are not currently available in the plugin.
     # Eg: {"mail-user": "blublu@fb.com", "mail-type": "BEGIN"}
@@ -73,8 +79,6 @@ class SlurmQueueConf(BaseQueueConf):
     array_parallelism: int = 256
     # A list of commands to run in sbatch befure running srun
     setup: Optional[List[str]] = None
-    # Any additional arguments that should be passed to srun
-    srun_args: Optional[List[str]] = None
 
 
 @dataclass
