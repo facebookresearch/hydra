@@ -13,8 +13,8 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.313883d4.css">
-<script src="/assets/js/runtime~main.9099fc08.js" defer="defer"></script>
-<script src="/assets/js/main.2021b98f.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9bc2c919.js" defer="defer"></script>
+<script src="/assets/js/main.af1b4fee.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -71,7 +71,7 @@ You can find more details in the <a class="" href="/docs/configure_hydra/job/">J
 <p>Fields under <strong>hydra.job</strong>:</p>
 <ul>
 <li class=""><strong>name</strong> : Job name, defaults to the Python file name without the suffix. can be overridden.</li>
-<li class=""><strong>override_dirname</strong> : Pathname derived from the overrides for this job</li>
+<li class=""><strong>override_dirname</strong> : Deprecated. Use the <code>hydra_override_dirname</code> resolver instead.</li>
 <li class=""><strong>chdir</strong>: If <code>True</code>, Hydra calls <code>os.chdir(output_dir)</code> before calling back to the user&#x27;s main function.
 See the <a class="" href="/docs/tutorials/basic/running_your_app/working_directory/#automatically-change-current-working-dir-to-jobs-output-dir">Output/Working directory tutorial</a>.</li>
 <li class=""><strong>id</strong> : Job ID in the underlying jobs system (SLURM etc)</li>
@@ -115,6 +115,8 @@ See <a class="" href="/docs/tutorials/basic/running_your_app/working_directory/"
 <h3 class="anchor anchorTargetStickyNavbar_UHn8" id="resolvers-provided-by-hydra">Resolvers provided by Hydra<a href="#resolvers-provided-by-hydra" class="hash-link" aria-label="Direct link to Resolvers provided by Hydra" title="Direct link to Resolvers provided by Hydra" translate="no">​</a></h3>
 <p>Hydra provides the following <a href="https://omegaconf.readthedocs.io/en/latest/usage.html#resolvers" target="_blank" rel="noopener noreferrer" class="">OmegaConf resolvers</a> by default.</p>
 <p><strong>hydra</strong>: Interpolates into the <code>hydra</code> config node. e.g. Use <code>${hydra:job.name}</code> to get the Hydra job name.</p>
+<p><strong>hydra_override_dirname</strong>: Creates a string from the command line overrides for the job. It is commonly used in output directory patterns.
+See <a class="" href="/docs/configure_hydra/workdir/#using-hydra_override_dirname">Customizing working directory pattern</a>.</p>
 <p><strong>now</strong>: Creates a string representing the current time using
 <a href="https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior" target="_blank" rel="noopener noreferrer" class="">strftime</a>.
 e.g. for formatting the time you can use something like<code>${now:%H-%M-%S}</code>.</p>
