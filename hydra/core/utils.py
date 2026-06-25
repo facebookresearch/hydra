@@ -5,13 +5,13 @@ import os
 import re
 import sys
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from os.path import splitext
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Dict, Optional, Sequence, Union, cast
+from typing import Any, Dict, List, Optional, Sequence, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
@@ -205,8 +205,157 @@ def get_valid_filename(s: str) -> str:
     return re.sub(r"(?u)[^-\w.]", "", s)
 
 
+@dataclass
+class OverrideDirnameOptions:
+    kv_sep: str = "="
+    item_sep: str = ","
+    exclude_keys: List[str] = field(default_factory=list)
+    element_resolver: Optional[str] = None
+
+
+def _get_override_dirname_options(
+    options: Optional[Union[Dict[str, Any], DictConfig]], hydra_conf: DictConfig
+) -> OverrideDirnameOptions:
+    if options is None:
+        old = hydra_conf.job.config.override_dirname
+        if not isinstance(old.kv_sep, str):
+            raise TypeError("hydra_override_dirname kv_sep must be a string")
+        if not isinstance(old.item_sep, str):
+            raise TypeError("hydra_override_dirname item_sep must be a string")
+        if not OmegaConf.is_list(old.exclude_keys):
+            raise TypeError("hydra_override_dirname exclude_keys must be a list")
+        if not all(isinstance(key, str) for key in old.exclude_keys):
+            raise TypeError("hydra_override_dirname exclude_keys must contain strings")
+        return OverrideDirnameOptions(
+            kv_sep=old.kv_sep,
+            item_sep=old.item_sep,
+            exclude_keys=list(old.exclude_keys),
+        )
+
+    if isinstance(options, DictConfig):
+        options = cast(Dict[str, Any], OmegaConf.to_container(options, resolve=True))
+
+    if not isinstance(options, dict):
+        raise TypeError("hydra_override_dirname options must be a dictionary")
+
+    kv_sep = options.get("kv_sep", "=")
+    if not isinstance(kv_sep, str):
+        raise TypeError("hydra_override_dirname kv_sep must be a string")
+
+    item_sep = options.get("item_sep", ",")
+    if not isinstance(item_sep, str):
+        raise TypeError("hydra_override_dirname item_sep must be a string")
+
+    exclude_keys = options.get("exclude_keys", [])
+    if not isinstance(exclude_keys, (list, tuple)) and not OmegaConf.is_list(
+        exclude_keys
+    ):
+        raise TypeError("hydra_override_dirname exclude_keys must be a list")
+    if not all(isinstance(key, str) for key in exclude_keys):
+        raise TypeError("hydra_override_dirname exclude_keys must contain strings")
+
+    element_resolver = options.get("element_resolver")
+    if element_resolver is not None and not isinstance(element_resolver, str):
+        raise TypeError("hydra_override_dirname element_resolver must be a string")
+
+    return OverrideDirnameOptions(
+        kv_sep=kv_sep,
+        item_sep=item_sep,
+        exclude_keys=list(exclude_keys),
+        element_resolver=element_resolver,
+    )
+
+
+def _resolve_override_dirname_item(item: str, root: DictConfig) -> str:
+    if "${" not in item:
+        return item
+
+    key = "_hydra_override_dirname_item"
+    cfg = copy.deepcopy(root)
+    with open_dict(cfg):
+        cfg[key] = item
+    resolved = OmegaConf.select(cfg, key)
+    assert resolved is not None
+    return str(resolved)
+
+
+def hydra_override_dirname(
+    options: Optional[Union[Dict[str, Any], DictConfig]] = None,
+    *,
+    _root_: DictConfig,
+    _parent_: DictConfig,
+    _node_: Any,
+) -> str:
+    hydra_root = _root_
+    hydra_conf = OmegaConf.select(hydra_root, "hydra", default=None)
+    if hydra_conf is None:
+        hydra_conf = cast(DictConfig, HydraConfig.get())
+    assert isinstance(hydra_conf, DictConfig)
+
+    opts = _get_override_dirname_options(options, hydra_conf)
+
+    element_resolver = None
+    if opts.element_resolver is not None:
+        if not OmegaConf.has_resolver(opts.element_resolver):
+            raise ValueError(f"Unknown OmegaConf resolver '{opts.element_resolver}'")
+        element_resolver = OmegaConf._get_resolver(opts.element_resolver)
+        assert element_resolver is not None
+
+    task_overrides = OmegaConf.to_container(
+        hydra_conf.overrides.task,
+        resolve=False,
+    )
+    assert isinstance(task_overrides, list)
+
+    from hydra.core.override_parser.overrides_parser import OverridesParser
+
+    parsed_overrides = OverridesParser.create().parse_overrides(task_overrides)
+    exclude_keys = set(opts.exclude_keys)
+    items = []
+    for override in parsed_overrides:
+        if override.key_or_group in exclude_keys:
+            continue
+
+        assert override.input_line is not None
+        items.append(override.input_line)
+
+    items.sort()
+    for idx, item in enumerate(items):
+        item = re.sub(pattern="[=]", repl=opts.kv_sep, string=item)
+        item = _resolve_override_dirname_item(item, _root_)
+        if element_resolver is not None:
+            item = str(element_resolver(_root_, _parent_, _node_, (item,), (item,)))
+        items[idx] = item
+
+    return opts.item_sep.join(items)
+
+
+def hydra_deprecated_override_dirname(
+    *,
+    _root_: DictConfig,
+    _parent_: DictConfig,
+    _node_: Any,
+) -> str:
+    deprecation_warning(
+        "hydra.job.override_dirname is deprecated. "
+        "Use ${hydra_override_dirname:} instead.",
+        stacklevel=3,
+    )
+    return hydra_override_dirname(_root_=_root_, _parent_=_parent_, _node_=_node_)
+
+
 def setup_globals() -> None:
     # please add documentation when you add a new resolver
+    OmegaConf.register_new_resolver(
+        "hydra_override_dirname",
+        hydra_override_dirname,
+        replace=True,
+    )
+    OmegaConf.register_new_resolver(
+        "hydra_deprecated_override_dirname",
+        hydra_deprecated_override_dirname,
+        replace=True,
+    )
     OmegaConf.register_new_resolver(
         "now",
         lambda pattern: datetime.now().strftime(pattern),
