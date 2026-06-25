@@ -32,6 +32,7 @@
     "2989": "2026-06-22",
     "2999": "2026-06-22",
     "3003": "2026-06-24",
+    "3018": "2026-06-25",
     "3024": "2026-06-24",
     "3028": "2026-06-24",
     "3031": "2026-06-21",
@@ -65,7 +66,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-25T17:58:18Z",
+  "generated_at": "2026-06-25T19:50:34Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2617,18 +2618,6 @@
       "title": "[Feature Request] Support Instantiation of User Plugins Without Special Module",
       "updated_at": "2025-04-29T15:34:02Z"
     },
-    "3018": {
-      "category": "Enhancement",
-      "created_at": "2025-01-31T17:16:18Z",
-      "labels": [],
-      "pr_numbers": [
-        "3241"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "[Feature Request] Add option to replace \"/\" in hydra.job.override_dirname",
-      "updated_at": "2026-06-25T17:56:54Z"
-    },
     "3026": {
       "category": "Enhancement",
       "created_at": "2025-02-12T02:17:34Z",
@@ -3581,6 +3570,18 @@
       "status": "done",
       "title": "Primary config module'xxx'not found.",
       "updated_at": "2025-01-06T13:16:35Z"
+    },
+    "3018": {
+      "category": "Enhancement",
+      "created_at": "2025-01-31T17:16:18Z",
+      "labels": [],
+      "pr_numbers": [
+        "3241"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Add option to replace \"/\" in hydra.job.override_dirname",
+      "updated_at": "2026-06-25T17:56:54Z"
     },
     "3024": {
       "category": "Enhancement",
