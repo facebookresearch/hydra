@@ -5,19 +5,20 @@ import os
 import re
 import sys
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from os.path import splitext
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Dict, Optional, Sequence, Union, cast
+from typing import Any, Dict, List, Optional, Sequence, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
 from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.hydra_config import HydraConfig
+from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.singleton import Singleton
 from hydra.types import HydraContext, TaskFunction
 
@@ -205,8 +206,110 @@ def get_valid_filename(s: str) -> str:
     return re.sub(r"(?u)[^-\w.]", "", s)
 
 
+@dataclass
+class OverrideDirnameOptions:
+    kv_sep: str = "="
+    item_sep: str = ","
+    exclude_keys: List[str] = field(default_factory=list)
+    element_resolver: Optional[str] = None
+
+
+def _get_override_dirname_options(
+    options: Optional[Union[Dict[str, Any], DictConfig]], root: DictConfig
+) -> OverrideDirnameOptions:
+    if options is None:
+        old = root.hydra.job.config.override_dirname
+        return OverrideDirnameOptions(
+            kv_sep=old.kv_sep,
+            item_sep=old.item_sep,
+            exclude_keys=list(old.exclude_keys),
+        )
+
+    if isinstance(options, DictConfig):
+        options = cast(Dict[str, Any], OmegaConf.to_container(options, resolve=True))
+
+    if not isinstance(options, dict):
+        raise TypeError("hydra_override_dirname options must be a dictionary")
+
+    element_resolver = options.get("element_resolver")
+    if element_resolver is not None and not isinstance(element_resolver, str):
+        raise TypeError("hydra_override_dirname element_resolver must be a string")
+
+    return OverrideDirnameOptions(
+        kv_sep=options.get("kv_sep", "="),
+        item_sep=options.get("item_sep", ","),
+        exclude_keys=list(options.get("exclude_keys", [])),
+        element_resolver=element_resolver,
+    )
+
+
+def hydra_override_dirname(
+    options: Optional[Union[Dict[str, Any], DictConfig]] = None,
+    *,
+    _root_: DictConfig,
+    _parent_: DictConfig,
+    _node_: Any,
+) -> str:
+    opts = _get_override_dirname_options(options, _root_)
+
+    element_resolver = None
+    if opts.element_resolver is not None:
+        element_resolver = OmegaConf._get_resolver(opts.element_resolver)
+        if element_resolver is None:
+            raise ValueError(f"Unknown OmegaConf resolver '{opts.element_resolver}'")
+
+    task_overrides = OmegaConf.to_container(
+        _root_.hydra.overrides.task,
+        resolve=False,
+    )
+    assert isinstance(task_overrides, list)
+
+    parsed_overrides = OverridesParser.create().parse_overrides(task_overrides)
+    exclude_keys = set(opts.exclude_keys)
+    items = []
+    for override in parsed_overrides:
+        if override.key_or_group in exclude_keys:
+            continue
+
+        assert override.input_line is not None
+        items.append(override.input_line)
+
+    items.sort()
+    for idx, item in enumerate(items):
+        item = re.sub(pattern="[=]", repl=opts.kv_sep, string=item)
+        if element_resolver is not None:
+            item = str(element_resolver(_root_, _parent_, _node_, (item,), (item,)))
+        items[idx] = item
+
+    return opts.item_sep.join(items)
+
+
+def hydra_deprecated_override_dirname(
+    *,
+    _root_: DictConfig,
+    _parent_: DictConfig,
+    _node_: Any,
+) -> str:
+    deprecation_warning(
+        "hydra.job.override_dirname is deprecated. "
+        "Use ${hydra_override_dirname:} instead.",
+        stacklevel=3,
+    )
+    return hydra_override_dirname(_root_=_root_, _parent_=_parent_, _node_=_node_)
+
+
 def setup_globals() -> None:
     # please add documentation when you add a new resolver
+    OmegaConf.register_new_resolver(
+        "hydra_override_dirname",
+        hydra_override_dirname,
+        replace=True,
+    )
+    OmegaConf.register_new_resolver(
+        "hydra_deprecated_override_dirname",
+        hydra_deprecated_override_dirname,
+        replace=True,
+    )
     OmegaConf.register_new_resolver(
         "now",
         lambda pattern: datetime.now().strftime(pattern),

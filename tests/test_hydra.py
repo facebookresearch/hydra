@@ -939,7 +939,7 @@ def test_sys_exit(tmpdir: Path) -> None:
         ),
         (
             {
-                "hydra": {"run": {"dir": "foo-${hydra.job.override_dirname}"}},
+                "hydra": {"run": {"dir": "foo-${hydra_override_dirname:}"}},
                 "app": {"a": 1, "b": 2},
             },
             ["app.a=20", "hydra.job.chdir=True"],
@@ -947,7 +947,7 @@ def test_sys_exit(tmpdir: Path) -> None:
         ),
         (
             {
-                "hydra": {"run": {"dir": "foo-${hydra.job.override_dirname}"}},
+                "hydra": {"run": {"dir": "foo-${hydra_override_dirname:}"}},
                 "app": {"a": 1, "b": 2},
             },
             ["app.b=10", "app.a=20", "hydra.job.chdir=True"],
@@ -968,6 +968,49 @@ def test_local_run_workdir(
         prints="os.getcwd()",
         expected_outputs=str(expected_dir1),
     )
+
+
+def test_deprecated_hydra_job_override_dirname_in_run_dir(tmpdir: Path) -> None:
+    tmp_path = Path(str(tmpdir))
+    cfg = OmegaConf.create(
+        {
+            "hydra": {
+                "run": {
+                    "dir": f"{tmp_path}/foo-${{hydra.job.override_dirname}}",
+                }
+            },
+            "app": {"a": 1},
+        }
+    )
+    OmegaConf.save(cfg, tmp_path / "config.yaml")
+    task_file = tmp_path / "task.py"
+    task_file.write_text(
+        dedent(
+            """
+            import os
+
+            import hydra
+
+
+            @hydra.main(version_base=None, config_path=".", config_name="config")
+            def experiment(_cfg):
+                print(os.getcwd())
+
+
+            if __name__ == "__main__":
+                experiment()
+            """
+        ),
+        encoding="utf-8",
+    )
+
+    out, err = run_python_script(
+        [str(task_file), "app.a=20", "hydra.job.chdir=True"],
+        allow_warnings=True,
+    )
+
+    assert out == str(tmp_path / "foo-app.a=20")
+    assert "hydra.job.override_dirname is deprecated" in err
 
 
 @mark.parametrize(
