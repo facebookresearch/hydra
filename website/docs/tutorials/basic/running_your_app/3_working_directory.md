@@ -105,6 +105,9 @@ You can disable its creation by overriding `hydra.output_subdir` to `null`.
 With `hydra.job.chdir=True`, you can still access the original working directory by importing `get_original_cwd()` and `to_absolute_path()` in `hydra.utils`:
 
 ```python
+import os
+from omegaconf import DictConfig
+import hydra
 from hydra.utils import get_original_cwd, to_absolute_path
 
 @hydra.main(version_base=None)
