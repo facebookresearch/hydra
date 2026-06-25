@@ -558,7 +558,7 @@ class IntegrationTestSuite:
                     "hydra": {
                         "sweep": {
                             "dir": "hydra_cfg",
-                            "subdir": "${hydra.job.override_dirname}",
+                            "subdir": "${hydra_override_dirname:}",
                         }
                     },
                     "a": "hello",
@@ -574,7 +574,7 @@ class IntegrationTestSuite:
                     "hydra": {
                         "sweep": {
                             "dir": "hydra_cfg",
-                            "subdir": "${hydra.job.override_dirname}",
+                            "subdir": "${hydra_override_dirname:}",
                         },
                         "job": {
                             "config": {

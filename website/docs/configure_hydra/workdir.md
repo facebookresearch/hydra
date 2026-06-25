@@ -98,13 +98,11 @@ my_app
 </div>
 
 
-### Using `hydra.job.override_dirname`
+### Using `hydra_override_dirname`
 
 <ExampleGithubLink text="Example application" to="examples/configure_hydra/job_override_dirname"/>
 
-This field is populated automatically using your command line arguments and is typically being used as a part of your 
-output directory pattern. It is meant to be used along with the configuration for working dir, especially
-in `hydra.sweep.subdir`.
+The `hydra_override_dirname` resolver derives a directory name from your command line arguments. It is typically used as a part of your output directory pattern, especially in `hydra.sweep.subdir`.
 
 If we run the example application with the following commandline overrides and configs:
 
@@ -120,7 +118,7 @@ python my_app.py --multirun batch_size=32 learning_rate=0.1,0.01
 hydra:
   sweep:
     dir: multirun
-    subdir: ${hydra.job.override_dirname}
+    subdir: ${hydra_override_dirname:}
 ```
 </div>
 <div className="col  col--6">
@@ -134,23 +132,16 @@ multirun
 </div>
 </div>
 
-You can further customized the output dir creation by configuring`hydra.job.override_dirname`.
-
-In particular, the separator char `=` and the item separator char `,` can be modified by overriding 
-`hydra.job.config.override_dirname.kv_sep` and `hydra.job.config.override_dirname.item_sep`.
-Command line override keys can also be automatically excluded from the generated `override_dirname`.
+You can further customize the output dir creation by passing options to the resolver.
+In particular, the separator char `=`, the item separator char `,`, and excluded command line override keys can be configured directly at the use site.
 
 An example of a case where the exclude is useful is a random seed.
 
 ```yaml
 hydra:
-  run:
-    dir: output/${hydra.job.override_dirname}/seed=${seed}
-  job:
-    config:
-      override_dirname:
-        exclude_keys:
-          - seed
+  sweep:
+    dir: multirun
+    subdir: '${hydra_override_dirname:{exclude_keys: [seed]}}/seed=${seed}'
 ```
 With this configuration, running
 ```bash
@@ -169,3 +160,29 @@ multirun
     └── seed=2
 ```
 
+Custom separators can be specified the same way:
+
+```yaml
+hydra:
+  sweep:
+    subdir: '${hydra_override_dirname:{kv_sep: "-", item_sep: "_", exclude_keys: [seed]}}'
+```
+
+For more control, `element_resolver` can apply a custom OmegaConf resolver to each directory name element before the elements are joined.
+The resolver must be registered separately before Hydra starts.
+For example, this replaces path separators, including Windows path separators, with `_`:
+
+```python
+from omegaconf import OmegaConf
+
+OmegaConf.register_new_resolver(
+    "pathsafe",
+    lambda value: str(value).replace("/", "_").replace("\\", "_"),
+)
+```
+
+```yaml
+hydra:
+  sweep:
+    subdir: '${hydra_override_dirname:{item_sep: "/", element_resolver: pathsafe}}'
+```
