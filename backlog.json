@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-25",
-  "generated_at": "2026-06-25T08:11:43Z",
+  "generated_at": "2026-06-25T17:58:18Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 250,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 3
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 240
+        "count": 239
       },
       {
         "status": "done",
@@ -112,6 +112,24 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 3018,
+      "title": "[Feature Request] Add option to replace \"/\" in hydra.job.override_dirname",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3241,
+          "url": "https://github.com/facebookresearch/hydra/pull/3241"
+        }
+      ],
+      "created": "2025-01-31",
+      "updated": "2026-06-25",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3018"
     },
     {
       "number": 845,
@@ -3556,19 +3574,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3015"
     },
     {
-      "number": 3018,
-      "title": "[Feature Request] Add option to replace \"/\" in hydra.job.override_dirname",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-01-31",
-      "updated": "2025-02-01",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3018"
-    },
-    {
       "number": 3026,
       "title": "[Feature Request] Allow for defaults list `override` to update the ordering of defaults?",
       "category": "Enhancement",
@@ -4993,6 +4998,26 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-25T17:58:18Z",
+      "kind": "pr",
+      "issue": 3018,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3018",
+      "title": "[Feature Request] Add option to replace \"/\" in hydra.job.override_dirname",
+      "detail": "linked #3241"
+    },
+    {
+      "ts": "2026-06-25T17:58:18Z",
+      "kind": "status",
+      "issue": 3018,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3018",
+      "title": "[Feature Request] Add option to replace \"/\" in hydra.job.override_dirname",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3241,
+        "url": "https://github.com/facebookresearch/hydra/pull/3241"
+      }
+    },
     {
       "ts": "2026-06-24T20:51:11Z",
       "kind": "closed",

@@ -65,7 +65,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-25T08:11:43Z",
+  "generated_at": "2026-06-25T17:58:18Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2621,11 +2621,13 @@
       "category": "Enhancement",
       "created_at": "2025-01-31T17:16:18Z",
       "labels": [],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3241"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Feature Request] Add option to replace \"/\" in hydra.job.override_dirname",
-      "updated_at": "2025-02-01T11:43:35Z"
+      "updated_at": "2026-06-25T17:56:54Z"
     },
     "3026": {
       "category": "Enhancement",
