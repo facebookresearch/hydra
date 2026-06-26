@@ -67,7 +67,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-26T12:12:45Z",
+  "generated_at": "2026-06-26T13:11:30Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2439,13 +2439,16 @@
       "category": "Bug",
       "created_at": "2024-07-21T09:19:25Z",
       "labels": [
-        "bug"
+        "bug",
+        "help wanted",
+        "plugin",
+        "ray-launcher"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "Ray Launcher:  Additional properties are not allowed",
-      "updated_at": "2026-06-23T10:04:16Z"
+      "updated_at": "2026-06-26T13:10:08Z"
     },
     "2938": {
       "category": "Question",

@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-26",
-  "generated_at": "2026-06-26T12:12:45Z",
+  "generated_at": "2026-06-26T13:11:30Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 248,
@@ -3332,9 +3332,12 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2024-07-21",
-      "updated": "2026-06-23",
+      "updated": "2026-06-26",
       "labels": [
-        "bug"
+        "bug",
+        "help wanted",
+        "plugin",
+        "ray-launcher"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2927"
     },
@@ -5003,6 +5006,14 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-26T13:11:30Z",
+      "kind": "label",
+      "issue": 2927,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2927",
+      "title": "Ray Launcher:  Additional properties are not allowed",
+      "detail": "added \"help wanted\", \"plugin\", \"ray-launcher\""
+    },
     {
       "ts": "2026-06-26T12:12:45Z",
       "kind": "label",
