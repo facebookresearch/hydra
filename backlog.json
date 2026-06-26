@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-06-25",
-  "generated_at": "2026-06-25T19:50:34Z",
+  "generated_on": "2026-06-26",
+  "generated_at": "2026-06-26T08:15:54Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 249,
@@ -4485,6 +4485,24 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3003"
     },
     {
+      "number": 3018,
+      "title": "[Feature Request] Add option to replace \"/\" in hydra.job.override_dirname",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3241,
+          "url": "https://github.com/facebookresearch/hydra/pull/3241"
+        }
+      ],
+      "created": "2025-01-31",
+      "updated": "2026-06-25",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3018"
+    },
+    {
       "number": 3024,
       "title": "Compatibility with Optuna dashboard",
       "category": "Enhancement",
@@ -4977,24 +4995,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
-    },
-    {
-      "number": 3018,
-      "title": "[Feature Request] Add option to replace \"/\" in hydra.job.override_dirname",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3241,
-          "url": "https://github.com/facebookresearch/hydra/pull/3241"
-        }
-      ],
-      "created": "2025-01-31",
-      "updated": "2026-06-25",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3018"
     }
   ],
   "updates": [
