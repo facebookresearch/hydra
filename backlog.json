@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-26",
-  "generated_at": "2026-06-26T11:05:21Z",
+  "generated_at": "2026-06-26T12:12:45Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 248,
@@ -3923,8 +3923,13 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-23",
-      "updated": "2026-06-23",
-      "labels": [],
+      "updated": "2026-06-26",
+      "labels": [
+        "maintenance",
+        "plugin",
+        "ray-launcher",
+        "needs decision"
+      ],
       "url": "https://github.com/facebookresearch/hydra/issues/3236"
     },
     {
@@ -4869,6 +4874,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3176"
     },
     {
+      "number": 3188,
+      "title": "Feature request: add lifecycle callbacks before and after config composition",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-05-19",
+      "updated": "2026-05-19",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3188"
+    },
+    {
       "number": 3192,
       "title": "docs: update Twitter reference to X in README",
       "category": "Documentation",
@@ -4982,22 +5000,17 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
-    },
-    {
-      "number": 3188,
-      "title": "Feature request: add lifecycle callbacks before and after config composition",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2026-05-19",
-      "updated": "2026-05-19",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3188"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-26T12:12:45Z",
+      "kind": "label",
+      "issue": 3236,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3236",
+      "title": "Clarify Ray AWS launcher support and validation expectations",
+      "detail": "added \"maintenance\", \"needs decision\", \"plugin\", \"ray-launcher\""
+    },
     {
       "ts": "2026-06-26T11:05:21Z",
       "kind": "closed",

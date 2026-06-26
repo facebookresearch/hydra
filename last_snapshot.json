@@ -67,7 +67,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-26T11:05:21Z",
+  "generated_at": "2026-06-26T12:12:45Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2967,12 +2967,17 @@
     "3236": {
       "category": "Enhancement",
       "created_at": "2026-06-23T09:56:08Z",
-      "labels": [],
+      "labels": [
+        "maintenance",
+        "needs decision",
+        "plugin",
+        "ray-launcher"
+      ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "Clarify Ray AWS launcher support and validation expectations",
-      "updated_at": "2026-06-23T09:56:08Z"
+      "updated_at": "2026-06-26T12:11:25Z"
     },
     "3237": {
       "category": "Enhancement",
