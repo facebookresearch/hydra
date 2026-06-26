@@ -57,6 +57,7 @@
     "3118": "2026-06-08",
     "3129": "2026-06-11",
     "3176": "2026-05-17",
+    "3188": "2026-06-26",
     "3192": "2026-06-07",
     "3195": "2026-05-30",
     "3207": "2026-06-11",
@@ -66,7 +67,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-26T08:15:54Z",
+  "generated_at": "2026-06-26T11:05:21Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2773,16 +2774,6 @@
       "title": "Consider supporting newer Ax features in Ax Sweeper",
       "updated_at": "2026-05-17T14:14:02Z"
     },
-    "3188": {
-      "category": "Enhancement",
-      "created_at": "2026-05-19T21:53:58Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Feature request: add lifecycle callbacks before and after config composition",
-      "updated_at": "2026-05-19T21:53:58Z"
-    },
     "3189": {
       "category": "Enhancement",
       "created_at": "2026-05-19T21:54:10Z",
@@ -2791,7 +2782,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Feature request: support env files as first-class Hydra inputs",
-      "updated_at": "2026-05-19T21:54:10Z"
+      "updated_at": "2026-06-26T10:31:52Z"
     },
     "3200": {
       "category": "Enhancement",
@@ -2819,7 +2810,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Explore async execution model for launchers and sweepers",
-      "updated_at": "2026-06-24T19:56:03Z"
+      "updated_at": "2026-06-26T09:39:50Z"
     },
     "3202": {
       "category": "Enhancement",
@@ -2845,7 +2836,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] Type validation for instantiate arguments",
-      "updated_at": "2026-06-17T18:04:46Z"
+      "updated_at": "2026-06-26T08:39:24Z"
     },
     "3206": {
       "category": "Documentation",
@@ -2858,7 +2849,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Create website surfaces for ecosystem and featured projects",
-      "updated_at": "2026-06-11T19:18:51Z"
+      "updated_at": "2026-06-26T08:36:37Z"
     },
     "3210": {
       "category": "Refactor",
@@ -2870,7 +2861,7 @@
       "state": "OPEN",
       "status": "community PR",
       "title": "Modernize Optuna Sweeper",
-      "updated_at": "2026-06-11T20:25:17Z"
+      "updated_at": "2026-06-26T08:23:08Z"
     },
     "3215": {
       "category": "Bug",
@@ -2897,7 +2888,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Evaluate opt-out from eager resolution in instantiate",
-      "updated_at": "2026-06-19T06:45:42Z"
+      "updated_at": "2026-06-26T08:18:10Z"
     },
     "3220": {
       "category": "Enhancement",
@@ -3877,6 +3868,16 @@
       "status": "done",
       "title": "Upgrade and modernize Ax Sweeper",
       "updated_at": "2026-05-17T14:14:35Z"
+    },
+    "3188": {
+      "category": "Enhancement",
+      "created_at": "2026-05-19T21:53:58Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Feature request: add lifecycle callbacks before and after config composition",
+      "updated_at": "2026-05-19T21:53:58Z"
     },
     "3192": {
       "category": "Documentation",

@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-26",
-  "generated_at": "2026-06-26T08:15:54Z",
+  "generated_at": "2026-06-26T11:05:21Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 249,
+    "open_total": 248,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 82,
-        "percentage": 32.9
+        "percentage": 33.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 135,
-        "percentage": 54.2
+        "count": 134,
+        "percentage": 54.0
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 239
+        "count": 238
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 65
+        "count": 66
       }
     ]
   },
@@ -251,7 +251,7 @@
         }
       ],
       "created": "2026-06-11",
-      "updated": "2026-06-11",
+      "updated": "2026-06-26",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3210"
     },
@@ -3712,19 +3712,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3177"
     },
     {
-      "number": 3188,
-      "title": "Feature request: add lifecycle callbacks before and after config composition",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-05-19",
-      "updated": "2026-05-19",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3188"
-    },
-    {
       "number": 3189,
       "title": "Feature request: support env files as first-class Hydra inputs",
       "category": "Enhancement",
@@ -3733,7 +3720,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-05-19",
-      "updated": "2026-05-19",
+      "updated": "2026-06-26",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3189"
     },
@@ -3762,7 +3749,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-07",
-      "updated": "2026-06-24",
+      "updated": "2026-06-26",
       "labels": [
         "enhancement",
         "wishlist",
@@ -3796,7 +3783,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-08",
-      "updated": "2026-06-17",
+      "updated": "2026-06-26",
       "labels": [
         "enhancement",
         "instantiate_api"
@@ -3812,7 +3799,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-10",
-      "updated": "2026-06-11",
+      "updated": "2026-06-26",
       "labels": [
         "documentation",
         "enhancement"
@@ -3828,7 +3815,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-19",
-      "updated": "2026-06-19",
+      "updated": "2026-06-26",
       "labels": [
         "enhancement",
         "instantiate_api"
@@ -4995,9 +4982,29 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
+    },
+    {
+      "number": 3188,
+      "title": "Feature request: add lifecycle callbacks before and after config composition",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-05-19",
+      "updated": "2026-05-19",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3188"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-26T11:05:21Z",
+      "kind": "closed",
+      "issue": 3188,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3188",
+      "title": "Feature request: add lifecycle callbacks before and after config composition"
+    },
     {
       "ts": "2026-06-25T19:50:34Z",
       "kind": "closed",
