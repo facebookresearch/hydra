@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-26",
-  "generated_at": "2026-06-26T13:11:30Z",
+  "generated_at": "2026-06-26T13:24:21Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 248,
@@ -3301,9 +3301,10 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2024-04-22",
-      "updated": "2026-06-23",
+      "updated": "2026-06-26",
       "labels": [
         "bug",
+        "plugin",
         "ray-launcher"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2893"
@@ -5006,6 +5007,14 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-26T13:24:21Z",
+      "kind": "label",
+      "issue": 2893,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2893",
+      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
+      "detail": "added \"plugin\""
+    },
     {
       "ts": "2026-06-26T13:11:30Z",
       "kind": "label",

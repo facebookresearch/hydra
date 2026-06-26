@@ -67,7 +67,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-26T13:11:30Z",
+  "generated_at": "2026-06-26T13:24:21Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2415,13 +2415,14 @@
       "created_at": "2024-04-22T00:53:41Z",
       "labels": [
         "bug",
+        "plugin",
         "ray-launcher"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
-      "updated_at": "2026-06-23T17:54:47Z"
+      "updated_at": "2026-06-26T13:23:00Z"
     },
     "2898": {
       "category": "Enhancement",
