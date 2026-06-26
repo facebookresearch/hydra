@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2823": "2026-06-26",
     "2829": "2026-06-24",
     "2843": "2026-06-24",
     "2869": "2026-06-24",
@@ -67,7 +68,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-26T13:24:21Z",
+  "generated_at": "2026-06-26T14:14:30Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2280,18 +2281,6 @@
       "title": "[Bug] Tab completion fails with filenames containing \"-\" character",
       "updated_at": "2023-12-24T12:11:08Z"
     },
-    "2823": {
-      "category": "Bug",
-      "created_at": "2023-12-21T17:16:36Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Nevergrad sweeper appears to be broken?",
-      "updated_at": "2024-09-08T01:58:04Z"
-    },
     "2824": {
       "category": "Enhancement",
       "created_at": "2023-12-22T11:43:04Z",
@@ -3255,6 +3244,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2823": {
+      "category": "Bug",
+      "created_at": "2023-12-21T17:16:36Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Nevergrad sweeper appears to be broken?",
+      "updated_at": "2024-09-08T01:58:04Z"
     },
     "2829": {
       "category": "Bug",

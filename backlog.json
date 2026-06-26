@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-06-26",
-  "generated_at": "2026-06-26T13:24:21Z",
+  "generated_at": "2026-06-26T14:14:30Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 248,
+    "open_total": 247,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 82,
-        "percentage": 33.1
+        "count": 81,
+        "percentage": 32.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 54.0
+        "percentage": 54.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 5.2
+        "percentage": 5.3
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 12,
-        "percentage": 4.8
+        "percentage": 4.9
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 238
+        "count": 237
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 66
+        "count": 67
       }
     ]
   },
@@ -3147,21 +3147,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2816"
     },
     {
-      "number": 2823,
-      "title": "Nevergrad sweeper appears to be broken?",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-12-21",
-      "updated": "2024-09-08",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2823"
-    },
-    {
       "number": 2824,
       "title": "Option to raise exception upon first failure in multirun",
       "category": "Enhancement",
@@ -5004,9 +4989,31 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
+    },
+    {
+      "number": 2823,
+      "title": "Nevergrad sweeper appears to be broken?",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-12-21",
+      "updated": "2024-09-08",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2823"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-26T14:14:30Z",
+      "kind": "closed",
+      "issue": 2823,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2823",
+      "title": "Nevergrad sweeper appears to be broken?"
+    },
     {
       "ts": "2026-06-26T13:24:21Z",
       "kind": "label",
