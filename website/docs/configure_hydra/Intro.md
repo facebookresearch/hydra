@@ -97,7 +97,7 @@ You can find more details in the [Job Configuration](job.md) page.
 
 Fields under **hydra.job**:
 - **name** : Job name, defaults to the Python file name without the suffix. can be overridden.
-- **override_dirname** : Pathname derived from the overrides for this job
+- **override_dirname** : Deprecated. Use the `hydra_override_dirname` resolver instead.
 - **chdir**: If `True`, Hydra calls `os.chdir(output_dir)` before calling back to the user's main function.
   See the [Output/Working directory tutorial](tutorials/basic/running_your_app/3_working_directory.md#automatically-change-current-working-dir-to-jobs-output-dir).
 - **id** : Job ID in the underlying jobs system (SLURM etc)
@@ -139,6 +139,9 @@ Fields under **hydra.overrides** are populated automatically and should not be o
 Hydra provides the following [OmegaConf resolvers](https://omegaconf.readthedocs.io/en/latest/usage.html#resolvers) by default.
 
 **hydra**: Interpolates into the `hydra` config node. e.g. Use `${hydra:job.name}` to get the Hydra job name.
+
+**hydra_override_dirname**: Creates a string from the command line overrides for the job. It is commonly used in output directory patterns.
+See [Customizing working directory pattern](workdir.md#using-hydra_override_dirname).
 
 **now**: Creates a string representing the current time using
 [strftime](https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior).

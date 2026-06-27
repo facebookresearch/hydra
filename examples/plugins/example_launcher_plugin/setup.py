@@ -13,10 +13,9 @@ with open("README.md") as fh:
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
         url="https://github.com/facebookresearch/hydra/",
+        license="MIT",
         packages=find_namespace_packages(include=["hydra_plugins.*"]),
         classifiers=[
-            # Feel free to use another license.
-            "License :: OSI Approved :: MIT License",
             # Hydra uses Python version and Operating system to determine
             # In which environments to test this plugin
             "Programming Language :: Python :: 3.10",

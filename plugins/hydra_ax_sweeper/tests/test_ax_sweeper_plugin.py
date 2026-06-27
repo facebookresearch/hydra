@@ -316,6 +316,23 @@ def test_command_line_log_interval_configures_ax_log_range() -> None:
     assert ax_parameter.scaling == "log"
 
 
+def test_create_ax_raw_data() -> None:
+    from hydra_plugins.hydra_ax_sweeper._core import create_ax_raw_data
+
+    assert create_ax_raw_data(1, "loss", is_noisy=True) == {"loss": 1.0}
+    assert create_ax_raw_data(1, "loss", is_noisy=False) == {"loss": (1.0, 0.0)}
+    assert create_ax_raw_data({"loss": 1, "accuracy": (0.5, 0.1)}, "loss", True) == {
+        "loss": 1.0,
+        "accuracy": (0.5, 0.1),
+    }
+
+    raw_data = create_ax_raw_data((1, None), "loss", is_noisy=True)
+    loss = raw_data["loss"]
+    assert isinstance(loss, tuple)
+    sem = loss[1]
+    assert math.isnan(sem)
+
+
 def test_ax_logging_from_hydra_app(tmpdir: Path) -> None:
     cmd = [
         "tests/apps/polynomial.py",

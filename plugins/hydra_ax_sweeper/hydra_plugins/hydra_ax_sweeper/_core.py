@@ -34,6 +34,8 @@ log = logging.getLogger(__name__)
 AxRangeParameterType = Literal["float", "int"]
 AxChoiceParameterType = Literal["float", "int", "str", "bool"]
 AxParameterConfig = Union[RangeParameterConfig, ChoiceParameterConfig]
+AxMetricValue = Union[float, Tuple[float, float]]
+AxRawData = Mapping[str, AxMetricValue]
 
 
 @dataclass
@@ -124,6 +126,30 @@ def create_ax_parameter_config(param: Dict[Any, Any]) -> AxParameterConfig:
         parameter_type=choice_parameter_type,
         is_ordered=is_ordered,
     )
+
+
+def create_ax_raw_data(value: Any, objective_name: str, is_noisy: bool) -> AxRawData:
+    def normalize_metric(metric_value: Any) -> AxMetricValue:
+        assert isinstance(metric_value, (int, float, tuple))
+        if isinstance(metric_value, (int, float)):
+            mean = float(metric_value)
+            return mean if is_noisy else (mean, 0.0)
+
+        assert len(metric_value) == 2
+        mean, sem = metric_value
+        assert isinstance(mean, (int, float))
+        assert sem is None or isinstance(sem, (int, float))
+        return (float(mean), float("nan") if sem is None else float(sem))
+
+    assert isinstance(value, (int, float, tuple, dict))
+    if isinstance(value, dict):
+        raw_data: Dict[str, AxMetricValue] = {}
+        for metric_name, metric_value in value.items():
+            assert isinstance(metric_name, str)
+            raw_data[metric_name] = normalize_metric(metric_value)
+        return raw_data
+
+    return {objective_name: normalize_metric(value)}
 
 
 def get_one_batch_of_trials(
@@ -258,19 +284,13 @@ class CoreAxSweeper(Sweeper):
                 # Alternatively, the task function can return a dict whose values
                 # represent multiple metrics, where each key is the name of the metric
                 # and the item can be an int, float or tuple.
-                assert isinstance(val, (int, float, tuple, dict))
-                # is_noisy specifies how Ax should behave when not given an error value.
-                # if true (default), the error of each measurement is inferred by Ax.
-                # if false, the error of each measurement is set to 0.
-                if isinstance(val, (int, float)):
-                    if self.is_noisy:
-                        val = (val, None)  # specify unknown noise
-                    else:
-                        val = (val, 0)  # specify no noise
-                if isinstance(val, tuple):
-                    val = {self.experiment.objective_name: val}
+                # is_noisy specifies how Ax should behave when not given an
+                # error value: true means unknown error, false means zero error.
+                raw_data = create_ax_raw_data(
+                    val, self.experiment.objective_name, self.is_noisy
+                )
                 ax_client.complete_trial(
-                    trial_index=batch[idx].trial_index, raw_data=val
+                    trial_index=batch[idx].trial_index, raw_data=raw_data
                 )
 
     def get_best_point(

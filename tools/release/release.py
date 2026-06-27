@@ -1,8 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import json
 import logging
 import os
 import re
 import shutil
+import subprocess
+import sys
+import tempfile
 from dataclasses import dataclass
 from enum import Enum
 from functools import lru_cache
@@ -12,6 +16,7 @@ from typing import Dict, List, Optional, Tuple
 import hydra
 import requests  # type: ignore[import-untyped]
 from hydra.core.config_store import ConfigStore
+from hydra.core.hydra_config import HydraConfig
 from hydra.test_utils.test_utils import find_parent_dir_containing, run_python_script
 from omegaconf import II, MISSING, SI, DictConfig, OmegaConf
 from packaging.version import Version, parse
@@ -24,6 +29,8 @@ class Action(Enum):
     build = 2
     bump = 3
     set_version = 4
+    validate_versions = 5
+    dev_release = 6
 
 
 class BuildPolicy(Enum):
@@ -62,6 +69,8 @@ class Config:
     repository: Repository = Repository.pypi
     require_artifacts: bool = False
     version: Optional[str] = None
+    publish: bool = False
+    workflow_ref: str = "main"
 
 
 ConfigStore.instance().store(name="config_schema", node=Config)
@@ -121,6 +130,15 @@ class LocalPackageInfo:
     local_version: Version
 
 
+@dataclass
+class DevReleasePackageInfo:
+    name: str
+    local_version: Version
+    target_version: Version
+    latest_version: Optional[Version]
+    target_version_published: bool
+
+
 def parse_version(ver: str) -> Version:
     v = parse(ver)
     assert isinstance(v, Version)
@@ -172,10 +190,89 @@ def is_publishable(info: PackageInfo) -> bool:
     return not info.local_version_published
 
 
+def validate_local_version(info: LocalPackageInfo, expected_version: Version) -> None:
+    if info.local_version != expected_version:
+        raise ValueError(
+            f"{info.name} version is {info.local_version}; expected {expected_version}"
+        )
+
+
 def format_latest_version(version: Optional[Version]) -> str:
     if version is None:
         return "<not published>"
     return str(version)
+
+
+def validate_dev_version(version: Version) -> None:
+    if not version.is_devrelease:
+        raise ValueError(f"Dev releases require a .devN version; got {version}")
+
+
+def collect_dev_release_package_info(
+    repository: Repository,
+    packages: Dict[str, Package],
+    hydra_root: str,
+    target_version: Version,
+) -> List[DevReleasePackageInfo]:
+    ret = []
+    for package in packages.values():
+        pkg_path = os.path.normpath(os.path.join(hydra_root, package.path))
+        local = get_local_package_info(pkg_path)
+        remote_metadata = get_metadata(repository, local.name)
+        ret.append(
+            DevReleasePackageInfo(
+                name=local.name,
+                local_version=local.local_version,
+                target_version=target_version,
+                latest_version=get_latest_release(remote_metadata),
+                target_version_published=is_version_published(
+                    remote_metadata, target_version
+                ),
+            )
+        )
+    return ret
+
+
+def format_dev_release_package_table(infos: List[DevReleasePackageInfo]) -> str:
+    rows = [
+        (
+            "Package",
+            "Current local version",
+            "Target version",
+            "PyPI status",
+            "Latest PyPI version",
+        )
+    ]
+    for info in infos:
+        status = (
+            "already published" if info.target_version_published else "not published"
+        )
+        rows.append(
+            (
+                info.name,
+                str(info.local_version),
+                str(info.target_version),
+                status,
+                format_latest_version(info.latest_version),
+            )
+        )
+
+    widths = [max(len(row[idx]) for row in rows) for idx in range(len(rows[0]))]
+    lines = []
+    for index, row in enumerate(rows):
+        lines.append("  ".join(cell.ljust(widths[col]) for col, cell in enumerate(row)))
+        if index == 0:
+            lines.append("  ".join("-" * width for width in widths))
+    return "\n".join(lines)
+
+
+def fail_if_any_target_version_published(infos: List[DevReleasePackageInfo]) -> None:
+    published = [info.name for info in infos if info.target_version_published]
+    if published:
+        packages = ", ".join(sorted(published))
+        raise ValueError(
+            f"Target version is already published for selected packages: {packages}"
+        )
 
 
 def build_package(cfg: Config, pkg_path: str, build_dir: str) -> None:
@@ -266,12 +363,305 @@ def bump_version(
         raise ValueError()
 
 
+def set_package_versions(cfg: Config, hydra_root: str, target_version: str) -> None:
+    for package in cfg.packages.values():
+        bump_version(cfg, package, hydra_root, target_version=target_version)
+
+
+def _run_checked(
+    cmd: List[str], cwd: Optional[str] = None, stdin: Optional[str] = None
+) -> str:
+    log.info("Running: %s", " ".join(cmd))
+    result = subprocess.run(
+        cmd,
+        cwd=cwd,
+        check=False,
+        encoding="utf-8",
+        input=stdin,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+    )
+    if result.stdout:
+        log.info(result.stdout.rstrip())
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(
+            result.returncode,
+            cmd,
+            output=result.stdout,
+            stderr=None,
+        )
+    return result.stdout
+
+
+def _python_bin(venv_path: Path) -> Path:
+    if os.name == "nt":
+        return venv_path / "Scripts" / "python.exe"
+    return venv_path / "bin" / "python"
+
+
+def check_build_artifacts(build_dir_path: Path) -> None:
+    artifacts = sorted(path for path in build_dir_path.iterdir() if path.is_file())
+    if not artifacts:
+        raise ValueError(f"No artifacts found in {build_dir_path}")
+
+    _run_checked([sys.executable, "-m", "twine", "check", *map(str, artifacts)])
+
+    wheels = [path for path in artifacts if path.suffix == ".whl"]
+    if not wheels:
+        raise ValueError(f"No wheels found in {build_dir_path}")
+
+    with tempfile.TemporaryDirectory(prefix="hydra-release-smoke-") as tmp:
+        venv_path = Path(tmp) / "venv"
+        _run_checked([sys.executable, "-m", "venv", str(venv_path)])
+        smoke_python = _python_bin(venv_path)
+        _run_checked(
+            [
+                str(smoke_python),
+                "-m",
+                "pip",
+                "install",
+                "--no-deps",
+                *map(str, wheels),
+            ]
+        )
+
+
+def validate_dev_release_artifacts(
+    cfg: Config, hydra_root: str, build_dir_path: Path, target_version: Version
+) -> None:
+    prepare_build_dir(cfg, build_dir_path)
+    set_package_versions(cfg, hydra_root, str(target_version))
+    for package in cfg.packages.values():
+        pkg_path = os.path.normpath(os.path.join(hydra_root, package.path))
+        build_package(cfg, pkg_path, str(build_dir_path))
+    check_build_artifacts(build_dir_path)
+
+
+def copy_release_workspace(hydra_root: str, destination: Path) -> Path:
+    workspace = destination / "hydra"
+    shutil.copytree(
+        hydra_root,
+        workspace,
+        ignore=shutil.ignore_patterns(
+            ".git",
+            ".sl",
+            ".venv",
+            ".nox",
+            ".mypy_cache",
+            ".pytest_cache",
+            "build",
+            "dist",
+            "node_modules",
+            "temp",
+        ),
+    )
+    return workspace
+
+
+def detect_vcs(hydra_root: str) -> str:
+    root = Path(hydra_root)
+    if (root / ".sl").exists():
+        return "sl"
+    if (root / ".git").exists():
+        return "git"
+    raise ValueError(f"Could not find a supported VCS checkout at {hydra_root}")
+
+
+def ensure_clean_worktree(hydra_root: str, vcs: str) -> None:
+    status = get_worktree_status(hydra_root, vcs)
+    if status:
+        raise ValueError(
+            "Working tree must be clean before publishing a dev release. "
+            f"Found:\n{status}"
+        )
+
+
+def _single_line(cmd: List[str], cwd: str) -> str:
+    value = _run_checked(cmd, cwd=cwd).strip()
+    if not value:
+        raise ValueError(f"Command did not produce output: {' '.join(cmd)}")
+    return value.splitlines()[-1].strip()
+
+
+def get_remote_url(hydra_root: str, vcs: str) -> str:
+    if vcs == "sl":
+        line = _single_line(["sl", "paths", "default"], hydra_root)
+        prefix = "default = "
+        return line[len(prefix) :] if line.startswith(prefix) else line
+    return _single_line(["git", "remote", "get-url", "origin"], hydra_root)
+
+
+def get_remote_branch_node(hydra_root: str, vcs: str, workflow_ref: str) -> str:
+    remote_url = get_remote_url(hydra_root, vcs)
+    line = _single_line(
+        ["git", "ls-remote", remote_url, f"refs/heads/{workflow_ref}"],
+        hydra_root,
+    )
+    return line.split()[0]
+
+
+def get_github_repo_slug(remote_url: str) -> str:
+    patterns = [
+        r"^https://github\.com/(?P<slug>[^/]+/[^/]+?)(?:\.git)?$",
+        r"^ssh://git@github\.com/(?P<slug>[^/]+/[^/]+?)(?:\.git)?$",
+        r"^git@github\.com:(?P<slug>[^/]+/[^/]+?)(?:\.git)?$",
+    ]
+    for pattern in patterns:
+        match = re.fullmatch(pattern, remote_url)
+        if match is not None:
+            return match.group("slug")
+    raise ValueError(f"Could not determine GitHub repo from remote URL: {remote_url}")
+
+
+def ensure_publish_base_matches_ref(
+    hydra_root: str, vcs: str, workflow_ref: str
+) -> None:
+    if vcs == "sl":
+        current = _single_line(["sl", "log", "-r", ".", "-T", "{node}"], hydra_root)
+    else:
+        current = _single_line(["git", "rev-parse", "HEAD"], hydra_root)
+    expected = get_remote_branch_node(hydra_root, vcs, workflow_ref)
+
+    if current != expected:
+        raise ValueError(
+            "Publishing requires the current commit to match "
+            f"remote/{workflow_ref} before the version bump. "
+            "Update to the target branch before publishing."
+        )
+
+
+def get_worktree_status(hydra_root: str, vcs: str) -> str:
+    cmd = [vcs, "status"] if vcs == "sl" else ["git", "status", "--porcelain"]
+    return _run_checked(cmd, cwd=hydra_root).strip()
+
+
+def commit_dev_release(hydra_root: str, vcs: str, target_version: Version) -> None:
+    message = f"Prepare Hydra {target_version}"
+    if vcs == "sl":
+        _run_checked(["sl", "commit", "-m", message], cwd=hydra_root)
+    else:
+        _run_checked(["git", "commit", "-am", message], cwd=hydra_root)
+
+
+def push_current_ref(hydra_root: str, vcs: str, workflow_ref: str) -> None:
+    if vcs == "sl":
+        _run_checked(["sl", "push", "--to", workflow_ref, "-r", "."], cwd=hydra_root)
+    else:
+        _run_checked(["git", "push", "origin", f"HEAD:{workflow_ref}"], cwd=hydra_root)
+
+
+def ensure_publish_tools(hydra_root: str, vcs: str) -> None:
+    _run_checked([vcs, "--version"], cwd=hydra_root)
+    _run_checked(["gh", "--version"], cwd=hydra_root)
+
+
+def dispatch_publish_workflow(
+    hydra_root: str,
+    vcs: str,
+    package_set: str,
+    target_version: Version,
+    workflow_ref: str,
+) -> None:
+    repo_slug = get_github_repo_slug(get_remote_url(hydra_root, vcs))
+    inputs = {
+        "package_set": package_set,
+        "expected_version": str(target_version),
+        "publish": "true",
+    }
+    _run_checked(
+        [
+            "gh",
+            "workflow",
+            "run",
+            "publish.yml",
+            "--repo",
+            repo_slug,
+            "--ref",
+            workflow_ref,
+            "--json",
+        ],
+        cwd=hydra_root,
+        stdin=json.dumps(inputs),
+    )
+
+
+def selected_package_set_name() -> str:
+    choices = HydraConfig.get().runtime.choices
+    selected = choices.get("set", "hydra-full-release")
+    return str(selected)
+
+
+def run_dev_release(
+    cfg: Config, hydra_root: str, build_dir_path: Path, package_set: str
+) -> None:
+    if not cfg.version:
+        raise ValueError("action=dev_release requires version=<target version>")
+    if cfg.dry_run:
+        raise ValueError(
+            "action=dev_release uses publish=false for dry runs; "
+            "do not set dry_run=true"
+        )
+    target_version = parse_version(cfg.version)
+    validate_dev_version(target_version)
+
+    vcs = None
+    if cfg.publish:
+        vcs = detect_vcs(hydra_root)
+        ensure_publish_tools(hydra_root, vcs)
+        ensure_clean_worktree(hydra_root, vcs)
+
+    infos = collect_dev_release_package_info(
+        cfg.repository, cfg.packages, hydra_root, target_version
+    )
+    log.info("Dev release package plan:\n%s", format_dev_release_package_table(infos))
+    fail_if_any_target_version_published(infos)
+
+    with tempfile.TemporaryDirectory(prefix="hydra-dev-release-") as tmp:
+        workspace = copy_release_workspace(hydra_root, Path(tmp))
+        validate_dev_release_artifacts(
+            cfg, str(workspace), build_dir_path, target_version
+        )
+
+    workflow_ref = cfg.workflow_ref.strip()
+    if not workflow_ref:
+        raise ValueError("workflow_ref must not be empty")
+    if cfg.publish:
+        assert vcs is not None
+        ensure_publish_base_matches_ref(hydra_root, vcs, workflow_ref)
+    log.info(
+        "Would dispatch Publish to PyPI: ref=%s package_set=%s "
+        "expected_version=%s publish=true",
+        workflow_ref,
+        package_set,
+        target_version,
+    )
+
+    if not cfg.publish:
+        log.info(
+            "Dry run complete. No commit, push, GitHub workflow dispatch, "
+            "GitHub Release, or PyPI upload was performed."
+        )
+        return
+
+    assert vcs is not None
+    set_package_versions(cfg, hydra_root, str(target_version))
+    if get_worktree_status(hydra_root, vcs):
+        commit_dev_release(hydra_root, vcs, target_version)
+        push_current_ref(hydra_root, vcs, workflow_ref)
+    else:
+        log.info("Selected packages are already at %s; skipping commit", target_version)
+    dispatch_publish_workflow(
+        hydra_root, vcs, package_set, target_version, workflow_ref
+    )
+
+
 OmegaConf.register_new_resolver("parent_key", lambda _parent_: _parent_._key())
 
 
 @hydra.main(version_base=None, config_path="conf", config_name="config")
 def main(cfg: Config) -> None:
     hydra_root = find_parent_dir_containing(target="ATTRIBUTION")
+    package_set = selected_package_set_name()
     build_dir_path = Path(cfg.build_dir).expanduser()
     if not build_dir_path.is_absolute():
         build_dir_path = Path(os.getcwd()) / build_dir_path
@@ -334,12 +724,26 @@ def main(cfg: Config) -> None:
             if ret.local_version == ret.latest_version:
                 bump_version(cfg, package, hydra_root)
     elif cfg.action == Action.set_version:
-        if cfg.version is None:
+        if not cfg.version:
             raise ValueError("action=set_version requires version=<target version>")
         parse_version(cfg.version)
         log.info(f"Setting package versions to {cfg.version}")
         for package in cfg.packages.values():
             bump_version(cfg, package, hydra_root, target_version=cfg.version)
+    elif cfg.action == Action.validate_versions:
+        if not cfg.version:
+            raise ValueError(
+                "action=validate_versions requires version=<target version>"
+            )
+        expected_version = parse_version(cfg.version)
+        log.info(f"Validating package versions match {expected_version}")
+        for package in cfg.packages.values():
+            pkg_path = os.path.normpath(os.path.join(hydra_root, package.path))
+            local = get_local_package_info(pkg_path)
+            validate_local_version(local, expected_version)
+            log.info(f"\U0000274a : {local.name} : {local.local_version}")
+    elif cfg.action == Action.dev_release:
+        run_dev_release(cfg, hydra_root, build_dir_path, package_set)
 
     else:
         raise ValueError("Unexpected action type")

@@ -13,10 +13,9 @@ setup(
     long_description=LONG_DESC,
     long_description_content_type="text/markdown",
     url="https://github.com/facebookresearch/hydra/",
+    license="MIT",
     packages=["example_registered_plugin"],
     classifiers=[
-        # Feel free to use another license.
-        "License :: OSI Approved :: MIT License",
         # Hydra uses Python version and Operating system to determine
         # In which environments to test this plugin
         "Programming Language :: Python :: 3.10",
