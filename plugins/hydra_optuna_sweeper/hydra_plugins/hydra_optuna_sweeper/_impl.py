@@ -104,7 +104,11 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
             or isinstance(value.stop, float)
             or isinstance(value.step, float)
         ):
-            return FloatDistribution(value.start, value.stop, step=value.step)
+            return FloatDistribution(
+                float(value.start),
+                float(value.stop),
+                step=float(value.step) if value.step else None,
+            )
         return IntDistribution(int(value.start), int(value.stop), step=int(value.step))
 
     if override.is_interval_sweep():
