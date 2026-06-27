@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-27",
-  "generated_at": "2026-06-27T19:23:19Z",
+  "generated_at": "2026-06-27T19:26:40Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 246,
+    "open_total": 245,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 80,
-        "percentage": 32.5
+        "count": 79,
+        "percentage": 32.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 54.5
+        "percentage": 54.7
       },
       {
         "category": "Documentation",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 2
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 69
+        "count": 70
       }
     ]
   },
@@ -112,26 +112,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 2807,
-      "title": "[Bug] Sweep over sweeps does not work as expected",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3244,
-          "url": "https://github.com/facebookresearch/hydra/pull/3244"
-        }
-      ],
-      "created": "2023-11-28",
-      "updated": "2023-11-29",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2807"
     },
     {
       "number": 845,
@@ -5030,9 +5010,36 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
+    },
+    {
+      "number": 2807,
+      "title": "[Bug] Sweep over sweeps does not work as expected",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3244,
+          "url": "https://github.com/facebookresearch/hydra/pull/3244"
+        }
+      ],
+      "created": "2023-11-28",
+      "updated": "2023-11-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2807"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-27T19:26:40Z",
+      "kind": "closed",
+      "issue": 2807,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2807",
+      "title": "[Bug] Sweep over sweeps does not work as expected"
+    },
     {
       "ts": "2026-06-27T19:23:19Z",
       "kind": "pr",

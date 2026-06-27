@@ -152,3 +152,4 @@
 {"ts": "2026-06-27T08:51:16Z", "kind": "pr", "issue": 3242, "issue_url": "https://github.com/facebookresearch/hydra/issues/3242", "title": "Bash completion should support script paths containing hyphens", "detail": "linked #3243"}
 {"ts": "2026-06-27T19:23:19Z", "kind": "status", "issue": 2807, "issue_url": "https://github.com/facebookresearch/hydra/issues/2807", "title": "[Bug] Sweep over sweeps does not work as expected", "detail": "not started → in progress", "pr": {"number": 3244, "url": "https://github.com/facebookresearch/hydra/pull/3244"}}
 {"ts": "2026-06-27T19:23:19Z", "kind": "pr", "issue": 2807, "issue_url": "https://github.com/facebookresearch/hydra/issues/2807", "title": "[Bug] Sweep over sweeps does not work as expected", "detail": "linked #3244"}
+{"ts": "2026-06-27T19:26:40Z", "kind": "closed", "issue": 2807, "issue_url": "https://github.com/facebookresearch/hydra/issues/2807", "title": "[Bug] Sweep over sweeps does not work as expected"}
