@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-27",
-  "generated_at": "2026-06-27T08:24:59Z",
+  "generated_at": "2026-06-27T08:51:16Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 247,
+    "open_total": 246,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 81,
-        "percentage": 32.8
+        "count": 80,
+        "percentage": 32.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 54.3
+        "percentage": 54.5
       },
       {
         "category": "Documentation",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 8
+        "count": 9
       },
       {
         "status": "blocked",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 237
+        "count": 235
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 68
+        "count": 69
       }
     ]
   },
@@ -274,6 +274,27 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3215"
+    },
+    {
+      "number": 3242,
+      "title": "Bash completion should support script paths containing hyphens",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3243,
+          "url": "https://github.com/facebookresearch/hydra/pull/3243"
+        }
+      ],
+      "created": "2026-06-27",
+      "updated": "2026-06-27",
+      "labels": [
+        "bug",
+        "tab_completion"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
       "number": 385,
@@ -3102,21 +3123,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2810"
     },
     {
-      "number": 2813,
-      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper':",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-12-05",
-      "updated": "2024-06-28",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2813"
-    },
-    {
       "number": 2814,
       "title": "[Feature Request] Allow setting use_srun from submitit launcher",
       "category": "Enhancement",
@@ -3922,22 +3928,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3237"
     },
     {
-      "number": 3242,
-      "title": "Bash completion should support script paths containing hyphens",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-27",
-      "updated": "2026-06-27",
-      "labels": [
-        "bug",
-        "tab_completion"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3242"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4063,6 +4053,21 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2816,
+      "title": "[Bug] Tab completion fails with filenames containing \"-\" character",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-12-15",
+      "updated": "2023-12-24",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2816"
     },
     {
       "number": 2823,
@@ -5007,22 +5012,49 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
-      "number": 2816,
-      "title": "[Bug] Tab completion fails with filenames containing \"-\" character",
+      "number": 2813,
+      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper':",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-12-15",
-      "updated": "2023-12-24",
+      "created": "2023-12-05",
+      "updated": "2024-06-28",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2816"
+      "url": "https://github.com/facebookresearch/hydra/issues/2813"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-27T08:51:16Z",
+      "kind": "pr",
+      "issue": 3242,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3242",
+      "title": "Bash completion should support script paths containing hyphens",
+      "detail": "linked #3243"
+    },
+    {
+      "ts": "2026-06-27T08:51:16Z",
+      "kind": "closed",
+      "issue": 2813,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2813",
+      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper':"
+    },
+    {
+      "ts": "2026-06-27T08:51:16Z",
+      "kind": "status",
+      "issue": 3242,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3242",
+      "title": "Bash completion should support script paths containing hyphens",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3243,
+        "url": "https://github.com/facebookresearch/hydra/pull/3243"
+      }
+    },
     {
       "ts": "2026-06-27T08:24:59Z",
       "kind": "closed",

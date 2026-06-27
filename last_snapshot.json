@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2813": "2026-06-27",
     "2816": "2026-06-27",
     "2823": "2026-06-26",
     "2829": "2026-06-24",
@@ -69,7 +70,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-27T08:24:59Z",
+  "generated_at": "2026-06-27T08:51:16Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2246,18 +2247,6 @@
       "title": "hydra.errors.MissingConfigException: In 'hydra/config': Could not find 'hydra/sweeper/hgemm'",
       "updated_at": "2025-04-13T04:00:25Z"
     },
-    "2813": {
-      "category": "Bug",
-      "created_at": "2023-12-05T15:53:00Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper':",
-      "updated_at": "2024-06-28T23:25:35Z"
-    },
     "2814": {
       "category": "Enhancement",
       "created_at": "2023-12-06T15:06:23Z",
@@ -2980,11 +2969,13 @@
         "bug",
         "tab_completion"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3243"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "Bash completion should support script paths containing hyphens",
-      "updated_at": "2026-06-27T08:22:51Z"
+      "updated_at": "2026-06-27T08:39:00Z"
     },
     "385": {
       "category": "Enhancement",
@@ -3246,6 +3237,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2813": {
+      "category": "Bug",
+      "created_at": "2023-12-05T15:53:00Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper':",
+      "updated_at": "2024-06-28T23:25:35Z"
     },
     "2816": {
       "category": "Bug",
