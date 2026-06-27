@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-27",
-  "generated_at": "2026-06-27T19:26:40Z",
+  "generated_at": "2026-06-27T20:25:04Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 245,
@@ -4040,6 +4040,26 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2807,
+      "title": "[Bug] Sweep over sweeps does not work as expected",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3244,
+          "url": "https://github.com/facebookresearch/hydra/pull/3244"
+        }
+      ],
+      "created": "2023-11-28",
+      "updated": "2023-11-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2807"
+    },
+    {
       "number": 2813,
       "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'hydra_plugins.hydra_ax_sweeper.ax_sweeper.AxSweeper':",
       "category": "Bug",
@@ -5010,26 +5030,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
-    },
-    {
-      "number": 2807,
-      "title": "[Bug] Sweep over sweeps does not work as expected",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3244,
-          "url": "https://github.com/facebookresearch/hydra/pull/3244"
-        }
-      ],
-      "created": "2023-11-28",
-      "updated": "2023-11-29",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2807"
     }
   ],
   "updates": [
