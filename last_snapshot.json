@@ -70,7 +70,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-27T08:51:16Z",
+  "generated_at": "2026-06-27T19:23:19Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2231,9 +2231,11 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3244"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Bug] Sweep over sweeps does not work as expected",
       "updated_at": "2023-11-29T18:39:26Z"
     },
