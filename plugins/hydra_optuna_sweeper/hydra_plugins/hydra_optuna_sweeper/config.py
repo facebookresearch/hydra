@@ -7,6 +7,14 @@ from hydra.core.config_store import ConfigStore
 from omegaconf import MISSING
 
 
+def raise_motpe_removed(*args: Any, **kwargs: Any) -> NoReturn:
+    raise ValueError(
+        "The 'motpe' sampler was removed in Optuna 4.0. "
+        "Use 'hydra/sweeper/sampler=tpe' instead. "
+        "TPESampler now handles multi-objective optimization."
+    )
+
+
 class DistributionType(Enum):
     int = 1
     float = 2
@@ -99,17 +107,9 @@ class NSGAIISamplerConfig(SamplerConfig):
     constraints_func: Optional[Any] = None
 
 
-def _motpe_removed(*args: Any, **kwargs: Any) -> NoReturn:
-    raise ValueError(
-        "The 'motpe' sampler was removed in Optuna 4.0. "
-        "Use 'hydra/sweeper/sampler=tpe' instead. "
-        "TPESampler now handles multi-objective optimization."
-    )
-
-
 @dataclass
 class MOTPESamplerConfig(SamplerConfig):
-    _target_: str = "hydra_plugins.hydra_optuna_sweeper.config._motpe_removed"
+    _target_: str = "hydra_plugins.hydra_optuna_sweeper.config.raise_motpe_removed"
 
 
 @dataclass
