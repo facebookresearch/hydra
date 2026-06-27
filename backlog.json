@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-06-26",
-  "generated_at": "2026-06-26T14:14:30Z",
+  "generated_on": "2026-06-27",
+  "generated_at": "2026-06-27T08:00:05Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 247,
@@ -4064,6 +4064,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2823,
+      "title": "Nevergrad sweeper appears to be broken?",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-12-21",
+      "updated": "2024-09-08",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2823"
+    },
+    {
       "number": 2829,
       "title": "[Bug] Cannot delete config keys that have `null`/`None` value via override",
       "category": "Bug",
@@ -4989,21 +5004,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
-    },
-    {
-      "number": 2823,
-      "title": "Nevergrad sweeper appears to be broken?",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2023-12-21",
-      "updated": "2024-09-08",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2823"
     }
   ],
   "updates": [
