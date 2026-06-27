@@ -145,3 +145,5 @@
 {"ts": "2026-06-26T13:11:30Z", "kind": "label", "issue": 2927, "issue_url": "https://github.com/facebookresearch/hydra/issues/2927", "title": "Ray Launcher:  Additional properties are not allowed", "detail": "added \"help wanted\", \"plugin\", \"ray-launcher\""}
 {"ts": "2026-06-26T13:24:21Z", "kind": "label", "issue": 2893, "issue_url": "https://github.com/facebookresearch/hydra/issues/2893", "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided", "detail": "added \"plugin\""}
 {"ts": "2026-06-26T14:14:30Z", "kind": "closed", "issue": 2823, "issue_url": "https://github.com/facebookresearch/hydra/issues/2823", "title": "Nevergrad sweeper appears to be broken?"}
+{"ts": "2026-06-27T08:24:59Z", "kind": "new", "issue": 3242, "issue_url": "https://github.com/facebookresearch/hydra/issues/3242", "title": "Bash completion should support script paths containing hyphens"}
+{"ts": "2026-06-27T08:24:59Z", "kind": "closed", "issue": 2816, "issue_url": "https://github.com/facebookresearch/hydra/issues/2816", "title": "[Bug] Tab completion fails with filenames containing \"-\" character"}

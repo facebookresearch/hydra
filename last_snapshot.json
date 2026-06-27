@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2816": "2026-06-27",
     "2823": "2026-06-26",
     "2829": "2026-06-24",
     "2843": "2026-06-24",
@@ -68,7 +69,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-27T08:00:05Z",
+  "generated_at": "2026-06-27T08:24:59Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2269,18 +2270,6 @@
       "title": "[Feature Request] Allow setting use_srun from submitit launcher",
       "updated_at": "2023-12-06T15:06:23Z"
     },
-    "2816": {
-      "category": "Bug",
-      "created_at": "2023-12-15T16:21:00Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Tab completion fails with filenames containing \"-\" character",
-      "updated_at": "2023-12-24T12:11:08Z"
-    },
     "2824": {
       "category": "Enhancement",
       "created_at": "2023-12-22T11:43:04Z",
@@ -2984,6 +2973,19 @@
       "title": "Rework version_base into an opt-in compatibility lever",
       "updated_at": "2026-06-23T15:33:25Z"
     },
+    "3242": {
+      "category": "Bug",
+      "created_at": "2026-06-27T08:22:51Z",
+      "labels": [
+        "bug",
+        "tab_completion"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Bash completion should support script paths containing hyphens",
+      "updated_at": "2026-06-27T08:22:51Z"
+    },
     "385": {
       "category": "Enhancement",
       "created_at": "2020-01-19T10:23:55Z",
@@ -3244,6 +3246,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2816": {
+      "category": "Bug",
+      "created_at": "2023-12-15T16:21:00Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Tab completion fails with filenames containing \"-\" character",
+      "updated_at": "2023-12-24T12:11:08Z"
     },
     "2823": {
       "category": "Bug",

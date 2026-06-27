@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-27",
-  "generated_at": "2026-06-27T08:00:05Z",
+  "generated_at": "2026-06-27T08:24:59Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 247,
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 67
+        "count": 68
       }
     ]
   },
@@ -3132,21 +3132,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2814"
     },
     {
-      "number": 2816,
-      "title": "[Bug] Tab completion fails with filenames containing \"-\" character",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-12-15",
-      "updated": "2023-12-24",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2816"
-    },
-    {
       "number": 2824,
       "title": "Option to raise exception upon first failure in multirun",
       "category": "Enhancement",
@@ -3935,6 +3920,22 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3237"
+    },
+    {
+      "number": 3242,
+      "title": "Bash completion should support script paths containing hyphens",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-27",
+      "updated": "2026-06-27",
+      "labels": [
+        "bug",
+        "tab_completion"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
       "number": 692,
@@ -5004,9 +5005,38 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
+    },
+    {
+      "number": 2816,
+      "title": "[Bug] Tab completion fails with filenames containing \"-\" character",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-12-15",
+      "updated": "2023-12-24",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2816"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-27T08:24:59Z",
+      "kind": "closed",
+      "issue": 2816,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2816",
+      "title": "[Bug] Tab completion fails with filenames containing \"-\" character"
+    },
+    {
+      "ts": "2026-06-27T08:24:59Z",
+      "kind": "new",
+      "issue": 3242,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3242",
+      "title": "Bash completion should support script paths containing hyphens"
+    },
     {
       "ts": "2026-06-26T14:14:30Z",
       "kind": "closed",
