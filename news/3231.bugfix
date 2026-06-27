@@ -1,1 +1,1 @@
-Reject swept configs that override the multirun launcher or sweeper.
+Reject swept configs that change multirun launcher or sweeper configuration.

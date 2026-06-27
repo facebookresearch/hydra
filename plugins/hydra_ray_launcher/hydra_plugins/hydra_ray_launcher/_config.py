@@ -6,9 +6,8 @@ from importlib import import_module
 from importlib.metadata import version
 from typing import Any, Dict, List, Optional
 
-from omegaconf import OmegaConf
-
 from hydra.core.config_store import ConfigStore
+from omegaconf import OmegaConf
 
 
 @dataclass

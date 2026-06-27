@@ -671,6 +671,36 @@ def test_multirun_rejects_swept_config_hydra_controller_override(
 
 
 @mark.parametrize(
+    "controller,experiment",
+    [
+        param("hydra.launcher", "launcher_config", id="launcher"),
+        param("hydra.sweeper", "sweeper_params", id="sweeper"),
+    ],
+)
+def test_multirun_rejects_swept_config_hydra_controller_config_override(
+    hydra_restore_singletons: Any,
+    hydra_sweep_runner: TSweepRunner,
+    tmpdir: Path,
+    controller: str,
+    experiment: str,
+) -> None:
+    with raises(
+        ConfigCompositionException,
+        match=rf"{re.escape(controller)}.*must be configured before the sweep starts",
+    ):
+        with hydra_sweep_runner(
+            calling_file="tests/test_apps/sweep_hydra_launcher_override/my_app.py",
+            calling_module=None,
+            config_path="conf",
+            config_name="config.yaml",
+            task_function=None,
+            overrides=[f"experiment=base,{experiment}"],
+            temp_dir=tmpdir,
+        ):
+            pass
+
+
+@mark.parametrize(
     "script, flags, overrides,expected",
     [
         param(

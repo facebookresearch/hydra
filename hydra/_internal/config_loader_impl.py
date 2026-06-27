@@ -318,7 +318,7 @@ class ConfigLoaderImpl(ConfigLoader):
             overrides=overrides,
             run_mode=RunMode.RUN,
         )
-        ConfigLoaderImpl._ensure_no_sweep_config_controller_override(
+        ConfigLoaderImpl._ensure_sweep_config_controller_unchanged(
             master_config=master_config,
             sweep_config=sweep_config,
         )
@@ -331,13 +331,16 @@ class ConfigLoaderImpl(ConfigLoader):
         return sweep_config
 
     @staticmethod
-    def _ensure_no_sweep_config_controller_override(
+    def _ensure_sweep_config_controller_unchanged(
         master_config: DictConfig, sweep_config: DictConfig
     ) -> None:
-        controller_groups = ("hydra/launcher", "hydra/sweeper")
+        controller_groups = (
+            ("hydra/launcher", "launcher"),
+            ("hydra/sweeper", "sweeper"),
+        )
         master_choices = master_config.hydra.runtime.choices
         sweep_choices = sweep_config.hydra.runtime.choices
-        for group in controller_groups:
+        for group, node in controller_groups:
             master_choice = master_choices.get(group)
             sweep_choice = sweep_choices.get(group)
             if master_choice != sweep_choice:
@@ -347,6 +350,14 @@ class ConfigLoaderImpl(ConfigLoader):
                     f"but a swept job config changed it from "
                     f"'{master_choice}' to '{sweep_choice}'. Select it in "
                     "the primary config or from the command line."
+                )
+            if not OmegaConf.structural_equality(
+                master_config.hydra[node], sweep_config.hydra[node]
+            ):
+                raise ConfigCompositionException(
+                    f"'hydra.{node}' must be configured before the sweep starts, "
+                    "but a swept job config changed it. Configure it in the "
+                    "primary config or from the command line."
                 )
 
     def get_search_path(self) -> ConfigSearchPath:
