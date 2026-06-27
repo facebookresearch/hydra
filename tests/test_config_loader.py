@@ -382,10 +382,10 @@ class TestConfigLoader:
 
         # pseudorandom resolvers with/without value caching
         pseudorandom_values = iter(["1st", "2nd", "3rd", "4th"])
-        OmegaConf.register_new_resolver(
+        OmegaConf.register_resolver(
             "cached", lambda: next(pseudorandom_values), use_cache=True, replace=True
         )
-        OmegaConf.register_new_resolver(
+        OmegaConf.register_resolver(
             "uncached", lambda: next(pseudorandom_values), use_cache=False, replace=True
         )
 
@@ -1048,7 +1048,7 @@ def test_hydra_override_dirname_resolver_element_resolver(
 ) -> None:
     setup_globals()
     try:
-        OmegaConf.register_new_resolver(
+        OmegaConf.register_resolver(
             "pathsafe",
             lambda value: str(value).replace("/", "_").replace("\\", "_"),
             replace=True,

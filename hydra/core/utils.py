@@ -346,23 +346,23 @@ def hydra_deprecated_override_dirname(
 
 def setup_globals() -> None:
     # please add documentation when you add a new resolver
-    OmegaConf.register_new_resolver(
+    OmegaConf.register_resolver(
         "hydra_override_dirname",
         hydra_override_dirname,
         replace=True,
     )
-    OmegaConf.register_new_resolver(
+    OmegaConf.register_resolver(
         "hydra_deprecated_override_dirname",
         hydra_deprecated_override_dirname,
         replace=True,
     )
-    OmegaConf.register_new_resolver(
+    OmegaConf.register_resolver(
         "now",
         lambda pattern: datetime.now().strftime(pattern),
         use_cache=True,
         replace=True,
     )
-    OmegaConf.register_new_resolver(
+    OmegaConf.register_resolver(
         "hydra",
         lambda path: OmegaConf.select(cast(DictConfig, HydraConfig.get()), path),
         replace=True,
@@ -374,7 +374,7 @@ def setup_globals() -> None:
         "minor": f"{vi[0]}.{vi[1]}",
         "micro": f"{vi[0]}.{vi[1]}.{vi[2]}",
     }
-    OmegaConf.register_new_resolver(
+    OmegaConf.register_resolver(
         "python_version", lambda level="minor": version_dict.get(level), replace=True
     )
 

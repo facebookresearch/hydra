@@ -47,7 +47,7 @@ For example, this replaces path separators, including Windows path separators, w
 ```python
 from omegaconf import OmegaConf
 
-OmegaConf.register_new_resolver(
+OmegaConf.register_resolver(
     "pathsafe",
     lambda value: str(value).replace("/", "_").replace("\\", "_"),
 )
