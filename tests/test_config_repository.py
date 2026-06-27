@@ -8,6 +8,7 @@ from pytest import mark, param, raises
 
 from hydra._internal.config_repository import ConfigRepository
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
+from hydra._internal.core_plugins import importlib_resources_config_source
 from hydra._internal.core_plugins.file_config_source import FileConfigSource
 from hydra._internal.core_plugins.importlib_resources_config_source import (
     ImportlibResourcesConfigSource,
@@ -16,7 +17,7 @@ from hydra._internal.core_plugins.structured_config_source import StructuredConf
 from hydra.core.default_element import GroupDefault, InputDefault
 from hydra.core.plugins import Plugins
 from hydra.core.singleton import Singleton
-from hydra.plugins.config_source import ConfigSource
+from hydra.plugins.config_source import ConfigLoadError, ConfigSource
 from hydra.test_utils.config_source_common_tests import ConfigSourceTestSuite
 from hydra.test_utils.test_utils import chdir_hydra_root
 
@@ -204,3 +205,35 @@ def test_importlib_resource_load_zip_path() -> None:
     )
     assert conf.config == {"foo": "bar"}
     assert conf.header == {"package": None}
+
+
+def test_importlib_resource_checks_do_not_require_exists(monkeypatch: Any) -> None:
+    class TraversableWithoutExists:
+        name = "missing.yaml"
+
+        def __init__(self, *, is_file: bool = False, is_dir: bool = False) -> None:
+            self._is_file = is_file
+            self._is_dir = is_dir
+
+        def joinpath(self, *_: str) -> Any:
+            return self
+
+        def is_file(self) -> bool:
+            return self._is_file
+
+        def is_dir(self) -> bool:
+            return self._is_dir
+
+    config_source = ImportlibResourcesConfigSource(
+        provider="foo", path="pkg://hydra.conf"
+    )
+    monkeypatch.setattr(
+        importlib_resources_config_source.resources,
+        "files",
+        lambda _: TraversableWithoutExists(),
+    )
+
+    assert not config_source.is_config("missing")
+    assert not config_source.is_group("missing")
+    with raises(ConfigLoadError, match="Config not found : missing.yaml"):
+        config_source.load_config("missing")

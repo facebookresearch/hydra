@@ -110,7 +110,14 @@ For focused local checks, use the same tools the noxfile runs:
 
 ## Environment and hooks
 
-- Run commands in the `omegaconf+hydra` conda environment by default.
+- Run commands from the repo-local `.venv` by default. Prefer
+  `.venv/bin/python`, `.venv/bin/pip`, `.venv/bin/pytest`, and
+  `.venv/bin/nox` when those entry points exist.
+- If `.venv` is missing and dependency installation is in scope, create it
+  with `python -m venv .venv`, then install `requirements/dev.txt` and the
+  editable checkout into that environment.
+- Use a separate environment only when testing a specific supported Python
+  version or reproducing an environment-specific issue.
 - When validating contributor setup, shell initialization, or hook behavior, verify it from the same environment a developer would actually use, such as a normal shell session or `sl commit`, not only from a temporary sandbox-only environment.
 - Prefer hooks that do not depend on nontrivial user-environment tooling.
 - If an environment override is required for one command, explain why it must be part of that same process invocation.

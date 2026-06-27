@@ -5,6 +5,7 @@ from textwrap import dedent
 from typing import Any, List, cast
 
 from omegaconf import MISSING, DictConfig, OmegaConf, ValidationError, open_dict
+from omegaconf.errors import InterpolationResolutionError
 from pytest import mark, param, raises, warns
 
 from hydra import version
@@ -734,6 +735,26 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
         param({"x": [1, 2, 3]}, ["~x=[1,2,3]"], {}, id="delete:list"),
         param({"x": [1, 2, 3]}, ["~x.0"], {"x": [2, 3]}, id="delete:list_item"),
         param({"x": [1, 2, 3]}, ["~x.1"], {"x": [1, 3]}, id="delete:list_item_middle"),
+        param({"x": [None, 1]}, ["~x.0"], {"x": [1]}, id="delete:list_item_null"),
+        param(
+            {"x": [None, 1]},
+            ["~x.0=null"],
+            {"x": [1]},
+            id="delete:list_item_null_strict",
+        ),
+        param({"x": [MISSING, 1]}, ["~x.0"], {"x": [1]}, id="delete:list_item_missing"),
+        param(
+            {"x": [MISSING, 1]},
+            ["~x.0=???"],
+            {"x": [1]},
+            id="delete:list_item_missing_strict",
+        ),
+        param({"x": None}, ["~x"], {}, id="delete:null"),
+        param({"x": {"y": None}}, ["~x.y"], {"x": {}}, id="delete:null_nested"),
+        param({"x": None}, ["~x=null"], {}, id="delete:null_strict"),
+        param({"x": MISSING}, ["~x=???"], {}, id="delete:missing_strict"),
+        param({"x": MISSING}, ["~x"], {}, id="delete:missing"),
+        param({"x": {"y": MISSING}}, ["~x.y"], {"x": {}}, id="delete:missing_nested"),
         param(
             {"x": 20},
             ["~z"],
@@ -742,6 +763,24 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
                 match=re.escape("Could not delete from config. 'z' does not exist."),
             ),
             id="delete_error_key",
+        ),
+        param(
+            {"x": MISSING},
+            ["~x.y"],
+            raises(
+                HydraException,
+                match=re.escape("Could not delete from config. 'x.y' does not exist."),
+            ),
+            id="delete_error_missing_parent",
+        ),
+        param(
+            {"x": None},
+            ["~x.y"],
+            raises(
+                HydraException,
+                match=re.escape("Could not delete from config. 'x.y' does not exist."),
+            ),
+            id="delete_error_null_parent",
         ),
         param(
             {"x": 20},
@@ -753,6 +792,17 @@ def test_complex_defaults(overrides: Any, expected: Any) -> None:
                 ),
             ),
             id="delete_error_value",
+        ),
+        param(
+            {"x": 20},
+            ["~x=null"],
+            raises(
+                HydraException,
+                match=re.escape(
+                    "Could not delete from config. The value of 'x' is 20 and not None."
+                ),
+            ),
+            id="delete_error_value_null",
         ),
         param(
             {"x": 20},
@@ -885,3 +935,184 @@ def test_hydra_choices(config: str, overrides: Any, expected_choices: Any) -> No
         config_name=config, overrides=overrides, run_mode=RunMode.RUN
     )
     assert cfg.hydra.runtime.choices == expected_choices
+
+
+def test_hydra_override_dirname_resolver_defaults(
+    hydra_restore_singletons: Any,
+) -> None:
+    setup_globals()
+    config_loader = ConfigLoaderImpl(
+        config_search_path=create_config_search_path("hydra/test_utils/configs")
+    )
+
+    cfg = config_loader.load_configuration(
+        config_name="config.yaml",
+        overrides=["+b=2", "+a=1"],
+        run_mode=RunMode.RUN,
+    )
+    with open_dict(cfg.hydra.sweep):
+        cfg.hydra.sweep.subdir = "${hydra_override_dirname:}"
+
+    assert OmegaConf.select(cfg, "hydra.sweep.subdir") == "+a=1,+b=2"
+
+
+def test_hydra_override_dirname_resolver_options(
+    hydra_restore_singletons: Any,
+) -> None:
+    setup_globals()
+    config_loader = ConfigLoaderImpl(
+        config_search_path=create_config_search_path("hydra/test_utils/configs")
+    )
+
+    cfg = config_loader.load_configuration(
+        config_name="config.yaml",
+        overrides=["+b=2", "+a=1", "+seed=123"],
+        run_mode=RunMode.RUN,
+    )
+    with open_dict(cfg.hydra.sweep):
+        cfg.hydra.sweep.subdir = (
+            "${hydra_override_dirname:{kv_sep: '-', item_sep: '/', "
+            "exclude_keys: [seed]}}"
+        )
+
+    assert OmegaConf.select(cfg, "hydra.sweep.subdir") == "+a-1/+b-2"
+
+
+@mark.parametrize(
+    ("options", "expected_error"),
+    [
+        param("{kv_sep: 1}", "hydra_override_dirname kv_sep must be a string"),
+        param("{item_sep: 1}", "hydra_override_dirname item_sep must be a string"),
+        param(
+            "{exclude_keys: seed}",
+            "hydra_override_dirname exclude_keys must be a list",
+        ),
+        param(
+            "{exclude_keys: [seed, 1]}",
+            "hydra_override_dirname exclude_keys must contain strings",
+        ),
+        param(
+            "{element_resolver: 1}",
+            "hydra_override_dirname element_resolver must be a string",
+        ),
+    ],
+)
+def test_hydra_override_dirname_resolver_validates_options(
+    hydra_restore_singletons: Any, options: str, expected_error: str
+) -> None:
+    setup_globals()
+    config_loader = ConfigLoaderImpl(
+        config_search_path=create_config_search_path("hydra/test_utils/configs")
+    )
+
+    cfg = config_loader.load_configuration(
+        config_name="config.yaml",
+        overrides=["+a=1"],
+        run_mode=RunMode.RUN,
+    )
+    with open_dict(cfg.hydra.sweep):
+        cfg.hydra.sweep.subdir = f"${{hydra_override_dirname:{options}}}"
+
+    with raises(InterpolationResolutionError, match=re.escape(expected_error)):
+        OmegaConf.select(cfg, "hydra.sweep.subdir")
+
+
+def test_hydra_override_dirname_resolver_options_from_config_node(
+    hydra_restore_singletons: Any,
+) -> None:
+    setup_globals()
+    config_loader = ConfigLoaderImpl(
+        config_search_path=create_config_search_path("hydra/test_utils/configs")
+    )
+
+    cfg = config_loader.load_configuration(
+        config_name="config.yaml",
+        overrides=["+b=2", "+a=1", "+seed=123"],
+        run_mode=RunMode.RUN,
+    )
+    with open_dict(cfg.hydra.sweep):
+        cfg.hydra.sweep.override_dirname_options = {
+            "kv_sep": "-",
+            "item_sep": "/",
+            "exclude_keys": ["seed"],
+        }
+        cfg.hydra.sweep.subdir = (
+            "${hydra_override_dirname:${hydra.sweep.override_dirname_options}}"
+        )
+
+    assert OmegaConf.select(cfg, "hydra.sweep.subdir") == "+a-1/+b-2"
+
+
+def test_hydra_override_dirname_resolver_element_resolver(
+    hydra_restore_singletons: Any,
+) -> None:
+    setup_globals()
+    try:
+        OmegaConf.register_new_resolver(
+            "pathsafe",
+            lambda value: str(value).replace("/", "_").replace("\\", "_"),
+            replace=True,
+        )
+        config_loader = ConfigLoaderImpl(
+            config_search_path=create_config_search_path("hydra/test_utils/configs")
+        )
+
+        cfg = config_loader.load_configuration(
+            config_name="config.yaml",
+            overrides=["+models/temporal_nets=net2", "+seed=123"],
+            run_mode=RunMode.RUN,
+        )
+        with open_dict(cfg.hydra.sweep):
+            cfg.hydra.sweep.subdir = (
+                "${hydra_override_dirname:{item_sep: '/', "
+                "element_resolver: pathsafe}}"
+            )
+
+        assert (
+            OmegaConf.select(cfg, "hydra.sweep.subdir")
+            == "+models_temporal_nets=net2/+seed=123"
+        )
+    finally:
+        OmegaConf.clear_resolver("pathsafe")
+
+
+def test_hydra_job_override_dirname_uses_resolver(
+    hydra_restore_singletons: Any,
+) -> None:
+    setup_globals()
+    config_loader = ConfigLoaderImpl(
+        config_search_path=create_config_search_path("hydra/test_utils/configs")
+    )
+
+    cfg = config_loader.load_configuration(
+        config_name="config.yaml",
+        overrides=["+x=1"],
+        run_mode=RunMode.RUN,
+    )
+
+    assert "_override_dirname" not in cfg.hydra.job
+    assert cfg.hydra.job.override_dirname == "+x=1"
+
+
+def test_hydra_job_override_dirname_uses_legacy_options(
+    hydra_restore_singletons: Any,
+) -> None:
+    setup_globals()
+    config_loader = ConfigLoaderImpl(
+        config_search_path=create_config_search_path("hydra/test_utils/configs")
+    )
+
+    cfg = config_loader.load_configuration(
+        config_name="config.yaml",
+        overrides=[
+            "+a-1=2",
+            "+a=1",
+            "+seed=123",
+            "hydra.job.config.override_dirname.kv_sep=-",
+            "hydra.job.config.override_dirname.item_sep=/",
+            "hydra.job.config.override_dirname.exclude_keys=[seed]",
+        ],
+        run_mode=RunMode.RUN,
+    )
+
+    assert cfg.hydra.job.override_dirname == "+a-1-2/+a-1"

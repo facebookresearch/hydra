@@ -125,20 +125,25 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
 
 def create_params_from_overrides(
     arguments: List[str],
-) -> Tuple[Dict[str, BaseDistribution], Dict[str, Any]]:
+) -> Tuple[Dict[str, BaseDistribution], Dict[str, Any], List[str]]:
     parser = OverridesParser.create()
     parsed = parser.parse_overrides(arguments)
     search_space_distributions = dict()
     fixed_params = dict()
+    fixed_overrides = []
 
     for override in parsed:
+        if override.is_delete():
+            assert override.input_line is not None
+            fixed_overrides.append(override.input_line)
+            continue
         param_name = override.get_key_element()
         value = create_optuna_distribution_from_override(override)
         if isinstance(value, BaseDistribution):
             search_space_distributions[param_name] = value
         else:
             fixed_params[param_name] = value
-    return search_space_distributions, fixed_params
+    return search_space_distributions, fixed_params, fixed_overrides
 
 
 class OptunaSweeperImpl(Sweeper):
@@ -225,6 +230,7 @@ class OptunaSweeperImpl(Sweeper):
         trials: List[Trial],
         search_space_distributions: Dict[str, BaseDistribution],
         fixed_params: Dict[str, Any],
+        fixed_overrides: List[str],
     ) -> Sequence[Sequence[str]]:
         overrides = []
         for trial in trials:
@@ -247,7 +253,10 @@ class OptunaSweeperImpl(Sweeper):
             params = dict(trial.params)
             params.update(fixed_params)
 
-            overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
+            overrides.append(
+                tuple(f"{name}={val}" for name, val in params.items())
+                + tuple(fixed_overrides)
+            )
         return overrides
 
     def _parse_sweeper_params_config(self) -> List[str]:
@@ -292,6 +301,7 @@ class OptunaSweeperImpl(Sweeper):
         (
             override_search_space_distributions,
             fixed_params,
+            fixed_overrides,
         ) = create_params_from_overrides(params_conf)
 
         search_space_distributions = dict()
@@ -341,7 +351,7 @@ class OptunaSweeperImpl(Sweeper):
 
             trials = [study.ask() for _ in range(batch_size)]
             overrides = self._configure_trials(
-                trials, search_space_distributions, fixed_params
+                trials, search_space_distributions, fixed_params, fixed_overrides
             )
 
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)

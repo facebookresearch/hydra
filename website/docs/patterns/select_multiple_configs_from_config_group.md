@@ -169,6 +169,9 @@ defaults:
 </div>
 </div>
 
+To delete one of these non-overridable entries from the command line, use the
+exact config path, for example `~site/fb`.
+
 All default package for all the configs in `server/site` is `server.site`.
 This example uses an explicit nesting level inside each of the website configs to prevent them stepping over one another:
 ```yaml title="server/site/amazon.yaml" {1}

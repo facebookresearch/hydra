@@ -5,6 +5,7 @@ exclude =
     ,.sl
     ,website
     ,.nox,build
+    ,.venv
     ,hydra/grammar/gen
     ,dist
     ,tools/configen/example/gen

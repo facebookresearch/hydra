@@ -11,7 +11,7 @@ You can manipulate your configuration with overrides (via the command line or th
 - Modifying the `Defaults List`
 - Modifying the config object
 
-Overrides matching a config group are modifying the `Defaults List`;
+Overrides matching a config group or a Defaults List config entry are modifying the `Defaults List`;
 The rest are manipulating the config object.
 
 ## Basic examples
@@ -25,6 +25,7 @@ The rest are manipulating the config object.
 - Overriding selected Option: `db=mysql`, `server/db=mysql`
 - Appending to Defaults List: `+db=mysql`, `+server/db=mysql`
 - Deleting from Defaults List: `~db`, `~db=mysql`, `~server/db`, `~server/db=mysql`
+- Deleting a non-overridable Defaults List config entry: `~server/site/fb`
 
 ## Grammar
 Hydra supports a rich [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) in the command line.

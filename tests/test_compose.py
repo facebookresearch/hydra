@@ -527,6 +527,46 @@ class TestAdd:
         ):
             compose(overrides=["++group=a1"])
 
+    @mark.parametrize("override", ["+nested/choice=two", "+nested/choice=[two]"])
+    def test_add_config_group_from_nested_primary_config(self, override: str) -> None:
+        cs = ConfigStore.instance()
+        cs.store(
+            node={"a": 1},
+            name="base",
+            group="nested",
+            package="_global_",
+        )
+        cs.store(
+            node={"a": 2},
+            name="two",
+            group="nested/choice",
+            package="_global_",
+        )
+
+        cfg = compose(config_name="nested/base", overrides=[override])
+
+        assert cfg == {"a": 2}
+
+    def test_add_config_group_from_nested_primary_config_uses_default_package(
+        self,
+    ) -> None:
+        cs = ConfigStore.instance()
+        cs.store(
+            node={"a": 1},
+            name="base",
+            group="nested",
+            package="_global_",
+        )
+        cs.store(
+            node={"a": 2},
+            name="two",
+            group="nested/choice",
+        )
+
+        cfg = compose(config_name="nested/base", overrides=["+nested/choice=two"])
+
+        assert cfg == {"a": 1, "nested": {"choice": {"a": 2}}}
+
     def test_add_to_structured_config(self, hydra_restore_singletons: Any) -> None:
         @dataclass
         class Config:

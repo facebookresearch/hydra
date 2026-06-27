@@ -17,8 +17,41 @@ from nox.logger import logger
 BASE = os.path.abspath(os.path.dirname(__file__))
 
 DEFAULT_PYTHON_VERSIONS = ["3.10", "3.11", "3.12", "3.13", "3.14"]
-LINT_PYTHON_VERSIONS = ["3.10"]
+LINT_PYTHON_VERSIONS = ["3.11"]
 DEFAULT_OS_NAMES = ["Linux", "MacOS", "Windows"]
+CORE_BLACK_EXTEND_EXCLUDE = r"(^|/)(plugins|examples/plugins)(/|$)"
+CORE_BANDIT_PATHS = [
+    "build_helpers",
+    "examples/advanced",
+    "examples/configure_hydra",
+    "examples/experimental",
+    "examples/instantiate",
+    "examples/jupyter_notebooks",
+    "examples/patterns",
+    "examples/tutorials",
+    "hydra",
+    "noxfile.py",
+    "setup.py",
+    "tests",
+    "tools/configen/configen",
+    "tools/configen/example",
+    "tools/configen/tests",
+    "tools/release",
+]
+CORE_YAML_LINT_PATHS = [
+    ".github",
+    "lgtm.yml",
+    "examples/advanced",
+    "examples/configure_hydra",
+    "examples/experimental",
+    "examples/instantiate",
+    "examples/jupyter_notebooks",
+    "examples/patterns",
+    "examples/tutorials",
+    "hydra",
+    "tests",
+    "tools",
+]
 
 PYTHON_VERSIONS = os.environ.get(
     "NOX_PYTHON_VERSIONS", ",".join(DEFAULT_PYTHON_VERSIONS)
@@ -287,8 +320,10 @@ def install_dev_deps(session: Session) -> None:
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
 
 
-def _black_cmd() -> List[str]:
-    black = ["black", "."]
+def _black_cmd(*paths: str, extend_exclude: Optional[str] = None) -> List[str]:
+    black = ["black", *(paths or ["."])]
+    if extend_exclude is not None:
+        black += ["--extend-exclude", extend_exclude]
     if not FIX:
         black += ["--check"]
     return black
@@ -307,8 +342,10 @@ def _isort_cmd() -> List[str]:
     return isort
 
 
-def _flake8_cmd(*paths: str) -> List[str]:
+def _flake8_cmd(*paths: str, extend_exclude: Optional[str] = None) -> List[str]:
     flake8 = ["flake8", "--config", ".flake8"]
+    if extend_exclude is not None:
+        flake8 += ["--extend-exclude", extend_exclude]
     if _is_github_actions():
         flake8 += [
             "--format",
@@ -318,21 +355,21 @@ def _flake8_cmd(*paths: str) -> List[str]:
     return flake8
 
 
-def _yamllint_cmd() -> List[str]:
-    yamllint = ["yamllint", "--strict", "."]
+def _yamllint_cmd(*paths: str) -> List[str]:
+    yamllint = ["yamllint", "--strict", *(paths or ["."])]
     if _is_github_actions():
         yamllint += ["--format", "github"]
     return yamllint
 
 
-def _bandit_cmd() -> List[str]:
+def _bandit_cmd(*paths: str) -> List[str]:
     bandit = [
         "bandit",
         "--exclude",
-        "./.nox/**,./.sl/**,./website/**",
+        "./.nox/**,./.sl/**,./.venv/**,./build/**,./contrib/**,./temp/**,./website/**,./tools/configen/build/**",
         "-ll",
         "-r",
-        ".",
+        *(paths or ["."]),
     ]
     if _is_github_actions():
         bandit += [
@@ -345,7 +382,7 @@ def _bandit_cmd() -> List[str]:
 
 
 def _pyrefly_cmd(
-    python_version: Optional[str] = "3.10",
+    python_version: Optional[str] = "3.11",
     extra_search_paths: Optional[List[str]] = None,
 ) -> List[str]:
     pyrefly = [
@@ -369,8 +406,29 @@ def _pyrefly_cmd(
     return pyrefly
 
 
-@nox.session(python=LINT_PYTHON_VERSIONS)  # type: ignore
-def lint(session: Session) -> None:
+LINT_PLUGINS = list_plugins("plugins") + list_plugins("examples/plugins")
+LINT_TARGETS: List[Union[str, Plugin]] = ["core"] + LINT_PLUGINS
+LINT_TARGET_IDS = [
+    target if isinstance(target, str) else target.name for target in LINT_TARGETS
+]
+
+
+@nox.session(python=LINT_PYTHON_VERSIONS, name="lint")  # type: ignore
+@nox.parametrize("target", LINT_TARGETS, ids=LINT_TARGET_IDS)  # type: ignore
+def lint(session: Session, target: Union[str, Plugin]) -> None:
+    if target == "core":
+        lint_core_impl(session)
+        return
+    assert isinstance(target, Plugin)
+    lint_plugin_if_compatible(session, target)
+
+
+@nox.session(python=LINT_PYTHON_VERSIONS, name="lint-core")  # type: ignore
+def lint_core(session: Session) -> None:
+    lint_core_impl(session)
+
+
+def lint_core_impl(session: Session) -> None:
     _upgrade_basic(session)
     install_dev_deps(session)
     install_hydra(session, ["pip", "install", "-e"])
@@ -383,15 +441,20 @@ def lint(session: Session) -> None:
         session.run(*_isort_cmd(), silent=SILENT)
         session.chdir(BASE)
 
-    session.run(*_black_cmd(), silent=SILENT)
+    session.run(
+        *_black_cmd(".", extend_exclude=CORE_BLACK_EXTEND_EXCLUDE),
+        silent=SILENT,
+    )
 
     skiplist = apps + [
         ".git",
         ".sl",
         "website",
         "plugins",
+        "examples/plugins",
         "tools",
         ".nox",
+        ".venv",
         "hydra/grammar/gen",
         "tools/configen/example/gen",
         "tools/configen/tests/test_modules/expected",
@@ -409,8 +472,8 @@ def lint(session: Session) -> None:
         *_pyrefly_cmd(python_version=session.python),
         silent=SILENT,
     )
-    session.run(*_flake8_cmd())
-    session.run(*_yamllint_cmd())
+    session.run(*_flake8_cmd(".", extend_exclude="plugins,examples/plugins"))
+    session.run(*_yamllint_cmd(*CORE_YAML_LINT_PATHS))
 
     pyrefly_check_subdirs = [
         "examples/advanced",
@@ -441,22 +504,17 @@ def lint(session: Session) -> None:
                 silent=SILENT,
             )
 
-    # lint example plugins
-    lint_plugins_in_dir(session=session, directory="examples/plugins")
-
     # bandit static security analysis
-    session.run(*_bandit_cmd(), silent=SILENT)
+    session.run(*_bandit_cmd(*CORE_BANDIT_PATHS), silent=SILENT)
 
 
-def lint_plugins_in_dir(session: Session, directory: str) -> None:
-    plugins = select_plugins_under_directory(session, directory)
-    for plugin in plugins:
-        lint_plugin(session, plugin)
-
-
-@nox.session(python=LINT_PYTHON_VERSIONS)  # type: ignore
-@nox.parametrize("plugin", list_plugins("plugins"), ids=[p.name for p in list_plugins("plugins")])  # type: ignore
+@nox.session(python=LINT_PYTHON_VERSIONS, name="lint-plugins")  # type: ignore
+@nox.parametrize("plugin", LINT_PLUGINS, ids=[p.name for p in LINT_PLUGINS])  # type: ignore
 def lint_plugins(session: Session, plugin: Plugin) -> None:
+    lint_plugin_if_compatible(session, plugin)
+
+
+def lint_plugin_if_compatible(session: Session, plugin: Plugin) -> None:
     if not is_plugin_compatible(session, plugin):
         session.skip(f"Skipping session {session.name}")
     _upgrade_basic(session)
@@ -479,6 +537,7 @@ def lint_plugin(session: Session, plugin: Plugin) -> None:
     session.run(*_black_cmd(), silent=SILENT)
     session.run(*_isort_cmd(), silent=SILENT)
     session.chdir(BASE)
+    session.run(*_yamllint_cmd(plugin.abspath), silent=SILENT)
 
     files = []
     for file in ["tests", "example"]:

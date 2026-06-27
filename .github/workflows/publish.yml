@@ -2,31 +2,116 @@
 # Basics: https://docs.pypi.org/trusted-publishers/adding-a-publisher/
 # Security model: https://docs.pypi.org/trusted-publishers/security-model/
 name: Publish to PyPI
+run-name: >-
+  Publish ${{ inputs.package_set }} ${{ inputs.expected_version || '<version not checked>' }}
+  (${{ inputs.publish && 'upload' || 'dry run' }})
 
 on:
-  release:
-    types: [created]
   workflow_dispatch:
     inputs:
+      package_set:
+        description: "Release package set"
+        required: true
+        type: choice
+        default: hydra-full-release
+        options:
+          - hydra-core
+          - hydra-plugins
+          - hydra-full-release
+          - configen
+          - all
+      expected_version:
+        description: "Optional version to validate before publishing"
+        required: false
+        type: string
+        default: ""
       publish:
         description: "Publish to PyPI after building artifacts"
         required: true
         type: boolean
         default: false
 
-# Use separate jobs for building and publishing so that write
-# permissions are only accessible minimally.
+permissions:
+  contents: read
+
+# Use separate jobs for planning, building, and publishing so that write
+# permissions are only accessible to the publishing job.
 #
-# Both jobs are run under the pypi-publish environment,
+# Artifact building and publishing run under the pypi-publish environment,
 # which is configured to require review and approval from authorized
 # maintainers.
 jobs:
+  release-plan:
+    name: Validate release plan
+    runs-on: ubuntu-latest
+    outputs:
+      checkout_ref: ${{ steps.plan.outputs.checkout_ref }}
+      expected_version: ${{ steps.plan.outputs.expected_version }}
+      package_set: ${{ steps.plan.outputs.package_set }}
+      publish_enabled: ${{ steps.plan.outputs.publish_enabled }}
+    steps:
+    - name: Derive publish plan
+      id: plan
+      env:
+        REF_NAME: ${{ github.ref_name }}
+        INPUT_PACKAGE_SET: ${{ inputs.package_set }}
+        INPUT_EXPECTED_VERSION: ${{ inputs.expected_version }}
+        INPUT_PUBLISH: ${{ inputs.publish }}
+      run: |
+        python <<'PY'
+        import os
+        import re
+        import sys
+
+        ref_name = os.environ["REF_NAME"]
+        input_package_set = os.environ["INPUT_PACKAGE_SET"].strip()
+        input_expected_version = os.environ["INPUT_EXPECTED_VERSION"].strip()
+        input_publish = os.environ["INPUT_PUBLISH"].strip()
+
+        def fail(message: str) -> None:
+            print(f"::error::{message}")
+            sys.exit(1)
+
+        package_set = input_package_set or "hydra-full-release"
+        checkout_ref = ref_name
+        expected_version = input_expected_version
+        publish_enabled = "true" if input_publish.lower() == "true" else "false"
+
+        if expected_version and not re.fullmatch(
+            r"(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)"
+            r"(?:(?:rc\d+)|(?:\.dev\d+))?",
+            expected_version,
+        ):
+            fail(
+                "expected_version must look like 1.4.0.dev2, 1.4.0rc1, "
+                f"1.4.0, or 1.4.1; got {expected_version!r}"
+            )
+
+        with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+            print(f"checkout_ref={checkout_ref}", file=output)
+            print(f"expected_version={expected_version}", file=output)
+            print(f"package_set={package_set}", file=output)
+            print(f"publish_enabled={publish_enabled}", file=output)
+
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+            print("## Publish plan", file=summary)
+            print("", file=summary)
+            print(f"- Package set: `{package_set}`", file=summary)
+            print(f"- Checkout ref: `{checkout_ref}`", file=summary)
+            version = expected_version or "<not provided>"
+            print(f"- Expected version: `{version}`", file=summary)
+            print(f"- Publish enabled: `{publish_enabled}`", file=summary)
+        PY
+
   build-artifacts:
     name: Build distribution artifacts
+    needs: release-plan
     runs-on: ubuntu-latest
     environment: pypi-publish
     steps:
     - uses: actions/checkout@v5
+      with:
+        ref: ${{ needs.release-plan.outputs.checkout_ref }}
 
     - name: Set up Python
       uses: actions/setup-python@v6
@@ -44,13 +129,26 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements/requirements.txt build read-version requests twine
 
+    - name: Generate parser sources
+      run: python setup.py antlr
+
+    - name: Validate prepared package versions
+      if: ${{ needs.release-plan.outputs.expected_version != '' }}
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: |
+        python tools/release/release.py \
+          action=validate_versions \
+          set=${{ needs.release-plan.outputs.package_set }} \
+          version=${{ needs.release-plan.outputs.expected_version }}
+
     - name: Build distributions
       env:
         PYTHONPATH: ${{ github.workspace }}
       run: |
         python tools/release/release.py \
           action=build \
-          set=hydra-full-release \
+          set=${{ needs.release-plan.outputs.package_set }} \
           repository=pypi \
           clean_build_dir=true \
           require_artifacts=true \
@@ -61,9 +159,17 @@ jobs:
         ls -lah dist/
         twine check dist/*
 
+    - name: Smoke install built wheels
+      run: |
+        python -m venv smoke-venv
+        smoke-venv/bin/python -m pip install --upgrade pip
+        smoke-venv/bin/python -m pip install --no-deps dist/*.whl
+
     - name: Write release summary
       env:
-        PUBLISH_ENABLED: ${{ github.event_name == 'release' || inputs.publish == true }}
+        PUBLISH_ENABLED: ${{ needs.release-plan.outputs.publish_enabled }}
+        PACKAGE_SET: ${{ needs.release-plan.outputs.package_set }}
+        EXPECTED_VERSION: ${{ needs.release-plan.outputs.expected_version }}
         TARGET_REPOSITORY: PyPI
       run: |
         if [[ "${PUBLISH_ENABLED}" == "true" ]]; then
@@ -79,6 +185,10 @@ jobs:
           echo
           echo "- Target repository: ${TARGET_REPOSITORY}"
           echo "- Mode: ${mode}"
+          echo "- Package set: \`${PACKAGE_SET}\`"
+          if [[ -n "${EXPECTED_VERSION}" ]]; then
+            echo "- Expected version: \`${EXPECTED_VERSION}\`"
+          fi
           echo "- Trigger: ${GITHUB_EVENT_NAME}"
           echo "- Ref: \`${GITHUB_REF_NAME}\`"
           echo "- Commit: \`${GITHUB_SHA}\`"
@@ -104,13 +214,16 @@ jobs:
         retention-days: 0
 
   pypi-publish:
-    needs: build-artifacts
+    needs:
+      - release-plan
+      - build-artifacts
     name: Upload release to PyPI
-    if: ${{ github.event_name == 'release' || inputs.publish == true }}
+    if: ${{ needs.release-plan.outputs.publish_enabled == 'true' }}
     runs-on: ubuntu-latest
     environment: pypi-publish
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
+      contents: read
     steps:
     - name: Download artifacts
       uses: actions/download-artifact@v5
