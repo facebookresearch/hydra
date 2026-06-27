@@ -56,14 +56,9 @@ You can discover the Optuna sweeper parameters with:
 sampler:
   _target_: optuna.samplers.TPESampler
   seed: 123
-  consider_prior: true
-  prior_weight: 1.0
-  consider_magic_clip: true
-  consider_endpoints: false
   n_startup_trials: 10
   n_ei_candidates: 24
   multivariate: false
-  warn_independent_sampling: true
 _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
 direction: minimize
 storage: null
