@@ -1,0 +1,1 @@
+Fix bash completion to support script paths containing hyphens (e.g. python my-app/run.py).
