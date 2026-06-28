@@ -2,6 +2,7 @@
 
 import copy
 import os
+import posixpath
 import warnings
 from dataclasses import dataclass, field
 from textwrap import dedent
@@ -365,6 +366,37 @@ def _create_defaults_tree(
     return ret
 
 
+def _check_parent_traversal(d: GroupDefault, parent: InputDefault) -> None:
+    assert d.group is not None
+    group = d.group if not d.group.startswith("/") else d.group[1:]
+    if ".." not in group.split("/"):
+        return
+
+    base_dir = parent.get_group_path() if not parent.is_virtual() else ""
+    resolved = posixpath.normpath(posixpath.join(base_dir, group) if base_dir else group)
+    pcp = parent.get_config_path()
+    location = f"In {pcp}: " if not parent.is_virtual() else ""
+
+    if resolved.startswith(".."):
+        url = "https://hydra.cc/docs/advanced/search_path/"
+        raise ConfigCompositionException(
+            dedent(
+                f"""\
+                {location}Parent traversal escaping the config search path root is not supported ('{d.group}').
+                To include configs from outside the search path, use a SearchPathPlugin.
+                See {url} for more information."""
+            )
+        )
+    else:
+        raise ConfigCompositionException(
+            dedent(
+                f"""\
+                {location}Parent traversal ('..') in Defaults List config group paths is not supported ('{d.group}').
+                Use an absolute config group path instead, e.g. '/{resolved}'."""
+            )
+        )
+
+
 def _update_overrides(
     defaults_list: List[InputDefault],
     overrides: Overrides,
@@ -507,6 +539,10 @@ def _create_defaults_tree_impl(
             defaults=defaults_list,
             has_config_content=has_config_content,
         )
+
+    for d in defaults_list:
+        if isinstance(d, GroupDefault):
+            _check_parent_traversal(d, parent)
 
     if is_root_config:
         defaults_list.extend(overrides.append_group_defaults)
