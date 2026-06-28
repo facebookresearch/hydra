@@ -1,21 +1,21 @@
 {
-  "generated_on": "2026-06-27",
-  "generated_at": "2026-06-27T20:25:04Z",
+  "generated_on": "2026-06-28",
+  "generated_at": "2026-06-28T03:55:21Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 245,
+    "open_total": 244,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 79,
-        "percentage": 32.2
+        "count": 78,
+        "percentage": 32.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 54.7
+        "percentage": 54.9
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 234
+        "count": 233
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 70
+        "count": 71
       }
     ]
   },
@@ -3080,21 +3080,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2800"
     },
     {
-      "number": 2801,
-      "title": "[Bug] Facebook Open Source logo missing",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-11-21",
-      "updated": "2024-07-29",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2801"
-    },
-    {
       "number": 2810,
       "title": "hydra.errors.MissingConfigException: In 'hydra/config': Could not find 'hydra/sweeper/hgemm'",
       "category": "Enhancement",
@@ -5030,9 +5015,31 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
+    },
+    {
+      "number": 2801,
+      "title": "[Bug] Facebook Open Source logo missing",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-11-21",
+      "updated": "2024-07-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2801"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-28T03:55:21Z",
+      "kind": "closed",
+      "issue": 2801,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2801",
+      "title": "[Bug] Facebook Open Source logo missing"
+    },
     {
       "ts": "2026-06-27T19:26:40Z",
       "kind": "closed",

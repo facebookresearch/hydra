@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2801": "2026-06-28",
     "2807": "2026-06-27",
     "2813": "2026-06-27",
     "2816": "2026-06-27",
@@ -71,7 +72,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-27T20:25:04Z",
+  "generated_at": "2026-06-28T03:55:21Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2214,18 +2215,6 @@
       "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
       "updated_at": "2023-11-21T19:30:03Z"
     },
-    "2801": {
-      "category": "Bug",
-      "created_at": "2023-11-21T15:32:18Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Facebook Open Source logo missing",
-      "updated_at": "2024-07-29T14:52:36Z"
-    },
     "2810": {
       "category": "Enhancement",
       "created_at": "2023-12-01T07:52:32Z",
@@ -3226,6 +3215,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2801": {
+      "category": "Bug",
+      "created_at": "2023-11-21T15:32:18Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Facebook Open Source logo missing",
+      "updated_at": "2024-07-29T14:52:36Z"
     },
     "2807": {
       "category": "Bug",

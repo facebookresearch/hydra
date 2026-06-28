@@ -153,3 +153,4 @@
 {"ts": "2026-06-27T19:23:19Z", "kind": "status", "issue": 2807, "issue_url": "https://github.com/facebookresearch/hydra/issues/2807", "title": "[Bug] Sweep over sweeps does not work as expected", "detail": "not started → in progress", "pr": {"number": 3244, "url": "https://github.com/facebookresearch/hydra/pull/3244"}}
 {"ts": "2026-06-27T19:23:19Z", "kind": "pr", "issue": 2807, "issue_url": "https://github.com/facebookresearch/hydra/issues/2807", "title": "[Bug] Sweep over sweeps does not work as expected", "detail": "linked #3244"}
 {"ts": "2026-06-27T19:26:40Z", "kind": "closed", "issue": 2807, "issue_url": "https://github.com/facebookresearch/hydra/issues/2807", "title": "[Bug] Sweep over sweeps does not work as expected"}
+{"ts": "2026-06-28T03:55:21Z", "kind": "closed", "issue": 2801, "issue_url": "https://github.com/facebookresearch/hydra/issues/2801", "title": "[Bug] Facebook Open Source logo missing"}
