@@ -1,0 +1,1 @@
+Raise a clear error for parent traversal ('..') in Defaults List config groups

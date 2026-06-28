@@ -2165,3 +2165,42 @@ def test_select_multi_pkg(
         expected=expected,
         skip_missing=skip_missing,
     )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
+            "error_parent_traversal_escapes_root",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In error_parent_traversal_escapes_root: "
+                    "Parent traversal escaping the config search path root is not supported ('../group1')."
+                ),
+            ),
+            id="error_parent_traversal_escapes_root",
+        ),
+        param(
+            "group1/error_parent_traversal_within_root",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In group1/error_parent_traversal_within_root: "
+                    "Parent traversal ('..') in Defaults List config group paths is not supported ('../group2')."
+                ),
+            ),
+            id="error_parent_traversal_within_root",
+        ),
+    ],
+)
+def test_parent_traversal(
+    config_name: str, overrides: List[str], expected: Any
+) -> None:
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+    )
