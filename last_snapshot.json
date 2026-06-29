@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2784": "2026-06-29",
     "2801": "2026-06-28",
     "2807": "2026-06-27",
     "2813": "2026-06-27",
@@ -73,7 +74,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-29T16:30:16Z",
+  "generated_at": "2026-06-29T17:00:51Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2138,16 +2139,6 @@
       "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'kazu.steps.joint_ner_and_linking.explosion.ExplosionStringMatchingStep': TypeError(\"__init__() missing 1 required positional argument: 'parsers'\")",
       "updated_at": "2023-11-09T04:52:47Z"
     },
-    "2784": {
-      "category": "Bug",
-      "created_at": "2023-11-04T06:40:18Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "optuna + submitit hp sweeps error stack trace",
-      "updated_at": "2023-11-04T06:40:18Z"
-    },
     "2786": {
       "category": "Question",
       "created_at": "2023-11-07T18:41:29Z",
@@ -3203,6 +3194,16 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2784": {
+      "category": "Bug",
+      "created_at": "2023-11-04T06:40:18Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "optuna + submitit hp sweeps error stack trace",
+      "updated_at": "2023-11-04T06:40:18Z"
     },
     "2801": {
       "category": "Bug",

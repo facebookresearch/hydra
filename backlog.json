@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T16:30:16Z",
+  "generated_at": "2026-06-29T17:00:51Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 243,
+    "open_total": 242,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 77,
-        "percentage": 31.7
+        "count": 76,
+        "percentage": 31.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 55.1
+        "percentage": 55.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 5.3
+        "percentage": 5.4
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 12,
-        "percentage": 4.9
+        "percentage": 5.0
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 4,
-        "percentage": 1.6
+        "percentage": 1.7
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 232
+        "count": 231
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 72
+        "count": 73
       }
     ]
   },
@@ -2981,19 +2981,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2783"
     },
     {
-      "number": 2784,
-      "title": "optuna + submitit hp sweeps error stack trace",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-11-04",
-      "updated": "2023-11-04",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/2784"
-    },
-    {
       "number": 2786,
       "title": "Hydra + Submitit Help",
       "category": "Question",
@@ -5035,9 +5022,29 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
+    },
+    {
+      "number": 2784,
+      "title": "optuna + submitit hp sweeps error stack trace",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-11-04",
+      "updated": "2023-11-04",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2784"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T17:00:51Z",
+      "kind": "closed",
+      "issue": 2784,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2784",
+      "title": "optuna + submitit hp sweeps error stack trace"
+    },
     {
       "ts": "2026-06-29T16:30:16Z",
       "kind": "closed",
