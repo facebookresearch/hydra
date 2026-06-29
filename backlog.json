@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T17:31:38Z",
+  "generated_at": "2026-06-29T18:51:40Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 240,
+    "open_total": 239,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 74,
-        "percentage": 30.8
+        "count": 73,
+        "percentage": 30.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 55.8
+        "percentage": 56.1
       },
       {
         "category": "Documentation",
@@ -33,7 +33,7 @@
         "category": "Refactor",
         "emoji": "🔧",
         "count": 3,
-        "percentage": 1.2
+        "percentage": 1.3
       },
       {
         "category": "Build",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 229
+        "count": 228
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 75
+        "count": 76
       }
     ]
   },
@@ -2906,21 +2906,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2771"
     },
     {
-      "number": 2772,
-      "title": "[Bug] Built in resolvers unsupported with multiprocessing",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-10-18",
-      "updated": "2023-10-18",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2772"
-    },
-    {
       "number": 2775,
       "title": "[Feature Request] Problem with Overwriting dict config of existing configuration",
       "category": "Enhancement",
@@ -3964,6 +3949,21 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2779,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-10-29",
+      "updated": "2024-01-27",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2779"
     },
     {
       "number": 2783,
@@ -5022,22 +5022,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2779,
-      "title": "[Bug]",
+      "number": 2772,
+      "title": "[Bug] Built in resolvers unsupported with multiprocessing",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-10-29",
-      "updated": "2024-01-27",
+      "created": "2023-10-18",
+      "updated": "2023-10-18",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2779"
+      "url": "https://github.com/facebookresearch/hydra/issues/2772"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T18:51:40Z",
+      "kind": "closed",
+      "issue": 2772,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2772",
+      "title": "[Bug] Built in resolvers unsupported with multiprocessing"
+    },
     {
       "ts": "2026-06-29T17:31:38Z",
       "kind": "closed",
