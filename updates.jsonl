@@ -172,3 +172,4 @@
 {"ts": "2026-06-29T20:37:15Z", "kind": "closed", "issue": 2070, "issue_url": "https://github.com/facebookresearch/hydra/issues/2070", "title": "Improving Hydra + PL +  DDP experience"}
 {"ts": "2026-06-29T20:42:41Z", "kind": "closed", "issue": 2716, "issue_url": "https://github.com/facebookresearch/hydra/issues/2716", "title": "[Bug]Ray launcher plugin passes unrecognized arguments"}
 {"ts": "2026-06-29T20:48:14Z", "kind": "closed", "issue": 2709, "issue_url": "https://github.com/facebookresearch/hydra/issues/2709", "title": "[Bug] Ray Hydra Launcher fails to connect to the GCS"}
+{"ts": "2026-06-29T20:53:14Z", "kind": "closed", "issue": 2697, "issue_url": "https://github.com/facebookresearch/hydra/issues/2697", "title": "[Bug] submitit and structured config."}

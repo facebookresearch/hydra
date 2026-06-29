@@ -7,6 +7,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2697": "2026-06-29",
     "2709": "2026-06-29",
     "2716": "2026-06-29",
     "2720": "2026-06-29",
@@ -85,7 +86,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-29T20:48:14Z",
+  "generated_at": "2026-06-29T20:53:14Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1872,18 +1873,6 @@
       "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
       "updated_at": "2023-07-01T22:05:58Z"
     },
-    "2697": {
-      "category": "Bug",
-      "created_at": "2023-07-02T09:53:50Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] submitit and structured config.",
-      "updated_at": "2023-07-14T07:49:15Z"
-    },
     "2704": {
       "category": "Documentation",
       "created_at": "2023-07-05T12:49:57Z",
@@ -3099,6 +3088,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2697": {
+      "category": "Bug",
+      "created_at": "2023-07-02T09:53:50Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] submitit and structured config.",
+      "updated_at": "2023-07-14T07:49:15Z"
     },
     "2709": {
       "category": "Bug",

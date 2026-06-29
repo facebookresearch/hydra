@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T20:48:14Z",
+  "generated_at": "2026-06-29T20:53:14Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 232,
+    "open_total": 231,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 67,
-        "percentage": 28.9
+        "count": 66,
+        "percentage": 28.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 57.8
+        "percentage": 58.0
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 221
+        "count": 220
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 84
+        "count": 85
       }
     ]
   },
@@ -2634,21 +2634,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2695"
     },
     {
-      "number": 2697,
-      "title": "[Bug] submitit and structured config.",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-07-02",
-      "updated": "2023-07-14",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2697"
-    },
-    {
       "number": 2704,
       "title": "Outdated tutorial on job.chdir",
       "category": "Documentation",
@@ -3863,6 +3848,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2709,
+      "title": "[Bug] Ray Hydra Launcher fails to connect to the GCS",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-07-11",
+      "updated": "2023-07-14",
+      "labels": [
+        "bug",
+        "ray-launcher"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2709"
+    },
+    {
       "number": 2716,
       "title": "[Bug]Ray launcher plugin passes unrecognized arguments",
       "category": "Bug",
@@ -5038,23 +5039,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2709,
-      "title": "[Bug] Ray Hydra Launcher fails to connect to the GCS",
+      "number": 2697,
+      "title": "[Bug] submitit and structured config.",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-07-11",
+      "created": "2023-07-02",
       "updated": "2023-07-14",
       "labels": [
-        "bug",
-        "ray-launcher"
+        "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2709"
+      "url": "https://github.com/facebookresearch/hydra/issues/2697"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T20:53:14Z",
+      "kind": "closed",
+      "issue": 2697,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2697",
+      "title": "[Bug] submitit and structured config."
+    },
     {
       "ts": "2026-06-29T20:48:14Z",
       "kind": "closed",
