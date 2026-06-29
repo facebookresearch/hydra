@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T17:00:51Z",
+  "generated_at": "2026-06-29T17:09:10Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 242,
+    "open_total": 241,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 76,
-        "percentage": 31.4
+        "count": 75,
+        "percentage": 31.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 55.4
+        "percentage": 55.6
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 231
+        "count": 230
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 73
+        "count": 74
       }
     ]
   },
@@ -2966,21 +2966,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2782"
     },
     {
-      "number": 2783,
-      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'kazu.steps.joint_ner_and_linking.explosion.ExplosionStringMatchingStep': TypeError(\"__init__() missing 1 required positional argument: 'parsers'\")",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-11-01",
-      "updated": "2023-11-09",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2783"
-    },
-    {
       "number": 2786,
       "title": "Hydra + Submitit Help",
       "category": "Question",
@@ -3994,6 +3979,19 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2784,
+      "title": "optuna + submitit hp sweeps error stack trace",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-11-04",
+      "updated": "2023-11-04",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2784"
     },
     {
       "number": 2801,
@@ -5024,20 +5022,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2784,
-      "title": "optuna + submitit hp sweeps error stack trace",
+      "number": 2783,
+      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'kazu.steps.joint_ner_and_linking.explosion.ExplosionStringMatchingStep': TypeError(\"__init__() missing 1 required positional argument: 'parsers'\")",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-11-04",
-      "updated": "2023-11-04",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/2784"
+      "created": "2023-11-01",
+      "updated": "2023-11-09",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2783"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T17:09:10Z",
+      "kind": "closed",
+      "issue": 2783,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2783",
+      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'kazu.steps.joint_ner_and_linking.explosion.ExplosionStringMatchingStep': TypeError(\"__init__() missing 1 required positional argument: 'parsers'\")"
+    },
     {
       "ts": "2026-06-29T17:00:51Z",
       "kind": "closed",

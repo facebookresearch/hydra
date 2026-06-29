@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2783": "2026-06-29",
     "2784": "2026-06-29",
     "2801": "2026-06-28",
     "2807": "2026-06-27",
@@ -74,7 +75,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-29T17:00:51Z",
+  "generated_at": "2026-06-29T17:09:10Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2127,18 +2128,6 @@
       "title": "[Feature Request] Add an additional node to the defaults tree",
       "updated_at": "2023-10-31T08:06:39Z"
     },
-    "2783": {
-      "category": "Bug",
-      "created_at": "2023-11-01T11:57:40Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'kazu.steps.joint_ner_and_linking.explosion.ExplosionStringMatchingStep': TypeError(\"__init__() missing 1 required positional argument: 'parsers'\")",
-      "updated_at": "2023-11-09T04:52:47Z"
-    },
     "2786": {
       "category": "Question",
       "created_at": "2023-11-07T18:41:29Z",
@@ -3194,6 +3183,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2783": {
+      "category": "Bug",
+      "created_at": "2023-11-01T11:57:40Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'kazu.steps.joint_ner_and_linking.explosion.ExplosionStringMatchingStep': TypeError(\"__init__() missing 1 required positional argument: 'parsers'\")",
+      "updated_at": "2023-11-09T04:52:47Z"
     },
     "2784": {
       "category": "Bug",
