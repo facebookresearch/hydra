@@ -1,4 +1,8 @@
----
+db:
+  driver: mysql
+  user: omry
+  password: secret
+  ---
 id: config_file
 title: Specifying a config file
 ---
