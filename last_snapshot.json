@@ -72,7 +72,7 @@
     "3231": "2026-06-23",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-28T08:10:58Z",
+  "generated_at": "2026-06-29T08:42:00Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2768,11 +2768,13 @@
         "defaults list",
         "maintenance"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3246"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "Disallow parent traversal in Defaults List config groups",
-      "updated_at": "2026-06-08T06:39:05Z"
+      "updated_at": "2026-06-28T17:37:59Z"
     },
     "3203": {
       "category": "Enhancement",

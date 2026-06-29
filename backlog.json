@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-06-28",
-  "generated_at": "2026-06-28T08:10:58Z",
+  "generated_on": "2026-06-29",
+  "generated_at": "2026-06-29T08:42:00Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 244,
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 9
+        "count": 10
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 233
+        "count": 232
       },
       {
         "status": "done",
@@ -295,6 +295,27 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
+    },
+    {
+      "number": 3202,
+      "title": "Disallow parent traversal in Defaults List config groups",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3246,
+          "url": "https://github.com/facebookresearch/hydra/pull/3246"
+        }
+      ],
+      "created": "2026-06-08",
+      "updated": "2026-06-28",
+      "labels": [
+        "maintenance",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3202"
     },
     {
       "number": 385,
@@ -3709,22 +3730,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3201"
     },
     {
-      "number": 3202,
-      "title": "Disallow parent traversal in Defaults List config groups",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-08",
-      "updated": "2026-06-08",
-      "labels": [
-        "maintenance",
-        "defaults list"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3202"
-    },
-    {
       "number": 3203,
       "title": "[Feature Request] Type validation for instantiate arguments",
       "category": "Enhancement",
@@ -5033,6 +5038,26 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T08:42:00Z",
+      "kind": "pr",
+      "issue": 3202,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3202",
+      "title": "Disallow parent traversal in Defaults List config groups",
+      "detail": "linked #3246"
+    },
+    {
+      "ts": "2026-06-29T08:42:00Z",
+      "kind": "status",
+      "issue": 3202,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3202",
+      "title": "Disallow parent traversal in Defaults List config groups",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3246,
+        "url": "https://github.com/facebookresearch/hydra/pull/3246"
+      }
+    },
     {
       "ts": "2026-06-28T03:55:21Z",
       "kind": "closed",

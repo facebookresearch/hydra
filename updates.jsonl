@@ -154,3 +154,5 @@
 {"ts": "2026-06-27T19:23:19Z", "kind": "pr", "issue": 2807, "issue_url": "https://github.com/facebookresearch/hydra/issues/2807", "title": "[Bug] Sweep over sweeps does not work as expected", "detail": "linked #3244"}
 {"ts": "2026-06-27T19:26:40Z", "kind": "closed", "issue": 2807, "issue_url": "https://github.com/facebookresearch/hydra/issues/2807", "title": "[Bug] Sweep over sweeps does not work as expected"}
 {"ts": "2026-06-28T03:55:21Z", "kind": "closed", "issue": 2801, "issue_url": "https://github.com/facebookresearch/hydra/issues/2801", "title": "[Bug] Facebook Open Source logo missing"}
+{"ts": "2026-06-29T08:42:00Z", "kind": "status", "issue": 3202, "issue_url": "https://github.com/facebookresearch/hydra/issues/3202", "title": "Disallow parent traversal in Defaults List config groups", "detail": "not started → community PR", "pr": {"number": 3246, "url": "https://github.com/facebookresearch/hydra/pull/3246"}}
+{"ts": "2026-06-29T08:42:00Z", "kind": "pr", "issue": 3202, "issue_url": "https://github.com/facebookresearch/hydra/issues/3202", "title": "Disallow parent traversal in Defaults List config groups", "detail": "linked #3246"}
