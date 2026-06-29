@@ -163,3 +163,4 @@
 {"ts": "2026-06-29T18:51:40Z", "kind": "closed", "issue": 2772, "issue_url": "https://github.com/facebookresearch/hydra/issues/2772", "title": "[Bug] Built in resolvers unsupported with multiprocessing"}
 {"ts": "2026-06-29T19:09:32Z", "kind": "label", "issue": 2771, "issue_url": "https://github.com/facebookresearch/hydra/issues/2771", "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True", "detail": "added \"awaiting_response\""}
 {"ts": "2026-06-29T19:16:46Z", "kind": "label", "issue": 2757, "issue_url": "https://github.com/facebookresearch/hydra/issues/2757", "title": "[Bug] Submitit Local Launcher does not share jobs across GPUs", "detail": "added \"awaiting_response\""}
+{"ts": "2026-06-29T19:19:51Z", "kind": "closed", "issue": 2754, "issue_url": "https://github.com/facebookresearch/hydra/issues/2754", "title": "Remove the 'file://' extension when using @hydra.main()"}
