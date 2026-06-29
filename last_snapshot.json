@@ -6,6 +6,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2779": "2026-06-29",
     "2783": "2026-06-29",
     "2784": "2026-06-29",
     "2801": "2026-06-28",
@@ -75,7 +76,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-29T17:09:10Z",
+  "generated_at": "2026-06-29T17:31:38Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2104,18 +2105,6 @@
       "title": "[Feature Request] Problem with Overwriting dict config of existing configuration",
       "updated_at": "2023-10-28T22:00:04Z"
     },
-    "2779": {
-      "category": "Bug",
-      "created_at": "2023-10-29T18:32:21Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug]",
-      "updated_at": "2024-01-27T16:46:02Z"
-    },
     "2782": {
       "category": "Enhancement",
       "created_at": "2023-10-30T19:00:53Z",
@@ -3183,6 +3172,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2779": {
+      "category": "Bug",
+      "created_at": "2023-10-29T18:32:21Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug]",
+      "updated_at": "2024-01-27T16:46:02Z"
     },
     "2783": {
       "category": "Bug",

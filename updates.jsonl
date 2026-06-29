@@ -159,3 +159,4 @@
 {"ts": "2026-06-29T16:30:16Z", "kind": "closed", "issue": 3242, "issue_url": "https://github.com/facebookresearch/hydra/issues/3242", "title": "Bash completion should support script paths containing hyphens"}
 {"ts": "2026-06-29T17:00:51Z", "kind": "closed", "issue": 2784, "issue_url": "https://github.com/facebookresearch/hydra/issues/2784", "title": "optuna + submitit hp sweeps error stack trace"}
 {"ts": "2026-06-29T17:09:10Z", "kind": "closed", "issue": 2783, "issue_url": "https://github.com/facebookresearch/hydra/issues/2783", "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'kazu.steps.joint_ner_and_linking.explosion.ExplosionStringMatchingStep': TypeError(\"__init__() missing 1 required positional argument: 'parsers'\")"}
+{"ts": "2026-06-29T17:31:38Z", "kind": "closed", "issue": 2779, "issue_url": "https://github.com/facebookresearch/hydra/issues/2779", "title": "[Bug]"}

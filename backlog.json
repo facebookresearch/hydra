@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T17:09:10Z",
+  "generated_at": "2026-06-29T17:31:38Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 241,
+    "open_total": 240,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 75,
-        "percentage": 31.1
+        "count": 74,
+        "percentage": 30.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 55.6
+        "percentage": 55.8
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 230
+        "count": 229
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 74
+        "count": 75
       }
     ]
   },
@@ -2936,21 +2936,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2775"
     },
     {
-      "number": 2779,
-      "title": "[Bug]",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-10-29",
-      "updated": "2024-01-27",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2779"
-    },
-    {
       "number": 2782,
       "title": "[Feature Request] Add an additional node to the defaults tree",
       "category": "Enhancement",
@@ -3979,6 +3964,21 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2783,
+      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'kazu.steps.joint_ner_and_linking.explosion.ExplosionStringMatchingStep': TypeError(\"__init__() missing 1 required positional argument: 'parsers'\")",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-11-01",
+      "updated": "2023-11-09",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2783"
     },
     {
       "number": 2784,
@@ -5022,22 +5022,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2783,
-      "title": "[Bug] hydra.errors.InstantiationException: Error in call to target 'kazu.steps.joint_ner_and_linking.explosion.ExplosionStringMatchingStep': TypeError(\"__init__() missing 1 required positional argument: 'parsers'\")",
+      "number": 2779,
+      "title": "[Bug]",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-11-01",
-      "updated": "2023-11-09",
+      "created": "2023-10-29",
+      "updated": "2024-01-27",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2783"
+      "url": "https://github.com/facebookresearch/hydra/issues/2779"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T17:31:38Z",
+      "kind": "closed",
+      "issue": 2779,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2779",
+      "title": "[Bug]"
+    },
     {
       "ts": "2026-06-29T17:09:10Z",
       "kind": "closed",
