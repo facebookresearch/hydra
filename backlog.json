@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T20:37:15Z",
+  "generated_at": "2026-06-29T20:42:41Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 234,
+    "open_total": 233,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 69,
-        "percentage": 29.5
+        "count": 68,
+        "percentage": 29.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 57.3
+        "percentage": 57.5
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 12,
-        "percentage": 5.1
+        "percentage": 5.2
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 223
+        "count": 222
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 82
+        "count": 83
       }
     ]
   },
@@ -2696,21 +2696,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2711"
     },
     {
-      "number": 2716,
-      "title": "[Bug]Ray launcher plugin passes unrecognized arguments",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-07-17",
-      "updated": "2025-04-21",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2716"
-    },
-    {
       "number": 2757,
       "title": "[Bug] Submitit Local Launcher does not share jobs across GPUs",
       "category": "Bug",
@@ -3798,6 +3783,22 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2032"
+    },
+    {
+      "number": 2070,
+      "title": "Improving Hydra + PL +  DDP experience",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-03-04",
+      "updated": "2024-11-13",
+      "labels": [
+        "internal",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2070"
     },
     {
       "number": 2162,
@@ -5038,23 +5039,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2070,
-      "title": "Improving Hydra + PL +  DDP experience",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 2716,
+      "title": "[Bug]Ray launcher plugin passes unrecognized arguments",
+      "category": "Bug",
+      "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-03-04",
-      "updated": "2024-11-13",
+      "created": "2023-07-17",
+      "updated": "2025-04-21",
       "labels": [
-        "internal",
-        "priority_low"
+        "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2070"
+      "url": "https://github.com/facebookresearch/hydra/issues/2716"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T20:42:41Z",
+      "kind": "closed",
+      "issue": 2716,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2716",
+      "title": "[Bug]Ray launcher plugin passes unrecognized arguments"
+    },
     {
       "ts": "2026-06-29T20:37:15Z",
       "kind": "closed",
