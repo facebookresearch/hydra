@@ -171,3 +171,4 @@
 {"ts": "2026-06-29T20:20:33Z", "kind": "closed", "issue": 2771, "issue_url": "https://github.com/facebookresearch/hydra/issues/2771", "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True"}
 {"ts": "2026-06-29T20:37:15Z", "kind": "closed", "issue": 2070, "issue_url": "https://github.com/facebookresearch/hydra/issues/2070", "title": "Improving Hydra + PL +  DDP experience"}
 {"ts": "2026-06-29T20:42:41Z", "kind": "closed", "issue": 2716, "issue_url": "https://github.com/facebookresearch/hydra/issues/2716", "title": "[Bug]Ray launcher plugin passes unrecognized arguments"}
+{"ts": "2026-06-29T20:48:14Z", "kind": "closed", "issue": 2709, "issue_url": "https://github.com/facebookresearch/hydra/issues/2709", "title": "[Bug] Ray Hydra Launcher fails to connect to the GCS"}

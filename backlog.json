@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T20:42:41Z",
+  "generated_at": "2026-06-29T20:48:14Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 233,
+    "open_total": 232,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 68,
-        "percentage": 29.2
+        "count": 67,
+        "percentage": 28.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 57.5
+        "percentage": 57.8
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 222
+        "count": 221
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 83
+        "count": 84
       }
     ]
   },
@@ -2664,22 +2664,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2704"
     },
     {
-      "number": 2709,
-      "title": "[Bug] Ray Hydra Launcher fails to connect to the GCS",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-07-11",
-      "updated": "2023-07-14",
-      "labels": [
-        "bug",
-        "ray-launcher"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2709"
-    },
-    {
       "number": 2711,
       "title": "[Feature Request] API Docs?",
       "category": "Documentation",
@@ -3879,6 +3863,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2716,
+      "title": "[Bug]Ray launcher plugin passes unrecognized arguments",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-07-17",
+      "updated": "2025-04-21",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2716"
+    },
+    {
       "number": 2720,
       "title": "[Bug] Reproducing a Hydra run from previous Hydra job configs - WITH SCHEMA",
       "category": "Bug",
@@ -5039,22 +5038,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2716,
-      "title": "[Bug]Ray launcher plugin passes unrecognized arguments",
+      "number": 2709,
+      "title": "[Bug] Ray Hydra Launcher fails to connect to the GCS",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-07-17",
-      "updated": "2025-04-21",
+      "created": "2023-07-11",
+      "updated": "2023-07-14",
       "labels": [
-        "bug"
+        "bug",
+        "ray-launcher"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2716"
+      "url": "https://github.com/facebookresearch/hydra/issues/2709"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T20:48:14Z",
+      "kind": "closed",
+      "issue": 2709,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2709",
+      "title": "[Bug] Ray Hydra Launcher fails to connect to the GCS"
+    },
     {
       "ts": "2026-06-29T20:42:41Z",
       "kind": "closed",
