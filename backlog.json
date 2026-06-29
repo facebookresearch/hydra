@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T19:34:22Z",
+  "generated_at": "2026-06-29T20:16:24Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 236,
@@ -8,14 +8,14 @@
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 71,
-        "percentage": 30.1
+        "count": 70,
+        "percentage": 29.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 134,
-        "percentage": 56.8
+        "count": 135,
+        "percentage": 57.2
       },
       {
         "category": "Documentation",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 79
+        "count": 80
       }
     ]
   },
@@ -2727,21 +2727,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2716"
     },
     {
-      "number": 2720,
-      "title": "[Bug] Reproducing a Hydra run from previous Hydra job configs - WITH SCHEMA",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-07-19",
-      "updated": "2023-10-16",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2720"
-    },
-    {
       "number": 2757,
       "title": "[Bug] Submitit Local Launcher does not share jobs across GPUs",
       "category": "Bug",
@@ -3758,7 +3743,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-23",
-      "updated": "2026-06-26",
+      "updated": "2026-06-29",
       "labels": [
         "maintenance",
         "plugin",
@@ -3781,6 +3766,21 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3237"
+    },
+    {
+      "number": 3248,
+      "title": "Upgrade experimental rerun to recompose config and overlay saved values",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-29",
+      "updated": "2026-06-29",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3248"
     },
     {
       "number": 692,
@@ -3908,6 +3908,21 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2725,
+      "title": "RayLauncher.setup() got an unexpected keyword argument 'hydra_context'",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-07-21",
+      "updated": "2023-09-01",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2725"
     },
     {
       "number": 2738,
@@ -5024,22 +5039,36 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2725,
-      "title": "RayLauncher.setup() got an unexpected keyword argument 'hydra_context'",
+      "number": 2720,
+      "title": "[Bug] Reproducing a Hydra run from previous Hydra job configs - WITH SCHEMA",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-07-21",
-      "updated": "2023-09-01",
+      "created": "2023-07-19",
+      "updated": "2023-10-16",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2725"
+      "url": "https://github.com/facebookresearch/hydra/issues/2720"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T20:16:24Z",
+      "kind": "closed",
+      "issue": 2720,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2720",
+      "title": "[Bug] Reproducing a Hydra run from previous Hydra job configs - WITH SCHEMA"
+    },
+    {
+      "ts": "2026-06-29T20:16:24Z",
+      "kind": "new",
+      "issue": 3248,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3248",
+      "title": "Upgrade experimental rerun to recompose config and overlay saved values"
+    },
     {
       "ts": "2026-06-29T19:34:22Z",
       "kind": "closed",

@@ -166,3 +166,5 @@
 {"ts": "2026-06-29T19:19:51Z", "kind": "closed", "issue": 2754, "issue_url": "https://github.com/facebookresearch/hydra/issues/2754", "title": "Remove the 'file://' extension when using @hydra.main()"}
 {"ts": "2026-06-29T19:24:33Z", "kind": "closed", "issue": 2738, "issue_url": "https://github.com/facebookresearch/hydra/issues/2738", "title": "[Bug] Nested config schema problem with union types."}
 {"ts": "2026-06-29T19:34:22Z", "kind": "closed", "issue": 2725, "issue_url": "https://github.com/facebookresearch/hydra/issues/2725", "title": "RayLauncher.setup() got an unexpected keyword argument 'hydra_context'"}
+{"ts": "2026-06-29T20:16:24Z", "kind": "new", "issue": 3248, "issue_url": "https://github.com/facebookresearch/hydra/issues/3248", "title": "Upgrade experimental rerun to recompose config and overlay saved values"}
+{"ts": "2026-06-29T20:16:24Z", "kind": "closed", "issue": 2720, "issue_url": "https://github.com/facebookresearch/hydra/issues/2720", "title": "[Bug] Reproducing a Hydra run from previous Hydra job configs - WITH SCHEMA"}
