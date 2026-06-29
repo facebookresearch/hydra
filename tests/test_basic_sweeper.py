@@ -71,6 +71,7 @@ def test_partial_failure(
         "--multirun",
         "+divisor=1,0",
         f'hydra.run.dir="{str(tmpdir)}"',
+        f'hydra.sweep.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
     ]
@@ -84,6 +85,7 @@ def test_partial_failure(
             """).strip())
 
     assert_multiline_regex_search(expected_out_regex, out)
+    assert "Job failed" not in out
 
     expected_err_regex = dedent(r"""
         Error executing job with overrides: \['\+divisor=0'\](
@@ -98,3 +100,8 @@ def test_partial_failure(
         """).strip()
 
     assert_multiline_regex_search(expected_err_regex, err)
+
+    job_log = tmpdir / "1" / "my_app.log"
+    log_content = job_log.read()
+    assert "Job failed" in log_content
+    assert "ZeroDivisionError: division by zero" in log_content

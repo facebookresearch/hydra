@@ -75,6 +75,21 @@ def _save_config(cfg: DictConfig, filename: str, output_dir: Path) -> None:
         file.write(OmegaConf.to_yaml(cfg))
 
 
+def _log_job_error_to_file() -> None:
+    record = log.makeRecord(
+        name=log.name,
+        level=logging.ERROR,
+        fn=__file__,
+        lno=0,
+        msg="Job failed",
+        args=(),
+        exc_info=sys.exc_info(),
+    )
+    for handler in logging.getLogger().handlers:
+        if isinstance(handler, logging.FileHandler) and record.levelno >= handler.level:
+            handler.handle(record)
+
+
 def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
     """
     :param overrides: overrides list
@@ -184,6 +199,7 @@ def run_job(
                 ret.return_value = task_function(task_cfg)
                 ret.status = JobStatus.COMPLETED
             except Exception as e:
+                _log_job_error_to_file()
                 ret.return_value = e
                 ret.status = JobStatus.FAILED
 
