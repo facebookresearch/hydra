@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T20:16:24Z",
+  "generated_at": "2026-06-29T20:20:33Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 236,
+    "open_total": 235,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 70,
-        "percentage": 29.7
+        "count": 69,
+        "percentage": 29.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 57.2
+        "percentage": 57.4
       },
       {
         "category": "Documentation",
@@ -33,7 +33,7 @@
         "category": "Refactor",
         "emoji": "🔧",
         "count": 2,
-        "percentage": 0.8
+        "percentage": 0.9
       },
       {
         "category": "Build",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 225
+        "count": 224
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 80
+        "count": 81
       }
     ]
   },
@@ -2834,22 +2834,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2770"
     },
     {
-      "number": 2771,
-      "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-10-16",
-      "updated": "2026-06-29",
-      "labels": [
-        "bug",
-        "awaiting_response"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2771"
-    },
-    {
       "number": 2775,
       "title": "[Feature Request] Problem with Overwriting dict config of existing configuration",
       "category": "Enhancement",
@@ -3908,6 +3892,21 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2720,
+      "title": "[Bug] Reproducing a Hydra run from previous Hydra job configs - WITH SCHEMA",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-07-19",
+      "updated": "2023-10-16",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2720"
     },
     {
       "number": 2725,
@@ -5039,22 +5038,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2720,
-      "title": "[Bug] Reproducing a Hydra run from previous Hydra job configs - WITH SCHEMA",
+      "number": 2771,
+      "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-07-19",
-      "updated": "2023-10-16",
+      "created": "2023-10-16",
+      "updated": "2026-06-29",
       "labels": [
+        "awaiting_response",
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2720"
+      "url": "https://github.com/facebookresearch/hydra/issues/2771"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T20:20:33Z",
+      "kind": "closed",
+      "issue": 2771,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2771",
+      "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True"
+    },
     {
       "ts": "2026-06-29T20:16:24Z",
       "kind": "closed",

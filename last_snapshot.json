@@ -10,6 +10,7 @@
     "2725": "2026-06-29",
     "2738": "2026-06-29",
     "2754": "2026-06-29",
+    "2771": "2026-06-29",
     "2772": "2026-06-29",
     "2779": "2026-06-29",
     "2783": "2026-06-29",
@@ -81,7 +82,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-29T20:16:24Z",
+  "generated_at": "2026-06-29T20:20:33Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2029,19 +2030,6 @@
       "title": "Experiment Tracker with Hydra",
       "updated_at": "2023-10-16T19:37:39Z"
     },
-    "2771": {
-      "category": "Bug",
-      "created_at": "2023-10-16T09:04:51Z",
-      "labels": [
-        "awaiting_response",
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True",
-      "updated_at": "2026-06-29T19:08:10Z"
-    },
     "2775": {
       "category": "Enhancement",
       "created_at": "2023-10-27T21:42:58Z",
@@ -2871,7 +2859,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Upgrade experimental rerun to recompose config and overlay saved values",
-      "updated_at": "2026-06-29T20:13:07Z"
+      "updated_at": "2026-06-29T20:18:22Z"
     },
     "385": {
       "category": "Enhancement",
@@ -3179,6 +3167,19 @@
       "status": "done",
       "title": "Remove the 'file://' extension when using @hydra.main()",
       "updated_at": "2023-09-20T17:42:57Z"
+    },
+    "2771": {
+      "category": "Bug",
+      "created_at": "2023-10-16T09:04:51Z",
+      "labels": [
+        "awaiting_response",
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True",
+      "updated_at": "2026-06-29T19:08:10Z"
     },
     "2772": {
       "category": "Bug",
