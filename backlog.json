@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T20:20:33Z",
+  "generated_at": "2026-06-29T20:37:15Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 235,
+    "open_total": 234,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 69,
-        "percentage": 29.4
+        "percentage": 29.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 135,
-        "percentage": 57.4
+        "count": 134,
+        "percentage": 57.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 5.5
+        "percentage": 5.6
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 224
+        "count": 223
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 81
+        "count": 82
       }
     ]
   },
@@ -1476,22 +1476,6 @@
         "question"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2039"
-    },
-    {
-      "number": 2070,
-      "title": "Improving Hydra + PL +  DDP experience",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-03-04",
-      "updated": "2024-11-13",
-      "labels": [
-        "internal",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2070"
     },
     {
       "number": 2086,
@@ -3952,6 +3936,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2754"
     },
     {
+      "number": 2771,
+      "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-10-16",
+      "updated": "2026-06-29",
+      "labels": [
+        "awaiting_response",
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2771"
+    },
+    {
       "number": 2772,
       "title": "[Bug] Built in resolvers unsupported with multiprocessing",
       "category": "Bug",
@@ -5038,23 +5038,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2771,
-      "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "number": 2070,
+      "title": "Improving Hydra + PL +  DDP experience",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-10-16",
-      "updated": "2026-06-29",
+      "created": "2022-03-04",
+      "updated": "2024-11-13",
       "labels": [
-        "awaiting_response",
-        "bug"
+        "internal",
+        "priority_low"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2771"
+      "url": "https://github.com/facebookresearch/hydra/issues/2070"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T20:37:15Z",
+      "kind": "closed",
+      "issue": 2070,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2070",
+      "title": "Improving Hydra + PL +  DDP experience"
+    },
     {
       "ts": "2026-06-29T20:20:33Z",
       "kind": "closed",

@@ -169,3 +169,4 @@
 {"ts": "2026-06-29T20:16:24Z", "kind": "new", "issue": 3248, "issue_url": "https://github.com/facebookresearch/hydra/issues/3248", "title": "Upgrade experimental rerun to recompose config and overlay saved values"}
 {"ts": "2026-06-29T20:16:24Z", "kind": "closed", "issue": 2720, "issue_url": "https://github.com/facebookresearch/hydra/issues/2720", "title": "[Bug] Reproducing a Hydra run from previous Hydra job configs - WITH SCHEMA"}
 {"ts": "2026-06-29T20:20:33Z", "kind": "closed", "issue": 2771, "issue_url": "https://github.com/facebookresearch/hydra/issues/2771", "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True"}
+{"ts": "2026-06-29T20:37:15Z", "kind": "closed", "issue": 2070, "issue_url": "https://github.com/facebookresearch/hydra/issues/2070", "title": "Improving Hydra + PL +  DDP experience"}

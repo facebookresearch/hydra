@@ -2,6 +2,7 @@
   "closed_at": {
     "1892": "2026-06-07",
     "2032": "2026-06-20",
+    "2070": "2026-06-29",
     "2162": "2026-06-11",
     "2477": "2026-06-07",
     "2479": "2026-06-07",
@@ -82,7 +83,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-29T20:20:33Z",
+  "generated_at": "2026-06-29T20:37:15Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -923,19 +924,6 @@
       "status": "not started",
       "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config",
       "updated_at": "2022-02-18T23:23:46Z"
-    },
-    "2070": {
-      "category": "Enhancement",
-      "created_at": "2022-03-04T20:13:16Z",
-      "labels": [
-        "internal",
-        "priority_low"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Improving Hydra + PL +  DDP experience",
-      "updated_at": "2024-11-13T13:35:11Z"
     },
     "2086": {
       "category": "Enhancement",
@@ -3064,6 +3052,19 @@
       "status": "done",
       "title": "[Feature Request]Config aliases",
       "updated_at": "2024-08-25T14:04:43Z"
+    },
+    "2070": {
+      "category": "Enhancement",
+      "created_at": "2022-03-04T20:13:16Z",
+      "labels": [
+        "internal",
+        "priority_low"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Improving Hydra + PL +  DDP experience",
+      "updated_at": "2024-11-13T13:35:11Z"
     },
     "2162": {
       "category": "Enhancement",
