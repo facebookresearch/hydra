@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T19:19:51Z",
+  "generated_at": "2026-06-29T19:24:33Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 238,
+    "open_total": 237,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 73,
-        "percentage": 30.7
+        "count": 72,
+        "percentage": 30.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 56.3
+        "percentage": 56.5
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 12,
-        "percentage": 5.0
+        "percentage": 5.1
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 227
+        "count": 226
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 77
+        "count": 78
       }
     ]
   },
@@ -2757,21 +2757,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2725"
     },
     {
-      "number": 2738,
-      "title": "[Bug] Nested config schema problem with union types.",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-08-28",
-      "updated": "2023-08-29",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2738"
-    },
-    {
       "number": 2757,
       "title": "[Bug] Submitit Local Launcher does not share jobs across GPUs",
       "category": "Bug",
@@ -3940,6 +3925,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2754,
+      "title": "Remove the 'file://' extension when using @hydra.main()",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-09-20",
+      "updated": "2023-09-20",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2754"
+    },
+    {
       "number": 2772,
       "title": "[Bug] Built in resolvers unsupported with multiprocessing",
       "category": "Bug",
@@ -5026,20 +5024,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2754,
-      "title": "Remove the 'file://' extension when using @hydra.main()",
-      "category": "Refactor",
-      "category_emoji": "🔧",
+      "number": 2738,
+      "title": "[Bug] Nested config schema problem with union types.",
+      "category": "Bug",
+      "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-09-20",
-      "updated": "2023-09-20",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/2754"
+      "created": "2023-08-28",
+      "updated": "2023-08-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2738"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T19:24:33Z",
+      "kind": "closed",
+      "issue": 2738,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2738",
+      "title": "[Bug] Nested config schema problem with union types."
+    },
     {
       "ts": "2026-06-29T19:19:51Z",
       "kind": "closed",
