@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T18:51:40Z",
+  "generated_at": "2026-06-29T19:09:32Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 239,
@@ -2899,9 +2899,10 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2023-10-16",
-      "updated": "2023-10-16",
+      "updated": "2026-06-29",
       "labels": [
-        "bug"
+        "bug",
+        "awaiting_response"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2771"
     },
@@ -3949,6 +3950,21 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2772,
+      "title": "[Bug] Built in resolvers unsupported with multiprocessing",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-10-18",
+      "updated": "2023-10-18",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2772"
     },
     {
       "number": 2779,
@@ -5020,24 +5036,17 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
-    },
-    {
-      "number": 2772,
-      "title": "[Bug] Built in resolvers unsupported with multiprocessing",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2023-10-18",
-      "updated": "2023-10-18",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2772"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T19:09:32Z",
+      "kind": "label",
+      "issue": 2771,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2771",
+      "title": "[Bug] experimental-rerun flag does not change output directory when hydra.job.chdir=True",
+      "detail": "added \"awaiting_response\""
+    },
     {
       "ts": "2026-06-29T18:51:40Z",
       "kind": "closed",
