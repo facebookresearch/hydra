@@ -448,6 +448,7 @@ def test_file_completion(
         "python  foo.py",
         "python tutorials/hydra_app/example/hydra_app/main.py",
         "python foo.py",
+        "python my-app/run.py",
     ],
 )
 @mark.parametrize(
