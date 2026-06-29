@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T19:24:33Z",
+  "generated_at": "2026-06-29T19:34:22Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 237,
+    "open_total": 236,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 72,
-        "percentage": 30.4
+        "count": 71,
+        "percentage": 30.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 56.5
+        "percentage": 56.8
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 226
+        "count": 225
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 78
+        "count": 79
       }
     ]
   },
@@ -2742,21 +2742,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2720"
     },
     {
-      "number": 2725,
-      "title": "RayLauncher.setup() got an unexpected keyword argument 'hydra_context'",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-07-21",
-      "updated": "2023-09-01",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2725"
-    },
-    {
       "number": 2757,
       "title": "[Bug] Submitit Local Launcher does not share jobs across GPUs",
       "category": "Bug",
@@ -3925,6 +3910,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2738,
+      "title": "[Bug] Nested config schema problem with union types.",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-08-28",
+      "updated": "2023-08-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2738"
+    },
+    {
       "number": 2754,
       "title": "Remove the 'file://' extension when using @hydra.main()",
       "category": "Refactor",
@@ -5024,22 +5024,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2738,
-      "title": "[Bug] Nested config schema problem with union types.",
+      "number": 2725,
+      "title": "RayLauncher.setup() got an unexpected keyword argument 'hydra_context'",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-08-28",
-      "updated": "2023-08-29",
+      "created": "2023-07-21",
+      "updated": "2023-09-01",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2738"
+      "url": "https://github.com/facebookresearch/hydra/issues/2725"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T19:34:22Z",
+      "kind": "closed",
+      "issue": 2725,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2725",
+      "title": "RayLauncher.setup() got an unexpected keyword argument 'hydra_context'"
+    },
     {
       "ts": "2026-06-29T19:24:33Z",
       "kind": "closed",
