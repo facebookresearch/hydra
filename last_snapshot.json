@@ -70,9 +70,10 @@
     "3223": "2026-06-20",
     "3228": "2026-06-22",
     "3231": "2026-06-23",
+    "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-29T08:42:00Z",
+  "generated_at": "2026-06-29T16:30:16Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2942,21 +2943,6 @@
       "title": "Rework version_base into an opt-in compatibility lever",
       "updated_at": "2026-06-23T15:33:25Z"
     },
-    "3242": {
-      "category": "Bug",
-      "created_at": "2026-06-27T08:22:51Z",
-      "labels": [
-        "bug",
-        "tab_completion"
-      ],
-      "pr_numbers": [
-        "3243"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "Bash completion should support script paths containing hyphens",
-      "updated_at": "2026-06-27T08:39:00Z"
-    },
     "385": {
       "category": "Enhancement",
       "created_at": "2020-01-19T10:23:55Z",
@@ -3996,6 +3982,21 @@
       "status": "done",
       "title": "Guard against Hydra launcher overrides inside swept job configs",
       "updated_at": "2026-06-22T15:25:04Z"
+    },
+    "3242": {
+      "category": "Bug",
+      "created_at": "2026-06-27T08:22:51Z",
+      "labels": [
+        "bug",
+        "tab_completion"
+      ],
+      "pr_numbers": [
+        "3243"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Bash completion should support script paths containing hyphens",
+      "updated_at": "2026-06-27T08:39:00Z"
     },
     "692": {
       "category": "Enhancement",

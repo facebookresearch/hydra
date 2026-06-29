@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T08:42:00Z",
+  "generated_at": "2026-06-29T16:30:16Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 244,
+    "open_total": 243,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 78,
-        "percentage": 32.0
+        "count": 77,
+        "percentage": 31.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 54.9
+        "percentage": 55.1
       },
       {
         "category": "Documentation",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 10
+        "count": 9
       },
       {
         "status": "blocked",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 71
+        "count": 72
       }
     ]
   },
@@ -238,6 +238,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3106"
     },
     {
+      "number": 3202,
+      "title": "Disallow parent traversal in Defaults List config groups",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3246,
+          "url": "https://github.com/facebookresearch/hydra/pull/3246"
+        }
+      ],
+      "created": "2026-06-08",
+      "updated": "2026-06-28",
+      "labels": [
+        "maintenance",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3202"
+    },
+    {
       "number": 3210,
       "title": "Modernize Optuna Sweeper",
       "category": "Refactor",
@@ -274,48 +295,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3215"
-    },
-    {
-      "number": 3242,
-      "title": "Bash completion should support script paths containing hyphens",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3243,
-          "url": "https://github.com/facebookresearch/hydra/pull/3243"
-        }
-      ],
-      "created": "2026-06-27",
-      "updated": "2026-06-27",
-      "labels": [
-        "bug",
-        "tab_completion"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3242"
-    },
-    {
-      "number": 3202,
-      "title": "Disallow parent traversal in Defaults List config groups",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3246,
-          "url": "https://github.com/facebookresearch/hydra/pull/3246"
-        }
-      ],
-      "created": "2026-06-08",
-      "updated": "2026-06-28",
-      "labels": [
-        "maintenance",
-        "defaults list"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3202"
     },
     {
       "number": 385,
@@ -5035,9 +5014,37 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
+    },
+    {
+      "number": 3242,
+      "title": "Bash completion should support script paths containing hyphens",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3243,
+          "url": "https://github.com/facebookresearch/hydra/pull/3243"
+        }
+      ],
+      "created": "2026-06-27",
+      "updated": "2026-06-27",
+      "labels": [
+        "bug",
+        "tab_completion"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3242"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-29T16:30:16Z",
+      "kind": "closed",
+      "issue": 3242,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3242",
+      "title": "Bash completion should support script paths containing hyphens"
+    },
     {
       "ts": "2026-06-29T08:42:00Z",
       "kind": "pr",
