@@ -6,7 +6,7 @@ from typing import Any, List, Optional
 from pytest import mark, param, raises, warns
 
 from hydra import version
-from hydra._internal.defaults_list import create_defaults_list
+from hydra._internal.defaults_list import Overrides, _create_defaults_tree, _create_root, create_defaults_list
 from hydra.core.default_element import (
     ConfigDefault,
     GroupDefault,
@@ -2177,7 +2177,7 @@ def test_select_multi_pkg(
                 ConfigCompositionException,
                 match=re.escape(
                     "In error_parent_traversal_escapes_root: "
-                    "Parent traversal escaping the config search path root is not supported ('../group1')."
+                    "Parent traversal ('..') in Defaults List config group paths is not supported ('../group1')."
                 ),
             ),
             id="error_parent_traversal_escapes_root",
@@ -2204,3 +2204,29 @@ def test_parent_traversal(
         overrides=overrides,
         expected=expected,
     )
+
+
+def test_parent_traversal_cli_append() -> None:
+    # The override grammar rejects '..' in keys, so we inject a GroupDefault
+    # directly into append_group_defaults to test the validation layer.
+    repo = create_repo()
+    root = _create_root(config_name="empty", with_hydra=False)
+    overrides = Overrides(repo=repo, overrides_list=[])
+    overrides.append_group_defaults.append(
+        GroupDefault(group="../group1", value="file1", external_append=True)
+    )
+    with raises(
+        ConfigCompositionException,
+        match=re.escape(
+            "In empty: "
+            "Parent traversal ('..') in Defaults List config group paths is not supported ('../group1')."
+        ),
+    ):
+        _create_defaults_tree(
+            repo=repo,
+            root=root,
+            overrides=overrides,
+            is_root_config=True,
+            interpolated_subtree=False,
+            skip_missing=False,
+        )
