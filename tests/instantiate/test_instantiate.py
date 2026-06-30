@@ -7,7 +7,14 @@ from functools import partial
 from textwrap import dedent
 from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 
-from omegaconf import MISSING, DictConfig, ListConfig, MissingMandatoryValue, OmegaConf
+from omegaconf import (
+    MISSING,
+    AnyNode,
+    DictConfig,
+    ListConfig,
+    MissingMandatoryValue,
+    OmegaConf,
+)
 from pytest import fixture, mark, param, raises, warns
 
 import hydra
@@ -84,6 +91,10 @@ def config(request: Any, src: Any) -> Any:
     cfg_copy = copy.deepcopy(config)
     yield config
     assert config == cfg_copy
+
+
+def structured_config_object_node(value: Any) -> Any:
+    return AnyNode(value, flags={"allow_objects": True})
 
 
 @mark.parametrize(
@@ -1848,14 +1859,17 @@ def test_convert_and_recursive_node(
                 },
             },
             (
-                # a is a DictConfig because of top level DictConfig
                 OmegaConf.create(
                     {
-                        "a": SimpleDataClass(
-                            a=OmegaConf.create({"foo": 99}), b=OmegaConf.create([1, 99])
+                        "a": structured_config_object_node(
+                            SimpleDataClass(
+                                a=OmegaConf.create({"foo": 99}),
+                                b=OmegaConf.create([1, 99]),
+                            )
                         ),
                         "b": None,
-                    }
+                    },
+                    flags={"allow_objects": True},
                 ),
                 {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
                 {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
@@ -2012,6 +2026,35 @@ def test_instantiated_regular_class_container_types_object2(
     assert isinstance(ret.a, list)
     assert isinstance(ret.a[0], dict)
     assert isinstance(ret.a[1], User)
+
+
+def test_nested_dataclass_targets_remain_objects_with_convert_none(
+    instantiate_func: Any,
+) -> None:
+    dataclass_target = {
+        "_target_": "tests.instantiate.SimpleDataClass",
+        "a": "foo",
+        "b": 123,
+    }
+
+    top = instantiate_func(dataclass_target, _convert_=ConvertMode.NONE)
+    assert isinstance(top, SimpleDataClass)
+
+    ret_list = instantiate_func([dataclass_target], _convert_=ConvertMode.NONE)
+    assert isinstance(ret_list, ListConfig)
+    assert isinstance(ret_list[0], SimpleDataClass)
+    assert ret_list[0] == top
+
+    ret = instantiate_func(
+        {"nested": dataclass_target, "items": [dataclass_target]},
+        _convert_=ConvertMode.NONE,
+    )
+    assert isinstance(ret, DictConfig)
+    assert isinstance(ret.nested, SimpleDataClass)
+    assert ret.nested == top
+    assert isinstance(ret["items"], ListConfig)
+    assert isinstance(ret["items"][0], SimpleDataClass)
+    assert ret["items"][0] == top
 
 
 @mark.parametrize(

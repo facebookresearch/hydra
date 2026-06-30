@@ -7,7 +7,7 @@ from enum import Enum
 from textwrap import dedent
 from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
 
-from omegaconf import OmegaConf, SCMode
+from omegaconf import AnyNode, OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
 
 from hydra._internal.utils import _locate
@@ -377,6 +377,12 @@ def _convert_node(node: Any, convert: Union[ConvertMode, str]) -> Any:
     return node
 
 
+def _wrap_structured_config_as_object(value: Any) -> Any:
+    if is_structured_config(value):
+        return AnyNode(value, flags={"allow_objects": True})
+    return value
+
+
 def instantiate_node(
     node: Any,
     *args: Any,
@@ -425,7 +431,9 @@ def instantiate_node(
             return items
         else:
             # Otherwise, use ListConfig as container
-            lst = OmegaConf.create(items, flags={"allow_objects": True})
+            lst = OmegaConf.create([], flags={"allow_objects": True})
+            for item in items:
+                lst.append(_wrap_structured_config_as_object(item))
             lst._set_parent(node)
             return lst
 
@@ -465,8 +473,8 @@ def instantiate_node(
                 # Otherwise use DictConfig and resolve interpolations lazily.
                 cfg = OmegaConf.create({}, flags={"allow_objects": True})
                 for key, value in node.items():
-                    cfg[key] = instantiate_node(
-                        value, convert=convert, recursive=recursive
+                    cfg[key] = _wrap_structured_config_as_object(
+                        instantiate_node(value, convert=convert, recursive=recursive)
                     )
                 cfg._set_parent(node)
                 cfg._metadata.object_type = node._metadata.object_type
