@@ -7,6 +7,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2575": "2026-06-30",
     "2655": "2026-06-30",
     "2656": "2026-06-30",
     "2662": "2026-06-30",
@@ -93,7 +94,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T09:24:47Z",
+  "generated_at": "2026-06-30T09:42:41Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1702,18 +1703,6 @@
       "title": "[Bug] relative config_path resolution is not consistent",
       "updated_at": "2023-02-27T20:08:39Z"
     },
-    "2575": {
-      "category": "Bug",
-      "created_at": "2023-02-03T20:33:45Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Schema validation for recursively instantiated targets failing",
-      "updated_at": "2025-05-23T07:26:41Z"
-    },
     "2587": {
       "category": "Question",
       "created_at": "2023-02-15T06:24:34Z",
@@ -3023,6 +3012,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2575": {
+      "category": "Bug",
+      "created_at": "2023-02-03T20:33:45Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Schema validation for recursively instantiated targets failing",
+      "updated_at": "2025-05-23T07:26:41Z"
     },
     "2655": {
       "category": "Bug",

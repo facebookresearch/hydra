@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T09:24:47Z",
+  "generated_at": "2026-06-30T09:42:41Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 225,
+    "open_total": 224,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 60,
-        "percentage": 26.7
+        "count": 59,
+        "percentage": 26.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 60.0
+        "percentage": 60.3
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 214
+        "count": 213
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 92
+        "count": 93
       }
     ]
   },
@@ -2428,21 +2428,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2564"
     },
     {
-      "number": 2575,
-      "title": "[Bug] Schema validation for recursively instantiated targets failing",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-02-03",
-      "updated": "2025-05-23",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2575"
-    },
-    {
       "number": 2587,
       "title": "How to instantiate a child class which inherited from super class?",
       "category": "Question",
@@ -3758,6 +3743,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2655,
+      "title": "[Bug] ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-05-01",
+      "updated": "2023-11-28",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2655"
+    },
+    {
       "number": 2656,
       "title": "[Question] How to set the \"package directive\" on the command line or in the compose API",
       "category": "Question",
@@ -5057,22 +5057,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2655,
-      "title": "[Bug] ",
+      "number": 2575,
+      "title": "[Bug] Schema validation for recursively instantiated targets failing",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-05-01",
-      "updated": "2023-11-28",
+      "created": "2023-02-03",
+      "updated": "2025-05-23",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2655"
+      "url": "https://github.com/facebookresearch/hydra/issues/2575"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T09:42:41Z",
+      "kind": "closed",
+      "issue": 2575,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2575",
+      "title": "[Bug] Schema validation for recursively instantiated targets failing"
+    },
     {
       "ts": "2026-06-30T09:24:47Z",
       "kind": "closed",
