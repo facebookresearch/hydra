@@ -195,3 +195,4 @@
 {"ts": "2026-06-30T14:42:12Z", "kind": "closed", "issue": 2445, "issue_url": "https://github.com/facebookresearch/hydra/issues/2445", "title": "[Bug] Navigating to certain pages in the hosted documentation fails with `t is undefined`"}
 {"ts": "2026-06-30T14:44:32Z", "kind": "closed", "issue": 2407, "issue_url": "https://github.com/facebookresearch/hydra/issues/2407", "title": "[Bug] Ray Launcher - Py3.9 and 3.10 - Could not find a version that satisfies the requirement ray[default]==1.12.0 "}
 {"ts": "2026-06-30T15:03:05Z", "kind": "closed", "issue": 2381, "issue_url": "https://github.com/facebookresearch/hydra/issues/2381", "title": "Error out on attempt to sweep on the Hydra configuration"}
+{"ts": "2026-06-30T15:33:45Z", "kind": "new", "issue": 3252, "issue_url": "https://github.com/facebookresearch/hydra/issues/3252", "title": "Migrate Hydra plugin discovery from namespace scanning to entry points"}

@@ -103,7 +103,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T15:03:05Z",
+  "generated_at": "2026-06-30T15:33:45Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2635,6 +2635,16 @@
       "status": "not started",
       "title": "Align Hydra override key-path syntax with OmegaConf dotlist/path syntax",
       "updated_at": "2026-06-30T08:17:50Z"
+    },
+    "3252": {
+      "category": "Enhancement",
+      "created_at": "2026-06-30T15:32:19Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Migrate Hydra plugin discovery from namespace scanning to entry points",
+      "updated_at": "2026-06-30T15:32:19Z"
     },
     "385": {
       "category": "Enhancement",

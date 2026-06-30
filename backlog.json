@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T15:03:05Z",
+  "generated_at": "2026-06-30T15:33:45Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 215,
+    "open_total": 216,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 50,
-        "percentage": 23.3
+        "percentage": 23.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 135,
-        "percentage": 62.8
+        "count": 136,
+        "percentage": 63.0
       },
       {
         "category": "Documentation",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 203
+        "count": 204
       },
       {
         "status": "done",
@@ -3464,6 +3464,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3250"
     },
     {
+      "number": 3252,
+      "title": "Migrate Hydra plugin discovery from namespace scanning to entry points",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-30",
+      "updated": "2026-06-30",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3252"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -3544,6 +3557,22 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
+    },
+    {
+      "number": 2381,
+      "title": "Error out on attempt to sweep on the Hydra configuration",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-09-14",
+      "updated": "2022-10-20",
+      "labels": [
+        "bug",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2381"
     },
     {
       "number": 2407,
@@ -5059,25 +5088,16 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
-    },
-    {
-      "number": 2381,
-      "title": "Error out on attempt to sweep on the Hydra configuration",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-09-14",
-      "updated": "2022-10-20",
-      "labels": [
-        "bug",
-        "sweep"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2381"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T15:33:45Z",
+      "kind": "new",
+      "issue": 3252,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3252",
+      "title": "Migrate Hydra plugin discovery from namespace scanning to entry points"
+    },
     {
       "ts": "2026-06-30T15:03:05Z",
       "kind": "closed",
