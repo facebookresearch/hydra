@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T15:33:45Z",
+  "generated_at": "2026-06-30T15:36:48Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 216,
+    "open_total": 215,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 50,
-        "percentage": 23.1
+        "count": 49,
+        "percentage": 22.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 136,
-        "percentage": 63.0
+        "percentage": 63.3
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 204
+        "count": 203
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 102
+        "count": 103
       }
     ]
   },
@@ -2120,21 +2120,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2351"
-    },
-    {
-      "number": 2359,
-      "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-08-27",
-      "updated": "2022-08-29",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2359"
     },
     {
       "number": 2364,
@@ -5088,9 +5073,31 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
+    },
+    {
+      "number": 2359,
+      "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-08-27",
+      "updated": "2022-08-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2359"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T15:36:48Z",
+      "kind": "closed",
+      "issue": 2359,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2359",
+      "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`"
+    },
     {
       "ts": "2026-06-30T15:33:45Z",
       "kind": "new",

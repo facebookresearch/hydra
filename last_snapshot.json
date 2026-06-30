@@ -4,6 +4,7 @@
     "2032": "2026-06-20",
     "2070": "2026-06-29",
     "2162": "2026-06-11",
+    "2359": "2026-06-30",
     "2381": "2026-06-30",
     "2407": "2026-06-30",
     "2416": "2026-06-30",
@@ -103,7 +104,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T15:33:45Z",
+  "generated_at": "2026-06-30T15:36:48Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1446,18 +1447,6 @@
       "status": "not started",
       "title": "[Feature Request] Possibility to save full start command in separate file",
       "updated_at": "2022-10-05T22:54:08Z"
-    },
-    "2359": {
-      "category": "Bug",
-      "created_at": "2022-08-27T13:43:08Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`",
-      "updated_at": "2022-08-29T16:04:25Z"
     },
     "2364": {
       "category": "Enhancement",
@@ -2876,6 +2865,18 @@
       "status": "done",
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "updated_at": "2025-01-22T23:55:03Z"
+    },
+    "2359": {
+      "category": "Bug",
+      "created_at": "2022-08-27T13:43:08Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`",
+      "updated_at": "2022-08-29T16:04:25Z"
     },
     "2381": {
       "category": "Bug",
