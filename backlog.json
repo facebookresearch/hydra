@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T10:07:37Z",
+  "generated_at": "2026-06-30T10:27:04Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 222,
+    "open_total": 221,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 57,
-        "percentage": 25.7
+        "count": 56,
+        "percentage": 25.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 60.8
+        "percentage": 61.1
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 211
+        "count": 210
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 95
+        "count": 96
       }
     ]
   },
@@ -2382,21 +2382,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2551"
     },
     {
-      "number": 2562,
-      "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-01-30",
-      "updated": "2023-02-08",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2562"
-    },
-    {
       "number": 2587,
       "title": "How to instantiate a child class which inherited from super class?",
       "category": "Question",
@@ -3728,6 +3713,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2564,
+      "title": "[Bug] relative config_path resolution is not consistent",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-01-31",
+      "updated": "2023-02-27",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2564"
+    },
+    {
       "number": 2575,
       "title": "[Bug] Schema validation for recursively instantiated targets failing",
       "category": "Bug",
@@ -5057,22 +5057,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2564,
-      "title": "[Bug] relative config_path resolution is not consistent",
+      "number": 2562,
+      "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-01-31",
-      "updated": "2023-02-27",
+      "created": "2023-01-30",
+      "updated": "2023-02-08",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2564"
+      "url": "https://github.com/facebookresearch/hydra/issues/2562"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T10:27:04Z",
+      "kind": "closed",
+      "issue": 2562,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2562",
+      "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. "
+    },
     {
       "ts": "2026-06-30T10:07:37Z",
       "kind": "closed",
