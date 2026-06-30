@@ -7,6 +7,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2662": "2026-06-30",
     "2669": "2026-06-30",
     "2670": "2026-06-30",
     "2674": "2026-06-30",
@@ -90,7 +91,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T08:30:44Z",
+  "generated_at": "2026-06-30T08:42:46Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1793,18 +1794,6 @@
       "title": "[Feature Request] Make hydra-submitit-launcher available via Conda",
       "updated_at": "2024-03-04T17:15:23Z"
     },
-    "2662": {
-      "category": "Bug",
-      "created_at": "2023-05-16T12:22:09Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler",
-      "updated_at": "2023-05-16T12:22:09Z"
-    },
     "2664": {
       "category": "Bug",
       "created_at": "2023-05-16T15:10:07Z",
@@ -3054,6 +3043,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2662": {
+      "category": "Bug",
+      "created_at": "2023-05-16T12:22:09Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler",
+      "updated_at": "2023-05-16T12:22:09Z"
     },
     "2669": {
       "category": "Bug",

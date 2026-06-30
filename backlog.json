@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T08:30:44Z",
+  "generated_at": "2026-06-30T08:42:46Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 228,
+    "open_total": 227,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 62,
-        "percentage": 27.2
+        "count": 61,
+        "percentage": 26.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 59.2
+        "percentage": 59.5
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 217
+        "count": 216
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 89
+        "count": 90
       }
     ]
   },
@@ -2529,21 +2529,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2660"
     },
     {
-      "number": 2662,
-      "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-05-16",
-      "updated": "2023-05-16",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2662"
-    },
-    {
       "number": 2664,
       "title": "[Not sure if bug/feature] Where does submitit error output go?",
       "category": "Bug",
@@ -3799,6 +3784,21 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2669,
+      "title": "[Bug]error installing hydra-core using poetry",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-05-31",
+      "updated": "2024-02-05",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2669"
     },
     {
       "number": 2670,
@@ -5057,22 +5057,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2669,
-      "title": "[Bug]error installing hydra-core using poetry",
+      "number": 2662,
+      "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-05-31",
-      "updated": "2024-02-05",
+      "created": "2023-05-16",
+      "updated": "2023-05-16",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2669"
+      "url": "https://github.com/facebookresearch/hydra/issues/2662"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T08:42:46Z",
+      "kind": "closed",
+      "issue": 2662,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2662",
+      "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler"
+    },
     {
       "ts": "2026-06-30T08:30:44Z",
       "kind": "closed",

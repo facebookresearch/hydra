@@ -180,3 +180,4 @@
 {"ts": "2026-06-30T08:20:03Z", "kind": "closed", "issue": 2674, "issue_url": "https://github.com/facebookresearch/hydra/issues/2674", "title": "[Bug] OverrideParseException when trying to use override syntax to drop key starting with integer"}
 {"ts": "2026-06-30T08:28:33Z", "kind": "closed", "issue": 2670, "issue_url": "https://github.com/facebookresearch/hydra/issues/2670", "title": "[Bug] Inconsistent/buggy behavior when overriding config groups from the CLI"}
 {"ts": "2026-06-30T08:30:44Z", "kind": "closed", "issue": 2669, "issue_url": "https://github.com/facebookresearch/hydra/issues/2669", "title": "[Bug]error installing hydra-core using poetry"}
+{"ts": "2026-06-30T08:42:46Z", "kind": "closed", "issue": 2662, "issue_url": "https://github.com/facebookresearch/hydra/issues/2662", "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler"}
