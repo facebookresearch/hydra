@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T10:27:04Z",
+  "generated_at": "2026-06-30T12:09:47Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 221,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 3
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 210
+        "count": 209
       },
       {
         "status": "done",
@@ -112,6 +112,28 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 2507,
+      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3251,
+          "url": "https://github.com/facebookresearch/hydra/pull/3251"
+        }
+      ],
+      "created": "2022-12-17",
+      "updated": "2026-06-30",
+      "labels": [
+        "bug",
+        "instantiate_api",
+        "structured config"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2507"
     },
     {
       "number": 845,
@@ -2350,23 +2372,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2488"
     },
     {
-      "number": 2507,
-      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-12-17",
-      "updated": "2022-12-17",
-      "labels": [
-        "bug",
-        "instantiate_api",
-        "structured config"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2507"
-    },
-    {
       "number": 2551,
       "title": "keep simulating in multirun even if some failed ",
       "category": "Enhancement",
@@ -3713,6 +3718,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2562,
+      "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-01-30",
+      "updated": "2023-02-08",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2562"
+    },
+    {
       "number": 2564,
       "title": "[Bug] relative config_path resolution is not consistent",
       "category": "Bug",
@@ -5055,24 +5075,29 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
-    },
-    {
-      "number": 2562,
-      "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2023-01-30",
-      "updated": "2023-02-08",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2562"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T12:09:47Z",
+      "kind": "pr",
+      "issue": 2507,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2507",
+      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
+      "detail": "linked #3251"
+    },
+    {
+      "ts": "2026-06-30T12:09:47Z",
+      "kind": "status",
+      "issue": 2507,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2507",
+      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3251,
+        "url": "https://github.com/facebookresearch/hydra/pull/3251"
+      }
+    },
     {
       "ts": "2026-06-30T10:27:04Z",
       "kind": "closed",

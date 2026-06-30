@@ -97,7 +97,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T10:27:04Z",
+  "generated_at": "2026-06-30T12:09:47Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1651,11 +1651,13 @@
         "instantiate_api",
         "structured config"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3251"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
-      "updated_at": "2022-12-17T03:54:08Z"
+      "updated_at": "2026-06-30T10:36:18Z"
     },
     "2551": {
       "category": "Enhancement",
