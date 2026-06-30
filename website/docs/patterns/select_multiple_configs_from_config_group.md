@@ -146,7 +146,8 @@ server:
 
 ### Implementation considerations
 
-A nested list in the Defaults List is interpreted as a list of non-overridable configs:
+A nested list in the Defaults List is interpreted as a list of non-overridable
+configs. The following two forms compose the same output:
 
 <div className="row">
 <div className="col col--6">
@@ -160,7 +161,7 @@ defaults:
 </div>
 <div className="col col--6">
 
-```yaml title="Equivalent to" {2,3}
+```yaml title="Composes like" {2,3}
 defaults:
   - site/fb
   - site/google
@@ -169,8 +170,11 @@ defaults:
 </div>
 </div>
 
+Use the nested list form when you want to override the group later with
+`server/site=[...]`.
+
 To delete one of these non-overridable entries from the command line, use the
-exact config path, for example `~site/fb`.
+exact config path, for example `~server/site/fb`.
 
 All default package for all the configs in `server/site` is `server.site`.
 This example uses an explicit nesting level inside each of the website configs to prevent them stepping over one another:
