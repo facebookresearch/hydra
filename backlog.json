@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-06-29",
-  "generated_at": "2026-06-29T20:53:14Z",
+  "generated_on": "2026-06-30",
+  "generated_at": "2026-06-30T04:02:45Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 231,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 3
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 220
+        "count": 219
       },
       {
         "status": "done",
@@ -112,6 +112,26 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 2695,
+      "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3249,
+          "url": "https://github.com/facebookresearch/hydra/pull/3249"
+        }
+      ],
+      "created": "2023-06-29",
+      "updated": "2023-07-01",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2695"
     },
     {
       "number": 845,
@@ -2619,21 +2639,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2674"
     },
     {
-      "number": 2695,
-      "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-06-29",
-      "updated": "2023-07-01",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2695"
-    },
-    {
       "number": 2704,
       "title": "Outdated tutorial on job.chdir",
       "category": "Documentation",
@@ -3848,6 +3853,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2697,
+      "title": "[Bug] submitit and structured config.",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-07-02",
+      "updated": "2023-07-14",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2697"
+    },
+    {
       "number": 2709,
       "title": "[Bug] Ray Hydra Launcher fails to connect to the GCS",
       "category": "Bug",
@@ -5037,24 +5057,29 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
-    },
-    {
-      "number": 2697,
-      "title": "[Bug] submitit and structured config.",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2023-07-02",
-      "updated": "2023-07-14",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2697"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T04:02:45Z",
+      "kind": "pr",
+      "issue": 2695,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2695",
+      "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
+      "detail": "linked #3249"
+    },
+    {
+      "ts": "2026-06-30T04:02:45Z",
+      "kind": "status",
+      "issue": 2695,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2695",
+      "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3249,
+        "url": "https://github.com/facebookresearch/hydra/pull/3249"
+      }
+    },
     {
       "ts": "2026-06-29T20:53:14Z",
       "kind": "closed",

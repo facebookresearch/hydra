@@ -86,7 +86,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-29T20:53:14Z",
+  "generated_at": "2026-06-30T04:02:45Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1867,9 +1867,11 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3249"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
       "updated_at": "2023-07-01T22:05:58Z"
     },
