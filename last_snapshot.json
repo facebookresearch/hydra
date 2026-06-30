@@ -5,6 +5,7 @@
     "2070": "2026-06-29",
     "2162": "2026-06-11",
     "2416": "2026-06-30",
+    "2445": "2026-06-30",
     "2469": "2026-06-30",
     "2477": "2026-06-07",
     "2479": "2026-06-07",
@@ -100,7 +101,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T14:22:48Z",
+  "generated_at": "2026-06-30T14:42:12Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1533,18 +1534,6 @@
       "title": "[Feature Request] Optuna experiment stream processing",
       "updated_at": "2022-10-27T15:14:54Z"
     },
-    "2445": {
-      "category": "Bug",
-      "created_at": "2022-10-26T00:00:39Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Navigating to certain pages in the hosted documentation fails with `t is undefined`",
-      "updated_at": "2023-01-20T08:45:20Z"
-    },
     "2453": {
       "category": "Enhancement",
       "created_at": "2022-11-07T17:10:24Z",
@@ -2913,6 +2902,18 @@
       "status": "done",
       "title": "[Bug] Cannot do variable interpolation on non-leaf nodes between two structured configs in default list",
       "updated_at": "2023-10-11T14:06:19Z"
+    },
+    "2445": {
+      "category": "Bug",
+      "created_at": "2022-10-26T00:00:39Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Navigating to certain pages in the hosted documentation fails with `t is undefined`",
+      "updated_at": "2023-01-20T08:45:20Z"
     },
     "2469": {
       "category": "Bug",

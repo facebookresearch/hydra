@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T14:22:48Z",
+  "generated_at": "2026-06-30T14:42:12Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 218,
+    "open_total": 217,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 53,
-        "percentage": 24.3
+        "count": 52,
+        "percentage": 24.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 61.9
+        "percentage": 62.2
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 11,
-        "percentage": 5.0
+        "percentage": 5.1
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 206
+        "count": 205
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 99
+        "count": 100
       }
     ]
   },
@@ -2232,21 +2232,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2435"
     },
     {
-      "number": 2445,
-      "title": "[Bug] Navigating to certain pages in the hosted documentation fails with `t is undefined`",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-10-26",
-      "updated": "2023-01-20",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2445"
-    },
-    {
       "number": 2453,
       "title": "[Feature Request] ConfigStore to warn or raise on name/group collision",
       "category": "Enhancement",
@@ -3606,6 +3591,21 @@
         "structured config"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2416"
+    },
+    {
+      "number": 2469,
+      "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-11-17",
+      "updated": "2022-11-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2469"
     },
     {
       "number": 2477,
@@ -5062,22 +5062,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2469,
-      "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification",
+      "number": 2445,
+      "title": "[Bug] Navigating to certain pages in the hosted documentation fails with `t is undefined`",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-11-17",
-      "updated": "2022-11-29",
+      "created": "2022-10-26",
+      "updated": "2023-01-20",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2469"
+      "url": "https://github.com/facebookresearch/hydra/issues/2445"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T14:42:12Z",
+      "kind": "closed",
+      "issue": 2445,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2445",
+      "title": "[Bug] Navigating to certain pages in the hosted documentation fails with `t is undefined`"
+    },
     {
       "ts": "2026-06-30T14:22:48Z",
       "kind": "closed",
