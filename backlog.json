@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T08:28:33Z",
+  "generated_at": "2026-06-30T08:30:44Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 229,
+    "open_total": 228,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 63,
-        "percentage": 27.5
+        "count": 62,
+        "percentage": 27.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 59.0
+        "percentage": 59.2
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 12,
-        "percentage": 5.2
+        "percentage": 5.3
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 4,
-        "percentage": 1.7
+        "percentage": 1.8
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 218
+        "count": 217
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 88
+        "count": 89
       }
     ]
   },
@@ -2559,21 +2559,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2664"
     },
     {
-      "number": 2669,
-      "title": "[Bug]error installing hydra-core using poetry",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-05-31",
-      "updated": "2024-02-05",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2669"
-    },
-    {
       "number": 2673,
       "title": "[Feature Request] Support multirun in compose API",
       "category": "Enhancement",
@@ -3814,6 +3799,21 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2670,
+      "title": "[Bug] Inconsistent/buggy behavior when overriding config groups from the CLI",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-06-01",
+      "updated": "2023-06-01",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2670"
     },
     {
       "number": 2674,
@@ -5057,22 +5057,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2670,
-      "title": "[Bug] Inconsistent/buggy behavior when overriding config groups from the CLI",
+      "number": 2669,
+      "title": "[Bug]error installing hydra-core using poetry",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-06-01",
-      "updated": "2023-06-01",
+      "created": "2023-05-31",
+      "updated": "2024-02-05",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2670"
+      "url": "https://github.com/facebookresearch/hydra/issues/2669"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T08:30:44Z",
+      "kind": "closed",
+      "issue": 2669,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2669",
+      "title": "[Bug]error installing hydra-core using poetry"
+    },
     {
       "ts": "2026-06-30T08:28:33Z",
       "kind": "closed",

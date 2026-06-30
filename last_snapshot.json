@@ -7,6 +7,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2669": "2026-06-30",
     "2670": "2026-06-30",
     "2674": "2026-06-30",
     "2695": "2026-06-30",
@@ -89,7 +90,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T08:28:33Z",
+  "generated_at": "2026-06-30T08:30:44Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1816,18 +1817,6 @@
       "title": "[Not sure if bug/feature] Where does submitit error output go?",
       "updated_at": "2026-06-10T04:04:27Z"
     },
-    "2669": {
-      "category": "Bug",
-      "created_at": "2023-05-31T13:53:28Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug]error installing hydra-core using poetry",
-      "updated_at": "2024-02-05T14:34:31Z"
-    },
     "2673": {
       "category": "Enhancement",
       "created_at": "2023-06-04T09:30:24Z",
@@ -3065,6 +3054,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2669": {
+      "category": "Bug",
+      "created_at": "2023-05-31T13:53:28Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug]error installing hydra-core using poetry",
+      "updated_at": "2024-02-05T14:34:31Z"
     },
     "2670": {
       "category": "Bug",
