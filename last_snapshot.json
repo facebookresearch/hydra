@@ -7,6 +7,7 @@
     "2416": "2026-06-30",
     "2477": "2026-06-07",
     "2479": "2026-06-07",
+    "2488": "2026-06-30",
     "2502": "2026-06-07",
     "2562": "2026-06-30",
     "2564": "2026-06-30",
@@ -97,7 +98,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T12:09:47Z",
+  "generated_at": "2026-06-30T12:42:08Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1628,21 +1629,6 @@
       "title": "[Feature Request] Consistent mechanism for defaulting to environment variables",
       "updated_at": "2022-12-02T22:39:23Z"
     },
-    "2488": {
-      "category": "Bug",
-      "created_at": "2022-12-03T07:53:53Z",
-      "labels": [
-        "bug",
-        "has-workaround",
-        "launchers",
-        "sweep"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep",
-      "updated_at": "2022-12-06T09:39:54Z"
-    },
     "2507": {
       "category": "Bug",
       "created_at": "2022-12-17T03:54:08Z",
@@ -2979,6 +2965,21 @@
       "status": "done",
       "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm",
       "updated_at": "2024-10-04T17:09:36Z"
+    },
+    "2488": {
+      "category": "Bug",
+      "created_at": "2022-12-03T07:53:53Z",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "launchers",
+        "sweep"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep",
+      "updated_at": "2022-12-06T09:39:54Z"
     },
     "2502": {
       "category": "Bug",

@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T12:09:47Z",
+  "generated_at": "2026-06-30T12:42:08Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 221,
+    "open_total": 220,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 56,
-        "percentage": 25.3
+        "count": 55,
+        "percentage": 25.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 61.1
+        "percentage": 61.4
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 209
+        "count": 208
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 96
+        "count": 97
       }
     ]
   },
@@ -94,26 +94,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1830"
     },
     {
-      "number": 2632,
-      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 2633,
-          "url": "https://github.com/facebookresearch/hydra/pull/2633"
-        }
-      ],
-      "created": "2023-04-04",
-      "updated": "2026-05-31",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
       "number": 2507,
       "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
       "category": "Bug",
@@ -134,6 +114,26 @@
         "structured config"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2507"
+    },
+    {
+      "number": 2632,
+      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 2633,
+          "url": "https://github.com/facebookresearch/hydra/pull/2633"
+        }
+      ],
+      "created": "2023-04-04",
+      "updated": "2026-05-31",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2632"
     },
     {
       "number": 845,
@@ -2352,24 +2352,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2483"
-    },
-    {
-      "number": 2488,
-      "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-12-03",
-      "updated": "2022-12-06",
-      "labels": [
-        "bug",
-        "sweep",
-        "launchers",
-        "has-workaround"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2488"
     },
     {
       "number": 2551,
@@ -5075,9 +5057,34 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
+    },
+    {
+      "number": 2488,
+      "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-12-03",
+      "updated": "2022-12-06",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "launchers",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2488"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T12:42:08Z",
+      "kind": "closed",
+      "issue": 2488,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2488",
+      "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep"
+    },
     {
       "ts": "2026-06-30T12:09:47Z",
       "kind": "pr",
