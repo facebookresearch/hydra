@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T04:02:45Z",
+  "generated_at": "2026-06-30T07:33:02Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 231,
+    "open_total": 230,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 66,
-        "percentage": 28.6
+        "count": 65,
+        "percentage": 28.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 134,
-        "percentage": 58.0
+        "percentage": 58.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 5.6
+        "percentage": 5.7
       },
       {
         "category": "Question",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 2
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 85
+        "count": 86
       }
     ]
   },
@@ -112,26 +112,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 2695,
-      "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3249,
-          "url": "https://github.com/facebookresearch/hydra/pull/3249"
-        }
-      ],
-      "created": "2023-06-29",
-      "updated": "2023-07-01",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2695"
     },
     {
       "number": 845,
@@ -5057,9 +5037,36 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
+    },
+    {
+      "number": 2695,
+      "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3249,
+          "url": "https://github.com/facebookresearch/hydra/pull/3249"
+        }
+      ],
+      "created": "2023-06-29",
+      "updated": "2023-07-01",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2695"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T07:33:02Z",
+      "kind": "closed",
+      "issue": 2695,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2695",
+      "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\""
+    },
     {
       "ts": "2026-06-30T04:02:45Z",
       "kind": "pr",
