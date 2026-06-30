@@ -182,3 +182,4 @@
 {"ts": "2026-06-30T08:30:44Z", "kind": "closed", "issue": 2669, "issue_url": "https://github.com/facebookresearch/hydra/issues/2669", "title": "[Bug]error installing hydra-core using poetry"}
 {"ts": "2026-06-30T08:42:46Z", "kind": "closed", "issue": 2662, "issue_url": "https://github.com/facebookresearch/hydra/issues/2662", "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler"}
 {"ts": "2026-06-30T08:52:03Z", "kind": "closed", "issue": 2656, "issue_url": "https://github.com/facebookresearch/hydra/issues/2656", "title": "[Question] How to set the \"package directive\" on the command line or in the compose API"}
+{"ts": "2026-06-30T09:24:47Z", "kind": "closed", "issue": 2655, "issue_url": "https://github.com/facebookresearch/hydra/issues/2655", "title": "[Bug] "}

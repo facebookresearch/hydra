@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T08:52:03Z",
+  "generated_at": "2026-06-30T09:24:47Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 226,
+    "open_total": 225,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 61,
-        "percentage": 27.0
+        "count": 60,
+        "percentage": 26.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 59.7
+        "percentage": 60.0
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 215
+        "count": 214
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 91
+        "count": 92
       }
     ]
   },
@@ -2471,21 +2471,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2590"
     },
     {
-      "number": 2655,
-      "title": "[Bug] ",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-05-01",
-      "updated": "2023-11-28",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2655"
-    },
-    {
       "number": 2657,
       "title": "[Feature Request] Support commas in key names (override grammar)",
       "category": "Enhancement",
@@ -3771,6 +3756,19 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2656,
+      "title": "[Question] How to set the \"package directive\" on the command line or in the compose API",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-05-08",
+      "updated": "2023-05-08",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2656"
     },
     {
       "number": 2662,
@@ -5059,20 +5057,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2656,
-      "title": "[Question] How to set the \"package directive\" on the command line or in the compose API",
-      "category": "Question",
-      "category_emoji": "❓",
+      "number": 2655,
+      "title": "[Bug] ",
+      "category": "Bug",
+      "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-05-08",
-      "updated": "2023-05-08",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/2656"
+      "created": "2023-05-01",
+      "updated": "2023-11-28",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2655"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T09:24:47Z",
+      "kind": "closed",
+      "issue": 2655,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2655",
+      "title": "[Bug] "
+    },
     {
       "ts": "2026-06-30T08:52:03Z",
       "kind": "closed",
