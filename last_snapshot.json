@@ -7,6 +7,7 @@
     "2416": "2026-06-30",
     "2477": "2026-06-07",
     "2479": "2026-06-07",
+    "2482": "2026-06-30",
     "2488": "2026-06-30",
     "2502": "2026-06-07",
     "2562": "2026-06-30",
@@ -98,7 +99,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T12:42:08Z",
+  "generated_at": "2026-06-30T13:56:19Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1604,19 +1605,6 @@
       "title": "[Feature Request] Appending to a structured dict from a config file",
       "updated_at": "2025-11-14T04:26:13Z"
     },
-    "2482": {
-      "category": "Bug",
-      "created_at": "2022-11-28T05:04:40Z",
-      "labels": [
-        "bug",
-        "windows"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "hydra.runtime.cwd, hydra.rutime.config_sources mixed path separators",
-      "updated_at": "2022-12-06T01:49:48Z"
-    },
     "2483": {
       "category": "Enhancement",
       "created_at": "2022-11-28T16:25:27Z",
@@ -2965,6 +2953,19 @@
       "status": "done",
       "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm",
       "updated_at": "2024-10-04T17:09:36Z"
+    },
+    "2482": {
+      "category": "Bug",
+      "created_at": "2022-11-28T05:04:40Z",
+      "labels": [
+        "bug",
+        "windows"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "hydra.runtime.cwd, hydra.rutime.config_sources mixed path separators",
+      "updated_at": "2022-12-06T01:49:48Z"
     },
     "2488": {
       "category": "Bug",

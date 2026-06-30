@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T12:42:08Z",
+  "generated_at": "2026-06-30T13:56:19Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 220,
+    "open_total": 219,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 55,
-        "percentage": 25.0
+        "count": 54,
+        "percentage": 24.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 61.4
+        "percentage": 61.6
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 208
+        "count": 207
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 97
+        "count": 98
       }
     ]
   },
@@ -2323,22 +2323,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2471"
     },
     {
-      "number": 2482,
-      "title": "hydra.runtime.cwd, hydra.rutime.config_sources mixed path separators",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-11-28",
-      "updated": "2022-12-06",
-      "labels": [
-        "bug",
-        "windows"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2482"
-    },
-    {
       "number": 2483,
       "title": "[Feature Request] Consistent mechanism for defaulting to environment variables",
       "category": "Enhancement",
@@ -3678,6 +3662,24 @@
         "internal"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2479"
+    },
+    {
+      "number": 2488,
+      "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-12-03",
+      "updated": "2022-12-06",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "launchers",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2488"
     },
     {
       "number": 2502,
@@ -5059,25 +5061,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2488,
-      "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep",
+      "number": 2482,
+      "title": "hydra.runtime.cwd, hydra.rutime.config_sources mixed path separators",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-12-03",
+      "created": "2022-11-28",
       "updated": "2022-12-06",
       "labels": [
         "bug",
-        "has-workaround",
-        "launchers",
-        "sweep"
+        "windows"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2488"
+      "url": "https://github.com/facebookresearch/hydra/issues/2482"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T13:56:19Z",
+      "kind": "closed",
+      "issue": 2482,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2482",
+      "title": "hydra.runtime.cwd, hydra.rutime.config_sources mixed path separators"
+    },
     {
       "ts": "2026-06-30T12:42:08Z",
       "kind": "closed",
