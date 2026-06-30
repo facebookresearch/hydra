@@ -4,6 +4,7 @@
     "2032": "2026-06-20",
     "2070": "2026-06-29",
     "2162": "2026-06-11",
+    "2381": "2026-06-30",
     "2407": "2026-06-30",
     "2416": "2026-06-30",
     "2445": "2026-06-30",
@@ -102,7 +103,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T14:44:32Z",
+  "generated_at": "2026-06-30T15:03:05Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1469,19 +1470,6 @@
       "status": "not started",
       "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
       "updated_at": "2025-05-08T08:05:40Z"
-    },
-    "2381": {
-      "category": "Bug",
-      "created_at": "2022-09-14T15:35:11Z",
-      "labels": [
-        "bug",
-        "sweep"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Error out on attempt to sweep on the Hydra configuration",
-      "updated_at": "2022-10-20T17:38:42Z"
     },
     "2387": {
       "category": "Documentation",
@@ -2878,6 +2866,19 @@
       "status": "done",
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "updated_at": "2025-01-22T23:55:03Z"
+    },
+    "2381": {
+      "category": "Bug",
+      "created_at": "2022-09-14T15:35:11Z",
+      "labels": [
+        "bug",
+        "sweep"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Error out on attempt to sweep on the Hydra configuration",
+      "updated_at": "2022-10-20T17:38:42Z"
     },
     "2407": {
       "category": "Bug",

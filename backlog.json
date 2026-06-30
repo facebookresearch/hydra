@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T14:44:32Z",
+  "generated_at": "2026-06-30T15:03:05Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 216,
+    "open_total": 215,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 51,
-        "percentage": 23.6
+        "count": 50,
+        "percentage": 23.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 62.5
+        "percentage": 62.8
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 204
+        "count": 203
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 101
+        "count": 102
       }
     ]
   },
@@ -2152,22 +2152,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2364"
     },
     {
-      "number": 2381,
-      "title": "Error out on attempt to sweep on the Hydra configuration",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-09-14",
-      "updated": "2022-10-20",
-      "labels": [
-        "bug",
-        "sweep"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2381"
-    },
-    {
       "number": 2387,
       "title": "Docs unclear on how to use multiple entries in defaults list",
       "category": "Documentation",
@@ -3560,6 +3544,21 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
+    },
+    {
+      "number": 2407,
+      "title": "[Bug] Ray Launcher - Py3.9 and 3.10 - Could not find a version that satisfies the requirement ray[default]==1.12.0 ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-10-06",
+      "updated": "2023-01-23",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2407"
     },
     {
       "number": 2416,
@@ -5062,22 +5061,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2407,
-      "title": "[Bug] Ray Launcher - Py3.9 and 3.10 - Could not find a version that satisfies the requirement ray[default]==1.12.0 ",
+      "number": 2381,
+      "title": "Error out on attempt to sweep on the Hydra configuration",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-10-06",
-      "updated": "2023-01-23",
+      "created": "2022-09-14",
+      "updated": "2022-10-20",
       "labels": [
-        "bug"
+        "bug",
+        "sweep"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2407"
+      "url": "https://github.com/facebookresearch/hydra/issues/2381"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T15:03:05Z",
+      "kind": "closed",
+      "issue": 2381,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2381",
+      "title": "Error out on attempt to sweep on the Hydra configuration"
+    },
     {
       "ts": "2026-06-30T14:44:32Z",
       "kind": "closed",
