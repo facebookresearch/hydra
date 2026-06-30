@@ -7,6 +7,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2656": "2026-06-30",
     "2662": "2026-06-30",
     "2669": "2026-06-30",
     "2670": "2026-06-30",
@@ -91,7 +92,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T08:42:46Z",
+  "generated_at": "2026-06-30T08:52:03Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1760,16 +1761,6 @@
       "title": "[Bug] ",
       "updated_at": "2023-11-28T07:23:13Z"
     },
-    "2656": {
-      "category": "Question",
-      "created_at": "2023-05-08T09:31:03Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Question] How to set the \"package directive\" on the command line or in the compose API",
-      "updated_at": "2023-05-08T09:31:03Z"
-    },
     "2657": {
       "category": "Enhancement",
       "created_at": "2023-05-08T13:20:38Z",
@@ -3043,6 +3034,16 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2656": {
+      "category": "Question",
+      "created_at": "2023-05-08T09:31:03Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Question] How to set the \"package directive\" on the command line or in the compose API",
+      "updated_at": "2023-05-08T09:31:03Z"
     },
     "2662": {
       "category": "Bug",

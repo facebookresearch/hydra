@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T08:42:46Z",
+  "generated_at": "2026-06-30T08:52:03Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 227,
+    "open_total": 226,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 61,
-        "percentage": 26.9
+        "percentage": 27.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 59.5
+        "percentage": 59.7
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 5.7
+        "percentage": 5.8
       },
       {
         "category": "Question",
         "emoji": "❓",
-        "count": 12,
-        "percentage": 5.3
+        "count": 11,
+        "percentage": 4.9
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 216
+        "count": 215
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 90
+        "count": 91
       }
     ]
   },
@@ -2486,19 +2486,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2655"
     },
     {
-      "number": 2656,
-      "title": "[Question] How to set the \"package directive\" on the command line or in the compose API",
-      "category": "Question",
-      "category_emoji": "❓",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-05-08",
-      "updated": "2023-05-08",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/2656"
-    },
-    {
       "number": 2657,
       "title": "[Feature Request] Support commas in key names (override grammar)",
       "category": "Enhancement",
@@ -3786,6 +3773,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2662,
+      "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-05-16",
+      "updated": "2023-05-16",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2662"
+    },
+    {
       "number": 2669,
       "title": "[Bug]error installing hydra-core using poetry",
       "category": "Bug",
@@ -5057,22 +5059,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2662,
-      "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "number": 2656,
+      "title": "[Question] How to set the \"package directive\" on the command line or in the compose API",
+      "category": "Question",
+      "category_emoji": "❓",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-05-16",
-      "updated": "2023-05-16",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2662"
+      "created": "2023-05-08",
+      "updated": "2023-05-08",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/2656"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T08:52:03Z",
+      "kind": "closed",
+      "issue": 2656,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2656",
+      "title": "[Question] How to set the \"package directive\" on the command line or in the compose API"
+    },
     {
       "ts": "2026-06-30T08:42:46Z",
       "kind": "closed",
