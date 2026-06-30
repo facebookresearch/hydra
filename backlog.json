@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T13:56:19Z",
+  "generated_at": "2026-06-30T14:22:48Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 219,
+    "open_total": 218,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 54,
-        "percentage": 24.7
+        "count": 53,
+        "percentage": 24.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 61.6
+        "percentage": 61.9
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 5.9
+        "percentage": 6.0
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 207
+        "count": 206
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 98
+        "count": 99
       }
     ]
   },
@@ -2293,21 +2293,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2459"
     },
     {
-      "number": 2469,
-      "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-11-17",
-      "updated": "2022-11-29",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2469"
-    },
-    {
       "number": 2471,
       "title": "[Feature Request] Appending to a structured dict from a config file",
       "category": "Enhancement",
@@ -3662,6 +3647,22 @@
         "internal"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2479"
+    },
+    {
+      "number": 2482,
+      "title": "hydra.runtime.cwd, hydra.rutime.config_sources mixed path separators",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-11-28",
+      "updated": "2022-12-06",
+      "labels": [
+        "bug",
+        "windows"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2482"
     },
     {
       "number": 2488,
@@ -5061,23 +5062,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2482,
-      "title": "hydra.runtime.cwd, hydra.rutime.config_sources mixed path separators",
+      "number": 2469,
+      "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-11-28",
-      "updated": "2022-12-06",
+      "created": "2022-11-17",
+      "updated": "2022-11-29",
       "labels": [
-        "bug",
-        "windows"
+        "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2482"
+      "url": "https://github.com/facebookresearch/hydra/issues/2469"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T14:22:48Z",
+      "kind": "closed",
+      "issue": 2469,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2469",
+      "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification"
+    },
     {
       "ts": "2026-06-30T13:56:19Z",
       "kind": "closed",

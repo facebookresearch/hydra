@@ -5,6 +5,7 @@
     "2070": "2026-06-29",
     "2162": "2026-06-11",
     "2416": "2026-06-30",
+    "2469": "2026-06-30",
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2482": "2026-06-30",
@@ -99,7 +100,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T13:56:19Z",
+  "generated_at": "2026-06-30T14:22:48Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1581,18 +1582,6 @@
       "title": "[Feature Request] Add `overrides` parameter to `@hydra.main()`",
       "updated_at": "2026-02-22T04:43:49Z"
     },
-    "2469": {
-      "category": "Bug",
-      "created_at": "2022-11-17T02:33:24Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification",
-      "updated_at": "2022-11-29T05:44:02Z"
-    },
     "2471": {
       "category": "Enhancement",
       "created_at": "2022-11-18T12:54:02Z",
@@ -2924,6 +2913,18 @@
       "status": "done",
       "title": "[Bug] Cannot do variable interpolation on non-leaf nodes between two structured configs in default list",
       "updated_at": "2023-10-11T14:06:19Z"
+    },
+    "2469": {
+      "category": "Bug",
+      "created_at": "2022-11-17T02:33:24Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification",
+      "updated_at": "2022-11-29T05:44:02Z"
     },
     "2477": {
       "category": "Bug",
