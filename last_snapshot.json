@@ -4,6 +4,7 @@
     "2032": "2026-06-20",
     "2070": "2026-06-29",
     "2162": "2026-06-11",
+    "2416": "2026-06-30",
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
@@ -94,7 +95,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T09:42:41Z",
+  "generated_at": "2026-06-30T09:46:55Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1510,19 +1511,6 @@
       "status": "not started",
       "title": "[Feature Request] allow to use hydra without an __init__.py",
       "updated_at": "2022-10-17T22:40:23Z"
-    },
-    "2416": {
-      "category": "Bug",
-      "created_at": "2022-10-13T23:11:36Z",
-      "labels": [
-        "bug",
-        "structured config"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Cannot do variable interpolation on non-leaf nodes between two structured configs in default list",
-      "updated_at": "2023-10-11T14:06:19Z"
     },
     "2435": {
       "category": "Enhancement",
@@ -2969,6 +2957,19 @@
       "status": "done",
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "updated_at": "2025-01-22T23:55:03Z"
+    },
+    "2416": {
+      "category": "Bug",
+      "created_at": "2022-10-13T23:11:36Z",
+      "labels": [
+        "bug",
+        "structured config"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Cannot do variable interpolation on non-leaf nodes between two structured configs in default list",
+      "updated_at": "2023-10-11T14:06:19Z"
     },
     "2477": {
       "category": "Bug",

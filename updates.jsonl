@@ -184,3 +184,4 @@
 {"ts": "2026-06-30T08:52:03Z", "kind": "closed", "issue": 2656, "issue_url": "https://github.com/facebookresearch/hydra/issues/2656", "title": "[Question] How to set the \"package directive\" on the command line or in the compose API"}
 {"ts": "2026-06-30T09:24:47Z", "kind": "closed", "issue": 2655, "issue_url": "https://github.com/facebookresearch/hydra/issues/2655", "title": "[Bug] "}
 {"ts": "2026-06-30T09:42:41Z", "kind": "closed", "issue": 2575, "issue_url": "https://github.com/facebookresearch/hydra/issues/2575", "title": "[Bug] Schema validation for recursively instantiated targets failing"}
+{"ts": "2026-06-30T09:46:55Z", "kind": "closed", "issue": 2416, "issue_url": "https://github.com/facebookresearch/hydra/issues/2416", "title": "[Bug] Cannot do variable interpolation on non-leaf nodes between two structured configs in default list"}

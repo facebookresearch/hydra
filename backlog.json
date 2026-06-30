@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T09:42:41Z",
+  "generated_at": "2026-06-30T09:46:55Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 224,
+    "open_total": 223,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 59,
-        "percentage": 26.3
+        "count": 58,
+        "percentage": 26.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 60.3
+        "percentage": 60.5
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 213
+        "count": 212
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 93
+        "count": 94
       }
     ]
   },
@@ -2191,22 +2191,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2412"
     },
     {
-      "number": 2416,
-      "title": "[Bug] Cannot do variable interpolation on non-leaf nodes between two structured configs in default list",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-10-13",
-      "updated": "2023-10-11",
-      "labels": [
-        "bug",
-        "structured config"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2416"
-    },
-    {
       "number": 2435,
       "title": "[Feature Request] Optuna experiment stream processing",
       "category": "Enhancement",
@@ -3743,6 +3727,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2575,
+      "title": "[Bug] Schema validation for recursively instantiated targets failing",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-02-03",
+      "updated": "2025-05-23",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2575"
+    },
+    {
       "number": 2655,
       "title": "[Bug] ",
       "category": "Bug",
@@ -5057,22 +5056,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2575,
-      "title": "[Bug] Schema validation for recursively instantiated targets failing",
+      "number": 2416,
+      "title": "[Bug] Cannot do variable interpolation on non-leaf nodes between two structured configs in default list",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-02-03",
-      "updated": "2025-05-23",
+      "created": "2022-10-13",
+      "updated": "2023-10-11",
       "labels": [
-        "bug"
+        "bug",
+        "structured config"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2575"
+      "url": "https://github.com/facebookresearch/hydra/issues/2416"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T09:46:55Z",
+      "kind": "closed",
+      "issue": 2416,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2416",
+      "title": "[Bug] Cannot do variable interpolation on non-leaf nodes between two structured configs in default list"
+    },
     {
       "ts": "2026-06-30T09:42:41Z",
       "kind": "closed",
