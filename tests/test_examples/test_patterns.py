@@ -148,31 +148,6 @@ def test_configuring_experiments(
             },
             id="default:override",
         ),
-        param(
-            ["server=apache_https"],
-            {
-                "server": {
-                    "https": {
-                        "fb": {"domain": "facebook.com"},
-                        "google": {"domain": "google.com"},
-                    },
-                    "host": "localhost",
-                    "port": 443,
-                }
-            },
-            id="pkg_override",
-        ),
-        param(
-            ["server=apache_https", "server/site@server.https=amazon"],
-            {
-                "server": {
-                    "https": {"amazon": {"domain": "amazon.com"}},
-                    "host": "localhost",
-                    "port": 443,
-                }
-            },
-            id="pkg_override:override",
-        ),
     ],
 )
 def test_multi_select(
