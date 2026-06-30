@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T08:20:03Z",
+  "generated_at": "2026-06-30T08:28:33Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 230,
+    "open_total": 229,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 64,
-        "percentage": 27.8
+        "count": 63,
+        "percentage": 27.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 58.7
+        "percentage": 59.0
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 219
+        "count": 218
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 87
+        "count": 88
       }
     ]
   },
@@ -2574,21 +2574,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2669"
     },
     {
-      "number": 2670,
-      "title": "[Bug] Inconsistent/buggy behavior when overriding config groups from the CLI",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-06-01",
-      "updated": "2023-06-01",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2670"
-    },
-    {
       "number": 2673,
       "title": "[Feature Request] Support multirun in compose API",
       "category": "Enhancement",
@@ -3831,6 +3816,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2674,
+      "title": "[Bug] OverrideParseException when trying to use override syntax to drop key starting with integer",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-06-05",
+      "updated": "2023-06-06",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2674"
+    },
+    {
       "number": 2695,
       "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
       "category": "Bug",
@@ -5057,22 +5057,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2674,
-      "title": "[Bug] OverrideParseException when trying to use override syntax to drop key starting with integer",
+      "number": 2670,
+      "title": "[Bug] Inconsistent/buggy behavior when overriding config groups from the CLI",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-06-05",
-      "updated": "2023-06-06",
+      "created": "2023-06-01",
+      "updated": "2023-06-01",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2674"
+      "url": "https://github.com/facebookresearch/hydra/issues/2670"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T08:28:33Z",
+      "kind": "closed",
+      "issue": 2670,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2670",
+      "title": "[Bug] Inconsistent/buggy behavior when overriding config groups from the CLI"
+    },
     {
       "ts": "2026-06-30T08:20:03Z",
       "kind": "closed",

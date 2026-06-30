@@ -178,3 +178,4 @@
 {"ts": "2026-06-30T07:33:02Z", "kind": "closed", "issue": 2695, "issue_url": "https://github.com/facebookresearch/hydra/issues/2695", "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\""}
 {"ts": "2026-06-30T08:12:28Z", "kind": "new", "issue": 3250, "issue_url": "https://github.com/facebookresearch/hydra/issues/3250", "title": "Align Hydra override key-path syntax with OmegaConf dotlist/path syntax"}
 {"ts": "2026-06-30T08:20:03Z", "kind": "closed", "issue": 2674, "issue_url": "https://github.com/facebookresearch/hydra/issues/2674", "title": "[Bug] OverrideParseException when trying to use override syntax to drop key starting with integer"}
+{"ts": "2026-06-30T08:28:33Z", "kind": "closed", "issue": 2670, "issue_url": "https://github.com/facebookresearch/hydra/issues/2670", "title": "[Bug] Inconsistent/buggy behavior when overriding config groups from the CLI"}

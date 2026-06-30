@@ -7,6 +7,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2670": "2026-06-30",
     "2674": "2026-06-30",
     "2695": "2026-06-30",
     "2697": "2026-06-29",
@@ -88,7 +89,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T08:20:03Z",
+  "generated_at": "2026-06-30T08:28:33Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1827,18 +1828,6 @@
       "title": "[Bug]error installing hydra-core using poetry",
       "updated_at": "2024-02-05T14:34:31Z"
     },
-    "2670": {
-      "category": "Bug",
-      "created_at": "2023-06-01T01:52:40Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Inconsistent/buggy behavior when overriding config groups from the CLI",
-      "updated_at": "2023-06-01T03:30:14Z"
-    },
     "2673": {
       "category": "Enhancement",
       "created_at": "2023-06-04T09:30:24Z",
@@ -3076,6 +3065,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2670": {
+      "category": "Bug",
+      "created_at": "2023-06-01T01:52:40Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Inconsistent/buggy behavior when overriding config groups from the CLI",
+      "updated_at": "2023-06-01T03:30:14Z"
     },
     "2674": {
       "category": "Bug",
