@@ -104,49 +104,9 @@ server:
 ```
 
 
-### Overriding packages
-You can relocate the package of all the configs in the list. e.g:
-
-<div className="row">
-<div className="col col--6">
-
-```yaml title="server/apache.yaml" {2}
-defaults:
-  - site@https:
-    - fb
-    - google
-
-
-```
-</div>
-
-<div className="col col--6">
-
-```yaml title="$ python my_app.py" {2}
-server:
-  https:
-    fb:
-      domain: facebook.com
-    google:
-      domain: google.com
-```
-</div>
-</div>
-
-When overriding the selected configs of config groups with overridden packages you need to use the package. e.g:
-```yaml title="$ python my_app.py server/site@server.https=amazon"
-server:
-  https:
-    amazon:
-      domain: amazon.com
-  host: localhost
-  port: 443
-```
-
-
 ### Implementation considerations
 
-A nested list in the Defaults List is interpreted as a list of non-overridable configs:
+The following two forms compose the same output:
 
 <div className="row">
 <div className="col col--6">
@@ -160,7 +120,7 @@ defaults:
 </div>
 <div className="col col--6">
 
-```yaml title="Equivalent to" {2,3}
+```yaml title="Composes like" {2,3}
 defaults:
   - site/fb
   - site/google
@@ -169,8 +129,11 @@ defaults:
 </div>
 </div>
 
+Use the nested list form when you want to override the group later with
+`'server/site=[...]'`.
+
 To delete one of these non-overridable entries from the command line, use the
-exact config path, for example `~site/fb`.
+exact config path, for example `~server/site/fb`.
 
 All default package for all the configs in `server/site` is `server.site`.
 This example uses an explicit nesting level inside each of the website configs to prevent them stepping over one another:
