@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T08:15:10Z",
+  "generated_at": "2026-06-30T08:20:03Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 231,
+    "open_total": 230,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 65,
-        "percentage": 28.1
+        "count": 64,
+        "percentage": 27.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 58.4
+        "percentage": 58.7
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 5.6
+        "percentage": 5.7
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 220
+        "count": 219
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 86
+        "count": 87
       }
     ]
   },
@@ -2604,21 +2604,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2673"
     },
     {
-      "number": 2674,
-      "title": "[Bug] OverrideParseException when trying to use override syntax to drop key starting with integer",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-06-05",
-      "updated": "2023-06-06",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2674"
-    },
-    {
       "number": 2704,
       "title": "Outdated tutorial on job.chdir",
       "category": "Documentation",
@@ -5070,9 +5055,31 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
+    },
+    {
+      "number": 2674,
+      "title": "[Bug] OverrideParseException when trying to use override syntax to drop key starting with integer",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-06-05",
+      "updated": "2023-06-06",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2674"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T08:20:03Z",
+      "kind": "closed",
+      "issue": 2674,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2674",
+      "title": "[Bug] OverrideParseException when trying to use override syntax to drop key starting with integer"
+    },
     {
       "ts": "2026-06-30T08:12:28Z",
       "kind": "new",

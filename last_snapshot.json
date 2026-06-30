@@ -7,6 +7,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2674": "2026-06-30",
     "2695": "2026-06-30",
     "2697": "2026-06-29",
     "2709": "2026-06-29",
@@ -87,7 +88,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T08:15:10Z",
+  "generated_at": "2026-06-30T08:20:03Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1850,18 +1851,6 @@
       "title": "[Feature Request] Support multirun in compose API",
       "updated_at": "2023-06-04T09:30:24Z"
     },
-    "2674": {
-      "category": "Bug",
-      "created_at": "2023-06-05T05:49:42Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] OverrideParseException when trying to use override syntax to drop key starting with integer",
-      "updated_at": "2023-06-06T20:07:56Z"
-    },
     "2704": {
       "category": "Documentation",
       "created_at": "2023-07-05T12:49:57Z",
@@ -2812,7 +2801,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Align Hydra override key-path syntax with OmegaConf dotlist/path syntax",
-      "updated_at": "2026-06-30T08:11:06Z"
+      "updated_at": "2026-06-30T08:17:50Z"
     },
     "385": {
       "category": "Enhancement",
@@ -3087,6 +3076,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2674": {
+      "category": "Bug",
+      "created_at": "2023-06-05T05:49:42Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] OverrideParseException when trying to use override syntax to drop key starting with integer",
+      "updated_at": "2023-06-06T20:07:56Z"
     },
     "2695": {
       "category": "Bug",
