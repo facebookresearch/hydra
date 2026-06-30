@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T07:33:02Z",
+  "generated_at": "2026-06-30T08:12:28Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 230,
+    "open_total": 231,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 65,
-        "percentage": 28.3
+        "percentage": 28.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 134,
-        "percentage": 58.3
+        "count": 135,
+        "percentage": 58.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 5.7
+        "percentage": 5.6
       },
       {
         "category": "Question",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 219
+        "count": 220
       },
       {
         "status": "done",
@@ -3690,6 +3690,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3248"
     },
     {
+      "number": 3250,
+      "title": "Align Hydra override key-path syntax with OmegaConf dotlist/path syntax",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-30",
+      "updated": "2026-06-30",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3250"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -3831,6 +3844,26 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
+    },
+    {
+      "number": 2695,
+      "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3249,
+          "url": "https://github.com/facebookresearch/hydra/pull/3249"
+        }
+      ],
+      "created": "2023-06-29",
+      "updated": "2023-07-01",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2695"
     },
     {
       "number": 2697,
@@ -5037,29 +5070,16 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
-    },
-    {
-      "number": 2695,
-      "title": "[Bug] Confusing description in \"Selecting multiple configs from a Config Group\"",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3249,
-          "url": "https://github.com/facebookresearch/hydra/pull/3249"
-        }
-      ],
-      "created": "2023-06-29",
-      "updated": "2023-07-01",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2695"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T08:12:28Z",
+      "kind": "new",
+      "issue": 3250,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3250",
+      "title": "Align Hydra override key-path syntax with OmegaConf dotlist/path syntax"
+    },
     {
       "ts": "2026-06-30T07:33:02Z",
       "kind": "closed",

@@ -87,7 +87,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T07:33:02Z",
+  "generated_at": "2026-06-30T08:12:28Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2803,6 +2803,16 @@
       "status": "not started",
       "title": "Upgrade experimental rerun to recompose config and overlay saved values",
       "updated_at": "2026-06-29T20:18:22Z"
+    },
+    "3250": {
+      "category": "Enhancement",
+      "created_at": "2026-06-30T08:11:06Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Align Hydra override key-path syntax with OmegaConf dotlist/path syntax",
+      "updated_at": "2026-06-30T08:11:06Z"
     },
     "385": {
       "category": "Enhancement",
