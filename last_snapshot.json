@@ -8,6 +8,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2502": "2026-06-07",
+    "2564": "2026-06-30",
     "2575": "2026-06-30",
     "2655": "2026-06-30",
     "2656": "2026-06-30",
@@ -95,7 +96,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-06-30T09:46:55Z",
+  "generated_at": "2026-06-30T10:07:37Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1679,18 +1680,6 @@
       "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
       "updated_at": "2023-02-08T06:44:30Z"
     },
-    "2564": {
-      "category": "Bug",
-      "created_at": "2023-01-31T03:15:06Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] relative config_path resolution is not consistent",
-      "updated_at": "2023-02-27T20:08:39Z"
-    },
     "2587": {
       "category": "Question",
       "created_at": "2023-02-15T06:24:34Z",
@@ -3013,6 +3002,18 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2564": {
+      "category": "Bug",
+      "created_at": "2023-01-31T03:15:06Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] relative config_path resolution is not consistent",
+      "updated_at": "2023-02-27T20:08:39Z"
     },
     "2575": {
       "category": "Bug",

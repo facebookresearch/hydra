@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T09:46:55Z",
+  "generated_at": "2026-06-30T10:07:37Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 223,
+    "open_total": 222,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 58,
-        "percentage": 26.0
+        "count": 57,
+        "percentage": 25.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 135,
-        "percentage": 60.5
+        "percentage": 60.8
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 5.8
+        "percentage": 5.9
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 11,
-        "percentage": 4.9
+        "percentage": 5.0
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 212
+        "count": 211
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 94
+        "count": 95
       }
     ]
   },
@@ -2397,21 +2397,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2562"
     },
     {
-      "number": 2564,
-      "title": "[Bug] relative config_path resolution is not consistent",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-01-31",
-      "updated": "2023-02-27",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2564"
-    },
-    {
       "number": 2587,
       "title": "How to instantiate a child class which inherited from super class?",
       "category": "Question",
@@ -3664,6 +3649,22 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
+    },
+    {
+      "number": 2416,
+      "title": "[Bug] Cannot do variable interpolation on non-leaf nodes between two structured configs in default list",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-10-13",
+      "updated": "2023-10-11",
+      "labels": [
+        "bug",
+        "structured config"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2416"
     },
     {
       "number": 2477,
@@ -5056,23 +5057,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
     },
     {
-      "number": 2416,
-      "title": "[Bug] Cannot do variable interpolation on non-leaf nodes between two structured configs in default list",
+      "number": 2564,
+      "title": "[Bug] relative config_path resolution is not consistent",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-10-13",
-      "updated": "2023-10-11",
+      "created": "2023-01-31",
+      "updated": "2023-02-27",
       "labels": [
-        "bug",
-        "structured config"
+        "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2416"
+      "url": "https://github.com/facebookresearch/hydra/issues/2564"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-06-30T10:07:37Z",
+      "kind": "closed",
+      "issue": 2564,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2564",
+      "title": "[Bug] relative config_path resolution is not consistent"
+    },
     {
       "ts": "2026-06-30T09:46:55Z",
       "kind": "closed",
