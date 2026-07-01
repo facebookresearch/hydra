@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-01",
-  "generated_at": "2026-07-01T07:21:36Z",
+  "generated_at": "2026-07-01T08:28:41Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 214,
@@ -3709,6 +3709,28 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2502"
     },
     {
+      "number": 2507,
+      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3251,
+          "url": "https://github.com/facebookresearch/hydra/pull/3251"
+        }
+      ],
+      "created": "2022-12-17",
+      "updated": "2026-06-30",
+      "labels": [
+        "bug",
+        "instantiate_api",
+        "structured config"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2507"
+    },
+    {
       "number": 2562,
       "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
       "category": "Bug",
@@ -5066,28 +5088,6 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
-    },
-    {
-      "number": 2507,
-      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3251,
-          "url": "https://github.com/facebookresearch/hydra/pull/3251"
-        }
-      ],
-      "created": "2022-12-17",
-      "updated": "2026-06-30",
-      "labels": [
-        "bug",
-        "instantiate_api",
-        "structured config"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2507"
     }
   ],
   "updates": [
