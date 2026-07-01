@@ -10,7 +10,7 @@ pyrefly==1.0.0
 nox
 packaging
 pre-commit
-pytest==9.0.3
+pytest==9.1.1
 pytest-benchmark
 read-version
 setuptools
