@@ -197,3 +197,4 @@
 {"ts": "2026-06-30T15:03:05Z", "kind": "closed", "issue": 2381, "issue_url": "https://github.com/facebookresearch/hydra/issues/2381", "title": "Error out on attempt to sweep on the Hydra configuration"}
 {"ts": "2026-06-30T15:33:45Z", "kind": "new", "issue": 3252, "issue_url": "https://github.com/facebookresearch/hydra/issues/3252", "title": "Migrate Hydra plugin discovery from namespace scanning to entry points"}
 {"ts": "2026-06-30T15:36:48Z", "kind": "closed", "issue": 2359, "issue_url": "https://github.com/facebookresearch/hydra/issues/2359", "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`"}
+{"ts": "2026-07-01T07:21:36Z", "kind": "closed", "issue": 2507, "issue_url": "https://github.com/facebookresearch/hydra/issues/2507", "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`"}

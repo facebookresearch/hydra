@@ -15,6 +15,7 @@
     "2482": "2026-06-30",
     "2488": "2026-06-30",
     "2502": "2026-06-07",
+    "2507": "2026-07-01",
     "2562": "2026-06-30",
     "2564": "2026-06-30",
     "2575": "2026-06-30",
@@ -104,7 +105,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-01T02:29:05Z",
+  "generated_at": "2026-07-01T07:21:36Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1561,22 +1562,6 @@
       "title": "[Feature Request] Consistent mechanism for defaulting to environment variables",
       "updated_at": "2022-12-02T22:39:23Z"
     },
-    "2507": {
-      "category": "Bug",
-      "created_at": "2022-12-17T03:54:08Z",
-      "labels": [
-        "bug",
-        "instantiate_api",
-        "structured config"
-      ],
-      "pr_numbers": [
-        "3251"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
-      "updated_at": "2026-06-30T10:36:18Z"
-    },
     "2551": {
       "category": "Enhancement",
       "created_at": "2023-01-16T08:14:07Z",
@@ -3010,6 +2995,22 @@
       "status": "done",
       "title": "[Bug] compose AssertionError on key pointing into None-valued DictConfig.",
       "updated_at": "2026-02-05T06:21:13Z"
+    },
+    "2507": {
+      "category": "Bug",
+      "created_at": "2022-12-17T03:54:08Z",
+      "labels": [
+        "bug",
+        "instantiate_api",
+        "structured config"
+      ],
+      "pr_numbers": [
+        "3251"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
+      "updated_at": "2026-06-30T10:36:18Z"
     },
     "2562": {
       "category": "Bug",
