@@ -56,14 +56,9 @@ You can discover the Optuna sweeper parameters with:
 sampler:
   _target_: optuna.samplers.TPESampler
   seed: 123
-  consider_prior: true
-  prior_weight: 1.0
-  consider_magic_clip: true
-  consider_endpoints: false
   n_startup_trials: 10
   n_ei_candidates: 24
   multivariate: false
-  warn_independent_sampling: true
 _target_: hydra_plugins.hydra_optuna_sweeper.optuna_sweeper.OptunaSweeper
 direction: minimize
 storage: null
@@ -119,7 +114,7 @@ Hydra provides a override parser that support rich syntax. Please refer to [Over
 
 #### Interval override
 
-By default, `interval` is converted to [`UniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.UniformDistribution.html). You can use [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html), [`LogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.LogUniformDistribution.html) or [`IntLogUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntLogUniformDistribution.html) by casting the interval to `int` and tagging it with `log`.
+By default, `interval` is converted to [`FloatDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.FloatDistribution.html). You can use [`IntDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntDistribution.html) by casting the interval to `int`.
 
 <details>
   <summary>Example for interval override</summary>
@@ -148,8 +143,8 @@ By default, `interval` is converted to [`UniformDistribution`](https://optuna.re
 
 #### Range override
 
-`range` is converted to [`IntUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntUniformDistribution.html). If you apply `shuffle` to `range`, [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html) is used instead.
-If any of `range`'s start, stop or step is of type float, it will be converted to [`DiscreteUniformDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.DiscreteUniformDistribution.html)
+`range` is converted to [`IntDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.IntDistribution.html). If you apply `shuffle` to `range`, [`CategoricalDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.CategoricalDistribution.html) is used instead.
+If any of `range`'s start, stop or step is of type float, it will be converted to [`FloatDistribution`](https://optuna.readthedocs.io/en/stable/reference/generated/optuna.distributions.FloatDistribution.html)
 
 <details>
   <summary>Example for range override</summary>

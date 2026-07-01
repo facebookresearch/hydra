@@ -8,6 +8,7 @@ from typing import Any, List, Optional
 import optuna
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
+from hydra.errors import InstantiationException
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import (
     TSweepRunner,
@@ -15,22 +16,20 @@ from hydra.test_utils.test_utils import (
     run_process,
     run_python_script,
 )
+from hydra.utils import instantiate
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
     CategoricalDistribution,
-    DiscreteUniformDistribution,
-    IntLogUniformDistribution,
-    IntUniformDistribution,
-    LogUniformDistribution,
-    UniformDistribution,
+    FloatDistribution,
+    IntDistribution,
 )
 from optuna.samplers import RandomSampler
-from pytest import mark, warns
+from pytest import mark, raises, warns
 
 from hydra_plugins.hydra_optuna_sweeper import _impl
 from hydra_plugins.hydra_optuna_sweeper._impl import OptunaSweeperImpl
-from hydra_plugins.hydra_optuna_sweeper.config import Direction
+from hydra_plugins.hydra_optuna_sweeper.config import Direction, MOTPESamplerConfig
 from hydra_plugins.hydra_optuna_sweeper.optuna_sweeper import OptunaSweeper
 
 chdir_plugin_root()
@@ -51,6 +50,14 @@ def test_discovery() -> None:
     ]
 
 
+def test_motpe_sampler_removed() -> None:
+    with raises(
+        InstantiationException,
+        match="The 'motpe' sampler was removed in Optuna 4.0",
+    ):
+        instantiate(OmegaConf.structured(MOTPESamplerConfig))
+
+
 def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> None:
     if not isinstance(expected, CategoricalDistribution):
         assert expected == actual
@@ -68,24 +75,24 @@ def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> 
             {"type": "categorical", "choices": [1, 2, 3]},
             CategoricalDistribution([1, 2, 3]),
         ),
-        ({"type": "int", "low": 0, "high": 10}, IntUniformDistribution(0, 10)),
+        ({"type": "int", "low": 0, "high": 10}, IntDistribution(0, 10)),
         (
             {"type": "int", "low": 0, "high": 10, "step": 2},
-            IntUniformDistribution(0, 10, step=2),
+            IntDistribution(0, 10, step=2),
         ),
-        ({"type": "int", "low": 0, "high": 5}, IntUniformDistribution(0, 5)),
+        ({"type": "int", "low": 0, "high": 5}, IntDistribution(0, 5)),
         (
             {"type": "int", "low": 1, "high": 100, "log": True},
-            IntLogUniformDistribution(1, 100),
+            IntDistribution(1, 100, log=True),
         ),
-        ({"type": "float", "low": 0, "high": 1}, UniformDistribution(0, 1)),
+        ({"type": "float", "low": 0, "high": 1}, FloatDistribution(0, 1)),
         (
             {"type": "float", "low": 0, "high": 10, "step": 2},
-            DiscreteUniformDistribution(0, 10, 2),
+            FloatDistribution(0, 10, step=2),
         ),
         (
             {"type": "float", "low": 1, "high": 100, "log": True},
-            LogUniformDistribution(1, 100),
+            FloatDistribution(1, 100, log=True),
         ),
     ],
 )
@@ -101,12 +108,12 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
         ("key=choice(true, false)", CategoricalDistribution([True, False])),
         ("key=choice('hello', 'world')", CategoricalDistribution(["hello", "world"])),
         ("key=shuffle(range(1,3))", CategoricalDistribution((1, 2))),
-        ("key=range(1,3)", IntUniformDistribution(1, 3)),
-        ("key=interval(1, 5)", UniformDistribution(1, 5)),
-        ("key=int(interval(1, 5))", IntUniformDistribution(1, 5)),
-        ("key=tag(log, interval(1, 5))", LogUniformDistribution(1, 5)),
-        ("key=tag(log, int(interval(1, 5)))", IntLogUniformDistribution(1, 5)),
-        ("key=range(0.5, 5.5, step=1)", DiscreteUniformDistribution(0.5, 5.5, 1)),
+        ("key=range(1,3)", IntDistribution(1, 3)),
+        ("key=interval(1, 5)", FloatDistribution(1, 5)),
+        ("key=int(interval(1, 5))", IntDistribution(1, 5)),
+        ("key=tag(log, interval(1, 5))", FloatDistribution(1, 5, log=True)),
+        ("key=tag(log, int(interval(1, 5)))", IntDistribution(1, 5, log=True)),
+        ("key=range(0.5, 5.5, step=1)", FloatDistribution(0.5, 5.5, step=1)),
     ],
 )
 def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> None:
@@ -130,7 +137,7 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
             (
                 {
                     "key1": CategoricalDistribution([1, 2]),
-                    "key3": IntUniformDistribution(1, 3),
+                    "key3": IntDistribution(1, 3),
                 },
                 {"key2": "5"},
                 [],

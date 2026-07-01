@@ -1,10 +1,18 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, NoReturn, Optional
 
 from hydra.core.config_store import ConfigStore
 from omegaconf import MISSING
+
+
+def raise_motpe_removed(*args: Any, **kwargs: Any) -> NoReturn:
+    raise ValueError(
+        "The 'motpe' sampler was removed in Optuna 4.0. "
+        "Use 'hydra/sweeper/sampler=tpe' instead. "
+        "TPESampler now handles multi-objective optimization."
+    )
 
 
 class DistributionType(Enum):
@@ -43,14 +51,14 @@ class TPESamplerConfig(SamplerConfig):
     _target_: str = "optuna.samplers.TPESampler"
     seed: Optional[int] = None
 
-    consider_prior: bool = True
-    prior_weight: float = 1.0
-    consider_magic_clip: bool = True
-    consider_endpoints: bool = False
+    consider_prior: Optional[bool] = None
+    prior_weight: Optional[float] = None
+    consider_magic_clip: Optional[bool] = None
+    consider_endpoints: Optional[bool] = None
     n_startup_trials: int = 10
     n_ei_candidates: int = 24
     multivariate: bool = False
-    warn_independent_sampling: bool = True
+    warn_independent_sampling: Optional[bool] = None
 
 
 @dataclass
@@ -101,19 +109,39 @@ class NSGAIISamplerConfig(SamplerConfig):
 
 @dataclass
 class MOTPESamplerConfig(SamplerConfig):
+    _target_: str = "hydra_plugins.hydra_optuna_sweeper.config.raise_motpe_removed"
+
+
+@dataclass
+class GPSamplerConfig(SamplerConfig):
     """
-    https://optuna.readthedocs.io/en/stable/reference/generated/optuna.samplers.MOTPESampler.html
+    https://optuna.readthedocs.io/en/stable/reference/samplers/generated/optuna.samplers.GPSampler.html
     """
 
-    _target_: str = "optuna.samplers.MOTPESampler"
+    _target_: str = "optuna.samplers.GPSampler"
     seed: Optional[int] = None
 
-    consider_prior: bool = True
-    prior_weight: float = 1.0
-    consider_magic_clip: bool = True
-    consider_endpoints: bool = False
+    independent_sampler: Optional[Any] = None
     n_startup_trials: int = 10
-    n_ehvi_candidates: int = 24
+    deterministic_objective = False
+    constraints_func: Optional[Any] = None
+    warn_independent_sampling: bool = True
+
+
+@dataclass
+class QMCSamplerConfig(SamplerConfig):
+    """
+    https://optuna.readthedocs.io/en/stable/reference/samplers/generated/optuna.samplers.QMCSampler.html
+    """
+
+    _target_: str = "optuna.samplers.QMCSampler"
+    seed: Optional[int] = None
+
+    qmc_type: str = "sobol"
+    scramble: bool = False
+    independent_sampler: Optional[Any] = None
+    warn_asynchronous_seeding: bool = True
+    warn_independent_sampling: bool = True
 
 
 @dataclass
@@ -232,5 +260,19 @@ ConfigStore.instance().store(
     group="hydra/sweeper/sampler",
     name="grid",
     node=GridSamplerConfig,
+    provider="optuna_sweeper",
+)
+
+ConfigStore.instance().store(
+    group="hydra/sweeper/sampler",
+    name="gp",
+    node=GPSamplerConfig,
+    provider="optuna_sweeper",
+)
+
+ConfigStore.instance().store(
+    group="hydra/sweeper/sampler",
+    name="qmc",
+    node=QMCSamplerConfig,
     provider="optuna_sweeper",
 )
