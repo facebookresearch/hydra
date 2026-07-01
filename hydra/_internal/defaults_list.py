@@ -117,13 +117,12 @@ class Overrides:
     def add_override(self, parent_config_path: str, default: GroupDefault) -> None:
         assert default.override
         key = default.get_override_key()
-        if key not in self.override_choices:
-            self.override_choices[key] = default.value
-            self.override_metadata[key] = OverrideMetadata(
-                external_override=False,
-                containing_config_path=parent_config_path,
-                relative_key=default.get_relative_override_key(),
-            )
+        self.override_choices[key] = default.value
+        self.override_metadata[key] = OverrideMetadata(
+            external_override=False,
+            containing_config_path=parent_config_path,
+            relative_key=default.get_relative_override_key(),
+        )
 
     def is_overridden(self, default: InputDefault) -> bool:
         if isinstance(default, GroupDefault):
