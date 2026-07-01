@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-06-30",
-  "generated_at": "2026-06-30T15:36:48Z",
+  "generated_on": "2026-07-01",
+  "generated_at": "2026-07-01T02:29:05Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 215,
@@ -3544,6 +3544,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
     },
     {
+      "number": 2359,
+      "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-08-27",
+      "updated": "2022-08-29",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2359"
+    },
+    {
       "number": 2381,
       "title": "Error out on attempt to sweep on the Hydra configuration",
       "category": "Bug",
@@ -5073,21 +5088,6 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
-    },
-    {
-      "number": 2359,
-      "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-08-27",
-      "updated": "2022-08-29",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2359"
     }
   ],
   "updates": [
