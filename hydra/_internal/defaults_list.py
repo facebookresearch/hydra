@@ -374,6 +374,25 @@ def _create_defaults_tree(
     return ret
 
 
+def _check_parent_traversal(d: GroupDefault, parent: InputDefault) -> None:
+    assert d.group is not None
+    group = d.group if not d.group.startswith("/") else d.group[1:]
+    if ".." not in group.split("/"):
+        return
+
+    pcp = parent.get_config_path()
+    location = f"In {pcp}: " if not parent.is_virtual() else ""
+    url = "https://hydra.cc/docs/advanced/defaults_list/"
+    raise ConfigCompositionException(
+        dedent(
+            f"""\
+            {location}Parent traversal ('..') in Defaults List config group paths is not supported ('{d.group}').
+            Config group paths are relative to the containing config or absolute when prefixed with '/'.
+            See {url} for more information."""
+        )
+    )
+
+
 def _update_overrides(
     defaults_list: List[InputDefault],
     overrides: Overrides,
@@ -509,6 +528,10 @@ def _create_defaults_tree_impl(
 
     if is_root_config:
         defaults_list.extend(overrides.append_group_defaults)
+
+    for d in defaults_list:
+        if isinstance(d, GroupDefault):
+            _check_parent_traversal(d, parent)
 
     _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
 
