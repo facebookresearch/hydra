@@ -1033,6 +1033,61 @@ def test_group_default_with_explicit_experiment(
 
 
 @mark.parametrize(
+    "config_name, overrides, expected",
+    [
+        param(
+            "primary_override_with_experiment",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="primary_override_with_experiment"),
+                children=[
+                    GroupDefault(group="group1", value="file2"),
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(
+                        group="experiment", value="override_config_group"
+                    ),
+                ],
+            ),
+            id="primary_override_with_experiment:later_override_wins",
+        ),
+        param(
+            "primary_override_with_experiment",
+            ["group1=file3"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="primary_override_with_experiment"),
+                children=[
+                    GroupDefault(group="group1", value="file3"),
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(
+                        group="experiment", value="override_config_group"
+                    ),
+                ],
+            ),
+            id="primary_override_with_experiment:external_override_wins",
+        ),
+    ],
+)
+def test_primary_override_with_experiment(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    """Test that a later override from an appended experiment replaces an
+    earlier override from the primary config, and that command-line
+    overrides keep precedence over both.
+
+    Regression tests for:
+    - https://github.com/facebookresearch/hydra/issues/3229
+    - https://github.com/facebookresearch/hydra/pull/3255
+    """
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(
     "config_name,overrides,expected",
     [
         param(
