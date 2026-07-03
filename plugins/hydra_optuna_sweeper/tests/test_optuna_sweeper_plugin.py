@@ -50,14 +50,6 @@ def test_discovery() -> None:
     ]
 
 
-def test_motpe_sampler_removed() -> None:
-    with raises(
-        InstantiationException,
-        match="The 'motpe' sampler was removed in Optuna 4.0",
-    ):
-        instantiate(OmegaConf.structured(MOTPESamplerConfig))
-
-
 def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> None:
     if not isinstance(expected, CategoricalDistribution):
         assert expected == actual
@@ -390,23 +382,28 @@ def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
         assert error_string not in err
 
 
-def test_example_with_deprecated_search_space(
+def test_motpe_sampler_removed() -> None:
+    with raises(
+        InstantiationException,
+        match="The 'motpe' sampler was removed in Optuna 4.0",
+    ):
+        instantiate(OmegaConf.structured(MOTPESamplerConfig))
+
+
+def test_example_with_removed_motpe(
     tmpdir: Path,
 ) -> None:
     cmd = [
-        "-W ignore::UserWarning",
-        "example/sphere.py",
+        sys.executable,
+        "example/multi-objective.py",
         "--multirun",
         "--config-dir=tests/conf",
-        "--config-name=test_deprecated_search_space",
+        "--config-name=test_motpe",
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.job.chdir=True",
         "hydra.sweeper.n_trials=20",
         "hydra.sweeper.n_jobs=1",
     ]
 
-    run_optuna_script(cmd)
-    returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
-    assert isinstance(returns, DictConfig)
-    assert returns.name == "optuna"
-    assert abs(returns["best_params"]["x"]) <= 5.5
+    out, err = run_process(cmd, print_error=False, raise_exception=False)
+    assert "The 'motpe' sampler was removed in Optuna 4.0" in err
