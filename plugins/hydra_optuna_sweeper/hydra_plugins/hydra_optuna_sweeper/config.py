@@ -123,7 +123,7 @@ class GPSamplerConfig(SamplerConfig):
 
     independent_sampler: Optional[Any] = None
     n_startup_trials: int = 10
-    deterministic_objective = False
+    deterministic_objective: bool = False
     constraints_func: Optional[Any] = None
     warn_independent_sampling: bool = True
 
