@@ -1,4 +1,5 @@
+# @package _group_
 defaults:
   - group1: file1
-  - override group1: file1
   - experiment: override_config_group
+  - override group1: file1
