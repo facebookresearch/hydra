@@ -1,21 +1,21 @@
 {
-  "generated_on": "2026-07-02",
-  "generated_at": "2026-07-02T15:56:22Z",
+  "generated_on": "2026-07-03",
+  "generated_at": "2026-07-03T05:35:56Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 214,
+    "open_total": 213,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 48,
-        "percentage": 22.4
+        "count": 47,
+        "percentage": 22.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 136,
-        "percentage": 63.6
+        "percentage": 63.8
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 11,
-        "percentage": 5.1
+        "percentage": 5.2
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 202
+        "count": 201
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 104
+        "count": 105
       }
     ]
   },
@@ -2074,22 +2074,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2338"
     },
     {
-      "number": 2348,
-      "title": "[Bug] AssertionError when configuring hydra from top-level dataclass",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-08-18",
-      "updated": "2025-04-04",
-      "labels": [
-        "bug",
-        "structured config"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2348"
-    },
-    {
       "number": 2350,
       "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
       "category": "Bug",
@@ -2098,7 +2082,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2022-08-19",
-      "updated": "2023-04-24",
+      "updated": "2026-07-03",
       "labels": [
         "bug"
       ],
@@ -2128,7 +2112,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2022-09-05",
-      "updated": "2025-05-08",
+      "updated": "2026-07-03",
       "labels": [
         "enhancement"
       ],
@@ -5093,9 +5077,32 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
+    },
+    {
+      "number": 2348,
+      "title": "[Bug] AssertionError when configuring hydra from top-level dataclass",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-08-18",
+      "updated": "2025-04-04",
+      "labels": [
+        "bug",
+        "structured config"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2348"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-03T05:35:56Z",
+      "kind": "closed",
+      "issue": 2348,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2348",
+      "title": "[Bug] AssertionError when configuring hydra from top-level dataclass"
+    },
     {
       "ts": "2026-07-02T08:06:02Z",
       "kind": "pr",
@@ -6616,14 +6623,6 @@
       "issue": 3176,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3176",
       "title": "Upgrade and modernize Ax Sweeper"
-    },
-    {
-      "ts": "2026-05-17T14:16:42Z",
-      "kind": "label",
-      "issue": 3177,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3177",
-      "title": "Consider supporting newer Ax features in Ax Sweeper",
-      "detail": "removed \"triage\""
     }
   ]
 }
