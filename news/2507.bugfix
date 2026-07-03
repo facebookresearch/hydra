@@ -1,0 +1,1 @@
+Preserve nested dataclass targets during instantiation.

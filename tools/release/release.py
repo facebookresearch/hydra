@@ -13,13 +13,14 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-import hydra
 import requests  # type: ignore[import-untyped]
+from omegaconf import II, MISSING, SI, DictConfig, OmegaConf
+from packaging.version import Version, parse
+
+import hydra
 from hydra.core.config_store import ConfigStore
 from hydra.core.hydra_config import HydraConfig
 from hydra.test_utils.test_utils import find_parent_dir_containing, run_python_script
-from omegaconf import II, MISSING, SI, DictConfig, OmegaConf
-from packaging.version import Version, parse
 
 log = logging.getLogger(__name__)
 
@@ -655,7 +656,7 @@ def run_dev_release(
     )
 
 
-OmegaConf.register_new_resolver("parent_key", lambda _parent_: _parent_._key())
+OmegaConf.register_resolver("parent_key", lambda _parent_: _parent_._key())
 
 
 @hydra.main(version_base=None, config_path="conf", config_name="config")
