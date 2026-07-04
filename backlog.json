@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-04",
-  "generated_at": "2026-07-04T13:45:32Z",
+  "generated_at": "2026-07-04T14:18:40Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 211,
+    "open_total": 213,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 45,
-        "percentage": 21.3
+        "percentage": 21.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 136,
-        "percentage": 64.5
+        "count": 138,
+        "percentage": 64.8
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 6.2
+        "percentage": 6.1
       },
       {
         "category": "Question",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 200
+        "count": 202
       },
       {
         "status": "done",
@@ -3394,6 +3394,38 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3252"
     },
     {
+      "number": 3258,
+      "title": "Switch instantiate target filtering to an allowlist model for 1.4",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-04",
+      "updated": "2026-07-04",
+      "labels": [
+        "instantiate_api",
+        "priority_high"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3258"
+    },
+    {
+      "number": 3259,
+      "title": "Harden instantiate blocklist for 1.3.x",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-04",
+      "updated": "2026-07-04",
+      "labels": [
+        "instantiate_api",
+        "priority_high"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3259"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -3474,6 +3506,26 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
+    },
+    {
+      "number": 2338,
+      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3257,
+          "url": "https://github.com/facebookresearch/hydra/pull/3257"
+        }
+      ],
+      "created": "2022-08-12",
+      "updated": "2023-01-28",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2338"
     },
     {
       "number": 2348,
@@ -5078,29 +5130,23 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
-    },
-    {
-      "number": 2338,
-      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3257,
-          "url": "https://github.com/facebookresearch/hydra/pull/3257"
-        }
-      ],
-      "created": "2022-08-12",
-      "updated": "2023-01-28",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2338"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-04T14:18:40Z",
+      "kind": "new",
+      "issue": 3259,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3259",
+      "title": "Harden instantiate blocklist for 1.3.x"
+    },
+    {
+      "ts": "2026-07-04T14:18:40Z",
+      "kind": "new",
+      "issue": 3258,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3258",
+      "title": "Switch instantiate target filtering to an allowlist model for 1.4"
+    },
     {
       "ts": "2026-07-04T13:45:32Z",
       "kind": "closed",
@@ -6622,20 +6668,6 @@
       "issue": 3192,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3192",
       "title": "docs: update Twitter reference to X in README"
-    },
-    {
-      "ts": "2026-05-30T18:39:11Z",
-      "kind": "closed",
-      "issue": 2940,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2940",
-      "title": "[Feature Request] make a new release of hydra-submitit-launcher on pypi"
-    },
-    {
-      "ts": "2026-05-30T06:42:31Z",
-      "kind": "closed",
-      "issue": 3195,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3195",
-      "title": "Add the ability to pass types or classes through a configuration file"
     }
   ]
 }

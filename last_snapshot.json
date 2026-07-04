@@ -108,7 +108,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-04T13:45:32Z",
+  "generated_at": "2026-07-04T14:18:40Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2585,6 +2585,32 @@
       "status": "not started",
       "title": "Migrate Hydra plugin discovery from namespace scanning to entry points",
       "updated_at": "2026-06-30T15:32:19Z"
+    },
+    "3258": {
+      "category": "Enhancement",
+      "created_at": "2026-07-04T14:17:14Z",
+      "labels": [
+        "instantiate_api",
+        "priority_high"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Switch instantiate target filtering to an allowlist model for 1.4",
+      "updated_at": "2026-07-04T14:17:15Z"
+    },
+    "3259": {
+      "category": "Enhancement",
+      "created_at": "2026-07-04T14:17:14Z",
+      "labels": [
+        "instantiate_api",
+        "priority_high"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Harden instantiate blocklist for 1.3.x",
+      "updated_at": "2026-07-04T14:17:15Z"
     },
     "385": {
       "category": "Enhancement",
