@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-04",
-  "generated_at": "2026-07-04T10:16:21Z",
+  "generated_at": "2026-07-04T12:03:22Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 212,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 3
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 201
+        "count": 200
       },
       {
         "status": "done",
@@ -112,6 +112,26 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 2338,
+      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3257,
+          "url": "https://github.com/facebookresearch/hydra/pull/3257"
+        }
+      ],
+      "created": "2022-08-12",
+      "updated": "2023-01-28",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2338"
     },
     {
       "number": 845,
@@ -2039,21 +2059,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2323"
-    },
-    {
-      "number": 2338,
-      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-08-12",
-      "updated": "2023-01-28",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2338"
     },
     {
       "number": 2350,
@@ -4047,6 +4052,26 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2784"
     },
     {
+      "number": 2800,
+      "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3256,
+          "url": "https://github.com/facebookresearch/hydra/pull/3256"
+        }
+      ],
+      "created": "2023-11-21",
+      "updated": "2023-11-21",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2800"
+    },
+    {
       "number": 2801,
       "title": "[Bug] Facebook Open Source logo missing",
       "category": "Bug",
@@ -5073,29 +5098,29 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
-    },
-    {
-      "number": 2800,
-      "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3256,
-          "url": "https://github.com/facebookresearch/hydra/pull/3256"
-        }
-      ],
-      "created": "2023-11-21",
-      "updated": "2023-11-21",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2800"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-04T12:03:22Z",
+      "kind": "pr",
+      "issue": 2338,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2338",
+      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
+      "detail": "linked #3257"
+    },
+    {
+      "ts": "2026-07-04T12:03:22Z",
+      "kind": "status",
+      "issue": 2338,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2338",
+      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3257,
+        "url": "https://github.com/facebookresearch/hydra/pull/3257"
+      }
+    },
     {
       "ts": "2026-07-04T10:16:21Z",
       "kind": "closed",
@@ -6611,21 +6636,6 @@
       "issue": 3195,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3195",
       "title": "Add the ability to pass types or classes through a configuration file"
-    },
-    {
-      "ts": "2026-05-27T09:38:02Z",
-      "kind": "closed",
-      "issue": 3075,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3075",
-      "title": "What is the project status given the last release was in 2023"
-    },
-    {
-      "ts": "2026-05-26T08:17:04Z",
-      "kind": "pr",
-      "issue": 3192,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3192",
-      "title": "docs: update Twitter reference to X in README",
-      "detail": "linked #3193"
     }
   ]
 }

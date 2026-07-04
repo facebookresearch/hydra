@@ -107,7 +107,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-04T10:16:21Z",
+  "generated_at": "2026-07-04T12:03:22Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1408,9 +1408,11 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3257"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
       "updated_at": "2023-01-28T17:38:49Z"
     },
