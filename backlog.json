@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-04",
-  "generated_at": "2026-07-04T07:59:49Z",
+  "generated_at": "2026-07-04T09:54:26Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 213,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 3
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 202
+        "count": 201
       },
       {
         "status": "done",
@@ -112,6 +112,26 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 2800,
+      "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3256,
+          "url": "https://github.com/facebookresearch/hydra/pull/3256"
+        }
+      ],
+      "created": "2023-11-21",
+      "updated": "2023-11-21",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2800"
     },
     {
       "number": 845,
@@ -2568,21 +2588,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2797"
     },
     {
-      "number": 2800,
-      "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-11-21",
-      "updated": "2023-11-21",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2800"
-    },
-    {
       "number": 2810,
       "title": "hydra.errors.MissingConfigException: In 'hydra/config': Could not find 'hydra/sweeper/hgemm'",
       "category": "Enhancement",
@@ -3244,6 +3249,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
     },
     {
+      "number": 3210,
+      "title": "Modernize Optuna Sweeper",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-11",
+      "updated": "2026-06-26",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3210"
+    },
+    {
       "number": 3216,
       "title": "Evaluate opt-out from eager resolution in instantiate",
       "category": "Enhancement",
@@ -3409,19 +3427,6 @@
       "updated": "2026-06-30",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3252"
-    },
-    {
-      "number": 3210,
-      "title": "Modernize Optuna Sweeper",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-11",
-      "updated": "2026-06-26",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3210"
     },
     {
       "number": 692,
@@ -5092,6 +5097,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-04T09:54:26Z",
+      "kind": "pr",
+      "issue": 2800,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2800",
+      "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
+      "detail": "linked #3256"
+    },
+    {
+      "ts": "2026-07-04T09:54:26Z",
+      "kind": "status",
+      "issue": 2800,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2800",
+      "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3256,
+        "url": "https://github.com/facebookresearch/hydra/pull/3256"
+      }
+    },
+    {
       "ts": "2026-07-04T07:59:49Z",
       "kind": "pr",
       "issue": 3210,
@@ -6606,20 +6631,6 @@
         "number": 3193,
         "url": "https://github.com/facebookresearch/hydra/pull/3193"
       }
-    },
-    {
-      "ts": "2026-05-25T10:24:09Z",
-      "kind": "new",
-      "issue": 3192,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3192",
-      "title": "docs: update Twitter reference to X in README"
-    },
-    {
-      "ts": "2026-05-19T21:55:52Z",
-      "kind": "new",
-      "issue": 3189,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3189",
-      "title": "Feature request: support env files as first-class Hydra inputs"
     }
   ]
 }

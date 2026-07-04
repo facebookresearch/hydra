@@ -106,7 +106,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-04T07:59:49Z",
+  "generated_at": "2026-07-04T09:54:26Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1843,9 +1843,11 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3256"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
       "updated_at": "2023-11-21T19:30:03Z"
     },
