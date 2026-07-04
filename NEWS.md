@@ -1,3 +1,9 @@
+1.3.4 (2026-07-05)
+==================
+
+### Bug Fixes
+
+- Add an instantiate target blocklist for security-sensitive callables. ([#3259](https://github.com/facebookresearch/hydra/issues/3259))
 1.3.3 (2026-06-11)
 ==================
 
