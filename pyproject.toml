@@ -71,7 +71,8 @@ exclude = '''
 
 [tool.pyrefly]
 project-includes = [
-    "*.py",
+    "noxfile.py",
+    "setup.py",
     "build_helpers/**/*.py",
     "hydra/**/*.py",
     "tests/**/*.py",
