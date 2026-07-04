@@ -127,6 +127,23 @@ def test_app_with_callbacks(
     )
 
 
+def test_callbacks_on_keyboard_interrupt(tmpdir: Path) -> None:
+    app_path = "tests/test_apps/app_with_callbacks/keyboard_interrupt/my_app.py"
+    cmd = [
+        app_path,
+        f'hydra.run.dir="{str(tmpdir)}"',
+        "hydra.job.chdir=True",
+        "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
+        "hydra.job_logging.formatters.simple.format='[JOB] %(message)s'",
+    ]
+    result, _err = run_python_script(
+        cmd, print_error=False, raise_exception=False, allow_warnings=True
+    )
+
+    assert "[JOB] custom_callback on_job_end" in result
+    assert "[JOB] custom_callback on_run_end" in result
+
+
 @mark.parametrize("multirun", [True, False])
 def test_experimental_save_job_info_callback(tmpdir: Path, multirun: bool) -> None:
     app_path = "tests/test_apps/app_with_pickle_job_info_callback/my_app.py"

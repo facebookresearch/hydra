@@ -191,6 +191,12 @@ def run_job(
             except Exception as e:
                 ret.return_value = e
                 ret.status = JobStatus.FAILED
+            except KeyboardInterrupt:
+                ret.status = JobStatus.FAILED
+                ret.task_name = JobRuntime.instance().get("name")
+                _flush_loggers()
+                callbacks.on_job_end(config=config, job_return=ret)
+                raise
 
         ret.task_name = JobRuntime.instance().get("name")
 
