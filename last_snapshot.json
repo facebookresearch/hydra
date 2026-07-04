@@ -4,6 +4,7 @@
     "2032": "2026-06-20",
     "2070": "2026-06-29",
     "2162": "2026-06-11",
+    "2338": "2026-07-04",
     "2348": "2026-07-03",
     "2359": "2026-06-30",
     "2381": "2026-06-30",
@@ -107,7 +108,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-04T12:03:22Z",
+  "generated_at": "2026-07-04T13:45:32Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1401,20 +1402,6 @@
       "status": "not started",
       "title": "specify maximum tasks in submitit_local",
       "updated_at": "2022-08-04T17:34:57Z"
-    },
-    "2338": {
-      "category": "Bug",
-      "created_at": "2022-08-12T13:59:57Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [
-        "3257"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
-      "updated_at": "2023-01-28T17:38:49Z"
     },
     "2350": {
       "category": "Bug",
@@ -2829,6 +2816,20 @@
       "status": "done",
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "updated_at": "2025-01-22T23:55:03Z"
+    },
+    "2338": {
+      "category": "Bug",
+      "created_at": "2022-08-12T13:59:57Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "3257"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
+      "updated_at": "2023-01-28T17:38:49Z"
     },
     "2348": {
       "category": "Bug",

@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-04",
-  "generated_at": "2026-07-04T12:03:22Z",
+  "generated_at": "2026-07-04T13:45:32Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 212,
+    "open_total": 211,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 46,
-        "percentage": 21.7
+        "count": 45,
+        "percentage": 21.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 136,
-        "percentage": 64.2
+        "percentage": 64.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 6.1
+        "percentage": 6.2
       },
       {
         "category": "Question",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 2
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 106
+        "count": 107
       }
     ]
   },
@@ -112,26 +112,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 2338,
-      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3257,
-          "url": "https://github.com/facebookresearch/hydra/pull/3257"
-        }
-      ],
-      "created": "2022-08-12",
-      "updated": "2023-01-28",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2338"
     },
     {
       "number": 845,
@@ -5098,9 +5078,36 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
+    },
+    {
+      "number": 2338,
+      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3257,
+          "url": "https://github.com/facebookresearch/hydra/pull/3257"
+        }
+      ],
+      "created": "2022-08-12",
+      "updated": "2023-01-28",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2338"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-04T13:45:32Z",
+      "kind": "closed",
+      "issue": 2338,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2338",
+      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated"
+    },
     {
       "ts": "2026-07-04T12:03:22Z",
       "kind": "pr",
@@ -6626,13 +6633,6 @@
     {
       "ts": "2026-05-30T06:42:31Z",
       "kind": "closed",
-      "issue": 3195,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3195",
-      "title": "Add the ability to pass types or classes through a configuration file"
-    },
-    {
-      "ts": "2026-05-29T13:24:41Z",
-      "kind": "new",
       "issue": 3195,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3195",
       "title": "Add the ability to pass types or classes through a configuration file"
