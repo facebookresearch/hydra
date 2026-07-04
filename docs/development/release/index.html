@@ -13,7 +13,7 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.313883d4.css">
-<script src="/assets/js/runtime~main.dfe3a51e.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.4caa2af8.js" defer="defer"></script>
 <script src="/assets/js/main.6de1f3ce.js" defer="defer"></script>
 </head>
 <body>
@@ -57,6 +57,14 @@ override is intentionally limited to <code>main</code> or the release line&#x27;
 </ul>
 <p>The default Hydra release set is <code>hydra-full-release</code>. <code>hydra-configen</code> remains
 a supported target, but it is not included in the default Hydra package release.</p>
+<p>Use <code>only=&lt;package_config_name&gt;[,&lt;package_config_name&gt;...]</code> to narrow a package
+set without adding a new named package set. Package config names are the keys in
+<code>tools/release/conf/packages/</code>. For example, to target only the Optuna plugin
+from the bundled plugin set:</p>
+<div class="language-shell codeBlockContainer_uPDW theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_d_Pi"><pre tabindex="0" class="prism-code language-shell codeBlock_q2pc thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_S7n8"><div class="token-line" style="color:#bfc7d5"><span class="token plain">python tools/release/release.py \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  action=check \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  set=hydra-plugins \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  only=hydra_optuna_sweeper \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  repository=pypi</span><br></div></code></pre></div></div>
+<p>Quote comma-separated filters so the quotes reach Hydra when passing more than
+one package through a shell, for example
+<code>only=\&quot;hydra_optuna_sweeper,hydra_ray_launcher\&quot;</code>.</p>
 <h2 class="anchor anchorTargetStickyNavbar_UHn8" id="versioning">Versioning<a href="#versioning" class="hash-link" aria-label="Direct link to Versioning" title="Direct link to Versioning" translate="no">​</a></h2>
 <p>The Hydra core version is defined in <code>hydra/__init__.py</code>. Plugin versions are
 defined in each plugin package&#x27;s <code>hydra_plugins/&lt;plugin&gt;/__init__.py</code>.</p>
@@ -114,6 +122,8 @@ target version, builds artifacts in a temporary release workspace, runs
 <code>twine check</code>, smoke-installs the wheels without dependencies, and prints the
 exact publish workflow dispatch that would run:</p>
 <div class="language-shell codeBlockContainer_uPDW theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_d_Pi"><pre tabindex="0" class="prism-code language-shell codeBlock_q2pc thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_S7n8"><div class="token-line" style="color:#bfc7d5"><span class="token plain">python tools/release/release.py \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  action=dev_release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  set=hydra-full-release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  version=1.4.0.dev3</span><br></div></code></pre></div></div>
+<p>To dry-run a single plugin dev release, narrow the selected package set:</p>
+<div class="language-shell codeBlockContainer_uPDW theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_d_Pi"><pre tabindex="0" class="prism-code language-shell codeBlock_q2pc thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_S7n8"><div class="token-line" style="color:#bfc7d5"><span class="token plain">python tools/release/release.py \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  action=dev_release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  set=hydra-plugins \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  only=hydra_optuna_sweeper \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  version=1.4.0.dev3</span><br></div></code></pre></div></div>
 <p>To publish the dev release, rerun with <code>publish=true</code>. This requires a clean
 working tree whose current commit matches <code>remote/&lt;workflow_ref&gt;</code>, applies the
 version bump, commits and pushes it when the bump changes files, and dispatches
