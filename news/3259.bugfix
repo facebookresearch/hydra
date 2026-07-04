@@ -1,1 +1,1 @@
-Harden instantiate target blocklist coverage for security-sensitive callables.
+Add an instantiate target blocklist for security-sensitive callables.
