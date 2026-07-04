@@ -2,10 +2,12 @@
 import logging
 import time
 import uuid
+from base64 import b64decode
+from binascii import Error as BinasciiError
 from pathlib import Path
-from typing import Any, Dict, List, Sequence, cast
+from pickle import UnpicklingError
+from typing import Any, Dict, List, Optional, Sequence, cast
 
-import cloudpickle  # type: ignore
 from fakeredis import FakeStrictRedis  # type: ignore
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
@@ -16,14 +18,24 @@ from hydra.core.utils import (
     run_job,
     setup_globals,
 )
+from hydra.errors import CompactHydraException
 from hydra.types import HydraContext, TaskFunction
 from omegaconf import DictConfig, OmegaConf, open_dict
 from redis import Redis  # type: ignore[import-untyped]
 from rq import Queue
+from rq.results import UNSERIALIZABLE_RETURN_VALUE_PAYLOAD, Result
 
 from .rq_launcher import RQLauncher
+from .serializer import CloudpickleSerializer
 
 log = logging.getLogger(__name__)
+
+_UNSERIALIZABLE_RETURN_VALUE = UNSERIALIZABLE_RETURN_VALUE_PAYLOAD
+_SERIALIZER_ERROR = (
+    "RQ could not deserialize the job result. This usually means the worker "
+    "was not started with Hydra's cloudpickle serializer. Start RQ workers with "
+    "`-S hydra_plugins.hydra_rq_launcher.serializer.CloudpickleSerializer`."
+)
 
 
 def execute_job(
@@ -86,7 +98,7 @@ def launch(
         name=rq_cfg.queue,
         connection=connection,
         is_async=is_async,
-        serializer=cloudpickle,
+        serializer=CloudpickleSerializer,
     )
 
     # Enqueue jobs
@@ -136,7 +148,7 @@ def launch(
         )
         jobs.append(job)
 
-        log.info(f"Enqueued {job.get_id()}")
+        log.info(f"Enqueued {_get_job_id(job)}")
         log.info(f"\t#{idx + 1} : {description}")
 
     log.info("Finished enqueuing")
@@ -146,7 +158,9 @@ def launch(
     log.info(f"Polling job statuses every {rq_cfg.wait_polling} sec")
     while True:
         job_ids_done = [
-            job.get_id() for job in jobs if job.get_status() in ["finished", "failed"]
+            _get_job_id(job)
+            for job in jobs
+            if job.get_status() in ["finished", "failed"]
         ]
         if len(job_ids_done) == len(jobs):
             break
@@ -155,11 +169,80 @@ def launch(
 
     runs: List[JobReturn] = []
     for job in jobs:
-        result = job.result if job.result is not None else None
-        runs.append(cast(JobReturn, result))
+        runs.append(_get_job_result(job))
 
     return runs
 
 
 class StopAfterEnqueue(Exception):
     pass
+
+
+def _get_job_result(job: Any) -> JobReturn:
+    try:
+        result = job.return_value() if hasattr(job, "return_value") else job.result
+    except UnpicklingError as exc:
+        if _is_unserializable_return_value(job):
+            raise CompactHydraException(
+                f"{_SERIALIZER_ERROR} Job id: {_get_job_id(job)}"
+            ) from exc
+        raise
+
+    if result == _UNSERIALIZABLE_RETURN_VALUE:
+        raise CompactHydraException(f"{_SERIALIZER_ERROR} Job id: {_get_job_id(job)}")
+
+    return cast(JobReturn, result)
+
+
+def _is_unserializable_return_value(job: Any) -> bool:
+    legacy_result = job.connection.hget(job.key, "result")
+    if _matches_unserializable_return_value(legacy_result):
+        return True
+
+    latest_result = _get_latest_result_payload(job)
+    if latest_result is None:
+        return False
+
+    return_value = latest_result.get(b"return_value") or latest_result.get(
+        "return_value"
+    )
+    if return_value is None:
+        return False
+
+    try:
+        decoded_return_value = b64decode(return_value)
+    except (BinasciiError, TypeError):
+        return False
+
+    return _matches_unserializable_return_value(decoded_return_value)
+
+
+def _matches_unserializable_return_value(value: Any) -> bool:
+    if value in (
+        _UNSERIALIZABLE_RETURN_VALUE,
+        _UNSERIALIZABLE_RETURN_VALUE.encode("utf-8"),
+    ):
+        return True
+
+    if isinstance(value, bytes):
+        try:
+            return CloudpickleSerializer.loads(value) == _UNSERIALIZABLE_RETURN_VALUE
+        except Exception:
+            return False
+
+    return False
+
+
+def _get_latest_result_payload(job: Any) -> Optional[Dict[Any, Any]]:
+    response = job.connection.xrevrange(
+        Result.get_key(_get_job_id(job)), "+", "-", count=1
+    )
+    if not response:
+        return None
+    return cast(Dict[Any, Any], response[0][1])
+
+
+def _get_job_id(job: Any) -> str:
+    if hasattr(job, "get_id"):
+        return str(job.get_id())
+    return str(job.id)

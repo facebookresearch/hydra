@@ -28,9 +28,9 @@ setup(
     python_requires=">=3.10",
     install_requires=[
         "cloudpickle",
-        "fakeredis<1.7.4",  # https://github.com/dsoftwareinc/fakeredis-py/issues/3
+        "fakeredis>=2.36.2,<3",
         "hydra-core>=1.1.0.dev7",
-        "rq>=1.5.1,<1.12",
+        "rq>=2.10.0,<3",
     ],
     include_package_data=True,
 )
