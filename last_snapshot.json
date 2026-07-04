@@ -108,7 +108,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-04T14:18:40Z",
+  "generated_at": "2026-07-04T21:48:41Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2251,9 +2251,11 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3262"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "[Bug]",
       "updated_at": "2026-06-20T14:11:08Z"
     },
@@ -2606,9 +2608,12 @@
         "instantiate_api",
         "priority_high"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3263",
+        "3264"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "Harden instantiate blocklist for 1.3.x",
       "updated_at": "2026-07-04T14:17:15Z"
     },
