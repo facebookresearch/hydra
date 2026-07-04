@@ -136,7 +136,12 @@ def run_job(
                 del task_cfg["hydra"]
 
         ret.cfg = task_cfg
-        hydra_cfg = copy.deepcopy(HydraConfig.instance().cfg)
+        hydra_cfg = HydraConfig.instance().cfg
+        assert isinstance(hydra_cfg, DictConfig)
+        env_set = hydra_cfg.hydra.job.env_set
+        with read_write(env_set):
+            OmegaConf.resolve(env_set)
+        hydra_cfg = copy.deepcopy(hydra_cfg)
         assert isinstance(hydra_cfg, DictConfig)
         ret.hydra_cfg = hydra_cfg
         overrides = OmegaConf.to_container(config.hydra.overrides.task)

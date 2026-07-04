@@ -1066,6 +1066,19 @@ def test_hydra_env_set_with_config(tmpdir: Path) -> None:
     )
 
 
+def test_hydra_env_set_with_config_interpolation(tmpdir: Path) -> None:
+    cfg = OmegaConf.create(
+        {"foo": "bar", "hydra": {"job": {"env_set": {"foo": "${foo}"}}}}
+    )
+    integration_test(
+        tmpdir=tmpdir,
+        task_config=cfg,
+        overrides=[],
+        prints="os.environ['foo']",
+        expected_outputs="bar",
+    )
+
+
 def test_hydra_env_set_with_override(tmpdir: Path) -> None:
     integration_test(
         tmpdir=tmpdir,
