@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-07-03",
-  "generated_at": "2026-07-03T08:04:49Z",
+  "generated_on": "2026-07-04",
+  "generated_at": "2026-07-04T07:59:49Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 213,
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 10
+        "count": 9
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 201
+        "count": 202
       },
       {
         "status": "done",
@@ -257,24 +257,6 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3202"
-    },
-    {
-      "number": 3210,
-      "title": "Modernize Optuna Sweeper",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3211,
-          "url": "https://github.com/facebookresearch/hydra/pull/3211"
-        }
-      ],
-      "created": "2026-06-11",
-      "updated": "2026-06-26",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3210"
     },
     {
       "number": 3215,
@@ -3429,6 +3411,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3252"
     },
     {
+      "number": 3210,
+      "title": "Modernize Optuna Sweeper",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-11",
+      "updated": "2026-06-26",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3210"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -5097,6 +5092,22 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-04T07:59:49Z",
+      "kind": "pr",
+      "issue": 3210,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3210",
+      "title": "Modernize Optuna Sweeper",
+      "detail": "unlinked #3211"
+    },
+    {
+      "ts": "2026-07-04T07:59:49Z",
+      "kind": "status",
+      "issue": 3210,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3210",
+      "title": "Modernize Optuna Sweeper",
+      "detail": "community PR → not started"
+    },
+    {
       "ts": "2026-07-03T05:35:56Z",
       "kind": "closed",
       "issue": 2348,
@@ -6609,20 +6620,6 @@
       "issue": 3189,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3189",
       "title": "Feature request: support env files as first-class Hydra inputs"
-    },
-    {
-      "ts": "2026-05-19T21:55:52Z",
-      "kind": "new",
-      "issue": 3188,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3188",
-      "title": "Feature request: add lifecycle callbacks before and after config composition"
-    },
-    {
-      "ts": "2026-05-17T18:05:29Z",
-      "kind": "closed",
-      "issue": 3176,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3176",
-      "title": "Upgrade and modernize Ax Sweeper"
     }
   ]
 }
