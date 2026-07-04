@@ -38,6 +38,7 @@ USE_OMEGACONF_DEV_VERSION = os.environ.get("USE_OMEGACONF_DEV_VERSION", "0") != 
 FIX = os.environ.get("FIX", "0") == "1"
 VERBOSE = os.environ.get("VERBOSE", "0")
 SILENT = VERBOSE == "0"
+PYTEST = "pytest<8"
 
 nox.options.error_on_missing_interpreters = True
 
@@ -468,7 +469,7 @@ def lint_plugin(session: Session, plugin: Plugin) -> None:
 def test_tools(session: Session) -> None:
     _upgrade_basic(session)
     install_cmd = ["pip", "install"]
-    session.install("pytest")
+    session.install(PYTEST)
     install_hydra(session, install_cmd)
 
     tools = [
@@ -501,7 +502,7 @@ def _get_standalone_apps_dirs() -> List[Union[str, Path]]:
 def test_core(session: Session) -> None:
     _upgrade_basic(session)
     install_hydra(session, INSTALL_COMMAND)
-    session.install("pytest")
+    session.install(PYTEST)
 
     if not SKIP_CORE_TESTS:
         run_pytest(session, "build_helpers", "tests", *session.posargs)
@@ -530,7 +531,7 @@ def test_core(session: Session) -> None:
 @nox.session(python=PYTHON_VERSIONS)  # type: ignore
 def test_plugins_vs_core(session: Session) -> None:
     _upgrade_basic(session)
-    session.install("pytest")
+    session.install(PYTEST)
     install_hydra(session, INSTALL_COMMAND)
 
     # install all plugins compatible with the current Python version
@@ -554,7 +555,7 @@ def test_plugins_vs_core(session: Session) -> None:
 @nox.parametrize("plugin", list_plugins("plugins"), ids=[p.name for p in list_plugins("plugins")])  # type: ignore
 def test_plugins(session: Session, plugin: Plugin) -> None:
     _upgrade_basic(session)
-    session.install("pytest")
+    session.install(PYTEST)
     install_hydra(session, INSTALL_COMMAND)
     if not is_plugin_compatible(session, plugin):
         session.skip(f"Skipping session {session.name}")
@@ -584,7 +585,7 @@ def coverage(session: Session) -> None:
         "COVERAGE_RCFILE": f"{BASE}/.coveragerc",
     }
 
-    session.install("coverage", "pytest")
+    session.install("coverage", PYTEST)
     install_hydra(session, ["pip", "install", "-e"])
     session.run("coverage", "erase", env=coverage_env)
 
@@ -632,7 +633,7 @@ def test_jupyter_notebooks(session: Session) -> None:
             f"Not testing Jupyter notebook on Python {session.python}, supports [{','.join(versions)}]"
         )
 
-    session.install("jupyter", "nbval", "pyzmq", "pytest")
+    session.install("jupyter", "nbval", "pyzmq", PYTEST)
     if platform.system() == "Windows":
         session.install("pywin32")
 
@@ -666,5 +667,5 @@ def benchmark(session: Session) -> None:
     _upgrade_basic(session)
     install_dev_deps(session)
     install_hydra(session, INSTALL_COMMAND)
-    session.install("pytest")
+    session.install(PYTEST)
     run_pytest(session, "build_helpers", "tests/benchmark.py", *session.posargs)

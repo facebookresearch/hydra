@@ -10,7 +10,7 @@ mypy
 nox
 packaging
 pre-commit
-pytest
+pytest<8
 pytest-benchmark
 pytest-snail
 read-version
