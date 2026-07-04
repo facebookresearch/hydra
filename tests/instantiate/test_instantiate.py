@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
+import os
 import pickle
 import re
 from dataclasses import dataclass
@@ -12,6 +13,7 @@ from pytest import fixture, mark, param, raises, warns
 
 import hydra
 from hydra import version
+from hydra._internal.instantiate._instantiate2 import _resolve_target
 from hydra.errors import InstantiationException
 from hydra.test_utils.test_utils import assert_multiline_regex_search
 from hydra.types import ConvertMode, TargetConf
@@ -558,13 +560,11 @@ def test_interpolation_accessing_parent(
 @mark.parametrize(
     "src",
     [
-        (
-            {
-                "_target_": "tests.instantiate.AClass",
-                "b": 200,
-                "c": {"x": 10, "y": "${b}"},
-            }
-        )
+        {
+            "_target_": "tests.instantiate.AClass",
+            "b": 200,
+            "c": {"x": 10, "y": "${b}"},
+        }
     ],
 )
 def test_class_instantiate_omegaconf_node(instantiate_func: Any, config: Any) -> Any:
@@ -710,13 +710,9 @@ def test_instantiate_target_raising_exception_taking_no_arguments(
     _target_ = "tests.instantiate.raise_exception_taking_no_argument"
     with raises(
         InstantiationException,
-        match=(
-            dedent(
-                rf"""
+        match=(dedent(rf"""
                 Error in call to target '{re.escape(_target_)}':
-                ExceptionTakingNoArgument\('Err message',?\)"""
-            ).strip()
-        ),
+                ExceptionTakingNoArgument\('Err message',?\)""").strip()),
     ):
         instantiate_func({}, _target_=_target_)
 
@@ -727,15 +723,11 @@ def test_instantiate_target_raising_exception_taking_no_arguments_nested(
     _target_ = "tests.instantiate.raise_exception_taking_no_argument"
     with raises(
         InstantiationException,
-        match=(
-            dedent(
-                rf"""
+        match=(dedent(rf"""
                 Error in call to target '{re.escape(_target_)}':
                 ExceptionTakingNoArgument\('Err message',?\)
                 full_key: foo
-                """
-            ).strip()
-        ),
+                """).strip()),
     ):
         instantiate_func({"foo": {"_target_": _target_}})
 
@@ -1474,13 +1466,9 @@ def test_cannot_locate_target(instantiate_func: Any) -> None:
     cfg = OmegaConf.create({"foo": {"_target_": "not_found"}})
     with raises(
         InstantiationException,
-        match=re.escape(
-            dedent(
-                """\
+        match=re.escape(dedent("""\
                 Error locating target 'not_found', set env var HYDRA_FULL_ERROR=1 to see chained exception.
-                full_key: foo"""
-            )
-        ),
+                full_key: foo""")),
     ) as exc_info:
         instantiate_func(cfg)
     err = exc_info.value
@@ -1488,14 +1476,73 @@ def test_cannot_locate_target(instantiate_func: Any) -> None:
     chained = err.__cause__
     assert isinstance(chained, ImportError)
     assert_multiline_regex_search(
-        dedent(
-            """\
+        dedent("""\
             Error loading 'not_found':
             ModuleNotFoundError\\("No module named 'not_found'",?\\)
-            Are you sure that module 'not_found' is installed\\?"""
-        ),
+            Are you sure that module 'not_found' is installed\\?"""),
         chained.args[0],
     )
+
+
+@mark.parametrize(
+    "target",
+    [
+        "builtins.compile",
+        "ctypes.CDLL",
+        "ctypes.WinDLL",
+        "ctypes.windll.LoadLibrary",
+        "importlib.import_module",
+        "os.execl",
+        "os.getcwd",
+        "os.popen",
+        "os.posix_spawn",
+        "posix.kill",
+        "posix.remove",
+        "posix.system",
+        "nt.startfile",
+        "nt.system",
+        "pty.spawn",
+        "runpy.run_path",
+        "subprocess.Popen",
+        "subprocess.check_output",
+        "subprocess.run",
+    ],
+)
+def test_blocklisted_target_fails(instantiate_func: Any, target: str) -> None:
+    cfg = OmegaConf.create({"foo": {"_target_": target}})
+    with raises(
+        InstantiationException,
+        match=re.escape(dedent(f"""\
+                Target '{target}' is blocklisted and cannot be instantiated from config
+                to prevent security vulnerabilities, set env var
+                HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE={target}:<other allowlisted targets> to bypass
+                full_key: foo""")),
+    ) as exc_info:
+        instantiate_func(cfg)
+    err = exc_info.value
+    assert hasattr(err, "__cause__")
+    chained = err.__cause__
+    assert chained is None
+
+
+def test_allowlist_works(instantiate_func: Any, monkeypatch: Any) -> None:
+    cfg = OmegaConf.create(
+        {
+            "foo": {"_target_": "builtins.exec", "_args_": ["5+8"]},
+            "bar": {"_target_": "builtins.eval", "_args_": ["1+2"]},
+        }
+    )
+    monkeypatch.setenv(
+        "HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE", "builtins.exec:builtins.eval"
+    )
+    res = instantiate_func(cfg)
+    assert res.foo is None
+    assert res.bar == 3
+
+
+def test_allowlist_works_for_prefix_blocked_target(monkeypatch: Any) -> None:
+    monkeypatch.setenv("HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE", "os.execl")
+    assert _resolve_target("os.execl", "") is os.execl
 
 
 @mark.parametrize(
