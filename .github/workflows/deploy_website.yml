@@ -23,9 +23,10 @@ jobs:
     - uses: actions/setup-node@v6
       with:
         node-version: "24"
-    - name: Deploy website
+    - name: Build or deploy website
       env:
-        WEBSITE_GITHUB_TOKEN: ${{ secrets.WEBSITE_GITHUB_TOKEN }}
+        WEBSITE_GITHUB_TOKEN: ${{ github.event_name != 'pull_request' && secrets.WEBSITE_GITHUB_TOKEN || '' }}
+        IS_PULL_REQUEST: ${{ github.event_name == 'pull_request' }}
       run: |
         SUBDIR=website
         git fetch
@@ -38,10 +39,14 @@ jobs:
           cd $SUBDIR
           corepack enable
           corepack pnpm install --frozen-lockfile
-          git config --global user.email omry@users.noreply.github.com
-          git config --global user.name omry
-          echo "machine github.com login docusaurus-bot password $WEBSITE_GITHUB_TOKEN" > ~/.netrc
-          GIT_USER=docusaurus-bot corepack pnpm run deploy
+          if [[ "$IS_PULL_REQUEST" == "true" ]]; then
+            corepack pnpm run build
+          else
+            git config --global user.email omry@users.noreply.github.com
+            git config --global user.name omry
+            echo "machine github.com login docusaurus-bot password $WEBSITE_GITHUB_TOKEN" > ~/.netrc
+            GIT_USER=docusaurus-bot corepack pnpm run deploy
+          fi
         else
           echo "No changes detected in directory $SUBDIR between origin/main and this diff"
         fi
