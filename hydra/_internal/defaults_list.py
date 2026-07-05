@@ -117,7 +117,7 @@ class Overrides:
     def add_override(self, parent_config_path: str, default: GroupDefault) -> None:
         assert default.override
         key = default.get_override_key()
-        if key not in self.override_choices:
+        if key not in self.override_choices or not self.override_metadata[key].external_override:
             self.override_choices[key] = default.value
             self.override_metadata[key] = OverrideMetadata(
                 external_override=False,

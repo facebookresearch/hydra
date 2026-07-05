@@ -1,0 +1,1 @@
+Fixed a bug where later defaults-list overrides from appended configs did not override earlier overrides from the primary config, and command-line overrides could be overwritten by config-file overrides. See #3229.
