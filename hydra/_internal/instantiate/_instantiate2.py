@@ -18,11 +18,21 @@ DEFAULT_BLOCKLISTED_MODULES = {
     "builtins.exec",
     "builtins.eval",
     "builtins.__import__",
+    "builtins.compile",
     "builtins.exit",
     "builtins.quit",
-    "os.environ.OMP_NUM_THREADS",
+    "ctypes.CDLL",
+    "ctypes.OleDLL",
+    "ctypes.PyDLL",
+    "ctypes.WinDLL",
+    "ctypes.cdll.LoadLibrary",
+    "ctypes.oledll.LoadLibrary",
+    "ctypes.pydll.LoadLibrary",
+    "ctypes.windll.LoadLibrary",
+    "importlib.import_module",
     "os.kill",
     "os.system",
+    "os.popen",
     "os.putenv",
     "os.remove",
     "os.removedirs",
@@ -34,6 +44,9 @@ DEFAULT_BLOCKLISTED_MODULES = {
     "os.killpg",
     "os.rename",
     "os.renames",
+    "os.startfile",
+    "os.posix_spawn",
+    "os.posix_spawnp",
     "os.truncate",
     "os.replace",
     "os.unlink",
@@ -48,10 +61,19 @@ DEFAULT_BLOCKLISTED_MODULES = {
     "os.lchown",
     "os.getcwd",
     "os.chdir",
+    "pty.spawn",
+    "runpy.run_module",
+    "runpy.run_path",
     "shutil.rmtree",
     "shutil.move",
     "shutil.chown",
     "subprocess.Popen",
+    "subprocess.run",
+    "subprocess.call",
+    "subprocess.check_call",
+    "subprocess.check_output",
+    "subprocess.getoutput",
+    "subprocess.getstatusoutput",
     "builtins.help",
     "sys.modules.ipdb",
     "sys.modules.joblib",
@@ -59,6 +81,19 @@ DEFAULT_BLOCKLISTED_MODULES = {
     "sys.modules.psutil",
     "sys.modules.tkinter",
 }
+
+DEFAULT_BLOCKLISTED_MODULE_PREFIXES = (
+    "os.exec",
+    "os.spawn",
+)
+
+
+def _get_os_alias_target(target: str) -> str:
+    for module in ("posix", "nt"):
+        module_prefix = f"{module}."
+        if target.startswith(module_prefix):
+            return f"os.{target[len(module_prefix):]}"
+    return target
 
 
 class _Keys(str, Enum):
@@ -77,6 +112,14 @@ def _is_target(x: Any) -> bool:
     if OmegaConf.is_dict(x):
         return "_target_" in x
     return False
+
+
+def _is_blocklisted_target(target: str) -> bool:
+    canonical_target = _get_os_alias_target(target)
+    return (
+        canonical_target in DEFAULT_BLOCKLISTED_MODULES
+        or canonical_target.startswith(DEFAULT_BLOCKLISTED_MODULE_PREFIXES)
+    )
 
 
 def _extract_pos_args(input_args: Any, kwargs: Any) -> Tuple[Any, Any]:
@@ -177,9 +220,14 @@ def _resolve_target(
 ) -> Union[type, Callable[..., Any]]:
     """Resolve target string, type or callable into type or callable."""
     if isinstance(target, str):
-        if target in DEFAULT_BLOCKLISTED_MODULES:
+        if _is_blocklisted_target(target):
             allowlist = os.environ.get("HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE", "")
-            if target not in allowlist.split(":"):
+            allowlist_entries = allowlist.split(":")
+            canonical_target = _get_os_alias_target(target)
+            if (
+                target not in allowlist_entries
+                and canonical_target not in allowlist_entries
+            ):
                 msg = dedent(
                     f"""\
                     Target '{target}' is blocklisted and cannot be instantiated from config
