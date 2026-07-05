@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-05",
-  "generated_at": "2026-07-05T06:07:29Z",
+  "generated_at": "2026-07-05T07:35:30Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 213,
+    "open_total": 214,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 45,
-        "percentage": 21.1
+        "percentage": 21.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 138,
-        "percentage": 64.8
+        "count": 139,
+        "percentage": 65.0
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 11,
-        "percentage": 5.2
+        "percentage": 5.1
       },
       {
         "category": "Refactor",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 200
+        "count": 201
       },
       {
         "status": "done",
@@ -3440,6 +3440,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3258"
     },
     {
+      "number": 3268,
+      "title": "Change plugin instantiation to avoid recursive target execution in Hydra core",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-05",
+      "updated": "2026-07-05",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3268"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -5148,6 +5161,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-05T07:35:30Z",
+      "kind": "new",
+      "issue": 3268,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3268",
+      "title": "Change plugin instantiation to avoid recursive target execution in Hydra core"
+    },
+    {
       "ts": "2026-07-04T21:48:41Z",
       "kind": "pr",
       "issue": 3259,
@@ -6686,13 +6706,6 @@
       "issue": 3201,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3201",
       "title": "Explore async execution model for launchers and sweepers"
-    },
-    {
-      "ts": "2026-06-07T19:14:08Z",
-      "kind": "new",
-      "issue": 3200,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3200",
-      "title": "Revert extend_list before Hydra 1.4.0"
     }
   ]
 }
