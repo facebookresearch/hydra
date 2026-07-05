@@ -108,7 +108,7 @@
     "3242": "2026-06-29",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-05T08:02:59Z",
+  "generated_at": "2026-07-05T08:16:43Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2621,9 +2621,11 @@
       "category": "Enhancement",
       "created_at": "2026-07-05T07:34:05Z",
       "labels": [],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3269"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "Change plugin instantiation to avoid recursive target execution in Hydra core",
       "updated_at": "2026-07-05T07:40:55Z"
     },
