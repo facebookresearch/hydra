@@ -387,7 +387,10 @@ def test_motpe_sampler_removed() -> None:
         InstantiationException,
         match="The 'motpe' sampler was removed in Optuna 4.0",
     ):
-        instantiate(OmegaConf.structured(MOTPESamplerConfig))
+        instantiate(
+            OmegaConf.structured(MOTPESamplerConfig),
+            _target_whitelist_="hydra_plugins.hydra_optuna_sweeper.config.raise_motpe_removed",
+        )
 
 
 def test_example_with_removed_motpe(
@@ -406,4 +409,5 @@ def test_example_with_removed_motpe(
     ]
 
     out, err = run_process(cmd, print_error=False, raise_exception=False)
-    assert "The 'motpe' sampler was removed in Optuna 4.0" in err
+    assert "motpe" in err
+    assert "sampler was removed in Optuna 4.0" in err

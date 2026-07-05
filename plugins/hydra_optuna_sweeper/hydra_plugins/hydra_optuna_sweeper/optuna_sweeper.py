@@ -3,9 +3,8 @@ from typing import Any, List, Optional
 
 from hydra.plugins.sweeper import Sweeper
 from hydra.types import HydraContext, TaskFunction
+from hydra.utils import instantiate
 from omegaconf import DictConfig
-
-from .config import SamplerConfig
 
 
 class OptunaSweeper(Sweeper):
@@ -13,7 +12,7 @@ class OptunaSweeper(Sweeper):
 
     def __init__(
         self,
-        sampler: SamplerConfig,
+        sampler: Any,
         direction: Any,
         storage: Optional[Any],
         study_name: Optional[str],
@@ -25,6 +24,15 @@ class OptunaSweeper(Sweeper):
         params: Optional[DictConfig],
     ) -> None:
         from ._impl import OptunaSweeperImpl
+
+        sampler = instantiate(
+            sampler,
+            _skip_instantiate_full_deepcopy_=True,
+            _target_whitelist_=(
+                "hydra_plugins.hydra_optuna_sweeper.*",
+                "optuna.samplers.*",
+            ),
+        )
 
         self.sweeper = OptunaSweeperImpl(
             sampler,

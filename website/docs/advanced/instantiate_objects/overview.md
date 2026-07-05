@@ -282,12 +282,12 @@ with target_whitelist("my_app.*"):
 You can disable recursive instantiation by setting `_recursive_` to `False` in the config node or in the call-site
 In that case the Trainer object will receive an OmegaConf DictConfig for nested dataset and optimizer instead of the instantiated objects.
 ```python
-optimizer = instantiate(
+trainer = instantiate(
     cfg.trainer,
     _recursive_=False,
     _target_whitelist_="my_app.Trainer",
 )
-print(optimizer)
+print(trainer)
 ```
 
 Output:

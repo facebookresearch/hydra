@@ -70,6 +70,14 @@ The inner framework whitelist adds `my_framework.*`; the outer application
 whitelist adds `my_app.*`. The framework does not need to know which
 application model targets are trusted.
 
+## Plugin authors
+
+Hydra 1.4 instantiates launcher and sweeper plugin configs non-recursively.
+Hydra core instantiates only the registered plugin class. If your plugin config
+contains nested `_target_` values, accept the nested config in the plugin
+constructor and call `instantiate()` from plugin code with a plugin-owned
+whitelist.
+
 ## Choose target patterns
 
 Whitelist entries may be exact targets or package prefixes ending in `.*`.

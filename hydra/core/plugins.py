@@ -110,7 +110,10 @@ class Plugins(metaclass=Singleton):
                 raise RuntimeError(f"Unknown plugin class : '{classname}'")
             clazz = self.class_name_to_class[classname]
             plugin = instantiate(
-                config=config, _target_=clazz, _target_whitelist_=classname
+                config=config,
+                _target_=clazz,
+                _target_whitelist_=classname,
+                _recursive_=False,
             )
             assert isinstance(plugin, Plugin)
 

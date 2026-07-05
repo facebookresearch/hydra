@@ -1,14 +1,19 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-from typing import List, Type
+import sys
+import types
+from typing import List, Sequence, Type
 
-from pytest import mark, raises
+from omegaconf import DictConfig, OmegaConf
+from pytest import MonkeyPatch, mark, raises
 
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.plugins import Plugins
+from hydra.core.utils import JobReturn
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.plugin import Plugin
 from hydra.plugins.search_path_plugin import SearchPathPlugin
 from hydra.plugins.sweeper import Sweeper
+from hydra.types import HydraContext, TaskFunction
 from hydra.utils import get_class
 
 # This only test core plugins.
@@ -16,6 +21,27 @@ from hydra.utils import get_class
 launchers = ["hydra._internal.core_plugins.basic_launcher.BasicLauncher"]
 sweepers = ["hydra._internal.core_plugins.basic_sweeper.BasicSweeper"]
 search_path_plugins: List[str] = []
+
+
+class PluginWithNestedTarget(Launcher):
+    def __init__(self, nested: DictConfig) -> None:
+        self.nested = nested
+
+    def setup(
+        self,
+        *,
+        hydra_context: HydraContext,
+        task_function: TaskFunction,
+        config: DictConfig,
+    ) -> None: ...
+
+    def launch(
+        self, job_overrides: Sequence[Sequence[str]], initial_job_idx: int
+    ) -> Sequence[JobReturn]:
+        raise NotImplementedError()
+
+
+PluginWithNestedTarget.__module__ = "hydra._internal.core_plugins.test_plugin"
 
 
 @mark.parametrize(
@@ -50,3 +76,31 @@ def test_register_bad_plugin() -> None:
 
     with raises(ValueError, match="Not a valid Hydra Plugin"):
         Plugins.instance().register(NotAPlugin)  # type: ignore
+
+
+def test_plugin_instantiation_is_not_recursive(monkeypatch: MonkeyPatch) -> None:
+    classname = "hydra._internal.core_plugins.test_plugin.PluginWithNestedTarget"
+    module = types.ModuleType("hydra._internal.core_plugins.test_plugin")
+    setattr(module, "PluginWithNestedTarget", PluginWithNestedTarget)
+    monkeypatch.setitem(sys.modules, module.__name__, module)
+    monkeypatch.setitem(
+        Plugins.instance().class_name_to_class, classname, PluginWithNestedTarget
+    )
+
+    plugin = Plugins.instance()._instantiate(
+        OmegaConf.create(
+            {
+                "_target_": classname,
+                "nested": {
+                    "_target_": "tests.instantiate.AClass",
+                    "a": 1,
+                    "b": 2,
+                    "c": 3,
+                },
+            }
+        )
+    )
+
+    assert isinstance(plugin, PluginWithNestedTarget)
+    assert isinstance(plugin.nested, DictConfig)
+    assert plugin.nested._target_ == "tests.instantiate.AClass"
