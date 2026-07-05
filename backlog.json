@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-05",
-  "generated_at": "2026-07-05T10:55:07Z",
+  "generated_at": "2026-07-05T11:05:47Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 213,
+    "open_total": 212,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 45,
-        "percentage": 21.1
+        "percentage": 21.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 138,
-        "percentage": 64.8
+        "count": 137,
+        "percentage": 64.6
       },
       {
         "category": "Documentation",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 2
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 108
+        "count": 109
       }
     ]
   },
@@ -112,24 +112,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 3268,
-      "title": "Change plugin instantiation to avoid recursive target execution in Hydra core",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3269,
-          "url": "https://github.com/facebookresearch/hydra/pull/3269"
-        }
-      ],
-      "created": "2026-07-05",
-      "updated": "2026-07-05",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3268"
     },
     {
       "number": 845,
@@ -5162,9 +5144,34 @@
         "priority_high"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3259"
+    },
+    {
+      "number": 3268,
+      "title": "Change plugin instantiation to avoid recursive target execution in Hydra core",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3269,
+          "url": "https://github.com/facebookresearch/hydra/pull/3269"
+        }
+      ],
+      "created": "2026-07-05",
+      "updated": "2026-07-05",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3268"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-05T11:05:47Z",
+      "kind": "closed",
+      "issue": 3268,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3268",
+      "title": "Change plugin instantiation to avoid recursive target execution in Hydra core"
+    },
     {
       "ts": "2026-07-05T10:55:07Z",
       "kind": "closed",
@@ -6710,13 +6717,6 @@
       "issue": 692,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/692",
       "title": "[Feature Request] Support non blocking launching"
-    },
-    {
-      "ts": "2026-06-07T21:27:04Z",
-      "kind": "closed",
-      "issue": 3058,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3058",
-      "title": "[Question] How to Submit SLURM Jobs Eagerly?"
     }
   ]
 }
