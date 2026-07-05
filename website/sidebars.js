@@ -164,6 +164,7 @@ module.exports = AddFBInternalOnly({
                 label: '1.3 to 1.4',
                 items: [
                     'upgrades/1.3_to_1.4/hydra_job_override_dirname',
+                    'upgrades/1.3_to_1.4/instantiate_target_whitelist',
                 ],
             },
             {

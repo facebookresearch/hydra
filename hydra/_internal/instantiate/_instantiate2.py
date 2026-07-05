@@ -2,14 +2,17 @@
 
 import copy
 import functools
+import inspect
 import os
+from contextvars import ContextVar
 from enum import Enum
 from textwrap import dedent
-from typing import Any, Callable, Dict, List, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Sequence, Tuple, Union, cast
 
 from omegaconf import AnyNode, OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
 
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.utils import _locate
 from hydra.errors import InstantiationException
 from hydra.types import ConvertMode, TargetConf
@@ -88,6 +91,18 @@ DEFAULT_BLOCKLISTED_MODULE_PREFIXES = (
 )
 
 
+class _UnsafeAllowAllTargets:
+    def __repr__(self) -> str:
+        return "UNSAFE_ALLOW_ALL_TARGETS"
+
+
+UNSAFE_ALLOW_ALL_TARGETS = _UnsafeAllowAllTargets()
+NormalizedTargetWhitelist = Union[Tuple[str, ...], _UnsafeAllowAllTargets, None]
+_TARGET_WHITELIST_CONTEXT: ContextVar[NormalizedTargetWhitelist] = ContextVar(
+    "hydra_instantiate_target_whitelist", default=None
+)
+
+
 def _get_os_alias_target(target: str) -> str:
     for module in ("posix", "nt"):
         module_prefix = f"{module}."
@@ -104,6 +119,7 @@ class _Keys(str, Enum):
     RECURSIVE = "_recursive_"
     ARGS = "_args_"
     PARTIAL = "_partial_"
+    TARGET_WHITELIST = "_target_whitelist_"
 
 
 def _is_target(x: Any) -> bool:
@@ -119,6 +135,159 @@ def _is_blocklisted_target(target: str) -> bool:
     return (
         canonical_target in DEFAULT_BLOCKLISTED_MODULES
         or canonical_target.startswith(DEFAULT_BLOCKLISTED_MODULE_PREFIXES)
+    )
+
+
+def _validate_target_whitelist_pattern(pattern: Any) -> str:
+    if not isinstance(pattern, str):
+        raise InstantiationException(
+            f"Invalid _target_whitelist_ entry '{pattern}': expected a string"
+        )
+    if pattern == "":
+        raise InstantiationException("Invalid _target_whitelist_ entry: empty string")
+    if "*" not in pattern:
+        return pattern
+    if pattern == "*" or not pattern.endswith(".*") or pattern.count("*") > 1:
+        raise InstantiationException(dedent(f"""\
+                Invalid _target_whitelist_ entry '{pattern}'. Only trailing '.*'
+                package wildcards are supported. The wildcard '*' is not allowed
+                as a target whitelist pattern. To preserve legacy all-target
+                behavior, pass UNSAFE_ALLOW_ALL_TARGETS explicitly."""))
+    prefix = pattern[:-2]
+    if prefix == "" or prefix.endswith("."):
+        raise InstantiationException(
+            f"Invalid _target_whitelist_ entry '{pattern}': missing package prefix"
+        )
+    return pattern
+
+
+def _normalize_target_whitelist(
+    target_whitelist: Any,
+) -> NormalizedTargetWhitelist:
+    if target_whitelist is None:
+        return None
+    if target_whitelist is UNSAFE_ALLOW_ALL_TARGETS:
+        return UNSAFE_ALLOW_ALL_TARGETS
+    if isinstance(target_whitelist, _TargetWhitelistPolicy):
+        return target_whitelist.whitelist
+    if isinstance(target_whitelist, str):
+        return (_validate_target_whitelist_pattern(target_whitelist),)
+    try:
+        return tuple(
+            _validate_target_whitelist_pattern(pattern) for pattern in target_whitelist
+        )
+    except TypeError as e:
+        raise InstantiationException(
+            "Invalid _target_whitelist_: expected a string, a sequence of strings, "
+            "or UNSAFE_ALLOW_ALL_TARGETS"
+        ) from e
+
+
+def _combine_target_whitelists(
+    base: NormalizedTargetWhitelist, extra: NormalizedTargetWhitelist
+) -> NormalizedTargetWhitelist:
+    if base is UNSAFE_ALLOW_ALL_TARGETS or extra is UNSAFE_ALLOW_ALL_TARGETS:
+        return UNSAFE_ALLOW_ALL_TARGETS
+    if base is None:
+        return extra
+    if extra is None:
+        return base
+    return tuple(
+        dict.fromkeys(cast(Tuple[str, ...], base) + cast(Tuple[str, ...], extra))
+    )
+
+
+class _TargetWhitelistPolicy:
+    def __init__(
+        self, whitelist: NormalizedTargetWhitelist, reset: bool = False
+    ) -> None:
+        self.whitelist = whitelist
+        self.reset = reset
+        self._tokens: List[Any] = []
+
+    def resolve(
+        self, inherited: NormalizedTargetWhitelist
+    ) -> NormalizedTargetWhitelist:
+        if self.reset:
+            return self.whitelist
+        return _combine_target_whitelists(inherited, self.whitelist)
+
+    def __enter__(self) -> "_TargetWhitelistPolicy":
+        self._tokens.append(
+            _TARGET_WHITELIST_CONTEXT.set(self.resolve(_TARGET_WHITELIST_CONTEXT.get()))
+        )
+        return self
+
+    def __exit__(self, *args: Any) -> None:
+        _TARGET_WHITELIST_CONTEXT.reset(self._tokens.pop())
+
+
+TargetWhitelist = Union[
+    str, Sequence[str], _UnsafeAllowAllTargets, _TargetWhitelistPolicy, None
+]
+
+
+def target_whitelist(target_whitelist: TargetWhitelist, reset: bool = False) -> Any:
+    """
+    Create a target whitelist object for hydra.utils.instantiate().
+
+    The returned object can be used as a context manager to apply a whitelist to
+    instantiate() calls in the current context, or passed to instantiate() as
+    _target_whitelist_.
+
+    :param target_whitelist: A target string, list of target strings, or
+        UNSAFE_ALLOW_ALL_TARGETS. A trailing .* allows targets under a package
+        prefix.
+    :param reset: If True, ignore any outer target_whitelist() context.
+        If False, add these targets to the current context.
+    """
+    return _TargetWhitelistPolicy(
+        whitelist=_normalize_target_whitelist(target_whitelist),
+        reset=reset,
+    )
+
+
+def _resolve_target_whitelist(
+    target_whitelist: TargetWhitelist,
+) -> NormalizedTargetWhitelist:
+    inherited = _TARGET_WHITELIST_CONTEXT.get()
+    if isinstance(target_whitelist, _TargetWhitelistPolicy):
+        return target_whitelist.resolve(inherited)
+    return _combine_target_whitelists(
+        inherited, _normalize_target_whitelist(target_whitelist)
+    )
+
+
+def _is_target_whitelisted(target: str, target_whitelist: Tuple[str, ...]) -> bool:
+    for pattern in target_whitelist:
+        if pattern.endswith(".*"):
+            prefix = pattern[:-2]
+            if target.startswith(f"{prefix}."):
+                return True
+        elif target == pattern:
+            return True
+    return False
+
+
+def _warn_legacy_target_whitelist(target: str) -> None:
+    stacklevel = 1
+    frame = inspect.currentframe()
+    while frame is not None:
+        if frame.f_code.co_filename != __file__:
+            break
+        stacklevel += 1
+        frame = frame.f_back
+    deprecation_warning(
+        dedent(
+            f"""\
+            hydra.utils.instantiate() resolved _target_='{target}' with no
+            _target_whitelist_. This preserves legacy behavior but is deprecated
+            because config-controlled targets can execute arbitrary code. Pass a
+            callsite target whitelist, or pass UNSAFE_ALLOW_ALL_TARGETS to
+            explicitly keep legacy behavior.
+            See https://hydra.cc/docs/upgrades/1.3_to_1.4/instantiate_target_whitelist/"""
+        ),
+        stacklevel=stacklevel,
     )
 
 
@@ -188,10 +357,19 @@ def _call_target(
 
 
 def _convert_target_to_string(t: Any) -> Any:
-    if callable(t):
+    if callable(t) and hasattr(t, "__qualname__"):
         return f"{t.__module__}.{t.__qualname__}"
     else:
         return t
+
+
+def _get_target_name_for_check(target: Union[str, type, Callable[..., Any]]) -> str:
+    if isinstance(target, str):
+        return target
+    if hasattr(target, "__qualname__"):
+        return f"{target.__module__}.{target.__qualname__}"
+    target_type = type(target)
+    return f"{target_type.__module__}.{target_type.__qualname__}"
 
 
 def _prepare_input_dict_or_list(d: Union[Dict[Any, Any], List[Any]]) -> Any:
@@ -216,35 +394,52 @@ def _prepare_input_dict_or_list(d: Union[Dict[Any, Any], List[Any]]) -> Any:
 
 
 def _resolve_target(
-    target: Union[str, type, Callable[..., Any]], full_key: str
+    target: Union[str, type, Callable[..., Any]],
+    full_key: str,
+    target_whitelist: NormalizedTargetWhitelist = None,
 ) -> Union[type, Callable[..., Any]]:
     """Resolve target string, type or callable into type or callable."""
-    if isinstance(target, str):
-        if _is_blocklisted_target(target):
-            allowlist = os.environ.get("HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE", "")
-            allowlist_entries = allowlist.split(":")
-            canonical_target = _get_os_alias_target(target)
-            if (
-                target not in allowlist_entries
-                and canonical_target not in allowlist_entries
-            ):
-                msg = dedent(
-                    f"""\
-                    Target '{target}' is blocklisted and cannot be instantiated from config
-                    to prevent security vulnerabilities, set env var
-                    HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE={target}:<other allowlisted targets> to bypass"""
-                )
-                if full_key:
-                    msg += f"\nfull_key: {full_key}"
-                raise InstantiationException(msg)
-
-        try:
-            target = _locate(target)
-        except Exception as e:
-            msg = f"Error locating target '{target}', set env var HYDRA_FULL_ERROR=1 to see chained exception."
+    if isinstance(target, str) or callable(target):
+        target_name = _get_target_name_for_check(target)
+        if target_whitelist is UNSAFE_ALLOW_ALL_TARGETS:
+            pass
+        elif target_whitelist is None:
+            if _is_blocklisted_target(target_name):
+                allowlist = os.environ.get("HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE", "")
+                allowlist_entries = allowlist.split(":")
+                canonical_target = _get_os_alias_target(target_name)
+                if (
+                    target_name not in allowlist_entries
+                    and canonical_target not in allowlist_entries
+                ):
+                    msg = dedent(
+                        f"""\
+                        Target '{target_name}' is blocklisted and cannot be instantiated from config
+                        to prevent security vulnerabilities, set env var
+                        HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE={target_name}:<other allowlisted targets> to bypass"""
+                    )
+                    if full_key:
+                        msg += f"\nfull_key: {full_key}"
+                    raise InstantiationException(msg)
+            _warn_legacy_target_whitelist(target_name)
+        elif not _is_target_whitelisted(
+            target_name, cast(Tuple[str, ...], target_whitelist)
+        ):
+            msg = dedent(f"""\
+                Target '{target_name}' is not in the instantiate target whitelist.
+                Pass _target_whitelist_ from trusted code to allow expected targets.""")
             if full_key:
                 msg += f"\nfull_key: {full_key}"
-            raise InstantiationException(msg) from e
+            raise InstantiationException(msg)
+
+        if isinstance(target, str):
+            try:
+                target = _locate(target)
+            except Exception as e:
+                msg = f"Error locating target '{target}', set env var HYDRA_FULL_ERROR=1 to see chained exception."
+                if full_key:
+                    msg += f"\nfull_key: {full_key}"
+                raise InstantiationException(msg) from e
     if not callable(target):
         msg = f"Expected a callable target, got '{target}' of type '{type(target).__name__}'"
         if full_key:
@@ -283,6 +478,7 @@ def instantiate(
     config: Any,
     *args: Any,
     _skip_instantiate_full_deepcopy_: bool = False,
+    _target_whitelist_: TargetWhitelist = None,
     **kwargs: Any,
 ) -> Any:
     """
@@ -291,7 +487,7 @@ def instantiate(
                    _target_ : target class or callable name (str)
                               IMPORTANT: This may pose a security risk since the config
                               can be used to execute arbitrary code. Make sure to use this only
-                              with trusted configs or configure the allowlist/blocklist.
+                              with trusted configs or configure the target whitelist.
                    And may contain:
                    _args_: List-like of positional arguments to pass to the target
                    _recursive_: Construct nested objects as well (bool).
@@ -314,6 +510,10 @@ def instantiate(
                     of full config before resolving omegaconf interpolations, which may
                     potentially modify the config's parent/sibling configs in place.
                     False by default.
+    :param _target_whitelist_: A target string, list of target strings,
+                    target_whitelist() policy, or UNSAFE_ALLOW_ALL_TARGETS. A trailing
+                    .* allows targets under a package prefix. Passing None preserves
+                    legacy behavior unless a target_whitelist() context is active.
     :param args: Optional positional parameters pass-through
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
@@ -327,6 +527,8 @@ def instantiate(
     # Return None if config is None
     if config is None:
         return None
+
+    target_whitelist = _resolve_target_whitelist(_target_whitelist_)
 
     # TargetConf edge case
     if isinstance(config, TargetConf) and config._target_ == "???":
@@ -374,7 +576,12 @@ def instantiate(
         _partial_ = config.pop(_Keys.PARTIAL, False)
 
         return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
+            config,
+            *args,
+            recursive=_recursive_,
+            convert=_convert_,
+            partial=_partial_,
+            target_whitelist=target_whitelist,
         )
     elif OmegaConf.is_list(config):
         # Finalize config (convert targets to strings, merge with kwargs)
@@ -401,7 +608,12 @@ def instantiate(
             )
 
         return instantiate_node(
-            config, *args, recursive=_recursive_, convert=_convert_, partial=_partial_
+            config,
+            *args,
+            recursive=_recursive_,
+            convert=_convert_,
+            partial=_partial_,
+            target_whitelist=target_whitelist,
         )
     else:
         raise InstantiationException(dedent(f"""\
@@ -437,6 +649,7 @@ def instantiate_node(
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
     partial: bool = False,
+    target_whitelist: NormalizedTargetWhitelist = None,
 ) -> Any:
     # Return None if config is None
     if node is None or (OmegaConf.is_config(node) and node._is_none()):
@@ -470,7 +683,12 @@ def instantiate_node(
     # If OmegaConf list, create new list of instances if recursive
     if OmegaConf.is_list(node):
         items = [
-            instantiate_node(item, convert=convert, recursive=recursive)
+            instantiate_node(
+                item,
+                convert=convert,
+                recursive=recursive,
+                target_whitelist=target_whitelist,
+            )
             for item in node._iter_ex(resolve=True)
         ]
 
@@ -486,9 +704,20 @@ def instantiate_node(
             return lst
 
     elif OmegaConf.is_dict(node):
+        if _Keys.TARGET_WHITELIST in node:
+            msg = (
+                "_target_whitelist_ must be passed to instantiate() from trusted "
+                "code, not configured inside the config being instantiated."
+            )
+            if full_key:
+                msg += f"\nfull_key: {full_key}"
+            raise InstantiationException(msg)
+
         exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_"})
         if _is_target(node):
-            _target_ = _resolve_target(node.get(_Keys.TARGET), full_key)
+            _target_ = _resolve_target(
+                node.get(_Keys.TARGET), full_key, target_whitelist
+            )
             kwargs = {}
             is_partial = node.get("_partial_", False) or partial
             for key in node.keys():
@@ -498,7 +727,10 @@ def instantiate_node(
                     value = node[key]
                     if recursive:
                         value = instantiate_node(
-                            value, convert=convert, recursive=recursive
+                            value,
+                            convert=convert,
+                            recursive=recursive,
+                            target_whitelist=target_whitelist,
                         )
                     kwargs[key] = _convert_node(value, convert)
 
@@ -514,7 +746,10 @@ def instantiate_node(
                 for key, value in node.items():
                     # list items inherits recursive flag from the containing dict.
                     dict_items[key] = instantiate_node(
-                        value, convert=convert, recursive=recursive
+                        value,
+                        convert=convert,
+                        recursive=recursive,
+                        target_whitelist=target_whitelist,
                     )
                 return dict_items
             else:
@@ -522,7 +757,12 @@ def instantiate_node(
                 cfg = OmegaConf.create({}, flags={"allow_objects": True})
                 for key, value in node.items():
                     cfg[key] = _wrap_structured_config_as_object(
-                        instantiate_node(value, convert=convert, recursive=recursive)
+                        instantiate_node(
+                            value,
+                            convert=convert,
+                            recursive=recursive,
+                            target_whitelist=target_whitelist,
+                        )
                     )
                 cfg._set_parent(node)
                 cfg._metadata.object_type = node._metadata.object_type

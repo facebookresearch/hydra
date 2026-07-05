@@ -7,6 +7,7 @@ from omegaconf import MISSING
 import hydra
 from hydra.core.config_store import ConfigStore
 from hydra.core.hydra_config import HydraConfig
+from hydra.utils import target_whitelist
 
 
 @dataclass
@@ -29,4 +30,5 @@ def my_app(cfg: Config) -> None:
 
 
 if __name__ == "__main__":
-    my_app()
+    with target_whitelist("hydra.experimental.callbacks.*"):
+        my_app()

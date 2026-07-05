@@ -20,8 +20,9 @@ ConfigStore.instance().store(
 
 @hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    user: User = hydra.utils.instantiate(cfg.user)
-    admin: Admin = hydra.utils.instantiate(cfg.admin)
+    with hydra.utils.target_whitelist("configen.samples.my_module.*"):
+        user: User = hydra.utils.instantiate(cfg.user)
+        admin: Admin = hydra.utils.instantiate(cfg.admin)
     print(user)
     print(admin)
 

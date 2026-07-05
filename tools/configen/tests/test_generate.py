@@ -11,7 +11,7 @@ from configen.config import ConfigenConf, Flags, ModuleConf
 from configen.configen import generate_module
 from hydra.test_utils.test_utils import chdir_hydra_root, run_python_script
 
-from hydra.utils import ConvertMode, get_class, instantiate
+from hydra.utils import ConvertMode, get_class, instantiate, target_whitelist
 from omegaconf import OmegaConf
 
 from pytest import mark, param
@@ -281,7 +281,8 @@ def test_instantiate_classes(
     schema = OmegaConf.structured(get_class(full_class))
     cfg = OmegaConf.merge(schema, params)
     kwargs["config"] = cfg
-    obj = instantiate(*args, **kwargs)
+    with target_whitelist("tests.test_modules.*"):
+        obj = instantiate(*args, **kwargs)
     assert obj == expected
 
 

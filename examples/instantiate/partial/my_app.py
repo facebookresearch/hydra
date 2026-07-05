@@ -4,7 +4,7 @@ from typing import Any
 from omegaconf import DictConfig
 
 import hydra
-from hydra.utils import instantiate
+from hydra.utils import instantiate, target_whitelist
 
 
 class Optimizer:
@@ -30,7 +30,8 @@ class Model:
 
 @hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    model = instantiate(cfg.model)
+    with target_whitelist("my_app.*"):
+        model = instantiate(cfg.model)
     print(model)
 
 

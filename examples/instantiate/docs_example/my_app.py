@@ -3,7 +3,7 @@
 from omegaconf import DictConfig
 
 import hydra
-from hydra.utils import instantiate
+from hydra.utils import instantiate, target_whitelist
 
 
 class Optimizer:
@@ -41,42 +41,43 @@ class Trainer:
 
 @hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    optimizer = instantiate(cfg.trainer.optimizer)
-    print(optimizer)
-    # Optimizer(algo=SGD,lr=0.01)
+    with target_whitelist("my_app.*"):
+        optimizer = instantiate(cfg.trainer.optimizer)
+        print(optimizer)
+        # Optimizer(algo=SGD,lr=0.01)
 
-    # override parameters on the call-site
-    optimizer = instantiate(cfg.trainer.optimizer, lr=0.2)
-    print(optimizer)
-    # Optimizer(algo=SGD,lr=0.2)
+        # override parameters on the call-site
+        optimizer = instantiate(cfg.trainer.optimizer, lr=0.2)
+        print(optimizer)
+        # Optimizer(algo=SGD,lr=0.2)
 
-    # recursive instantiation
-    trainer = instantiate(cfg.trainer)
-    print(trainer)
-    # Trainer(
-    #   optimizer=Optimizer(algo=SGD,lr=0.01),
-    #   dataset=Dataset(name=Imagenet, path=/datasets/imagenet)
-    # )
+        # recursive instantiation
+        trainer = instantiate(cfg.trainer)
+        print(trainer)
+        # Trainer(
+        #   optimizer=Optimizer(algo=SGD,lr=0.01),
+        #   dataset=Dataset(name=Imagenet, path=/datasets/imagenet)
+        # )
 
-    # override nested parameters from the call-site
-    trainer = instantiate(
-        cfg.trainer,
-        optimizer={"lr": 0.3},
-        dataset={"name": "cifar10", "path": "/datasets/cifar10"},
-    )
-    print(trainer)
-    # Trainer(
-    #   optimizer=Optimizer(algo=SGD,lr=0.3),
-    #   dataset=Dataset(name=cifar10, path=/datasets/cifar10)
-    # )
+        # override nested parameters from the call-site
+        trainer = instantiate(
+            cfg.trainer,
+            optimizer={"lr": 0.3},
+            dataset={"name": "cifar10", "path": "/datasets/cifar10"},
+        )
+        print(trainer)
+        # Trainer(
+        #   optimizer=Optimizer(algo=SGD,lr=0.3),
+        #   dataset=Dataset(name=cifar10, path=/datasets/cifar10)
+        # )
 
-    # non recursive instantiation
-    trainer = instantiate(cfg.trainer, _recursive_=False)
-    print(trainer)
-    # Trainer(
-    #     optimizer={'_target_': 'my_app.Optimizer', 'algo': 'SGD', 'lr': 0.01},
-    #     dataset={'_target_': 'my_app.Dataset', 'name': 'Imagenet', 'path': '/datasets/imagenet'}
-    # )
+        # non recursive instantiation
+        trainer = instantiate(cfg.trainer, _recursive_=False)
+        print(trainer)
+        # Trainer(
+        #     optimizer={'_target_': 'my_app.Optimizer', 'algo': 'SGD', 'lr': 0.01},
+        #     dataset={'_target_': 'my_app.Dataset', 'name': 'Imagenet', 'path': '/datasets/imagenet'}
+        # )
 
 
 if __name__ == "__main__":

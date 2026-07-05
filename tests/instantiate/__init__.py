@@ -8,7 +8,7 @@ from typing import Any, Dict, List, NoReturn, Optional, Tuple
 from omegaconf import MISSING, DictConfig, ListConfig
 
 from hydra.types import TargetConf
-from hydra.utils import instantiate
+from hydra.utils import UNSAFE_ALLOW_ALL_TARGETS, instantiate
 from tests.instantiate.module_shadowed_by_function import a_function
 
 module_shadowed_by_function = a_function
@@ -95,6 +95,11 @@ def module_function(x: int) -> int:
 
 def module_function2() -> str:
     return "fn return"
+
+
+class CallableClass:
+    def __call__(self) -> str:
+        return "callable class"
 
 
 class ExceptionTakingNoArgument(Exception):
@@ -426,7 +431,9 @@ class TargetWithInstantiateInInit:
         if user:
             self.user = user
         else:
-            self.user = instantiate(user_config)
+            self.user = instantiate(
+                user_config, _target_whitelist_=UNSAFE_ALLOW_ALL_TARGETS
+            )
 
     def __eq__(self, other: Any) -> bool:
         return self.user.__eq__(other.user)

@@ -5,8 +5,14 @@ from typing import Any
 from pytest import mark, param, raises
 
 from hydra.errors import InstantiationException
-from hydra.utils import instantiate
+from hydra.utils import UNSAFE_ALLOW_ALL_TARGETS, instantiate
 from tests.instantiate import ArgsClass
+
+
+def unsafe_instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
+    kwargs.setdefault("_target_whitelist_", UNSAFE_ALLOW_ALL_TARGETS)
+    return instantiate(config, *args, **kwargs)
+
 
 #######################
 # non-recursive tests #
@@ -46,7 +52,7 @@ from tests.instantiate import ArgsClass
     ],
 )
 def test_instantiate_args_kwargs(cfg: Any, expected: Any) -> None:
-    assert instantiate(cfg) == expected
+    assert unsafe_instantiate(cfg) == expected
 
 
 @mark.parametrize(
@@ -81,7 +87,7 @@ def test_instantiate_unsupported_args_type(cfg: Any, msg: str) -> None:
         InstantiationException,
         match=msg,
     ):
-        instantiate(cfg)
+        unsafe_instantiate(cfg)
 
 
 @mark.parametrize(
@@ -112,7 +118,7 @@ def test_instantiate_unsupported_args_type(cfg: Any, msg: str) -> None:
     ],
 )
 def test_instantiate_args_kwargs_with_interpolation(cfg: Any, expected: Any) -> None:
-    assert instantiate(cfg) == expected
+    assert unsafe_instantiate(cfg) == expected
 
 
 @mark.parametrize(
@@ -151,7 +157,7 @@ def test_instantiate_args_kwargs_with_interpolation(cfg: Any, expected: Any) -> 
 def test_instantiate_args_kwargs_with_override(
     cfg: Any, args_override: Any, expected: Any, kwargs_override: Any
 ) -> None:
-    assert instantiate(cfg, *args_override, **kwargs_override) == expected
+    assert unsafe_instantiate(cfg, *args_override, **kwargs_override) == expected
 
 
 ###################
@@ -208,7 +214,7 @@ def test_instantiate_args_kwargs_with_override(
     ],
 )
 def test_recursive_instantiate_args_kwargs(cfg: Any, expected: Any) -> None:
-    assert instantiate(cfg) == expected
+    assert unsafe_instantiate(cfg) == expected
 
 
 @mark.parametrize(
@@ -271,4 +277,4 @@ def test_recursive_instantiate_args_kwargs(cfg: Any, expected: Any) -> None:
 def test_recursive_instantiate_args_kwargs_with_override(
     cfg: Any, args_override: Any, expected: Any, kwargs_override: Any
 ) -> None:
-    assert instantiate(cfg, *args_override, **kwargs_override) == expected
+    assert unsafe_instantiate(cfg, *args_override, **kwargs_override) == expected

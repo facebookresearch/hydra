@@ -16,6 +16,10 @@ log = logging.getLogger(__name__)
 # Instantiation related symbols
 instantiate = hydra._internal.instantiate._instantiate2.instantiate
 call = instantiate
+UNSAFE_ALLOW_ALL_TARGETS = (
+    hydra._internal.instantiate._instantiate2.UNSAFE_ALLOW_ALL_TARGETS
+)
+target_whitelist = hydra._internal.instantiate._instantiate2.target_whitelist
 ConvertMode = hydra.types.ConvertMode
 
 

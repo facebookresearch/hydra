@@ -63,7 +63,7 @@ cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 @hydra.main(version_base=None, config_name="config")
 def my_app(cfg: Config) -> None:
-    connection = instantiate(cfg.db)
+    connection = instantiate(cfg.db, _target_whitelist_="my_app.*")
     connection.connect()
 
 if __name__ == "__main__":
