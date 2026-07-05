@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-05",
-  "generated_at": "2026-07-05T10:53:23Z",
+  "generated_at": "2026-07-05T10:55:07Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 214,
+    "open_total": 213,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 45,
-        "percentage": 21.0
+        "percentage": 21.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 139,
-        "percentage": 65.0
+        "count": 138,
+        "percentage": 64.8
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 11,
-        "percentage": 5.1
+        "percentage": 5.2
       },
       {
         "category": "Refactor",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 4
+        "count": 3
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 107
+        "count": 108
       }
     ]
   },
@@ -112,31 +112,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 3259,
-      "title": "Harden instantiate blocklist for 1.3.x",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3263,
-          "url": "https://github.com/facebookresearch/hydra/pull/3263"
-        },
-        {
-          "number": 3264,
-          "url": "https://github.com/facebookresearch/hydra/pull/3264"
-        }
-      ],
-      "created": "2026-07-04",
-      "updated": "2026-07-04",
-      "labels": [
-        "instantiate_api",
-        "priority_high"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3259"
     },
     {
       "number": 3268,
@@ -5162,9 +5137,41 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3242"
+    },
+    {
+      "number": 3259,
+      "title": "Harden instantiate blocklist for 1.3.x",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3263,
+          "url": "https://github.com/facebookresearch/hydra/pull/3263"
+        },
+        {
+          "number": 3264,
+          "url": "https://github.com/facebookresearch/hydra/pull/3264"
+        }
+      ],
+      "created": "2026-07-04",
+      "updated": "2026-07-04",
+      "labels": [
+        "instantiate_api",
+        "priority_high"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3259"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-05T10:55:07Z",
+      "kind": "closed",
+      "issue": 3259,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3259",
+      "title": "Harden instantiate blocklist for 1.3.x"
+    },
     {
       "ts": "2026-07-05T08:16:43Z",
       "kind": "pr",
@@ -6710,13 +6717,6 @@
       "issue": 3058,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3058",
       "title": "[Question] How to Submit SLURM Jobs Eagerly?"
-    },
-    {
-      "ts": "2026-06-07T21:27:04Z",
-      "kind": "closed",
-      "issue": 2479,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2479",
-      "title": "Add an option to exit after the submitit launcher has scheduled the run on slurm"
     }
   ]
 }
