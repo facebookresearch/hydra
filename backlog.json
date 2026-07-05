@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-07-04",
-  "generated_at": "2026-07-04T21:48:41Z",
+  "generated_on": "2026-07-05",
+  "generated_at": "2026-07-05T06:07:29Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 213,
@@ -242,6 +242,26 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3053"
     },
     {
+      "number": 3078,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3262,
+          "url": "https://github.com/facebookresearch/hydra/pull/3262"
+        }
+      ],
+      "created": "2025-08-08",
+      "updated": "2026-06-20",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3078"
+    },
+    {
       "number": 3106,
       "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
       "category": "Bug",
@@ -322,26 +342,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3229"
-    },
-    {
-      "number": 3078,
-      "title": "[Bug]",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3262,
-          "url": "https://github.com/facebookresearch/hydra/pull/3262"
-        }
-      ],
-      "created": "2025-08-08",
-      "updated": "2026-06-20",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3078"
     },
     {
       "number": 385,
