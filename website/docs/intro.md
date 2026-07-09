@@ -1,7 +1,4 @@
----
-id: intro
-title: Getting started
-sidebar_label: Getting started
+https://www.instagram.com/ar.ju6654?igsh=c3JoN2RjYjgwcHJi
 ---
 
 import useBaseUrl from '@docusaurus/useBaseUrl';
