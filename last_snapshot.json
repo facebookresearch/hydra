@@ -110,7 +110,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-12T07:45:57Z",
+  "generated_at": "2026-07-13T08:07:06Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2511,11 +2511,9 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [
-        "3255"
-      ],
+      "pr_numbers": [],
       "state": "OPEN",
-      "status": "community PR",
+      "status": "not started",
       "title": "Defaults-list overrides in appended configs do not override earlier overrides",
       "updated_at": "2026-06-21T20:17:17Z"
     },
