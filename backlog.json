@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-15",
-  "generated_at": "2026-07-15T13:46:57Z",
+  "generated_at": "2026-07-15T14:16:41Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 207,
+    "open_total": 206,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 40,
-        "percentage": 19.3
+        "count": 39,
+        "percentage": 18.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 66.2
+        "percentage": 66.5
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 196
+        "count": 195
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 114
+        "count": 115
       }
     ]
   },
@@ -1938,24 +1938,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2254"
     },
     {
-      "number": 2262,
-      "title": "[Bug] hydra conf in structured config is not well handled",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-06-10",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage",
-        "structured config",
-        "has-workaround"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2262"
-    },
-    {
       "number": 2263,
       "title": "[Feature Request] Non-strict instantiation",
       "category": "Enhancement",
@@ -3591,6 +3573,22 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
+    },
+    {
+      "number": 2274,
+      "title": "[Bug/Question] `config_path` resolution is misleading",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-06-29",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2274"
     },
     {
       "number": 2284,
@@ -5320,23 +5318,32 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
     },
     {
-      "number": 2274,
-      "title": "[Bug/Question] `config_path` resolution is misleading",
+      "number": 2262,
+      "title": "[Bug] hydra conf in structured config is not well handled",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-06-29",
+      "created": "2022-06-10",
       "updated": "2026-07-15",
       "labels": [
         "bug",
+        "has-workaround",
+        "structured config",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2274"
+      "url": "https://github.com/facebookresearch/hydra/issues/2262"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-15T14:16:41Z",
+      "kind": "closed",
+      "issue": 2262,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2262",
+      "title": "[Bug] hydra conf in structured config is not well handled"
+    },
     {
       "ts": "2026-07-15T13:46:57Z",
       "kind": "closed",
@@ -6930,14 +6937,6 @@
       "issue": 2488,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2488",
       "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep"
-    },
-    {
-      "ts": "2026-06-30T12:09:47Z",
-      "kind": "pr",
-      "issue": 2507,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2507",
-      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
-      "detail": "linked #3251"
     }
   ]
 }

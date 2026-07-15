@@ -4,6 +4,7 @@
     "2032": "2026-06-20",
     "2070": "2026-06-29",
     "2162": "2026-06-11",
+    "2262": "2026-07-15",
     "2274": "2026-07-15",
     "2284": "2026-07-15",
     "2305": "2026-07-15",
@@ -115,7 +116,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-15T13:46:57Z",
+  "generated_at": "2026-07-15T14:16:41Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1333,21 +1334,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default.",
-      "updated_at": "2026-07-15T13:16:44Z"
-    },
-    "2262": {
-      "category": "Bug",
-      "created_at": "2022-06-10T18:36:15Z",
-      "labels": [
-        "bug",
-        "has-workaround",
-        "structured config",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] hydra conf in structured config is not well handled",
       "updated_at": "2026-07-15T13:16:44Z"
     },
     "2263": {
@@ -2952,6 +2938,21 @@
       "status": "done",
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "updated_at": "2025-01-22T23:55:03Z"
+    },
+    "2262": {
+      "category": "Bug",
+      "created_at": "2022-06-10T18:36:15Z",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "structured config",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] hydra conf in structured config is not well handled",
+      "updated_at": "2026-07-15T13:16:44Z"
     },
     "2274": {
       "category": "Bug",
