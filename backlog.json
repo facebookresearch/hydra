@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-15",
-  "generated_at": "2026-07-15T07:40:09Z",
+  "generated_at": "2026-07-15T10:45:23Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 212,
+    "open_total": 211,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 45,
-        "percentage": 21.2
+        "count": 44,
+        "percentage": 20.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 64.6
+        "percentage": 64.9
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 6.1
+        "percentage": 6.2
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 201
+        "count": 200
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 109
+        "count": 110
       }
     ]
   },
@@ -2009,21 +2009,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2313"
-    },
-    {
-      "number": 2322,
-      "title": "[Bug] instantiate stacktrace does not provide config key info",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-08-01",
-      "updated": "2022-08-02",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2322"
     },
     {
       "number": 2323,
@@ -5157,9 +5142,31 @@
       "updated": "2026-07-05",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
+    },
+    {
+      "number": 2322,
+      "title": "[Bug] instantiate stacktrace does not provide config key info",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-08-01",
+      "updated": "2022-08-02",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2322"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-15T10:45:23Z",
+      "kind": "closed",
+      "issue": 2322,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2322",
+      "title": "[Bug] instantiate stacktrace does not provide config key info"
+    },
     {
       "ts": "2026-07-13T08:07:06Z",
       "kind": "pr",
@@ -6705,14 +6712,6 @@
       "issue": 3118,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3118",
       "title": "[Bug] update `antlr4` dependency to 4.13 :)"
-    },
-    {
-      "ts": "2026-06-08T05:12:30Z",
-      "kind": "label",
-      "issue": 3129,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3129",
-      "title": "[Feature Request] outputs/.gitignore",
-      "detail": "removed \"triage\""
     }
   ]
 }
