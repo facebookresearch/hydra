@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-15",
-  "generated_at": "2026-07-15T18:05:42Z",
+  "generated_at": "2026-07-15T18:14:10Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 204,
+    "open_total": 203,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 37,
-        "percentage": 18.1
+        "count": 36,
+        "percentage": 17.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 67.2
+        "percentage": 67.5
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 194
+        "count": 193
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 117
+        "count": 118
       }
     ]
   },
@@ -1800,22 +1800,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2227"
-    },
-    {
-      "number": 2235,
-      "title": "Error message during `instantiate` missing some information",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-05-26",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2235"
     },
     {
       "number": 2236,
@@ -5332,9 +5316,32 @@
       "updated": "2026-07-05",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
+    },
+    {
+      "number": 2235,
+      "title": "Error message during `instantiate` missing some information",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-05-26",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2235"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-15T18:14:10Z",
+      "kind": "closed",
+      "issue": 2235,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2235",
+      "title": "Error message during `instantiate` missing some information"
+    },
     {
       "ts": "2026-07-15T18:05:42Z",
       "kind": "label",
@@ -6930,13 +6937,6 @@
       "issue": 2381,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2381",
       "title": "Error out on attempt to sweep on the Hydra configuration"
-    },
-    {
-      "ts": "2026-06-30T14:44:32Z",
-      "kind": "closed",
-      "issue": 2407,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2407",
-      "title": "[Bug] Ray Launcher - Py3.9 and 3.10 - Could not find a version that satisfies the requirement ray[default]==1.12.0 "
     }
   ]
 }
