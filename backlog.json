@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-15",
-  "generated_at": "2026-07-15T14:16:41Z",
+  "generated_at": "2026-07-15T17:30:36Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 206,
+    "open_total": 205,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 39,
-        "percentage": 18.9
+        "count": 38,
+        "percentage": 18.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 66.5
+        "percentage": 66.8
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 11,
-        "percentage": 5.3
+        "percentage": 5.4
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 4,
-        "percentage": 1.9
+        "percentage": 2.0
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 195
+        "count": 194
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 115
+        "count": 116
       }
     ]
   },
@@ -1873,22 +1873,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2237"
     },
     {
-      "number": 2241,
-      "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-05-26",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2241"
-    },
-    {
       "number": 2249,
       "title": "[Question/Feature Request] prevent logging of secrets",
       "category": "Enhancement",
@@ -3573,6 +3557,24 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
+    },
+    {
+      "number": 2262,
+      "title": "[Bug] hydra conf in structured config is not well handled",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-06-10",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "structured config",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2262"
     },
     {
       "number": 2274,
@@ -5318,25 +5320,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
     },
     {
-      "number": 2262,
-      "title": "[Bug] hydra conf in structured config is not well handled",
+      "number": 2241,
+      "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-06-10",
+      "created": "2022-05-26",
       "updated": "2026-07-15",
       "labels": [
         "bug",
-        "has-workaround",
-        "structured config",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2262"
+      "url": "https://github.com/facebookresearch/hydra/issues/2241"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-15T17:30:36Z",
+      "kind": "closed",
+      "issue": 2241,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2241",
+      "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir"
+    },
     {
       "ts": "2026-07-15T14:16:41Z",
       "kind": "closed",
@@ -6930,13 +6937,6 @@
       "issue": 2482,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2482",
       "title": "hydra.runtime.cwd, hydra.rutime.config_sources mixed path separators"
-    },
-    {
-      "ts": "2026-06-30T12:42:08Z",
-      "kind": "closed",
-      "issue": 2488,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2488",
-      "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep"
     }
   ]
 }

@@ -4,6 +4,7 @@
     "2032": "2026-06-20",
     "2070": "2026-06-29",
     "2162": "2026-06-11",
+    "2241": "2026-07-15",
     "2262": "2026-07-15",
     "2274": "2026-07-15",
     "2284": "2026-07-15",
@@ -116,7 +117,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-15T14:16:41Z",
+  "generated_at": "2026-07-15T17:30:36Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1282,19 +1283,6 @@
       "status": "not started",
       "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
       "updated_at": "2026-07-15T13:16:47Z"
-    },
-    "2241": {
-      "category": "Bug",
-      "created_at": "2022-05-26T19:29:59Z",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir",
-      "updated_at": "2026-07-15T13:16:46Z"
     },
     "2249": {
       "category": "Enhancement",
@@ -2938,6 +2926,19 @@
       "status": "done",
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "updated_at": "2025-01-22T23:55:03Z"
+    },
+    "2241": {
+      "category": "Bug",
+      "created_at": "2022-05-26T19:29:59Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir",
+      "updated_at": "2026-07-15T13:16:46Z"
     },
     "2262": {
       "category": "Bug",
