@@ -118,7 +118,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-15T17:59:35Z",
+  "generated_at": "2026-07-15T18:05:42Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1275,14 +1275,13 @@
         "bug",
         "optuna",
         "plugin",
-        "sweep",
-        "triage"
+        "sweep"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
-      "updated_at": "2026-07-15T13:16:47Z"
+      "updated_at": "2026-07-15T18:04:14Z"
     },
     "2249": {
       "category": "Enhancement",

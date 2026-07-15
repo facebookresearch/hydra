@@ -392,3 +392,4 @@
 {"ts": "2026-07-15T17:30:36Z", "kind": "closed", "issue": 2241, "issue_url": "https://github.com/facebookresearch/hydra/issues/2241", "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir"}
 {"ts": "2026-07-15T17:39:25Z", "kind": "label", "issue": 2236, "issue_url": "https://github.com/facebookresearch/hydra/issues/2236", "title": "`AssertionError` with unusual defaults list", "detail": "removed \"triage\""}
 {"ts": "2026-07-15T17:59:35Z", "kind": "closed", "issue": 3078, "issue_url": "https://github.com/facebookresearch/hydra/issues/3078", "title": "[Bug]"}
+{"ts": "2026-07-15T18:05:42Z", "kind": "label", "issue": 2237, "issue_url": "https://github.com/facebookresearch/hydra/issues/2237", "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value", "detail": "removed \"triage\""}

@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-15",
-  "generated_at": "2026-07-15T17:59:35Z",
+  "generated_at": "2026-07-15T18:05:42Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 204,
@@ -1845,7 +1845,6 @@
       "labels": [
         "bug",
         "plugin",
-        "triage",
         "optuna",
         "sweep"
       ],
@@ -5040,6 +5039,26 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3075"
     },
     {
+      "number": 3078,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3262,
+          "url": "https://github.com/facebookresearch/hydra/pull/3262"
+        }
+      ],
+      "created": "2025-08-08",
+      "updated": "2026-06-20",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3078"
+    },
+    {
       "number": 3103,
       "title": "[Feature Request] Get swept list without `hydra.main`",
       "category": "Enhancement",
@@ -5313,29 +5332,17 @@
       "updated": "2026-07-05",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
-    },
-    {
-      "number": 3078,
-      "title": "[Bug]",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3262,
-          "url": "https://github.com/facebookresearch/hydra/pull/3262"
-        }
-      ],
-      "created": "2025-08-08",
-      "updated": "2026-06-20",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3078"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-15T18:05:42Z",
+      "kind": "label",
+      "issue": 2237,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2237",
+      "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-07-15T17:59:35Z",
       "kind": "closed",
@@ -6930,13 +6937,6 @@
       "issue": 2407,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2407",
       "title": "[Bug] Ray Launcher - Py3.9 and 3.10 - Could not find a version that satisfies the requirement ray[default]==1.12.0 "
-    },
-    {
-      "ts": "2026-06-30T14:42:12Z",
-      "kind": "closed",
-      "issue": 2445,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2445",
-      "title": "[Bug] Navigating to certain pages in the hosted documentation fails with `t is undefined`"
     }
   ]
 }
