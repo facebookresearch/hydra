@@ -224,3 +224,4 @@
 {"ts": "2026-07-13T08:07:06Z", "kind": "pr", "issue": 3229, "issue_url": "https://github.com/facebookresearch/hydra/issues/3229", "title": "Defaults-list overrides in appended configs do not override earlier overrides", "detail": "unlinked #3255"}
 {"ts": "2026-07-15T10:45:23Z", "kind": "closed", "issue": 2322, "issue_url": "https://github.com/facebookresearch/hydra/issues/2322", "title": "[Bug] instantiate stacktrace does not provide config key info"}
 {"ts": "2026-07-15T11:59:03Z", "kind": "closed", "issue": 2313, "issue_url": "https://github.com/facebookresearch/hydra/issues/2313", "title": "[Bug]OptunaSweeper sample does not work with Hydra=1.2.0"}
+{"ts": "2026-07-15T12:39:16Z", "kind": "closed", "issue": 2305, "issue_url": "https://github.com/facebookresearch/hydra/issues/2305", "title": "[Bug] Dicts not merging"}

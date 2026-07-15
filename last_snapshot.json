@@ -4,6 +4,7 @@
     "2032": "2026-06-20",
     "2070": "2026-06-29",
     "2162": "2026-06-11",
+    "2305": "2026-07-15",
     "2313": "2026-07-15",
     "2322": "2026-07-15",
     "2338": "2026-07-04",
@@ -112,7 +113,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-15T11:59:03Z",
+  "generated_at": "2026-07-15T12:39:16Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1358,18 +1359,6 @@
       "status": "not started",
       "title": "Modify Trial when using a Sweeper",
       "updated_at": "2026-06-10T19:23:48Z"
-    },
-    "2305": {
-      "category": "Bug",
-      "created_at": "2022-07-19T17:37:14Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Dicts not merging",
-      "updated_at": "2022-09-10T16:27:57Z"
     },
     "2323": {
       "category": "Enhancement",
@@ -2809,6 +2798,18 @@
       "status": "done",
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "updated_at": "2025-01-22T23:55:03Z"
+    },
+    "2305": {
+      "category": "Bug",
+      "created_at": "2022-07-19T17:37:14Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Dicts not merging",
+      "updated_at": "2022-09-10T16:27:57Z"
     },
     "2313": {
       "category": "Bug",
