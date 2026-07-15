@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-15",
-  "generated_at": "2026-07-15T17:39:25Z",
+  "generated_at": "2026-07-15T17:59:35Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 205,
+    "open_total": 204,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 38,
-        "percentage": 18.5
+        "count": 37,
+        "percentage": 18.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 66.8
+        "percentage": 67.2
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 6.3
+        "percentage": 6.4
       },
       {
         "category": "Question",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 9
+        "count": 8
       },
       {
         "status": "blocked",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 116
+        "count": 117
       }
     ]
   },
@@ -220,26 +220,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3053"
-    },
-    {
-      "number": 3078,
-      "title": "[Bug]",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3262,
-          "url": "https://github.com/facebookresearch/hydra/pull/3262"
-        }
-      ],
-      "created": "2025-08-08",
-      "updated": "2026-06-20",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3078"
     },
     {
       "number": 3106,
@@ -5333,9 +5313,36 @@
       "updated": "2026-07-05",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
+    },
+    {
+      "number": 3078,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3262,
+          "url": "https://github.com/facebookresearch/hydra/pull/3262"
+        }
+      ],
+      "created": "2025-08-08",
+      "updated": "2026-06-20",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3078"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-15T17:59:35Z",
+      "kind": "closed",
+      "issue": 3078,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3078",
+      "title": "[Bug]"
+    },
     {
       "ts": "2026-07-15T17:39:25Z",
       "kind": "label",
@@ -6930,13 +6937,6 @@
       "issue": 2445,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2445",
       "title": "[Bug] Navigating to certain pages in the hosted documentation fails with `t is undefined`"
-    },
-    {
-      "ts": "2026-06-30T14:22:48Z",
-      "kind": "closed",
-      "issue": 2469,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2469",
-      "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification"
     }
   ]
 }
