@@ -4,6 +4,7 @@
     "2032": "2026-06-20",
     "2070": "2026-06-29",
     "2162": "2026-06-11",
+    "2284": "2026-07-15",
     "2305": "2026-07-15",
     "2313": "2026-07-15",
     "2322": "2026-07-15",
@@ -113,7 +114,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-15T12:39:16Z",
+  "generated_at": "2026-07-15T12:48:42Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1333,18 +1334,6 @@
       "status": "not started",
       "title": "[Feature Request] RQ Launcher plugin the ability to send tasks to different types of workers",
       "updated_at": "2022-09-16T11:35:06Z"
-    },
-    "2284": {
-      "category": "Bug",
-      "created_at": "2022-07-07T21:43:46Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Multirun doesn't notify user about exception",
-      "updated_at": "2022-07-26T22:28:50Z"
     },
     "2293": {
       "category": "Enhancement",
@@ -2798,6 +2787,18 @@
       "status": "done",
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "updated_at": "2025-01-22T23:55:03Z"
+    },
+    "2284": {
+      "category": "Bug",
+      "created_at": "2022-07-07T21:43:46Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Multirun doesn't notify user about exception",
+      "updated_at": "2022-07-26T22:28:50Z"
     },
     "2305": {
       "category": "Bug",

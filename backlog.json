@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-15",
-  "generated_at": "2026-07-15T12:39:16Z",
+  "generated_at": "2026-07-15T12:48:42Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 209,
+    "open_total": 208,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 42,
-        "percentage": 20.1
+        "count": 41,
+        "percentage": 19.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 65.6
+        "percentage": 65.9
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 198
+        "count": 197
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 112
+        "count": 113
       }
     ]
   },
@@ -1949,21 +1949,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2281"
     },
     {
-      "number": 2284,
-      "title": "[Bug] Multirun doesn't notify user about exception",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-07-07",
-      "updated": "2022-07-26",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2284"
-    },
-    {
       "number": 2293,
       "title": "Modify Trial when using a Sweeper",
       "category": "Enhancement",
@@ -3445,6 +3430,21 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
+    },
+    {
+      "number": 2305,
+      "title": "[Bug] Dicts not merging",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-07-19",
+      "updated": "2022-09-10",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2305"
     },
     {
       "number": 2313,
@@ -5144,22 +5144,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
     },
     {
-      "number": 2305,
-      "title": "[Bug] Dicts not merging",
+      "number": 2284,
+      "title": "[Bug] Multirun doesn't notify user about exception",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-07-19",
-      "updated": "2022-09-10",
+      "created": "2022-07-07",
+      "updated": "2022-07-26",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2305"
+      "url": "https://github.com/facebookresearch/hydra/issues/2284"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-15T12:48:42Z",
+      "kind": "closed",
+      "issue": 2284,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2284",
+      "title": "[Bug] Multirun doesn't notify user about exception"
+    },
     {
       "ts": "2026-07-15T12:39:16Z",
       "kind": "closed",
@@ -6704,13 +6711,6 @@
       "issue": 3202,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3202",
       "title": "Disallow parent traversal in Defaults List config groups"
-    },
-    {
-      "ts": "2026-06-08T06:34:25Z",
-      "kind": "closed",
-      "issue": 3104,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3104",
-      "title": "[Bug] Updating config group from a config group of another config group only works with full path"
     }
   ]
 }
