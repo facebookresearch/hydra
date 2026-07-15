@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-15",
-  "generated_at": "2026-07-15T13:19:21Z",
+  "generated_at": "2026-07-15T13:46:57Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 208,
+    "open_total": 207,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 41,
-        "percentage": 19.7
+        "count": 40,
+        "percentage": 19.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 65.9
+        "percentage": 66.2
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 13,
-        "percentage": 6.2
+        "percentage": 6.3
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 197
+        "count": 196
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 113
+        "count": 114
       }
     ]
   },
@@ -2019,22 +2019,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2268"
-    },
-    {
-      "number": 2274,
-      "title": "[Bug/Question] `config_path` resolution is misleading",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-06-29",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2274"
     },
     {
       "number": 2281,
@@ -5334,9 +5318,32 @@
       "updated": "2026-07-05",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
+    },
+    {
+      "number": 2274,
+      "title": "[Bug/Question] `config_path` resolution is misleading",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-06-29",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2274"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-15T13:46:57Z",
+      "kind": "closed",
+      "issue": 2274,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2274",
+      "title": "[Bug/Question] `config_path` resolution is misleading"
+    },
     {
       "ts": "2026-07-15T13:19:21Z",
       "kind": "label",
@@ -6931,18 +6938,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2507",
       "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
       "detail": "linked #3251"
-    },
-    {
-      "ts": "2026-06-30T12:09:47Z",
-      "kind": "status",
-      "issue": 2507,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2507",
-      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`",
-      "detail": "not started → in progress",
-      "pr": {
-        "number": 3251,
-        "url": "https://github.com/facebookresearch/hydra/pull/3251"
-      }
     }
   ]
 }
