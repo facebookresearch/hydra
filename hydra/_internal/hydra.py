@@ -170,11 +170,17 @@ class Hydra:
                 job_subdir_key=None,
                 configure_logging=with_log_configuration,
             )
-        except KeyboardInterrupt:
-            interrupted_ret = JobReturn()
-            interrupted_ret.status = JobStatus.FAILED
+        except KeyboardInterrupt as e:
+            # run_job attaches its populated JobReturn to the interrupt before
+            # re-raising; fall back to a minimal one if the interrupt happened
+            # before the job ran (e.g. during on_job_start)
+            job_return = getattr(e, "job_return", None)
+            if not isinstance(job_return, JobReturn):
+                job_return = JobReturn()
+                job_return.status = JobStatus.FAILED
+                job_return.return_value = e
             callbacks.on_run_end(
-                config=cfg, config_name=config_name, job_return=interrupted_ret
+                config=cfg, config_name=config_name, job_return=job_return
             )
             raise
         callbacks.on_run_end(config=cfg, config_name=config_name, job_return=ret)

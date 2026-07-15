@@ -23,13 +23,25 @@ class CustomCallback(Callback):
     def on_job_end(
         self, config: DictConfig, job_return: JobReturn, **kwargs: Any
     ) -> None:
-        log.info(f"{self.name} on_job_end")
+        log.info(f"{self.name} on_job_end {describe(job_return)}")
 
     def on_run_start(self, config: DictConfig, **kwargs: Any) -> None:
         log.info(f"{self.name} on_run_start")
 
     def on_run_end(self, config: DictConfig, **kwargs: Any) -> None:
-        log.info(f"{self.name} on_run_end")
+        job_return = kwargs.get("job_return")
+        assert isinstance(job_return, JobReturn)
+        log.info(f"{self.name} on_run_end {describe(job_return)}")
+
+
+def describe(job_return: JobReturn) -> str:
+    return (
+        f"status={job_return.status.name} "
+        f"exc={type(job_return._return_value).__name__} "
+        f"task_name={job_return.task_name} "
+        f"has_cfg={job_return.cfg is not None} "
+        f"has_working_dir={job_return.working_dir is not None}"
+    )
 
 
 @hydra.main(version_base=None, config_path=".", config_name="config")
