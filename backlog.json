@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-15",
-  "generated_at": "2026-07-15T10:45:23Z",
+  "generated_at": "2026-07-15T11:59:03Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 211,
+    "open_total": 210,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 44,
-        "percentage": 20.9
+        "count": 43,
+        "percentage": 20.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 64.9
+        "percentage": 65.2
       },
       {
         "category": "Documentation",
@@ -33,7 +33,7 @@
         "category": "Refactor",
         "emoji": "🔧",
         "count": 2,
-        "percentage": 0.9
+        "percentage": 1.0
       },
       {
         "category": "Build",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 200
+        "count": 199
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 110
+        "count": 111
       }
     ]
   },
@@ -1996,21 +1996,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2305"
     },
     {
-      "number": 2313,
-      "title": "[Bug]OptunaSweeper sample does not work with Hydra=1.2.0",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-07-26",
-      "updated": "2025-05-13",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2313"
-    },
-    {
       "number": 2323,
       "title": "specify maximum tasks in submitit_local",
       "category": "Enhancement",
@@ -3475,6 +3460,21 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
+    },
+    {
+      "number": 2322,
+      "title": "[Bug] instantiate stacktrace does not provide config key info",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-08-01",
+      "updated": "2022-08-02",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2322"
     },
     {
       "number": 2338,
@@ -5144,22 +5144,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
     },
     {
-      "number": 2322,
-      "title": "[Bug] instantiate stacktrace does not provide config key info",
+      "number": 2313,
+      "title": "[Bug]OptunaSweeper sample does not work with Hydra=1.2.0",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-08-01",
-      "updated": "2022-08-02",
+      "created": "2022-07-26",
+      "updated": "2025-05-13",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2322"
+      "url": "https://github.com/facebookresearch/hydra/issues/2313"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-15T11:59:03Z",
+      "kind": "closed",
+      "issue": 2313,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2313",
+      "title": "[Bug]OptunaSweeper sample does not work with Hydra=1.2.0"
+    },
     {
       "ts": "2026-07-15T10:45:23Z",
       "kind": "closed",
@@ -6705,13 +6712,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3106",
       "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
       "detail": "added \"awaiting_response\"; removed \"triage\""
-    },
-    {
-      "ts": "2026-06-08T05:18:10Z",
-      "kind": "closed",
-      "issue": 3118,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3118",
-      "title": "[Bug] update `antlr4` dependency to 4.13 :)"
     }
   ]
 }
