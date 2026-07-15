@@ -4,6 +4,7 @@
     "2032": "2026-06-20",
     "2070": "2026-06-29",
     "2162": "2026-06-11",
+    "2208": "2026-07-15",
     "2235": "2026-07-15",
     "2241": "2026-07-15",
     "2262": "2026-07-15",
@@ -119,7 +120,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-15T18:14:10Z",
+  "generated_at": "2026-07-15T18:18:24Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1203,20 +1204,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "CI: Testing Hydra against OmegaConf's master branch",
-      "updated_at": "2026-07-15T13:16:51Z"
-    },
-    "2208": {
-      "category": "Bug",
-      "created_at": "2022-05-12T17:15:11Z",
-      "labels": [
-        "bug",
-        "has-workaround",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "instantiate converts inner structured configs back to Dict/ListConf",
       "updated_at": "2026-07-15T13:16:51Z"
     },
     "2226": {
@@ -2899,6 +2886,20 @@
       "status": "done",
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "updated_at": "2025-01-22T23:55:03Z"
+    },
+    "2208": {
+      "category": "Bug",
+      "created_at": "2022-05-12T17:15:11Z",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "instantiate converts inner structured configs back to Dict/ListConf",
+      "updated_at": "2026-07-15T13:16:51Z"
     },
     "2235": {
       "category": "Bug",
