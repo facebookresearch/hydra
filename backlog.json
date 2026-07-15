@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-15",
-  "generated_at": "2026-07-15T17:30:36Z",
+  "generated_at": "2026-07-15T17:39:25Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 205,
@@ -1848,8 +1848,7 @@
       "created": "2022-05-26",
       "updated": "2026-07-15",
       "labels": [
-        "bug",
-        "triage"
+        "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2236"
     },
@@ -3557,6 +3556,22 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
+    },
+    {
+      "number": 2241,
+      "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-05-26",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2241"
     },
     {
       "number": 2262,
@@ -5318,25 +5333,17 @@
       "updated": "2026-07-05",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
-    },
-    {
-      "number": 2241,
-      "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-05-26",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2241"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-15T17:39:25Z",
+      "kind": "label",
+      "issue": 2236,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2236",
+      "title": "`AssertionError` with unusual defaults list",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-07-15T17:30:36Z",
       "kind": "closed",
@@ -6930,13 +6937,6 @@
       "issue": 2469,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2469",
       "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification"
-    },
-    {
-      "ts": "2026-06-30T13:56:19Z",
-      "kind": "closed",
-      "issue": 2482,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2482",
-      "title": "hydra.runtime.cwd, hydra.rutime.config_sources mixed path separators"
     }
   ]
 }
