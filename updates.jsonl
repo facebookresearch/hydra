@@ -395,3 +395,4 @@
 {"ts": "2026-07-15T18:05:42Z", "kind": "label", "issue": 2237, "issue_url": "https://github.com/facebookresearch/hydra/issues/2237", "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value", "detail": "removed \"triage\""}
 {"ts": "2026-07-15T18:14:10Z", "kind": "closed", "issue": 2235, "issue_url": "https://github.com/facebookresearch/hydra/issues/2235", "title": "Error message during `instantiate` missing some information"}
 {"ts": "2026-07-15T18:18:24Z", "kind": "closed", "issue": 2208, "issue_url": "https://github.com/facebookresearch/hydra/issues/2208", "title": "instantiate converts inner structured configs back to Dict/ListConf"}
+{"ts": "2026-07-15T18:25:44Z", "kind": "closed", "issue": 2193, "issue_url": "https://github.com/facebookresearch/hydra/issues/2193", "title": "[Bug] Not failing when required fields are missing when using structured config"}

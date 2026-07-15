@@ -4,6 +4,7 @@
     "2032": "2026-06-20",
     "2070": "2026-06-29",
     "2162": "2026-06-11",
+    "2193": "2026-07-15",
     "2208": "2026-07-15",
     "2235": "2026-07-15",
     "2241": "2026-07-15",
@@ -120,7 +121,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-15T18:18:24Z",
+  "generated_at": "2026-07-15T18:25:44Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1165,19 +1166,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] implement `MultiprocessingLauncher`",
-      "updated_at": "2026-07-15T13:16:53Z"
-    },
-    "2193": {
-      "category": "Documentation",
-      "created_at": "2022-05-05T17:06:52Z",
-      "labels": [
-        "documentation",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Not failing when required fields are missing when using structured config",
       "updated_at": "2026-07-15T13:16:53Z"
     },
     "2194": {
@@ -2886,6 +2874,19 @@
       "status": "done",
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "updated_at": "2025-01-22T23:55:03Z"
+    },
+    "2193": {
+      "category": "Documentation",
+      "created_at": "2022-05-05T17:06:52Z",
+      "labels": [
+        "documentation",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Not failing when required fields are missing when using structured config",
+      "updated_at": "2026-07-15T13:16:53Z"
     },
     "2208": {
       "category": "Bug",

@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-15",
-  "generated_at": "2026-07-15T18:18:24Z",
+  "generated_at": "2026-07-15T18:25:44Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 202,
+    "open_total": 201,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 35,
-        "percentage": 17.3
+        "percentage": 17.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 67.8
+        "percentage": 68.2
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 13,
-        "percentage": 6.4
+        "count": 12,
+        "percentage": 6.0
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 11,
-        "percentage": 5.4
+        "percentage": 5.5
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 192
+        "count": 191
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 119
+        "count": 120
       }
     ]
   },
@@ -1704,22 +1704,6 @@
         "launchers"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2187"
-    },
-    {
-      "number": 2193,
-      "title": "[Bug] Not failing when required fields are missing when using structured config",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-05-05",
-      "updated": "2026-07-15",
-      "labels": [
-        "documentation",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2193"
     },
     {
       "number": 2194,
@@ -3502,6 +3486,23 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
+    },
+    {
+      "number": 2208,
+      "title": "instantiate converts inner structured configs back to Dict/ListConf",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-05-12",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2208"
     },
     {
       "number": 2235,
@@ -5317,24 +5318,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
     },
     {
-      "number": 2208,
-      "title": "instantiate converts inner structured configs back to Dict/ListConf",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "number": 2193,
+      "title": "[Bug] Not failing when required fields are missing when using structured config",
+      "category": "Documentation",
+      "category_emoji": "📄",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-05-12",
+      "created": "2022-05-05",
       "updated": "2026-07-15",
       "labels": [
-        "bug",
-        "has-workaround",
+        "documentation",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2208"
+      "url": "https://github.com/facebookresearch/hydra/issues/2193"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-15T18:25:44Z",
+      "kind": "closed",
+      "issue": 2193,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2193",
+      "title": "[Bug] Not failing when required fields are missing when using structured config"
+    },
     {
       "ts": "2026-07-15T18:18:24Z",
       "kind": "closed",
@@ -6930,13 +6937,6 @@
       "issue": 2359,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2359",
       "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`"
-    },
-    {
-      "ts": "2026-06-30T15:33:45Z",
-      "kind": "new",
-      "issue": 3252,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3252",
-      "title": "Migrate Hydra plugin discovery from namespace scanning to entry points"
     }
   ]
 }
