@@ -19,6 +19,12 @@ Get the exact command to install the completion from `--hydra-help`.
 Currently, Bash, zsh and Fish are supported.
 We are relying on the community to implement tab completion plugins for additional shells.
 
+Hydra tab completion supports applications invoked as a Python script, such as
+`python my_app.py`, or through an installed console entry point, such as
+`my_app`. The `python -m my_app` invocation form is not supported because Hydra
+cannot determine passively whether a module launches a Hydra application. For a
+packaged application, define and use a console entry point instead.
+
 #### Fish instructions
 Fish support requires version >= 3.1.2.
 Previous versions will work but add an extra space after `.`.
