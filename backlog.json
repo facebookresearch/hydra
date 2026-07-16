@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T15:40:23Z",
+  "generated_at": "2026-07-16T16:50:12Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 187,
+    "open_total": 186,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 26,
-        "percentage": 13.9
+        "count": 25,
+        "percentage": 13.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 133,
-        "percentage": 71.1
+        "percentage": 71.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 6.4
+        "percentage": 6.5
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 10,
-        "percentage": 5.3
+        "percentage": 5.4
       },
       {
         "category": "Refactor",
@@ -39,14 +39,14 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 4,
-        "percentage": 2.1
+        "percentage": 2.2
       }
     ],
     "by_status": [
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 1
       },
       {
         "status": "community PR",
@@ -66,34 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 136
+        "count": 137
       }
     ]
   },
   "issues": [
-    {
-      "number": 1830,
-      "title": "[Bug] Cannot use plugin's conf dataclasses in structured config",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 2019,
-          "url": "https://github.com/facebookresearch/hydra/pull/2019"
-        }
-      ],
-      "created": "2021-09-21",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "plugin",
-        "triage",
-        "structured config"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1830"
-    },
     {
       "number": 2632,
       "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
@@ -3195,6 +3172,25 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1892"
     },
     {
+      "number": 1928,
+      "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\"",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-12-16",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "plugin",
+        "submitit",
+        "sweep",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1928"
+    },
+    {
       "number": 1933,
       "title": "[Bug] Selecting multiple configs from a group should allow selecting none",
       "category": "Bug",
@@ -5364,26 +5360,37 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
-      "number": 1928,
-      "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\"",
+      "number": 1830,
+      "title": "[Bug] Cannot use plugin's conf dataclasses in structured config",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [],
-      "created": "2021-12-16",
+      "prs": [
+        {
+          "number": 2019,
+          "url": "https://github.com/facebookresearch/hydra/pull/2019"
+        }
+      ],
+      "created": "2021-09-21",
       "updated": "2026-07-15",
       "labels": [
         "bug",
         "plugin",
-        "submitit",
-        "sweep",
+        "structured config",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1928"
+      "url": "https://github.com/facebookresearch/hydra/issues/1830"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T16:50:12Z",
+      "kind": "closed",
+      "issue": 1830,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1830",
+      "title": "[Bug] Cannot use plugin's conf dataclasses in structured config"
+    },
     {
       "ts": "2026-07-16T15:40:23Z",
       "kind": "closed",
@@ -6965,13 +6972,6 @@
       "issue": 2284,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2284",
       "title": "[Bug] Multirun doesn't notify user about exception"
-    },
-    {
-      "ts": "2026-07-15T12:39:16Z",
-      "kind": "closed",
-      "issue": 2305,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2305",
-      "title": "[Bug] Dicts not merging"
     }
   ]
 }
