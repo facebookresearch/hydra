@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T05:39:34Z",
+  "generated_at": "2026-07-16T05:45:31Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 198,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 3
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 188
+        "count": 187
       },
       {
         "status": "done",
@@ -114,6 +114,27 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 3275,
+      "title": "[Bug] Bash completion executes non-Hydra Python scripts",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3276,
+          "url": "https://github.com/facebookresearch/hydra/pull/3276"
+        }
+      ],
+      "created": "2026-07-16",
+      "updated": "2026-07-16",
+      "labels": [
+        "bug",
+        "tab_completion"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
       "number": 845,
@@ -3332,22 +3353,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3258"
     },
     {
-      "number": 3275,
-      "title": "[Bug] Bash completion executes non-Hydra Python scripts",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-16",
-      "updated": "2026-07-16",
-      "labels": [
-        "bug",
-        "tab_completion"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3275"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -5351,6 +5356,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-16T05:45:31Z",
+      "kind": "pr",
+      "issue": 3275,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3275",
+      "title": "[Bug] Bash completion executes non-Hydra Python scripts",
+      "detail": "linked #3276"
+    },
+    {
+      "ts": "2026-07-16T05:45:31Z",
+      "kind": "status",
+      "issue": 3275,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3275",
+      "title": "[Bug] Bash completion executes non-Hydra Python scripts",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3276,
+        "url": "https://github.com/facebookresearch/hydra/pull/3276"
+      }
+    },
+    {
       "ts": "2026-07-16T05:39:34Z",
       "kind": "new",
       "issue": 3275,
@@ -6926,26 +6951,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2800",
       "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
       "detail": "linked #3256"
-    },
-    {
-      "ts": "2026-07-04T09:54:26Z",
-      "kind": "status",
-      "issue": 2800,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2800",
-      "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
-      "detail": "not started → in progress",
-      "pr": {
-        "number": 3256,
-        "url": "https://github.com/facebookresearch/hydra/pull/3256"
-      }
-    },
-    {
-      "ts": "2026-07-04T07:59:49Z",
-      "kind": "pr",
-      "issue": 3210,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3210",
-      "title": "Modernize Optuna Sweeper",
-      "detail": "unlinked #3211"
     }
   ]
 }

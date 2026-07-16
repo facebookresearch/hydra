@@ -402,3 +402,5 @@
 {"ts": "2026-07-16T04:22:46Z", "kind": "closed", "issue": 2102, "issue_url": "https://github.com/facebookresearch/hydra/issues/2102", "title": "[Bug] Structured config in config store is not found with SearchPathPlugin"}
 {"ts": "2026-07-16T05:05:45Z", "kind": "closed", "issue": 2017, "issue_url": "https://github.com/facebookresearch/hydra/issues/2017", "title": "[Bug] Hydra resolver does not work in compose_api"}
 {"ts": "2026-07-16T05:39:34Z", "kind": "new", "issue": 3275, "issue_url": "https://github.com/facebookresearch/hydra/issues/3275", "title": "[Bug] Bash completion executes non-Hydra Python scripts"}
+{"ts": "2026-07-16T05:45:31Z", "kind": "status", "issue": 3275, "issue_url": "https://github.com/facebookresearch/hydra/issues/3275", "title": "[Bug] Bash completion executes non-Hydra Python scripts", "detail": "not started → in progress", "pr": {"number": 3276, "url": "https://github.com/facebookresearch/hydra/pull/3276"}}
+{"ts": "2026-07-16T05:45:31Z", "kind": "pr", "issue": 3275, "issue_url": "https://github.com/facebookresearch/hydra/issues/3275", "title": "[Bug] Bash completion executes non-Hydra Python scripts", "detail": "linked #3276"}

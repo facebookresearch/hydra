@@ -125,7 +125,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T05:39:34Z",
+  "generated_at": "2026-07-16T05:45:31Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2583,9 +2583,11 @@
         "bug",
         "tab_completion"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3276"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Bug] Bash completion executes non-Hydra Python scripts",
       "updated_at": "2026-07-16T05:39:12Z"
     },
