@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T06:04:23Z",
+  "generated_at": "2026-07-16T07:02:52Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 197,
+    "open_total": 196,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 31,
-        "percentage": 15.7
+        "count": 30,
+        "percentage": 15.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 69.5
+        "percentage": 69.9
       },
       {
         "category": "Documentation",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 2
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 125
+        "count": 126
       }
     ]
   },
@@ -114,27 +114,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 3275,
-      "title": "[Bug] Bash completion executes non-Hydra Python scripts",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3276,
-          "url": "https://github.com/facebookresearch/hydra/pull/3276"
-        }
-      ],
-      "created": "2026-07-16",
-      "updated": "2026-07-16",
-      "labels": [
-        "bug",
-        "tab_completion"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
       "number": 845,
@@ -3369,6 +3348,24 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1892"
     },
     {
+      "number": 1957,
+      "title": "[Bug] Shell completion doesn't work with `python -m module_name ...`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-01-14",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "priority_low",
+        "tab_completion",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1957"
+    },
+    {
       "number": 2017,
       "title": "[Bug] Hydra resolver does not work in compose_api",
       "category": "Bug",
@@ -5336,25 +5333,35 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
     },
     {
-      "number": 1957,
-      "title": "[Bug] Shell completion doesn't work with `python -m module_name ...`",
+      "number": 3275,
+      "title": "[Bug] Bash completion executes non-Hydra Python scripts",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-01-14",
-      "updated": "2026-07-15",
+      "prs": [
+        {
+          "number": 3276,
+          "url": "https://github.com/facebookresearch/hydra/pull/3276"
+        }
+      ],
+      "created": "2026-07-16",
+      "updated": "2026-07-16",
       "labels": [
         "bug",
-        "priority_low",
-        "tab_completion",
-        "triage"
+        "tab_completion"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1957"
+      "url": "https://github.com/facebookresearch/hydra/issues/3275"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T07:02:52Z",
+      "kind": "closed",
+      "issue": 3275,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3275",
+      "title": "[Bug] Bash completion executes non-Hydra Python scripts"
+    },
     {
       "ts": "2026-07-16T06:04:23Z",
       "kind": "closed",
@@ -6943,13 +6950,6 @@
         "number": 3257,
         "url": "https://github.com/facebookresearch/hydra/pull/3257"
       }
-    },
-    {
-      "ts": "2026-07-04T10:16:21Z",
-      "kind": "closed",
-      "issue": 2800,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2800",
-      "title": "[Bug] Interpolation doesn't work within hydra.job.env_set"
     }
   ]
 }

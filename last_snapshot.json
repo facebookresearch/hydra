@@ -124,9 +124,10 @@
     "3242": "2026-06-29",
     "3259": "2026-07-05",
     "3268": "2026-07-05",
+    "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T06:04:23Z",
+  "generated_at": "2026-07-16T07:02:52Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2562,21 +2563,6 @@
       "title": "Switch instantiate target filtering to an allowlist model for 1.4",
       "updated_at": "2026-07-04T14:17:15Z"
     },
-    "3275": {
-      "category": "Bug",
-      "created_at": "2026-07-16T05:38:09Z",
-      "labels": [
-        "bug",
-        "tab_completion"
-      ],
-      "pr_numbers": [
-        "3276"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "[Bug] Bash completion executes non-Hydra Python scripts",
-      "updated_at": "2026-07-16T05:39:12Z"
-    },
     "385": {
       "category": "Enhancement",
       "created_at": "2020-01-19T10:23:55Z",
@@ -4322,6 +4308,21 @@
       "status": "done",
       "title": "Change plugin instantiation to avoid recursive target execution in Hydra core",
       "updated_at": "2026-07-05T07:40:55Z"
+    },
+    "3275": {
+      "category": "Bug",
+      "created_at": "2026-07-16T05:38:09Z",
+      "labels": [
+        "bug",
+        "tab_completion"
+      ],
+      "pr_numbers": [
+        "3276"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Bash completion executes non-Hydra Python scripts",
+      "updated_at": "2026-07-16T05:39:12Z"
     },
     "692": {
       "category": "Enhancement",
