@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T17:03:38Z",
+  "generated_at": "2026-07-16T17:21:33Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 185,
@@ -822,13 +822,12 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2021-06-17",
-      "updated": "2026-07-15",
+      "updated": "2026-07-16",
       "labels": [
         "enhancement",
         "help wanted",
         "wishlist",
-        "plugin",
-        "triage"
+        "plugin"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1679"
     },
@@ -5216,6 +5215,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3207"
     },
     {
+      "number": 3210,
+      "title": "Modernize Optuna Sweeper",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-06-11",
+      "updated": "2026-06-26",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3210"
+    },
+    {
       "number": 3213,
       "title": "[Feature Request] Allow the config path in initialize to be absolute",
       "category": "Enhancement",
@@ -5368,22 +5380,17 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
-    },
-    {
-      "number": 3210,
-      "title": "Modernize Optuna Sweeper",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2026-06-11",
-      "updated": "2026-06-26",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3210"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T17:21:33Z",
+      "kind": "label",
+      "issue": 1679,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1679",
+      "title": "[Feature Request] Resume study and avoid OOM when optimizing with Optuna plugin",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-07-16T17:03:38Z",
       "kind": "closed",
@@ -6963,14 +6970,6 @@
       "issue": 633,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/633",
       "title": "Allow adding help messages to command line arguments",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 468,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/468",
-      "title": "Specify the schema for returning the result of optimization.",
       "detail": "added \"triage\""
     }
   ]

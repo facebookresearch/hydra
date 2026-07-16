@@ -139,7 +139,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T17:03:38Z",
+  "generated_at": "2026-07-16T17:21:33Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -409,14 +409,13 @@
         "enhancement",
         "help wanted",
         "plugin",
-        "triage",
         "wishlist"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] Resume study and avoid OOM when optimizing with Optuna plugin",
-      "updated_at": "2026-07-15T13:17:29Z"
+      "updated_at": "2026-07-16T17:20:16Z"
     },
     "1749": {
       "category": "Enhancement",
