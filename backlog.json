@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T14:04:37Z",
+  "generated_at": "2026-07-16T14:22:05Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 190,
+    "open_total": 189,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 28,
-        "percentage": 14.7
+        "percentage": 14.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 133,
-        "percentage": 70.0
+        "percentage": 70.4
       },
       {
         "category": "Documentation",
@@ -26,8 +26,8 @@
       {
         "category": "Question",
         "emoji": "❓",
-        "count": 11,
-        "percentage": 5.8
+        "count": 10,
+        "percentage": 5.3
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 179
+        "count": 178
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 133
+        "count": 134
       }
     ]
   },
@@ -182,6 +182,28 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1898"
     },
     {
+      "number": 2149,
+      "title": "[Bug] Documentation Binder link is broken.",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3280,
+          "url": "https://github.com/facebookresearch/hydra/pull/3280"
+        }
+      ],
+      "created": "2022-04-13",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "documentation",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2149"
+    },
+    {
       "number": 2889,
       "title": "[Bug] Misleading error message when opening .yml file",
       "category": "Bug",
@@ -282,28 +304,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3215"
-    },
-    {
-      "number": 2149,
-      "title": "[Bug] Documentation Binder link is broken.",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3280,
-          "url": "https://github.com/facebookresearch/hydra/pull/3280"
-        }
-      ],
-      "created": "2022-04-13",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "documentation",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2149"
     },
     {
       "number": 385,
@@ -1277,22 +1277,6 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1933"
-    },
-    {
-      "number": 1934,
-      "title": "hydra.utils.instantiate using a config file",
-      "category": "Question",
-      "category_emoji": "❓",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-12-20",
-      "updated": "2026-07-15",
-      "labels": [
-        "question",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1934"
     },
     {
       "number": 1944,
@@ -3245,6 +3229,24 @@
       "updated": "2021-11-22",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
+      "number": 1936,
+      "title": "instantiate api - having to write a dataclass conf for every _target_ class ",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-12-21",
+      "updated": "2026-07-15",
+      "labels": [
+        "instantiate_api",
+        "priority_low",
+        "structured config",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1936"
     },
     {
       "number": 1937,
@@ -5365,25 +5367,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
-      "number": 1936,
-      "title": "instantiate api - having to write a dataclass conf for every _target_ class ",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 1934,
+      "title": "hydra.utils.instantiate using a config file",
+      "category": "Question",
+      "category_emoji": "❓",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2021-12-21",
+      "created": "2021-12-20",
       "updated": "2026-07-15",
       "labels": [
-        "instantiate_api",
-        "priority_low",
-        "structured config",
+        "question",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1936"
+      "url": "https://github.com/facebookresearch/hydra/issues/1934"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T14:22:05Z",
+      "kind": "closed",
+      "issue": 1934,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1934",
+      "title": "hydra.utils.instantiate using a config file"
+    },
     {
       "ts": "2026-07-16T14:04:37Z",
       "kind": "pr",
@@ -6965,14 +6972,6 @@
       "issue": 2322,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2322",
       "title": "[Bug] instantiate stacktrace does not provide config key info"
-    },
-    {
-      "ts": "2026-07-13T08:07:06Z",
-      "kind": "pr",
-      "issue": 3229,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3229",
-      "title": "Defaults-list overrides in appended configs do not override earlier overrides",
-      "detail": "unlinked #3255"
     }
   ]
 }

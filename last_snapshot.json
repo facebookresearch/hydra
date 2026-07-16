@@ -1,6 +1,7 @@
 {
   "closed_at": {
     "1892": "2026-06-07",
+    "1934": "2026-07-16",
     "1936": "2026-07-16",
     "1937": "2026-07-16",
     "1939": "2026-07-16",
@@ -134,7 +135,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T14:04:37Z",
+  "generated_at": "2026-07-16T14:22:05Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -809,19 +810,6 @@
       "status": "not started",
       "title": "[Bug] Selecting multiple configs from a group should allow selecting none",
       "updated_at": "2026-07-15T13:17:10Z"
-    },
-    "1934": {
-      "category": "Question",
-      "created_at": "2021-12-20T11:28:25Z",
-      "labels": [
-        "question",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "hydra.utils.instantiate using a config file",
-      "updated_at": "2026-07-15T13:17:09Z"
     },
     "1944": {
       "category": "Enhancement",
@@ -2482,7 +2470,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "hydra.mini(): capability-based application entry point with opt-in behavior",
-      "updated_at": "2026-07-16T13:10:35Z"
+      "updated_at": "2026-07-16T14:18:12Z"
     },
     "385": {
       "category": "Enhancement",
@@ -2685,6 +2673,19 @@
       "status": "done",
       "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
       "updated_at": "2021-11-22T21:10:28Z"
+    },
+    "1934": {
+      "category": "Question",
+      "created_at": "2021-12-20T11:28:25Z",
+      "labels": [
+        "question",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "hydra.utils.instantiate using a config file",
+      "updated_at": "2026-07-15T13:17:09Z"
     },
     "1936": {
       "category": "Enhancement",
