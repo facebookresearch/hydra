@@ -53,6 +53,7 @@ class ConfigLoaderImpl(ConfigLoader):
     ) -> None:
         self.config_search_path = config_search_path
         self.repository = ConfigRepository(config_search_path=config_search_path)
+        self._active_repository: Optional[IConfigRepository] = None
 
     @staticmethod
     def validate_sweep_overrides_legal(
@@ -143,6 +144,41 @@ class ConfigLoaderImpl(ConfigLoader):
         from_shell: bool = True,
         validate_sweep_overrides: bool = True,
     ) -> DictConfig:
+        return self._load_configuration(
+            config_name=config_name,
+            overrides=overrides,
+            run_mode=run_mode,
+            from_shell=from_shell,
+            validate_sweep_overrides=validate_sweep_overrides,
+            activate_config_repository=False,
+        )
+
+    def _load_configuration_with_active_repository(
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        run_mode: RunMode,
+        from_shell: bool = True,
+        validate_sweep_overrides: bool = True,
+    ) -> DictConfig:
+        return self._load_configuration(
+            config_name=config_name,
+            overrides=overrides,
+            run_mode=run_mode,
+            from_shell=from_shell,
+            validate_sweep_overrides=validate_sweep_overrides,
+            activate_config_repository=True,
+        )
+
+    def _load_configuration(
+        self,
+        config_name: Optional[str],
+        overrides: List[str],
+        run_mode: RunMode,
+        from_shell: bool,
+        validate_sweep_overrides: bool,
+        activate_config_repository: bool,
+    ) -> DictConfig:
         try:
             return self._load_configuration_impl(
                 config_name=config_name,
@@ -150,6 +186,7 @@ class ConfigLoaderImpl(ConfigLoader):
                 run_mode=run_mode,
                 from_shell=from_shell,
                 validate_sweep_overrides=validate_sweep_overrides,
+                activate_config_repository=activate_config_repository,
             )
         except OmegaConfBaseException as e:
             raise ConfigCompositionException().with_traceback(sys.exc_info()[2]) from e
@@ -242,6 +279,7 @@ class ConfigLoaderImpl(ConfigLoader):
         run_mode: RunMode,
         from_shell: bool = True,
         validate_sweep_overrides: bool = True,
+        activate_config_repository: bool = False,
     ) -> DictConfig:
         from hydra import __version__, version
 
@@ -303,6 +341,9 @@ class ConfigLoaderImpl(ConfigLoader):
             cfg.hydra.job.name = JobRuntime().get("name")
 
         cfg.hydra.job.config_name = config_name
+
+        if activate_config_repository:
+            self._active_repository = caching_repo
 
         return cfg
 
@@ -588,6 +629,12 @@ class ConfigLoaderImpl(ConfigLoader):
         config_name: Optional[str] = None,
         overrides: Optional[List[str]] = None,
     ) -> List[str]:
+        if (
+            config_name is None
+            and overrides is None
+            and self._active_repository is not None
+        ):
+            return self._active_repository.get_group_options(group_name, results_filter)
         if overrides is None:
             overrides = []
         _, caching_repo = self._parse_overrides_and_create_caching_repo(
@@ -630,6 +677,8 @@ class ConfigLoaderImpl(ConfigLoader):
         return cfg
 
     def get_sources(self) -> List[ConfigSource]:
+        if self._active_repository is not None:
+            return self._active_repository.get_sources()
         return self.repository.get_sources()
 
     def compute_defaults_list(
