@@ -125,7 +125,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T05:05:45Z",
+  "generated_at": "2026-07-16T05:39:34Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2575,6 +2575,19 @@
       "status": "not started",
       "title": "Switch instantiate target filtering to an allowlist model for 1.4",
       "updated_at": "2026-07-04T14:17:15Z"
+    },
+    "3275": {
+      "category": "Bug",
+      "created_at": "2026-07-16T05:38:09Z",
+      "labels": [
+        "bug",
+        "tab_completion"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Bash completion executes non-Hydra Python scripts",
+      "updated_at": "2026-07-16T05:39:12Z"
     },
     "385": {
       "category": "Enhancement",

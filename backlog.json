@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T05:05:45Z",
+  "generated_at": "2026-07-16T05:39:34Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 197,
+    "open_total": 198,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 31,
-        "percentage": 15.7
+        "count": 32,
+        "percentage": 16.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 69.5
+        "percentage": 69.2
       },
       {
         "category": "Documentation",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 187
+        "count": 188
       },
       {
         "status": "done",
@@ -3332,6 +3332,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3258"
     },
     {
+      "number": 3275,
+      "title": "[Bug] Bash completion executes non-Hydra Python scripts",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-16",
+      "updated": "2026-07-16",
+      "labels": [
+        "bug",
+        "tab_completion"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3275"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -3364,6 +3380,24 @@
       "updated": "2021-11-22",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
+      "number": 2017,
+      "title": "[Bug] Hydra resolver does not work in compose_api",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-02-07",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "compose_api",
+        "triage",
+        "wishlist"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2017"
     },
     {
       "number": 2032,
@@ -5313,27 +5347,16 @@
       "updated": "2026-07-05",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
-    },
-    {
-      "number": 2017,
-      "title": "[Bug] Hydra resolver does not work in compose_api",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-02-07",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "compose_api",
-        "triage",
-        "wishlist"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2017"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T05:39:34Z",
+      "kind": "new",
+      "issue": 3275,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3275",
+      "title": "[Bug] Bash completion executes non-Hydra Python scripts"
+    },
     {
       "ts": "2026-07-16T05:05:45Z",
       "kind": "closed",
@@ -6923,14 +6946,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3210",
       "title": "Modernize Optuna Sweeper",
       "detail": "unlinked #3211"
-    },
-    {
-      "ts": "2026-07-04T07:59:49Z",
-      "kind": "status",
-      "issue": 3210,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3210",
-      "title": "Modernize Optuna Sweeper",
-      "detail": "community PR → not started"
     }
   ]
 }
