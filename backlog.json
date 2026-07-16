@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T04:22:46Z",
+  "generated_at": "2026-07-16T05:05:45Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 198,
+    "open_total": 197,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 32,
-        "percentage": 16.2
+        "count": 31,
+        "percentage": 15.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 69.2
+        "percentage": 69.5
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 188
+        "count": 187
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 123
+        "count": 124
       }
     ]
   },
@@ -1482,24 +1482,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2000"
-    },
-    {
-      "number": 2017,
-      "title": "[Bug] Hydra resolver does not work in compose_api",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-02-07",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "wishlist",
-        "triage",
-        "compose_api"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2017"
     },
     {
       "number": 2027,
@@ -3415,6 +3397,26 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2070"
     },
     {
+      "number": 2102,
+      "title": "[Bug] Structured config in config store is not found with SearchPathPlugin",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-03-18",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "config store",
+        "defaults list",
+        "has-workaround",
+        "plugin",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2102"
+    },
+    {
       "number": 2107,
       "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`",
       "category": "Bug",
@@ -5313,27 +5315,32 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
     },
     {
-      "number": 2102,
-      "title": "[Bug] Structured config in config store is not found with SearchPathPlugin",
+      "number": 2017,
+      "title": "[Bug] Hydra resolver does not work in compose_api",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-03-18",
+      "created": "2022-02-07",
       "updated": "2026-07-15",
       "labels": [
         "bug",
-        "config store",
-        "defaults list",
-        "has-workaround",
-        "plugin",
-        "triage"
+        "compose_api",
+        "triage",
+        "wishlist"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2102"
+      "url": "https://github.com/facebookresearch/hydra/issues/2017"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T05:05:45Z",
+      "kind": "closed",
+      "issue": 2017,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2017",
+      "title": "[Bug] Hydra resolver does not work in compose_api"
+    },
     {
       "ts": "2026-07-16T04:22:46Z",
       "kind": "closed",
@@ -6924,13 +6931,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3210",
       "title": "Modernize Optuna Sweeper",
       "detail": "community PR → not started"
-    },
-    {
-      "ts": "2026-07-03T05:35:56Z",
-      "kind": "closed",
-      "issue": 2348,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2348",
-      "title": "[Bug] AssertionError when configuring hydra from top-level dataclass"
     }
   ]
 }
