@@ -56,6 +56,14 @@ Plugins.instance()
             id="optional",
         ),
         param(
+            "keyword_whitespace",
+            [
+                GroupDefault(group="group1", value="file1", optional=True),
+                GroupDefault(group="group2", value="file2", override=True),
+            ],
+            id="keyword_whitespace",
+        ),
+        param(
             "config_default",
             [ConfigDefault(path="empty")],
             id="non_config_group_default",
@@ -69,6 +77,27 @@ def test_loaded_defaults_list(
     result = repo.load_config(config_path=config_path)
     assert result is not None
     assert result.defaults_list == expected_list
+
+
+def test_unknown_keyword_in_defaults_list() -> None:
+    repo = create_repo()
+    with raises(
+        ValueError,
+        match=re.escape(
+            "In unknown_keyword: Unsupported keyword 'optioal' in defaults list"
+        ),
+    ):
+        repo.load_config(config_path="unknown_keyword")
+
+
+@mark.parametrize("config_name", ["empty_group", "whitespace_group"])
+def test_missing_group_name_in_defaults_list(config_name: str) -> None:
+    repo = create_repo()
+    with raises(
+        ValueError,
+        match=re.escape(f"In {config_name}: Missing group name in defaults list"),
+    ):
+        repo.load_config(config_path=config_name)
 
 
 @mark.parametrize(
