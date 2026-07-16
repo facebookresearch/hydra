@@ -122,7 +122,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T03:35:17Z",
+  "generated_at": "2026-07-16T03:53:13Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1091,14 +1091,13 @@
       "category": "Bug",
       "created_at": "2022-04-01T15:18:04Z",
       "labels": [
-        "bug",
-        "triage"
+        "bug"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug] Recursion overflow from `--help` if `group=''`",
-      "updated_at": "2026-07-15T13:16:56Z"
+      "updated_at": "2026-07-16T03:51:52Z"
     },
     "2140": {
       "category": "Enhancement",

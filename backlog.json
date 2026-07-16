@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T03:35:17Z",
+  "generated_at": "2026-07-16T03:53:13Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 200,
@@ -1614,10 +1614,9 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2022-04-01",
-      "updated": "2026-07-15",
+      "updated": "2026-07-16",
       "labels": [
-        "bug",
-        "triage"
+        "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2121"
     },
@@ -3451,6 +3450,24 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2070"
+    },
+    {
+      "number": 2125,
+      "title": "[Bug] Cannot find conf/ dir when outside of packaged app.",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-04-04",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "internal",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2125"
     },
     {
       "number": 2162,
@@ -5314,27 +5331,17 @@
       "updated": "2026-07-05",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
-    },
-    {
-      "number": 2125,
-      "title": "[Bug] Cannot find conf/ dir when outside of packaged app.",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-04-04",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "has-workaround",
-        "internal",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2125"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T03:53:13Z",
+      "kind": "label",
+      "issue": 2121,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2121",
+      "title": "[Bug] Recursion overflow from `--help` if `group=''`",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-07-16T03:35:17Z",
       "kind": "closed",
@@ -6930,13 +6937,6 @@
         "number": 3255,
         "url": "https://github.com/facebookresearch/hydra/pull/3255"
       }
-    },
-    {
-      "ts": "2026-07-01T07:21:36Z",
-      "kind": "closed",
-      "issue": 2507,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2507",
-      "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`"
     }
   ]
 }
