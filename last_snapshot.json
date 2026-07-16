@@ -1,6 +1,7 @@
 {
   "closed_at": {
     "1892": "2026-06-07",
+    "1928": "2026-07-16",
     "1933": "2026-07-16",
     "1934": "2026-07-16",
     "1936": "2026-07-16",
@@ -136,7 +137,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T14:34:57Z",
+  "generated_at": "2026-07-16T15:40:23Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -781,22 +782,6 @@
       "status": "not started",
       "title": "[Feature Request] Document how configs typing validation works",
       "updated_at": "2026-07-15T13:17:12Z"
-    },
-    "1928": {
-      "category": "Bug",
-      "created_at": "2021-12-16T18:47:51Z",
-      "labels": [
-        "bug",
-        "plugin",
-        "submitit",
-        "sweep",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\"",
-      "updated_at": "2026-07-15T13:17:10Z"
     },
     "1944": {
       "category": "Enhancement",
@@ -2660,6 +2645,22 @@
       "status": "done",
       "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
       "updated_at": "2021-11-22T21:10:28Z"
+    },
+    "1928": {
+      "category": "Bug",
+      "created_at": "2021-12-16T18:47:51Z",
+      "labels": [
+        "bug",
+        "plugin",
+        "submitit",
+        "sweep",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\"",
+      "updated_at": "2026-07-15T13:17:10Z"
     },
     "1933": {
       "category": "Bug",

@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T14:34:57Z",
+  "generated_at": "2026-07-16T15:40:23Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 188,
+    "open_total": 187,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 27,
-        "percentage": 14.4
+        "count": 26,
+        "percentage": 13.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 133,
-        "percentage": 70.7
+        "percentage": 71.1
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 177
+        "count": 176
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 135
+        "count": 136
       }
     ]
   },
@@ -1241,25 +1241,6 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1923"
-    },
-    {
-      "number": 1928,
-      "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\"",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-12-16",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "plugin",
-        "triage",
-        "sweep",
-        "submitit"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1928"
     },
     {
       "number": 1944,
@@ -3212,6 +3193,23 @@
       "updated": "2021-11-22",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
+      "number": 1933,
+      "title": "[Bug] Selecting multiple configs from a group should allow selecting none",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-12-19",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "defaults list",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1933"
     },
     {
       "number": 1934,
@@ -5366,24 +5364,33 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
-      "number": 1933,
-      "title": "[Bug] Selecting multiple configs from a group should allow selecting none",
+      "number": 1928,
+      "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\"",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2021-12-19",
+      "created": "2021-12-16",
       "updated": "2026-07-15",
       "labels": [
         "bug",
-        "defaults list",
+        "plugin",
+        "submitit",
+        "sweep",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1933"
+      "url": "https://github.com/facebookresearch/hydra/issues/1928"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T15:40:23Z",
+      "kind": "closed",
+      "issue": 1928,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1928",
+      "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\""
+    },
     {
       "ts": "2026-07-16T14:34:57Z",
       "kind": "closed",
@@ -6965,13 +6972,6 @@
       "issue": 2305,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2305",
       "title": "[Bug] Dicts not merging"
-    },
-    {
-      "ts": "2026-07-15T11:59:03Z",
-      "kind": "closed",
-      "issue": 2313,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2313",
-      "title": "[Bug]OptunaSweeper sample does not work with Hydra=1.2.0"
     }
   ]
 }
