@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T13:23:15Z",
+  "generated_at": "2026-07-16T14:04:37Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 191,
+    "open_total": 190,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 134,
-        "percentage": 70.2
+        "count": 133,
+        "percentage": 70.0
       },
       {
         "category": "Documentation",
@@ -33,7 +33,7 @@
         "category": "Refactor",
         "emoji": "🔧",
         "count": 2,
-        "percentage": 1.0
+        "percentage": 1.1
       },
       {
         "category": "Build",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 8
+        "count": 9
       },
       {
         "status": "blocked",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 181
+        "count": 179
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 132
+        "count": 133
       }
     ]
   },
@@ -282,6 +282,28 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3215"
+    },
+    {
+      "number": 2149,
+      "title": "[Bug] Documentation Binder link is broken.",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3280,
+          "url": "https://github.com/facebookresearch/hydra/pull/3280"
+        }
+      ],
+      "created": "2022-04-13",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "documentation",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2149"
     },
     {
       "number": 385,
@@ -1273,24 +1295,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1934"
     },
     {
-      "number": 1936,
-      "title": "instantiate api - having to write a dataclass conf for every _target_ class ",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-12-21",
-      "updated": "2026-07-15",
-      "labels": [
-        "triage",
-        "instantiate_api",
-        "structured config",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1936"
-    },
-    {
       "number": 1944,
       "title": "[Feature Request] logrange sweep",
       "category": "Enhancement",
@@ -1459,23 +1463,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2140"
-    },
-    {
-      "number": 2149,
-      "title": "[Bug] Documentation Binder link is broken.",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-04-13",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "documentation",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2149"
     },
     {
       "number": 2170,
@@ -3258,6 +3245,22 @@
       "updated": "2021-11-22",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
+      "number": 1937,
+      "title": "[Feature Request] Conditionally disable the creation of folders in output/multirun via the CLI",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-12-21",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1937"
     },
     {
       "number": 1939,
@@ -5362,8 +5365,8 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
-      "number": 1937,
-      "title": "[Feature Request] Conditionally disable the creation of folders in output/multirun via the CLI",
+      "number": 1936,
+      "title": "instantiate api - having to write a dataclass conf for every _target_ class ",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
@@ -5372,13 +5375,42 @@
       "created": "2021-12-21",
       "updated": "2026-07-15",
       "labels": [
-        "enhancement",
+        "instantiate_api",
+        "priority_low",
+        "structured config",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1937"
+      "url": "https://github.com/facebookresearch/hydra/issues/1936"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T14:04:37Z",
+      "kind": "pr",
+      "issue": 2149,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2149",
+      "title": "[Bug] Documentation Binder link is broken.",
+      "detail": "linked #3280"
+    },
+    {
+      "ts": "2026-07-16T14:04:37Z",
+      "kind": "closed",
+      "issue": 1936,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1936",
+      "title": "instantiate api - having to write a dataclass conf for every _target_ class "
+    },
+    {
+      "ts": "2026-07-16T14:04:37Z",
+      "kind": "status",
+      "issue": 2149,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2149",
+      "title": "[Bug] Documentation Binder link is broken.",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3280,
+        "url": "https://github.com/facebookresearch/hydra/pull/3280"
+      }
+    },
     {
       "ts": "2026-07-16T13:23:15Z",
       "kind": "closed",
@@ -6941,28 +6973,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3229",
       "title": "Defaults-list overrides in appended configs do not override earlier overrides",
       "detail": "unlinked #3255"
-    },
-    {
-      "ts": "2026-07-13T08:07:06Z",
-      "kind": "status",
-      "issue": 3229,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3229",
-      "title": "Defaults-list overrides in appended configs do not override earlier overrides",
-      "detail": "community PR → not started"
-    },
-    {
-      "ts": "2026-07-05T11:05:47Z",
-      "kind": "closed",
-      "issue": 3268,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3268",
-      "title": "Change plugin instantiation to avoid recursive target execution in Hydra core"
-    },
-    {
-      "ts": "2026-07-05T10:55:07Z",
-      "kind": "closed",
-      "issue": 3259,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3259",
-      "title": "Harden instantiate blocklist for 1.3.x"
     }
   ]
 }
