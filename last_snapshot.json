@@ -3,6 +3,7 @@
     "1892": "2026-06-07",
     "2032": "2026-06-20",
     "2070": "2026-06-29",
+    "2107": "2026-07-16",
     "2125": "2026-07-16",
     "2162": "2026-06-11",
     "2193": "2026-07-15",
@@ -122,7 +123,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T03:53:13Z",
+  "generated_at": "2026-07-16T04:05:27Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1071,20 +1072,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug] Structured config in config store is not found with SearchPathPlugin",
-      "updated_at": "2026-07-15T13:16:57Z"
-    },
-    "2107": {
-      "category": "Bug",
-      "created_at": "2022-03-23T08:06:43Z",
-      "labels": [
-        "bug",
-        "compose_api",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`",
       "updated_at": "2026-07-15T13:16:57Z"
     },
     "2121": {
@@ -2845,6 +2832,20 @@
       "status": "done",
       "title": "Improving Hydra + PL +  DDP experience",
       "updated_at": "2024-11-13T13:35:11Z"
+    },
+    "2107": {
+      "category": "Bug",
+      "created_at": "2022-03-23T08:06:43Z",
+      "labels": [
+        "bug",
+        "compose_api",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`",
+      "updated_at": "2026-07-15T13:16:57Z"
     },
     "2125": {
       "category": "Bug",

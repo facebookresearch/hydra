@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T03:53:13Z",
+  "generated_at": "2026-07-16T04:05:27Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 200,
+    "open_total": 199,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 34,
-        "percentage": 17.0
+        "count": 33,
+        "percentage": 16.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 68.5
+        "percentage": 68.8
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 190
+        "count": 189
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 121
+        "count": 122
       }
     ]
   },
@@ -1587,23 +1587,6 @@
         "has-workaround"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2102"
-    },
-    {
-      "number": 2107,
-      "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-03-23",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage",
-        "compose_api"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2107"
     },
     {
       "number": 2121,
@@ -5331,9 +5314,33 @@
       "updated": "2026-07-05",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
+    },
+    {
+      "number": 2107,
+      "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-03-23",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "compose_api",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2107"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T04:05:27Z",
+      "kind": "closed",
+      "issue": 2107,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2107",
+      "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`"
+    },
     {
       "ts": "2026-07-16T03:53:13Z",
       "kind": "label",
@@ -6925,18 +6932,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3229",
       "title": "Defaults-list overrides in appended configs do not override earlier overrides",
       "detail": "linked #3255"
-    },
-    {
-      "ts": "2026-07-02T08:06:02Z",
-      "kind": "status",
-      "issue": 3229,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3229",
-      "title": "Defaults-list overrides in appended configs do not override earlier overrides",
-      "detail": "not started → community PR",
-      "pr": {
-        "number": 3255,
-        "url": "https://github.com/facebookresearch/hydra/pull/3255"
-      }
     }
   ]
 }

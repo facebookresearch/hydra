@@ -398,3 +398,4 @@
 {"ts": "2026-07-15T18:25:44Z", "kind": "closed", "issue": 2193, "issue_url": "https://github.com/facebookresearch/hydra/issues/2193", "title": "[Bug] Not failing when required fields are missing when using structured config"}
 {"ts": "2026-07-16T03:35:17Z", "kind": "closed", "issue": 2125, "issue_url": "https://github.com/facebookresearch/hydra/issues/2125", "title": "[Bug] Cannot find conf/ dir when outside of packaged app."}
 {"ts": "2026-07-16T03:53:13Z", "kind": "label", "issue": 2121, "issue_url": "https://github.com/facebookresearch/hydra/issues/2121", "title": "[Bug] Recursion overflow from `--help` if `group=''`", "detail": "removed \"triage\""}
+{"ts": "2026-07-16T04:05:27Z", "kind": "closed", "issue": 2107, "issue_url": "https://github.com/facebookresearch/hydra/issues/2107", "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`"}
