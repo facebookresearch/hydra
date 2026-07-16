@@ -429,3 +429,4 @@
 {"ts": "2026-07-16T17:21:33Z", "kind": "label", "issue": 1679, "issue_url": "https://github.com/facebookresearch/hydra/issues/1679", "title": "[Feature Request] Resume study and avoid OOM when optimizing with Optuna plugin", "detail": "removed \"triage\""}
 {"ts": "2026-07-16T17:26:09Z", "kind": "closed", "issue": 1463, "issue_url": "https://github.com/facebookresearch/hydra/issues/1463", "title": "[Feature Request] Fault tolerance option for Optuna Sweeper"}
 {"ts": "2026-07-16T17:30:20Z", "kind": "closed", "issue": 2293, "issue_url": "https://github.com/facebookresearch/hydra/issues/2293", "title": "Modify Trial when using a Sweeper"}
+{"ts": "2026-07-16T17:48:53Z", "kind": "label", "issue": 1898, "issue_url": "https://github.com/facebookresearch/hydra/issues/1898", "title": "[Bug] Submitit has optional parameter tasks_per_node set", "detail": "removed \"triage\""}

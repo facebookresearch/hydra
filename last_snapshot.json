@@ -141,7 +141,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T17:30:20Z",
+  "generated_at": "2026-07-16T17:48:53Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -667,8 +667,7 @@
       "labels": [
         "bug",
         "submitit",
-        "sweep",
-        "triage"
+        "sweep"
       ],
       "pr_numbers": [
         "2157"
@@ -676,7 +675,7 @@
       "state": "OPEN",
       "status": "community PR",
       "title": "[Bug] Submitit has optional parameter tasks_per_node set",
-      "updated_at": "2026-07-15T13:17:15Z"
+      "updated_at": "2026-07-16T17:48:16Z"
     },
     "1899": {
       "category": "Bug",

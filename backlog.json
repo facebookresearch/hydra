@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T17:30:20Z",
+  "generated_at": "2026-07-16T17:48:53Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 183,
@@ -149,10 +149,9 @@
         }
       ],
       "created": "2021-11-22",
-      "updated": "2026-07-15",
+      "updated": "2026-07-16",
       "labels": [
         "bug",
-        "triage",
         "sweep",
         "submitit"
       ],
@@ -3598,6 +3597,24 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2284"
     },
     {
+      "number": 2293,
+      "title": "Modify Trial when using a Sweeper",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-07-14",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "sweep",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2293"
+    },
+    {
       "number": 2305,
       "title": "[Bug] Dicts not merging",
       "category": "Bug",
@@ -5362,27 +5379,17 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
-    },
-    {
-      "number": 2293,
-      "title": "Modify Trial when using a Sweeper",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-07-14",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "optuna",
-        "sweep",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2293"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T17:48:53Z",
+      "kind": "label",
+      "issue": 1898,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1898",
+      "title": "[Bug] Submitit has optional parameter tasks_per_node set",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-07-16T17:30:20Z",
       "kind": "closed",
@@ -6960,14 +6967,6 @@
       "issue": 733,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/733",
       "title": "[Feature Request] Support for s3fs",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 714,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/714",
-      "title": "Make sure Hydra logging config override all loggers from 3rd party libs",
       "detail": "added \"triage\""
     }
   ]
