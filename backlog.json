@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T17:26:09Z",
+  "generated_at": "2026-07-16T17:30:20Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 184,
+    "open_total": 183,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 25,
-        "percentage": 13.6
+        "percentage": 13.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 132,
-        "percentage": 71.7
+        "count": 131,
+        "percentage": 71.6
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 6.5
+        "percentage": 6.6
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 10,
-        "percentage": 5.4
+        "percentage": 5.5
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 174
+        "count": 173
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 139
+        "count": 140
       }
     ]
   },
@@ -1631,24 +1631,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2281"
     },
     {
-      "number": 2293,
-      "title": "Modify Trial when using a Sweeper",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-07-14",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage",
-        "optuna",
-        "sweep"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2293"
-    },
-    {
       "number": 2323,
       "title": "specify maximum tasks in submitit_local",
       "category": "Enhancement",
@@ -3124,6 +3106,25 @@
         "plugin"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/692"
+    },
+    {
+      "number": 1463,
+      "title": "[Feature Request] Fault tolerance option for Optuna Sweeper",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-03-09",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "plugin",
+        "sweep",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1463"
     },
     {
       "number": 1830,
@@ -5363,26 +5364,32 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
-      "number": 1463,
-      "title": "[Feature Request] Fault tolerance option for Optuna Sweeper",
+      "number": 2293,
+      "title": "Modify Trial when using a Sweeper",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2021-03-09",
+      "created": "2022-07-14",
       "updated": "2026-07-15",
       "labels": [
         "enhancement",
         "optuna",
-        "plugin",
         "sweep",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1463"
+      "url": "https://github.com/facebookresearch/hydra/issues/2293"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T17:30:20Z",
+      "kind": "closed",
+      "issue": 2293,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2293",
+      "title": "Modify Trial when using a Sweeper"
+    },
     {
       "ts": "2026-07-16T17:26:09Z",
       "kind": "closed",
@@ -6961,14 +6968,6 @@
       "issue": 714,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/714",
       "title": "Make sure Hydra logging config override all loggers from 3rd party libs",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 700,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/700",
-      "title": "[Feature Request] Purging older output/working directories ",
       "detail": "added \"triage\""
     }
   ]

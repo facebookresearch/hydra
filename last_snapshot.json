@@ -28,6 +28,7 @@
     "2262": "2026-07-15",
     "2274": "2026-07-15",
     "2284": "2026-07-15",
+    "2293": "2026-07-16",
     "2305": "2026-07-15",
     "2313": "2026-07-15",
     "2322": "2026-07-15",
@@ -140,7 +141,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T17:26:09Z",
+  "generated_at": "2026-07-16T17:30:20Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1119,21 +1120,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] RQ Launcher plugin the ability to send tasks to different types of workers",
-      "updated_at": "2026-07-15T13:16:40Z"
-    },
-    "2293": {
-      "category": "Enhancement",
-      "created_at": "2022-07-14T11:15:29Z",
-      "labels": [
-        "enhancement",
-        "optuna",
-        "sweep",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Modify Trial when using a Sweeper",
       "updated_at": "2026-07-15T13:16:40Z"
     },
     "2323": {
@@ -2991,6 +2977,21 @@
       "status": "done",
       "title": "[Bug] Multirun doesn't notify user about exception",
       "updated_at": "2022-07-26T22:28:50Z"
+    },
+    "2293": {
+      "category": "Enhancement",
+      "created_at": "2022-07-14T11:15:29Z",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "sweep",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Modify Trial when using a Sweeper",
+      "updated_at": "2026-07-15T13:16:40Z"
     },
     "2305": {
       "category": "Bug",
