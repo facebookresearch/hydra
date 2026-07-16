@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T17:21:33Z",
+  "generated_at": "2026-07-16T17:26:09Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 185,
+    "open_total": 184,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 25,
-        "percentage": 13.5
+        "percentage": 13.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 133,
-        "percentage": 71.9
+        "count": 132,
+        "percentage": 71.7
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 175
+        "count": 174
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 138
+        "count": 139
       }
     ]
   },
@@ -710,25 +710,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1431"
-    },
-    {
-      "number": 1463,
-      "title": "[Feature Request] Fault tolerance option for Optuna Sweeper",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-03-09",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "plugin",
-        "triage",
-        "optuna",
-        "sweep"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1463"
     },
     {
       "number": 1512,
@@ -5380,9 +5361,35 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
+    },
+    {
+      "number": 1463,
+      "title": "[Feature Request] Fault tolerance option for Optuna Sweeper",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-03-09",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "plugin",
+        "sweep",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1463"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T17:26:09Z",
+      "kind": "closed",
+      "issue": 1463,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1463",
+      "title": "[Feature Request] Fault tolerance option for Optuna Sweeper"
+    },
     {
       "ts": "2026-07-16T17:21:33Z",
       "kind": "label",
@@ -6962,14 +6969,6 @@
       "issue": 700,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/700",
       "title": "[Feature Request] Purging older output/working directories ",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 633,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/633",
-      "title": "Allow adding help messages to command line arguments",
       "detail": "added \"triage\""
     }
   ]

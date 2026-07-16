@@ -427,3 +427,4 @@
 {"ts": "2026-07-16T16:50:12Z", "kind": "closed", "issue": 1830, "issue_url": "https://github.com/facebookresearch/hydra/issues/1830", "title": "[Bug] Cannot use plugin's conf dataclasses in structured config"}
 {"ts": "2026-07-16T17:03:38Z", "kind": "closed", "issue": 3210, "issue_url": "https://github.com/facebookresearch/hydra/issues/3210", "title": "Modernize Optuna Sweeper"}
 {"ts": "2026-07-16T17:21:33Z", "kind": "label", "issue": 1679, "issue_url": "https://github.com/facebookresearch/hydra/issues/1679", "title": "[Feature Request] Resume study and avoid OOM when optimizing with Optuna plugin", "detail": "removed \"triage\""}
+{"ts": "2026-07-16T17:26:09Z", "kind": "closed", "issue": 1463, "issue_url": "https://github.com/facebookresearch/hydra/issues/1463", "title": "[Feature Request] Fault tolerance option for Optuna Sweeper"}

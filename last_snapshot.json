@@ -1,5 +1,6 @@
 {
   "closed_at": {
+    "1463": "2026-07-16",
     "1830": "2026-07-16",
     "1892": "2026-06-07",
     "1928": "2026-07-16",
@@ -139,7 +140,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T17:21:33Z",
+  "generated_at": "2026-07-16T17:26:09Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -316,22 +317,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "PrettyErrors doesn't work with Hydra",
-      "updated_at": "2026-07-15T13:17:32Z"
-    },
-    "1463": {
-      "category": "Enhancement",
-      "created_at": "2021-03-09T14:28:49Z",
-      "labels": [
-        "enhancement",
-        "optuna",
-        "plugin",
-        "sweep",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] Fault tolerance option for Optuna Sweeper",
       "updated_at": "2026-07-15T13:17:32Z"
     },
     "1512": {
@@ -2610,6 +2595,22 @@
     }
   },
   "recent_done": {
+    "1463": {
+      "category": "Enhancement",
+      "created_at": "2021-03-09T14:28:49Z",
+      "labels": [
+        "enhancement",
+        "optuna",
+        "plugin",
+        "sweep",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Fault tolerance option for Optuna Sweeper",
+      "updated_at": "2026-07-15T13:17:32Z"
+    },
     "1830": {
       "category": "Bug",
       "created_at": "2021-09-21T12:40:50Z",
