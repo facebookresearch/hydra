@@ -3,6 +3,7 @@
     "1892": "2026-06-07",
     "2032": "2026-06-20",
     "2070": "2026-06-29",
+    "2102": "2026-07-16",
     "2107": "2026-07-16",
     "2125": "2026-07-16",
     "2162": "2026-06-11",
@@ -123,7 +124,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T04:05:27Z",
+  "generated_at": "2026-07-16T04:22:46Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1056,23 +1057,6 @@
       "status": "not started",
       "title": "Replace dictionary (instead of merging) from command line",
       "updated_at": "2026-07-15T13:16:58Z"
-    },
-    "2102": {
-      "category": "Bug",
-      "created_at": "2022-03-18T17:44:15Z",
-      "labels": [
-        "bug",
-        "config store",
-        "defaults list",
-        "has-workaround",
-        "plugin",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Structured config in config store is not found with SearchPathPlugin",
-      "updated_at": "2026-07-15T13:16:57Z"
     },
     "2121": {
       "category": "Bug",
@@ -2832,6 +2816,23 @@
       "status": "done",
       "title": "Improving Hydra + PL +  DDP experience",
       "updated_at": "2024-11-13T13:35:11Z"
+    },
+    "2102": {
+      "category": "Bug",
+      "created_at": "2022-03-18T17:44:15Z",
+      "labels": [
+        "bug",
+        "config store",
+        "defaults list",
+        "has-workaround",
+        "plugin",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Structured config in config store is not found with SearchPathPlugin",
+      "updated_at": "2026-07-15T13:16:57Z"
     },
     "2107": {
       "category": "Bug",

@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T04:05:27Z",
+  "generated_at": "2026-07-16T04:22:46Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 199,
+    "open_total": 198,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 33,
-        "percentage": 16.6
+        "count": 32,
+        "percentage": 16.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 68.8
+        "percentage": 69.2
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 6.0
+        "percentage": 6.1
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 11,
-        "percentage": 5.5
+        "percentage": 5.6
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 189
+        "count": 188
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 122
+        "count": 123
       }
     ]
   },
@@ -1567,26 +1567,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2091"
-    },
-    {
-      "number": 2102,
-      "title": "[Bug] Structured config in config store is not found with SearchPathPlugin",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-03-18",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "plugin",
-        "triage",
-        "defaults list",
-        "config store",
-        "has-workaround"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2102"
     },
     {
       "number": 2121,
@@ -3433,6 +3413,23 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2070"
+    },
+    {
+      "number": 2107,
+      "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-03-23",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "compose_api",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2107"
     },
     {
       "number": 2125,
@@ -5316,24 +5313,34 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
     },
     {
-      "number": 2107,
-      "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`",
+      "number": 2102,
+      "title": "[Bug] Structured config in config store is not found with SearchPathPlugin",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-03-23",
+      "created": "2022-03-18",
       "updated": "2026-07-15",
       "labels": [
         "bug",
-        "compose_api",
+        "config store",
+        "defaults list",
+        "has-workaround",
+        "plugin",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2107"
+      "url": "https://github.com/facebookresearch/hydra/issues/2102"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T04:22:46Z",
+      "kind": "closed",
+      "issue": 2102,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2102",
+      "title": "[Bug] Structured config in config store is not found with SearchPathPlugin"
+    },
     {
       "ts": "2026-07-16T04:05:27Z",
       "kind": "closed",
@@ -6924,14 +6931,6 @@
       "issue": 2348,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2348",
       "title": "[Bug] AssertionError when configuring hydra from top-level dataclass"
-    },
-    {
-      "ts": "2026-07-02T08:06:02Z",
-      "kind": "pr",
-      "issue": 3229,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3229",
-      "title": "Defaults-list overrides in appended configs do not override earlier overrides",
-      "detail": "linked #3255"
     }
   ]
 }
