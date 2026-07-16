@@ -431,3 +431,4 @@
 {"ts": "2026-07-16T17:30:20Z", "kind": "closed", "issue": 2293, "issue_url": "https://github.com/facebookresearch/hydra/issues/2293", "title": "Modify Trial when using a Sweeper"}
 {"ts": "2026-07-16T17:48:53Z", "kind": "label", "issue": 1898, "issue_url": "https://github.com/facebookresearch/hydra/issues/1898", "title": "[Bug] Submitit has optional parameter tasks_per_node set", "detail": "removed \"triage\""}
 {"ts": "2026-07-16T17:52:50Z", "kind": "closed", "issue": 1866, "issue_url": "https://github.com/facebookresearch/hydra/issues/1866", "title": "[Bug] recursive instantiation mutates original config object's interpolations"}
+{"ts": "2026-07-16T18:09:43Z", "kind": "label", "issue": 1865, "issue_url": "https://github.com/facebookresearch/hydra/issues/1865", "title": "Instantiation fails when _target_ arg interpolates to another node with _target_ key and object arg", "detail": "removed \"has-workaround\", \"triage\""}

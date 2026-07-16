@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T17:52:50Z",
+  "generated_at": "2026-07-16T18:09:43Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 182,
@@ -987,11 +987,9 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2021-10-22",
-      "updated": "2026-07-15",
+      "updated": "2026-07-16",
       "labels": [
         "bug",
-        "triage",
-        "has-workaround",
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1865"
@@ -3131,6 +3129,22 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1830"
+    },
+    {
+      "number": 1866,
+      "title": "[Bug] recursive instantiation mutates original config object's interpolations",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-10-25",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1866"
     },
     {
       "number": 1892,
@@ -5363,25 +5377,17 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
-    },
-    {
-      "number": 1866,
-      "title": "[Bug] recursive instantiation mutates original config object's interpolations",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2021-10-25",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1866"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T18:09:43Z",
+      "kind": "label",
+      "issue": 1865,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1865",
+      "title": "Instantiation fails when _target_ arg interpolates to another node with _target_ key and object arg",
+      "detail": "removed \"has-workaround\", \"triage\""
+    },
     {
       "ts": "2026-07-16T17:52:50Z",
       "kind": "closed",
@@ -6958,14 +6964,6 @@
       "issue": 841,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/841",
       "title": "Add docker example for Ray launcher.",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 802,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/802",
-      "title": "Improving the test coverage in Hydra",
       "detail": "added \"triage\""
     }
   ]
