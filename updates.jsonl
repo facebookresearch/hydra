@@ -410,3 +410,4 @@
 {"ts": "2026-07-16T07:25:48Z", "kind": "pr", "issue": 1951, "issue_url": "https://github.com/facebookresearch/hydra/issues/1951", "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list", "detail": "linked #3277"}
 {"ts": "2026-07-16T09:14:38Z", "kind": "closed", "issue": 1951, "issue_url": "https://github.com/facebookresearch/hydra/issues/1951", "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list"}
 {"ts": "2026-07-16T09:23:20Z", "kind": "closed", "issue": 1954, "issue_url": "https://github.com/facebookresearch/hydra/issues/1954", "title": "Pruning option for Optuna"}
+{"ts": "2026-07-16T09:56:55Z", "kind": "label", "issue": 1944, "issue_url": "https://github.com/facebookresearch/hydra/issues/1944", "title": "[Feature Request] logrange sweep", "detail": "removed \"triage\""}

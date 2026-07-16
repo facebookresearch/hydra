@@ -129,7 +129,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T09:23:20Z",
+  "generated_at": "2026-07-16T09:56:55Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -879,14 +879,13 @@
       "created_at": "2022-01-05T15:39:17Z",
       "labels": [
         "enhancement",
-        "sweep",
-        "triage"
+        "sweep"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] logrange sweep",
-      "updated_at": "2026-07-15T13:17:06Z"
+      "updated_at": "2026-07-16T09:55:21Z"
     },
     "1982": {
       "category": "Enhancement",
