@@ -13,7 +13,7 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.313883d4.css">
-<script src="/assets/js/runtime~main.754257b8.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9775f236.js" defer="defer"></script>
 <script src="/assets/js/main.8b5f38d8.js" defer="defer"></script>
 </head>
 <body>
@@ -29,6 +29,14 @@ To complete paths, start them with <code>/</code> or <code>./</code>.</p>
 <p>Get the exact command to install the completion from <code>--hydra-help</code>.
 Currently, Bash, zsh and Fish are supported.
 We are relying on the community to implement tab completion plugins for additional shells.</p>
+<p>Hydra tab completion supports applications invoked as a Python script, such as
+<code>python my_app.py</code>, or through an installed console entry point, such as
+<code>my_app</code>. The <code>python -m my_app</code> invocation form is not supported because Hydra
+cannot determine passively whether a module launches a Hydra application. A
+module does not necessarily correspond to a regular source file and may, for
+example, be loaded from a zip archive. For a packaged application, follow the
+<a class="" href="/docs/advanced/app_packaging/">Application packaging</a> guidance to define and use a
+console entry point instead.</p>
 <h4 class="anchor anchorTargetStickyNavbar_UHn8" id="fish-instructions">Fish instructions<a href="#fish-instructions" class="hash-link" aria-label="Direct link to Fish instructions" title="Direct link to Fish instructions" translate="no">​</a></h4>
 <p>Fish support requires version &gt;= 3.1.2.
 Previous versions will work but add an extra space after <code>.</code>.</p>
