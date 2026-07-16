@@ -1,6 +1,7 @@
 {
   "closed_at": {
     "1892": "2026-06-07",
+    "1942": "2026-07-16",
     "1951": "2026-07-16",
     "1954": "2026-07-16",
     "1957": "2026-07-16",
@@ -129,7 +130,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T11:17:37Z",
+  "generated_at": "2026-07-16T11:55:16Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -858,22 +859,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Implement #1389 or similar functionality",
-      "updated_at": "2026-07-15T13:17:07Z"
-    },
-    "1942": {
-      "category": "Bug",
-      "created_at": "2022-01-01T17:43:41Z",
-      "labels": [
-        "bug",
-        "sweep",
-        "triage"
-      ],
-      "pr_numbers": [
-        "3278"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath",
       "updated_at": "2026-07-15T13:17:07Z"
     },
     "1944": {
@@ -2737,6 +2722,22 @@
       "status": "done",
       "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
       "updated_at": "2021-11-22T21:10:28Z"
+    },
+    "1942": {
+      "category": "Bug",
+      "created_at": "2022-01-01T17:43:41Z",
+      "labels": [
+        "bug",
+        "sweep",
+        "triage"
+      ],
+      "pr_numbers": [
+        "3278"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath",
+      "updated_at": "2026-07-15T13:17:07Z"
     },
     "1951": {
       "category": "Bug",

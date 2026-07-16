@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T11:17:37Z",
+  "generated_at": "2026-07-16T11:55:16Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 194,
+    "open_total": 193,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 29,
-        "percentage": 14.9
+        "count": 28,
+        "percentage": 14.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 136,
-        "percentage": 70.1
+        "percentage": 70.5
       },
       {
         "category": "Documentation",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 2
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 128
+        "count": 129
       }
     ]
   },
@@ -114,28 +114,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 1942,
-      "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3278,
-          "url": "https://github.com/facebookresearch/hydra/pull/3278"
-        }
-      ],
-      "created": "2022-01-01",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage",
-        "sweep"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1942"
     },
     {
       "number": 845,
@@ -5361,9 +5339,38 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
+    },
+    {
+      "number": 1942,
+      "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3278,
+          "url": "https://github.com/facebookresearch/hydra/pull/3278"
+        }
+      ],
+      "created": "2022-01-01",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "sweep",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1942"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T11:55:16Z",
+      "kind": "closed",
+      "issue": 1942,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1942",
+      "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath"
+    },
     {
       "ts": "2026-07-16T11:17:37Z",
       "kind": "pr",
@@ -6948,14 +6955,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3259",
       "title": "Harden instantiate blocklist for 1.3.x",
       "detail": "linked #3263, #3264"
-    },
-    {
-      "ts": "2026-07-04T21:48:41Z",
-      "kind": "pr",
-      "issue": 3078,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3078",
-      "title": "[Bug]",
-      "detail": "linked #3262"
     }
   ]
 }
