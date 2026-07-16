@@ -25,6 +25,7 @@ from hydra.core.plugins import Plugins
 from hydra.core.utils import (
     JobReturn,
     JobRuntime,
+    JobStatus,
     configure_log,
     run_job,
     setup_globals,
@@ -158,16 +159,30 @@ class Hydra:
         callbacks = Callbacks(cfg)
         callbacks.on_run_start(config=cfg, config_name=config_name)
 
-        ret = run_job(
-            hydra_context=HydraContext(
-                config_loader=self.config_loader, callbacks=callbacks
-            ),
-            task_function=task_function,
-            config=cfg,
-            job_dir_key="hydra.run.dir",
-            job_subdir_key=None,
-            configure_logging=with_log_configuration,
-        )
+        try:
+            ret = run_job(
+                hydra_context=HydraContext(
+                    config_loader=self.config_loader, callbacks=callbacks
+                ),
+                task_function=task_function,
+                config=cfg,
+                job_dir_key="hydra.run.dir",
+                job_subdir_key=None,
+                configure_logging=with_log_configuration,
+            )
+        except KeyboardInterrupt as e:
+            # run_job attaches its populated JobReturn to the interrupt before
+            # re-raising; fall back to a minimal one if the interrupt happened
+            # before the job ran (e.g. during on_job_start)
+            job_return = getattr(e, "job_return", None)
+            if not isinstance(job_return, JobReturn):
+                job_return = JobReturn()
+                job_return.status = JobStatus.FAILED
+                job_return.return_value = e
+            callbacks.on_run_end(
+                config=cfg, config_name=config_name, job_return=job_return
+            )
+            raise
         callbacks.on_run_end(config=cfg, config_name=config_name, job_return=ret)
 
         # access the result to trigger an exception in case the job failed.

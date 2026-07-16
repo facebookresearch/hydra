@@ -183,6 +183,7 @@ def run_job(
             _save_config(hydra_cfg, "hydra.yaml", hydra_output)
             _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
 
+        interrupt: Optional[KeyboardInterrupt] = None
         with env_override(hydra_cfg.hydra.job.env_set):
             callbacks.on_job_start(config=config, task_function=task_function)
             try:
@@ -191,12 +192,25 @@ def run_job(
             except Exception as e:
                 ret.return_value = e
                 ret.status = JobStatus.FAILED
+            except KeyboardInterrupt as e:
+                # record the interrupt like any other failure so callbacks see
+                # it, but re-raise after finalization so it still propagates
+                # (multirun relies on it to stop the remaining jobs)
+                ret.return_value = e
+                ret.status = JobStatus.FAILED
+                interrupt = e
 
         ret.task_name = JobRuntime.instance().get("name")
 
         _flush_loggers()
 
         callbacks.on_job_end(config=config, job_return=ret)
+
+        if interrupt is not None:
+            # expose the populated JobReturn to callers (Hydra.run) so
+            # on_run_end can receive the real job metadata after the re-raise
+            setattr(interrupt, "job_return", ret)
+            raise interrupt
 
         return ret
     finally:
