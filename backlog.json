@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T09:14:38Z",
+  "generated_at": "2026-07-16T09:23:20Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 195,
+    "open_total": 194,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 137,
-        "percentage": 70.3
+        "count": 136,
+        "percentage": 70.1
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 11,
-        "percentage": 5.6
+        "percentage": 5.7
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 185
+        "count": 184
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 127
+        "count": 128
       }
     ]
   },
@@ -1356,25 +1356,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1944"
-    },
-    {
-      "number": 1954,
-      "title": "Pruning option for Optuna",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-01-11",
-      "updated": "2026-07-15",
-      "labels": [
-        "plugin",
-        "exploratory",
-        "triage",
-        "optuna",
-        "sweep"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1954"
     },
     {
       "number": 1982,
@@ -3044,7 +3025,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-07",
-      "updated": "2026-06-26",
+      "updated": "2026-07-16",
       "labels": [
         "enhancement",
         "wishlist",
@@ -3329,6 +3310,28 @@
       "updated": "2021-11-22",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
+      "number": 1951,
+      "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3277,
+          "url": "https://github.com/facebookresearch/hydra/pull/3277"
+        }
+      ],
+      "created": "2022-01-11",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "defaults list",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1951"
     },
     {
       "number": 1957,
@@ -5337,29 +5340,33 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
-      "number": 1951,
-      "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "number": 1954,
+      "title": "Pruning option for Optuna",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3277,
-          "url": "https://github.com/facebookresearch/hydra/pull/3277"
-        }
-      ],
+      "prs": [],
       "created": "2022-01-11",
       "updated": "2026-07-15",
       "labels": [
-        "bug",
-        "defaults list",
+        "exploratory",
+        "optuna",
+        "plugin",
+        "sweep",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1951"
+      "url": "https://github.com/facebookresearch/hydra/issues/1954"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T09:23:20Z",
+      "kind": "closed",
+      "issue": 1954,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1954",
+      "title": "Pruning option for Optuna"
+    },
     {
       "ts": "2026-07-16T09:14:38Z",
       "kind": "closed",
@@ -6948,13 +6955,6 @@
       "issue": 3259,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3259",
       "title": "Harden instantiate blocklist for 1.3.x"
-    },
-    {
-      "ts": "2026-07-04T14:18:40Z",
-      "kind": "new",
-      "issue": 3258,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3258",
-      "title": "Switch instantiate target filtering to an allowlist model for 1.4"
     }
   ]
 }
