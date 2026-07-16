@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T16:50:12Z",
+  "generated_at": "2026-07-16T17:03:38Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 186,
+    "open_total": 185,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 25,
-        "percentage": 13.4
+        "percentage": 13.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 133,
-        "percentage": 71.5
+        "percentage": 71.9
       },
       {
         "category": "Documentation",
@@ -32,8 +32,8 @@
       {
         "category": "Refactor",
         "emoji": "🔧",
-        "count": 2,
-        "percentage": 1.1
+        "count": 1,
+        "percentage": 0.5
       },
       {
         "category": "Build",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 176
+        "count": 175
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 137
+        "count": 138
       }
     ]
   },
@@ -2912,19 +2912,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
     },
     {
-      "number": 3210,
-      "title": "Modernize Optuna Sweeper",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-11",
-      "updated": "2026-06-26",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3210"
-    },
-    {
       "number": 3216,
       "title": "Evaluate opt-out from eager resolution in instantiate",
       "category": "Enhancement",
@@ -3157,6 +3144,29 @@
         "plugin"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/692"
+    },
+    {
+      "number": 1830,
+      "title": "[Bug] Cannot use plugin's conf dataclasses in structured config",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 2019,
+          "url": "https://github.com/facebookresearch/hydra/pull/2019"
+        }
+      ],
+      "created": "2021-09-21",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "plugin",
+        "structured config",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1830"
     },
     {
       "number": 1892,
@@ -5360,30 +5370,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
-      "number": 1830,
-      "title": "[Bug] Cannot use plugin's conf dataclasses in structured config",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "number": 3210,
+      "title": "Modernize Optuna Sweeper",
+      "category": "Refactor",
+      "category_emoji": "🔧",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 2019,
-          "url": "https://github.com/facebookresearch/hydra/pull/2019"
-        }
-      ],
-      "created": "2021-09-21",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "plugin",
-        "structured config",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1830"
+      "prs": [],
+      "created": "2026-06-11",
+      "updated": "2026-06-26",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3210"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T17:03:38Z",
+      "kind": "closed",
+      "issue": 3210,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3210",
+      "title": "Modernize Optuna Sweeper"
+    },
     {
       "ts": "2026-07-16T16:50:12Z",
       "kind": "closed",
@@ -6965,13 +6972,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/468",
       "title": "Specify the schema for returning the result of optimization.",
       "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T12:48:42Z",
-      "kind": "closed",
-      "issue": 2284,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2284",
-      "title": "[Bug] Multirun doesn't notify user about exception"
     }
   ]
 }
