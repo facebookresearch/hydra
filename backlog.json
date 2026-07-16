@@ -1,21 +1,21 @@
 {
-  "generated_on": "2026-07-15",
-  "generated_at": "2026-07-15T18:25:44Z",
+  "generated_on": "2026-07-16",
+  "generated_at": "2026-07-16T03:35:17Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 201,
+    "open_total": 200,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 35,
-        "percentage": 17.4
+        "count": 34,
+        "percentage": 17.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 68.2
+        "percentage": 68.5
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 191
+        "count": 190
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 120
+        "count": 121
       }
     ]
   },
@@ -1620,24 +1620,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2121"
-    },
-    {
-      "number": 2125,
-      "title": "[Bug] Cannot find conf/ dir when outside of packaged app.",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-04-04",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage",
-        "internal",
-        "has-workaround"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2125"
     },
     {
       "number": 2140,
@@ -3488,6 +3470,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
     },
     {
+      "number": 2193,
+      "title": "[Bug] Not failing when required fields are missing when using structured config",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-05-05",
+      "updated": "2026-07-15",
+      "labels": [
+        "documentation",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2193"
+    },
+    {
       "number": 2208,
       "title": "instantiate converts inner structured configs back to Dict/ListConf",
       "category": "Bug",
@@ -5318,23 +5316,32 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
     },
     {
-      "number": 2193,
-      "title": "[Bug] Not failing when required fields are missing when using structured config",
-      "category": "Documentation",
-      "category_emoji": "📄",
+      "number": 2125,
+      "title": "[Bug] Cannot find conf/ dir when outside of packaged app.",
+      "category": "Bug",
+      "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-05-05",
+      "created": "2022-04-04",
       "updated": "2026-07-15",
       "labels": [
-        "documentation",
+        "bug",
+        "has-workaround",
+        "internal",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2193"
+      "url": "https://github.com/facebookresearch/hydra/issues/2125"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T03:35:17Z",
+      "kind": "closed",
+      "issue": 2125,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2125",
+      "title": "[Bug] Cannot find conf/ dir when outside of packaged app."
+    },
     {
       "ts": "2026-07-15T18:25:44Z",
       "kind": "closed",
@@ -6930,13 +6937,6 @@
       "issue": 2507,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2507",
       "title": "[Bug] instantiate: top-level `_target_` has inconsistent behavior with `_convert_`"
-    },
-    {
-      "ts": "2026-06-30T15:36:48Z",
-      "kind": "closed",
-      "issue": 2359,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2359",
-      "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`"
     }
   ]
 }

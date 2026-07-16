@@ -3,6 +3,7 @@
     "1892": "2026-06-07",
     "2032": "2026-06-20",
     "2070": "2026-06-29",
+    "2125": "2026-07-16",
     "2162": "2026-06-11",
     "2193": "2026-07-15",
     "2208": "2026-07-15",
@@ -121,7 +122,7 @@
     "3268": "2026-07-05",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-15T18:25:44Z",
+  "generated_at": "2026-07-16T03:35:17Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1097,21 +1098,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug] Recursion overflow from `--help` if `group=''`",
-      "updated_at": "2026-07-15T13:16:56Z"
-    },
-    "2125": {
-      "category": "Bug",
-      "created_at": "2022-04-04T15:06:53Z",
-      "labels": [
-        "bug",
-        "has-workaround",
-        "internal",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Cannot find conf/ dir when outside of packaged app.",
       "updated_at": "2026-07-15T13:16:56Z"
     },
     "2140": {
@@ -2860,6 +2846,21 @@
       "status": "done",
       "title": "Improving Hydra + PL +  DDP experience",
       "updated_at": "2024-11-13T13:35:11Z"
+    },
+    "2125": {
+      "category": "Bug",
+      "created_at": "2022-04-04T15:06:53Z",
+      "labels": [
+        "bug",
+        "has-workaround",
+        "internal",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Cannot find conf/ dir when outside of packaged app.",
+      "updated_at": "2026-07-15T13:16:56Z"
     },
     "2162": {
       "category": "Enhancement",
