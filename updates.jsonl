@@ -417,3 +417,4 @@
 {"ts": "2026-07-16T12:13:23Z", "kind": "closed", "issue": 1939, "issue_url": "https://github.com/facebookresearch/hydra/issues/1939", "title": "Implement #1389 or similar functionality"}
 {"ts": "2026-07-16T13:12:04Z", "kind": "new", "issue": 3279, "issue_url": "https://github.com/facebookresearch/hydra/issues/3279", "title": "hydra.mini(): capability-based application entry point with opt-in behavior"}
 {"ts": "2026-07-16T13:19:14Z", "kind": "closed", "issue": 2000, "issue_url": "https://github.com/facebookresearch/hydra/issues/2000", "title": "[Feature Request] Minimal Version of Hydra With Bare-Bones Config Support"}
+{"ts": "2026-07-16T13:23:15Z", "kind": "closed", "issue": 1937, "issue_url": "https://github.com/facebookresearch/hydra/issues/1937", "title": "[Feature Request] Conditionally disable the creation of folders in output/multirun via the CLI"}
