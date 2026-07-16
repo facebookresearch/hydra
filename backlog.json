@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T07:25:48Z",
+  "generated_at": "2026-07-16T07:44:44Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 196,
@@ -95,27 +95,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1830"
     },
     {
-      "number": 2632,
-      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 2633,
-          "url": "https://github.com/facebookresearch/hydra/pull/2633"
-        }
-      ],
-      "created": "2023-04-04",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
       "number": 1951,
       "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
       "category": "Bug",
@@ -136,6 +115,27 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1951"
+    },
+    {
+      "number": 2632,
+      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 2633,
+          "url": "https://github.com/facebookresearch/hydra/pull/2633"
+        }
+      ],
+      "created": "2023-04-04",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2632"
     },
     {
       "number": 845,
