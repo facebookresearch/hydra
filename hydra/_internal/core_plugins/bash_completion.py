@@ -26,7 +26,9 @@ class BashCompletion(CompletionPlugin):
         if [ ! -f "$file_path" ]; then
             return
         fi
-        grep "@hydra.main" $file_path -q
+        if ! grep -q "@hydra.main" "$file_path"; then
+            return
+        fi
         helper="${words[0]} ${words[1]}"
     else
         helper="${words[0]}"
