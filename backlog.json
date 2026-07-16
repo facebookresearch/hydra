@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T05:45:31Z",
+  "generated_at": "2026-07-16T06:04:23Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 198,
+    "open_total": 197,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 32,
-        "percentage": 16.2
+        "count": 31,
+        "percentage": 15.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 69.2
+        "percentage": 69.5
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 187
+        "count": 186
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 124
+        "count": 125
       }
     ]
   },
@@ -1413,24 +1413,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1954"
-    },
-    {
-      "number": 1957,
-      "title": "[Bug] Shell completion doesn't work with `python -m module_name ...`",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-01-14",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage",
-        "tab_completion",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1957"
     },
     {
       "number": 1982,
@@ -5352,9 +5334,34 @@
       "updated": "2026-07-05",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3268"
+    },
+    {
+      "number": 1957,
+      "title": "[Bug] Shell completion doesn't work with `python -m module_name ...`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-01-14",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "priority_low",
+        "tab_completion",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1957"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T06:04:23Z",
+      "kind": "closed",
+      "issue": 1957,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1957",
+      "title": "[Bug] Shell completion doesn't work with `python -m module_name ...`"
+    },
     {
       "ts": "2026-07-16T05:45:31Z",
       "kind": "pr",
@@ -6943,14 +6950,6 @@
       "issue": 2800,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2800",
       "title": "[Bug] Interpolation doesn't work within hydra.job.env_set"
-    },
-    {
-      "ts": "2026-07-04T09:54:26Z",
-      "kind": "pr",
-      "issue": 2800,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2800",
-      "title": "[Bug] Interpolation doesn't work within hydra.job.env_set",
-      "detail": "linked #3256"
     }
   ]
 }
