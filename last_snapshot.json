@@ -127,7 +127,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T07:02:52Z",
+  "generated_at": "2026-07-16T07:25:48Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -894,9 +894,11 @@
         "defaults list",
         "triage"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3277"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
       "updated_at": "2026-07-15T13:17:06Z"
     },
