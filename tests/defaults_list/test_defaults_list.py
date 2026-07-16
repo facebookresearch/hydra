@@ -71,6 +71,17 @@ def test_loaded_defaults_list(
     assert result.defaults_list == expected_list
 
 
+def test_unknown_keyword_in_defaults_list() -> None:
+    repo = create_repo()
+    with raises(
+        ValueError,
+        match=re.escape(
+            "In unknown_keyword: Unsupported keyword 'optioal' in defaults list"
+        ),
+    ):
+        repo.load_config(config_path="unknown_keyword")
+
+
 @mark.parametrize(
     "config_path,expected_list",
     [
