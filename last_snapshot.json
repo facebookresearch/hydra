@@ -1,6 +1,7 @@
 {
   "closed_at": {
     "1892": "2026-06-07",
+    "1933": "2026-07-16",
     "1934": "2026-07-16",
     "1936": "2026-07-16",
     "1937": "2026-07-16",
@@ -135,7 +136,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T14:22:05Z",
+  "generated_at": "2026-07-16T14:34:57Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -795,20 +796,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\"",
-      "updated_at": "2026-07-15T13:17:10Z"
-    },
-    "1933": {
-      "category": "Bug",
-      "created_at": "2021-12-19T22:23:54Z",
-      "labels": [
-        "bug",
-        "defaults list",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Selecting multiple configs from a group should allow selecting none",
       "updated_at": "2026-07-15T13:17:10Z"
     },
     "1944": {
@@ -2673,6 +2660,20 @@
       "status": "done",
       "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
       "updated_at": "2021-11-22T21:10:28Z"
+    },
+    "1933": {
+      "category": "Bug",
+      "created_at": "2021-12-19T22:23:54Z",
+      "labels": [
+        "bug",
+        "defaults list",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Selecting multiple configs from a group should allow selecting none",
+      "updated_at": "2026-07-15T13:17:10Z"
     },
     "1934": {
       "category": "Question",

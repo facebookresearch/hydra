@@ -422,3 +422,4 @@
 {"ts": "2026-07-16T14:04:37Z", "kind": "closed", "issue": 1936, "issue_url": "https://github.com/facebookresearch/hydra/issues/1936", "title": "instantiate api - having to write a dataclass conf for every _target_ class "}
 {"ts": "2026-07-16T14:04:37Z", "kind": "pr", "issue": 2149, "issue_url": "https://github.com/facebookresearch/hydra/issues/2149", "title": "[Bug] Documentation Binder link is broken.", "detail": "linked #3280"}
 {"ts": "2026-07-16T14:22:05Z", "kind": "closed", "issue": 1934, "issue_url": "https://github.com/facebookresearch/hydra/issues/1934", "title": "hydra.utils.instantiate using a config file"}
+{"ts": "2026-07-16T14:34:57Z", "kind": "closed", "issue": 1933, "issue_url": "https://github.com/facebookresearch/hydra/issues/1933", "title": "[Bug] Selecting multiple configs from a group should allow selecting none"}

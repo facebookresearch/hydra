@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T14:22:05Z",
+  "generated_at": "2026-07-16T14:34:57Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 189,
+    "open_total": 188,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 28,
-        "percentage": 14.8
+        "count": 27,
+        "percentage": 14.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 133,
-        "percentage": 70.4
+        "percentage": 70.7
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 6.3
+        "percentage": 6.4
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 178
+        "count": 177
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 134
+        "count": 135
       }
     ]
   },
@@ -1260,23 +1260,6 @@
         "submitit"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1928"
-    },
-    {
-      "number": 1933,
-      "title": "[Bug] Selecting multiple configs from a group should allow selecting none",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-12-19",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage",
-        "defaults list"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1933"
     },
     {
       "number": 1944,
@@ -3229,6 +3212,22 @@
       "updated": "2021-11-22",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
+      "number": 1934,
+      "title": "hydra.utils.instantiate using a config file",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-12-20",
+      "updated": "2026-07-15",
+      "labels": [
+        "question",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1934"
     },
     {
       "number": 1936,
@@ -5367,23 +5366,31 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
-      "number": 1934,
-      "title": "hydra.utils.instantiate using a config file",
-      "category": "Question",
-      "category_emoji": "❓",
+      "number": 1933,
+      "title": "[Bug] Selecting multiple configs from a group should allow selecting none",
+      "category": "Bug",
+      "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2021-12-20",
+      "created": "2021-12-19",
       "updated": "2026-07-15",
       "labels": [
-        "question",
+        "bug",
+        "defaults list",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1934"
+      "url": "https://github.com/facebookresearch/hydra/issues/1933"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T14:34:57Z",
+      "kind": "closed",
+      "issue": 1933,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1933",
+      "title": "[Bug] Selecting multiple configs from a group should allow selecting none"
+    },
     {
       "ts": "2026-07-16T14:22:05Z",
       "kind": "closed",
@@ -6965,13 +6972,6 @@
       "issue": 2313,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2313",
       "title": "[Bug]OptunaSweeper sample does not work with Hydra=1.2.0"
-    },
-    {
-      "ts": "2026-07-15T10:45:23Z",
-      "kind": "closed",
-      "issue": 2322,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2322",
-      "title": "[Bug] instantiate stacktrace does not provide config key info"
     }
   ]
 }
