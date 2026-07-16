@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T12:13:23Z",
+  "generated_at": "2026-07-16T13:12:04Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 192,
+    "open_total": 193,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 28,
-        "percentage": 14.6
+        "percentage": 14.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 135,
-        "percentage": 70.3
+        "count": 136,
+        "percentage": 70.5
       },
       {
         "category": "Documentation",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 182
+        "count": 183
       },
       {
         "status": "done",
@@ -588,7 +588,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-11-30",
-      "updated": "2026-07-15",
+      "updated": "2026-07-16",
       "labels": [
         "bug",
         "help wanted",
@@ -3243,6 +3243,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3258"
     },
     {
+      "number": 3279,
+      "title": "hydra.mini(): capability-based application entry point with opt-in behavior",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-16",
+      "updated": "2026-07-16",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3279"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -3275,6 +3290,23 @@
       "updated": "2021-11-22",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
+      "number": 1939,
+      "title": "Implement #1389 or similar functionality",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-12-27",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "list composition",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1939"
     },
     {
       "number": 1942,
@@ -5344,26 +5376,16 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
-    },
-    {
-      "number": 1939,
-      "title": "Implement #1389 or similar functionality",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2021-12-27",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "list composition",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1939"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T13:12:04Z",
+      "kind": "new",
+      "issue": 3279,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3279",
+      "title": "hydra.mini(): capability-based application entry point with opt-in behavior"
+    },
     {
       "ts": "2026-07-16T12:13:23Z",
       "kind": "closed",
@@ -6947,13 +6969,6 @@
         "number": 3269,
         "url": "https://github.com/facebookresearch/hydra/pull/3269"
       }
-    },
-    {
-      "ts": "2026-07-05T07:35:30Z",
-      "kind": "new",
-      "issue": 3268,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3268",
-      "title": "Change plugin instantiation to avoid recursive target execution in Hydra core"
     }
   ]
 }
