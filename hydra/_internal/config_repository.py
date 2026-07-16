@@ -307,7 +307,7 @@ class ConfigRepository(IConfigRepository):
     def _extract_keywords_from_config_group(
         config_path: str, group: str, keywords: "ConfigRepository.Keywords"
     ) -> None:
-        elements = group.split(" ")
+        elements = group.split()
         group = elements[-1]
         elements = elements[0:-1]
         for keyword in elements:

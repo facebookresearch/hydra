@@ -56,6 +56,14 @@ Plugins.instance()
             id="optional",
         ),
         param(
+            "keyword_whitespace",
+            [
+                GroupDefault(group="group1", value="file1", optional=True),
+                GroupDefault(group="group2", value="file2", override=True),
+            ],
+            id="keyword_whitespace",
+        ),
+        param(
             "config_default",
             [ConfigDefault(path="empty")],
             id="non_config_group_default",
