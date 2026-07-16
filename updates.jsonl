@@ -411,3 +411,5 @@
 {"ts": "2026-07-16T09:14:38Z", "kind": "closed", "issue": 1951, "issue_url": "https://github.com/facebookresearch/hydra/issues/1951", "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list"}
 {"ts": "2026-07-16T09:23:20Z", "kind": "closed", "issue": 1954, "issue_url": "https://github.com/facebookresearch/hydra/issues/1954", "title": "Pruning option for Optuna"}
 {"ts": "2026-07-16T09:56:55Z", "kind": "label", "issue": 1944, "issue_url": "https://github.com/facebookresearch/hydra/issues/1944", "title": "[Feature Request] logrange sweep", "detail": "removed \"triage\""}
+{"ts": "2026-07-16T11:17:37Z", "kind": "status", "issue": 1942, "issue_url": "https://github.com/facebookresearch/hydra/issues/1942", "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath", "detail": "not started → in progress", "pr": {"number": 3278, "url": "https://github.com/facebookresearch/hydra/pull/3278"}}
+{"ts": "2026-07-16T11:17:37Z", "kind": "pr", "issue": 1942, "issue_url": "https://github.com/facebookresearch/hydra/issues/1942", "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath", "detail": "linked #3278"}

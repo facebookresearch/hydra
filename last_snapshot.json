@@ -129,7 +129,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T09:56:55Z",
+  "generated_at": "2026-07-16T11:17:37Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -868,9 +868,11 @@
         "sweep",
         "triage"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3278"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath",
       "updated_at": "2026-07-15T13:17:07Z"
     },
