@@ -1,6 +1,7 @@
 {
   "closed_at": {
     "1892": "2026-06-07",
+    "1939": "2026-07-16",
     "1942": "2026-07-16",
     "1951": "2026-07-16",
     "1954": "2026-07-16",
@@ -130,7 +131,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T11:55:16Z",
+  "generated_at": "2026-07-16T12:13:23Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -846,20 +847,6 @@
       "status": "not started",
       "title": "[Feature Request] Conditionally disable the creation of folders in output/multirun via the CLI",
       "updated_at": "2026-07-15T13:17:08Z"
-    },
-    "1939": {
-      "category": "Enhancement",
-      "created_at": "2021-12-27T22:09:03Z",
-      "labels": [
-        "enhancement",
-        "list composition",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Implement #1389 or similar functionality",
-      "updated_at": "2026-07-15T13:17:07Z"
     },
     "1944": {
       "category": "Enhancement",
@@ -2722,6 +2709,20 @@
       "status": "done",
       "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
       "updated_at": "2021-11-22T21:10:28Z"
+    },
+    "1939": {
+      "category": "Enhancement",
+      "created_at": "2021-12-27T22:09:03Z",
+      "labels": [
+        "enhancement",
+        "list composition",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Implement #1389 or similar functionality",
+      "updated_at": "2026-07-15T13:17:07Z"
     },
     "1942": {
       "category": "Bug",

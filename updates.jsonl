@@ -414,3 +414,4 @@
 {"ts": "2026-07-16T11:17:37Z", "kind": "status", "issue": 1942, "issue_url": "https://github.com/facebookresearch/hydra/issues/1942", "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath", "detail": "not started → in progress", "pr": {"number": 3278, "url": "https://github.com/facebookresearch/hydra/pull/3278"}}
 {"ts": "2026-07-16T11:17:37Z", "kind": "pr", "issue": 1942, "issue_url": "https://github.com/facebookresearch/hydra/issues/1942", "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath", "detail": "linked #3278"}
 {"ts": "2026-07-16T11:55:16Z", "kind": "closed", "issue": 1942, "issue_url": "https://github.com/facebookresearch/hydra/issues/1942", "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath"}
+{"ts": "2026-07-16T12:13:23Z", "kind": "closed", "issue": 1939, "issue_url": "https://github.com/facebookresearch/hydra/issues/1939", "title": "Implement #1389 or similar functionality"}
