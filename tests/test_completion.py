@@ -94,6 +94,59 @@ def test_bash_completion_with_dot_in_path() -> None:
     return
 
 
+@mark.skipif(sys.platform == "win32", reason="does not run on windows")
+def test_bash_completion_does_not_execute_non_hydra_script(tmp_path: Path) -> None:
+    completion_app = Path("hydra/test_utils/completion.py").resolve()
+    completion_test = Path(
+        "tests/scripts/test_bash_completion_non_hydra.bash"
+    ).resolve()
+    script = tmp_path / "non_hydra.py"
+    script.write_text('from pathlib import Path\nPath("executed").touch()\n')
+
+    subprocess.check_call(
+        [
+            "bash",
+            str(completion_test),
+            "python",
+            str(completion_app),
+        ],
+        cwd=tmp_path,
+        env={"PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}"},
+    )
+
+    assert not (tmp_path / "executed").exists()
+
+
+@mark.skipif(sys.platform == "win32", reason="does not run on windows")
+def test_bash_completion_does_not_execute_python_option_as_script(
+    tmp_path: Path,
+) -> None:
+    completion_app = Path("hydra/test_utils/completion.py").resolve()
+    completion_test = Path(
+        "tests/scripts/test_bash_completion_non_hydra.bash"
+    ).resolve()
+    (tmp_path / "--").write_text("# @hydra.main\n")
+    (tmp_path / "-sc").write_text(
+        'from pathlib import Path\nPath("executed").touch()\n'
+    )
+
+    subprocess.check_call(
+        [
+            "bash",
+            str(completion_test),
+            "python",
+            str(completion_app),
+        ],
+        cwd=tmp_path,
+        env={
+            "COMP_LINE": "python -- ",
+            "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
+        },
+    )
+
+    assert not (tmp_path / "executed").exists()
+
+
 base_completion_list: List[str] = [
     "dict.",
     "dict_prefix=",

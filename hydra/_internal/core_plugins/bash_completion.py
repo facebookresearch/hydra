@@ -22,11 +22,16 @@ class BashCompletion(CompletionPlugin):
         if (( ${#words[@]} < 2 )); then
             return
         fi
+        if [[ "${words[1]}" == -* ]]; then
+            return
+        fi
         file_path=$(pwd)/${words[1]}
         if [ ! -f "$file_path" ]; then
             return
         fi
-        grep "@hydra.main" $file_path -q
+        if ! grep -Fq -- "@hydra.main" "$file_path"; then
+            return
+        fi
         helper="${words[0]} ${words[1]}"
     else
         helper="${words[0]}"

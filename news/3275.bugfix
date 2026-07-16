@@ -1,0 +1,1 @@
+Prevent Bash completion from executing non-Hydra Python scripts.
