@@ -1,6 +1,7 @@
 {
   "closed_at": {
     "1892": "2026-06-07",
+    "1951": "2026-07-16",
     "1957": "2026-07-16",
     "2017": "2026-07-16",
     "2032": "2026-06-20",
@@ -127,7 +128,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-16T07:44:44Z",
+  "generated_at": "2026-07-16T09:14:38Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -884,22 +885,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] logrange sweep",
-      "updated_at": "2026-07-15T13:17:06Z"
-    },
-    "1951": {
-      "category": "Bug",
-      "created_at": "2022-01-11T05:55:00Z",
-      "labels": [
-        "bug",
-        "defaults list",
-        "triage"
-      ],
-      "pr_numbers": [
-        "3277"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
       "updated_at": "2026-07-15T13:17:06Z"
     },
     "1954": {
@@ -2766,6 +2751,22 @@
       "status": "done",
       "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
       "updated_at": "2021-11-22T21:10:28Z"
+    },
+    "1951": {
+      "category": "Bug",
+      "created_at": "2022-01-11T05:55:00Z",
+      "labels": [
+        "bug",
+        "defaults list",
+        "triage"
+      ],
+      "pr_numbers": [
+        "3277"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
+      "updated_at": "2026-07-15T13:17:06Z"
     },
     "1957": {
       "category": "Bug",

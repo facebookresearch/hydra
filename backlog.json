@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-16",
-  "generated_at": "2026-07-16T07:44:44Z",
+  "generated_at": "2026-07-16T09:14:38Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 196,
+    "open_total": 195,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 30,
-        "percentage": 15.3
+        "count": 29,
+        "percentage": 14.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 137,
-        "percentage": 69.9
+        "percentage": 70.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 6.1
+        "percentage": 6.2
       },
       {
         "category": "Question",
@@ -39,14 +39,14 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 4,
-        "percentage": 2.0
+        "percentage": 2.1
       }
     ],
     "by_status": [
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 2
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 126
+        "count": 127
       }
     ]
   },
@@ -93,28 +93,6 @@
         "structured config"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1830"
-    },
-    {
-      "number": 1951,
-      "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3277,
-          "url": "https://github.com/facebookresearch/hydra/pull/3277"
-        }
-      ],
-      "created": "2022-01-11",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage",
-        "defaults list"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1951"
     },
     {
       "number": 2632,
@@ -5357,9 +5335,38 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
+    },
+    {
+      "number": 1951,
+      "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3277,
+          "url": "https://github.com/facebookresearch/hydra/pull/3277"
+        }
+      ],
+      "created": "2022-01-11",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "defaults list",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1951"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-16T09:14:38Z",
+      "kind": "closed",
+      "issue": 1951,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1951",
+      "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list"
+    },
     {
       "ts": "2026-07-16T07:25:48Z",
       "kind": "pr",
@@ -6948,13 +6955,6 @@
       "issue": 3258,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3258",
       "title": "Switch instantiate target filtering to an allowlist model for 1.4"
-    },
-    {
-      "ts": "2026-07-04T13:45:32Z",
-      "kind": "closed",
-      "issue": 2338,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2338",
-      "title": "[Bug][plugin][RQ] hydra/launcher=rq  _pickle.UnpicklingError: pickle data was truncated"
     }
   ]
 }
