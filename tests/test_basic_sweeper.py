@@ -98,3 +98,20 @@ def test_partial_failure(
         """).strip()
 
     assert_multiline_regex_search(expected_err_regex, err)
+
+
+def test_glob_uses_primary_config_searchpath(tmpdir: Any) -> None:
+    cmd = [
+        sys.executable,
+        "tests/test_apps/glob_searchpath/my_app.py",
+        "+group1@=glob(file*)",
+        f"hydra.sweep.dir={tmpdir}",
+        "hydra.job.chdir=False",
+        "--multirun",
+    ]
+    out, err = run_process(cmd=cmd, print_error=False, raise_exception=False)
+
+    assert err == ""
+    assert "Launching 2 jobs locally" in out
+    assert "foo=10" in out
+    assert "foo=20" in out

@@ -1,0 +1,3 @@
+hydra:
+  searchpath:
+    - pkg://hydra.test_utils.configs

@@ -150,6 +150,7 @@ class Hydra:
             overrides=overrides,
             with_log_configuration=with_log_configuration,
             run_mode=RunMode.RUN,
+            activate_config_repository=True,
         )
         if cfg.hydra.mode is None:
             cfg.hydra.mode = RunMode.RUN
@@ -202,6 +203,7 @@ class Hydra:
             overrides=overrides,
             with_log_configuration=with_log_configuration,
             run_mode=RunMode.MULTIRUN,
+            activate_config_repository=True,
         )
 
         callbacks = Callbacks(cfg)
@@ -644,6 +646,7 @@ class Hydra:
         from_shell: bool = True,
         validate_sweep_overrides: bool = True,
         run_callback: bool = True,
+        activate_config_repository: bool = False,
     ) -> DictConfig:
         """
         :param config_name:
@@ -654,16 +657,28 @@ class Hydra:
         :param validate_sweep_overrides: True if sweep overrides should be validated
         :param run_callback: True if the on_compose_config callback should be called, generally should always
                              be True except for internal use cases
+        :param activate_config_repository: True to retain the effective repository on the invocation loader
         :return:
         """
 
-        cfg = self.config_loader.load_configuration(
-            config_name=config_name,
-            overrides=overrides,
-            run_mode=run_mode,
-            from_shell=from_shell,
-            validate_sweep_overrides=validate_sweep_overrides,
-        )
+        if activate_config_repository and isinstance(
+            self.config_loader, ConfigLoaderImpl
+        ):
+            cfg = self.config_loader._load_configuration_with_active_repository(
+                config_name=config_name,
+                overrides=overrides,
+                run_mode=run_mode,
+                from_shell=from_shell,
+                validate_sweep_overrides=validate_sweep_overrides,
+            )
+        else:
+            cfg = self.config_loader.load_configuration(
+                config_name=config_name,
+                overrides=overrides,
+                run_mode=run_mode,
+                from_shell=from_shell,
+                validate_sweep_overrides=validate_sweep_overrides,
+            )
         if with_log_configuration:
             configure_log(cfg.hydra.hydra_logging, cfg.hydra.verbose)
             global log
