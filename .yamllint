@@ -31,7 +31,6 @@ rules:
 
 ignore: |
   build
-  contrib
   website
   **/.hydra/*.yaml
   **/multirun.yaml
