@@ -366,7 +366,7 @@ def _bandit_cmd(*paths: str) -> List[str]:
     bandit = [
         "bandit",
         "--exclude",
-        "./.nox/**,./.sl/**,./.venv/**,./build/**,./contrib/**,./temp/**,./website/**,./tools/configen/build/**",
+        "./.nox/**,./.sl/**,./.venv/**,./build/**,./temp/**,./website/**,./tools/configen/build/**",
         "-ll",
         "-r",
         *(paths or ["."]),
@@ -460,7 +460,6 @@ def lint_core_impl(session: Session) -> None:
         "tools/configen/tests/test_modules/expected",
         "temp",
         "build",
-        "contrib",
     ]
     isort = _isort_cmd() + [f"--skip={skip}" for skip in skiplist]
 

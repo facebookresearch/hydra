@@ -64,7 +64,6 @@ exclude = '''
     | _build
     | dist
     | build
-    | contrib
   )
 )
 '''
