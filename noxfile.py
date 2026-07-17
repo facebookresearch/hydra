@@ -323,13 +323,7 @@ def install_dev_deps(session: Session) -> None:
 def _ruff_format_cmd(
     *paths: str, extend_exclude: Optional[List[str]] = None
 ) -> List[str]:
-    ruff = [
-        "ruff",
-        "format",
-        "--config",
-        os.path.join(BASE, "pyproject.toml"),
-        *(paths or ["."]),
-    ]
+    ruff = ["ruff", "format", *(paths or ["."])]
     if extend_exclude is not None:
         for exclude in extend_exclude:
             ruff += ["--extend-exclude", exclude]
@@ -443,12 +437,12 @@ def lint_core_impl(session: Session) -> None:
         session.chdir(BASE)
 
     session.run(
-        *_ruff_format_cmd(".", extend_exclude=CORE_RUFF_EXTEND_EXCLUDE),
+        *_ruff_lint_cmd(".", extend_exclude=CORE_RUFF_EXTEND_EXCLUDE),
         silent=SILENT,
     )
 
     session.run(
-        *_ruff_lint_cmd(".", extend_exclude=CORE_RUFF_EXTEND_EXCLUDE),
+        *_ruff_format_cmd(".", extend_exclude=CORE_RUFF_EXTEND_EXCLUDE),
         silent=SILENT,
     )
 
