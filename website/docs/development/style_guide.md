@@ -4,10 +4,9 @@ title: Style Guide
 sidebar_label: Style Guide
 ---
 
-The code need to pass verification by the following tools:
- - `black .` : Automatic code formatting for Python
- - `flake8` : PEP8 compliance checker for Python, this includes copyright header verification
- - `isort .` : Ensure imports are sorted properly
+The code needs to pass verification by the following tools:
+ - `ruff format .` : Automatic code formatting for Python
+ - `ruff check .` : Python linting, copyright verification, and import sorting
  - `pyrefly check` : Ensures code passes static type checking
  - `yamllint .` : Ensures that yaml files are syntactically correct and properly indented.
 
@@ -16,8 +15,7 @@ The easiest way to run the required verifications is:
  - `nox -s lint-core` : for the Hydra core
  - `nox -s lint-plugins` : for the included plugins
 
-isort is a bit tricky to run for plugins. the best way to get it to sort the plugins imports is with the FIX environment
-variable:
+Use the `FIX` environment variable to automatically format code and apply safe lint fixes:
 ```
 $ FIX=1 nox -s lint-plugins
 ```

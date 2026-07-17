@@ -204,7 +204,7 @@ def cast_bool(*args: CastType, value: Optional[CastType] = None) -> Any:
 
 
 def choice(
-    *args: Union[str, int, float, bool, Dict[Any, Any], List[Any], ChoiceSweep]
+    *args: Union[str, int, float, bool, Dict[Any, Any], List[Any], ChoiceSweep],
 ) -> ChoiceSweep:
     """
     A choice sweep over the specified values

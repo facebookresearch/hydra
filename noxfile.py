@@ -19,7 +19,7 @@ BASE = os.path.abspath(os.path.dirname(__file__))
 DEFAULT_PYTHON_VERSIONS = ["3.10", "3.11", "3.12", "3.13", "3.14"]
 LINT_PYTHON_VERSIONS = ["3.11"]
 DEFAULT_OS_NAMES = ["Linux", "MacOS", "Windows"]
-CORE_BLACK_EXTEND_EXCLUDE = r"(^|/)(plugins|examples/plugins)(/|$)"
+CORE_RUFF_EXTEND_EXCLUDE = ["plugins", "examples/plugins"]
 CORE_BANDIT_PATHS = [
     "build_helpers",
     "examples/advanced",
@@ -208,7 +208,7 @@ def get_plugin_os_names(classifiers: List[str]) -> List[str]:
 
 @functools.lru_cache()
 def list_plugins(directory: str) -> List[Plugin]:
-    blacklist = [".isort.cfg", "examples"]
+    blacklist = [".ruff_cache", "examples", "ruff.toml"]
     _plugin_directories = [
         x
         for x in sorted(os.listdir(os.path.join(BASE, directory)))
@@ -320,39 +320,40 @@ def install_dev_deps(session: Session) -> None:
     session.run("pip", "install", "-r", "requirements/dev.txt", silent=SILENT)
 
 
-def _black_cmd(*paths: str, extend_exclude: Optional[str] = None) -> List[str]:
-    black = ["black", *(paths or ["."])]
+def _ruff_format_cmd(
+    *paths: str, extend_exclude: Optional[List[str]] = None
+) -> List[str]:
+    ruff = [
+        "ruff",
+        "format",
+        "--config",
+        os.path.join(BASE, "pyproject.toml"),
+        *(paths or ["."]),
+    ]
     if extend_exclude is not None:
-        black += ["--extend-exclude", extend_exclude]
+        for exclude in extend_exclude:
+            ruff += ["--extend-exclude", exclude]
     if not FIX:
-        black += ["--check"]
-    return black
+        ruff += ["--check"]
+    return ruff
 
 
 def _is_github_actions() -> bool:
     return os.environ.get("GITHUB_ACTIONS") == "true"
 
 
-def _isort_cmd() -> List[str]:
-    isort = ["isort", "."]
-    if not FIX:
-        isort += ["--check", "--diff"]
-    if _is_github_actions():
-        isort += ["--format-error", "::error::isort {message}"]
-    return isort
-
-
-def _flake8_cmd(*paths: str, extend_exclude: Optional[str] = None) -> List[str]:
-    flake8 = ["flake8", "--config", ".flake8"]
+def _ruff_lint_cmd(
+    *paths: str, extend_exclude: Optional[List[str]] = None
+) -> List[str]:
+    ruff = ["ruff", "check", *(paths or ["."])]
     if extend_exclude is not None:
-        flake8 += ["--extend-exclude", extend_exclude]
+        for exclude in extend_exclude:
+            ruff += ["--extend-exclude", exclude]
+    if FIX:
+        ruff += ["--fix"]
     if _is_github_actions():
-        flake8 += [
-            "--format",
-            "::error file=%(path)s,line=%(row)d,col=%(col)d::%(code)s %(text)s",
-        ]
-    flake8.extend(paths)
-    return flake8
+        ruff += ["--output-format", "github"]
+    return ruff
 
 
 def _yamllint_cmd(*paths: str) -> List[str]:
@@ -437,34 +438,19 @@ def lint_core_impl(session: Session) -> None:
     session.log("Installing standalone apps")
     for subdir in apps:
         session.chdir(str(subdir))
-        session.run(*_black_cmd(), silent=SILENT)
-        session.run(*_isort_cmd(), silent=SILENT)
+        session.run(*_ruff_lint_cmd(), silent=SILENT)
+        session.run(*_ruff_format_cmd(), silent=SILENT)
         session.chdir(BASE)
 
     session.run(
-        *_black_cmd(".", extend_exclude=CORE_BLACK_EXTEND_EXCLUDE),
+        *_ruff_format_cmd(".", extend_exclude=CORE_RUFF_EXTEND_EXCLUDE),
         silent=SILENT,
     )
 
-    skiplist = apps + [
-        ".git",
-        ".sl",
-        "website",
-        "plugins",
-        "examples/plugins",
-        "tools",
-        ".nox",
-        ".venv",
-        "hydra/grammar/gen",
-        "tools/configen/example/gen",
-        "tools/configen/tests/test_modules/expected",
-        "temp",
-        "build",
-        "contrib",
-    ]
-    isort = _isort_cmd() + [f"--skip={skip}" for skip in skiplist]
-
-    session.run(*isort, silent=SILENT)
+    session.run(
+        *_ruff_lint_cmd(".", extend_exclude=CORE_RUFF_EXTEND_EXCLUDE),
+        silent=SILENT,
+    )
 
     # No positional target: Pyrefly uses the core project scope from pyproject.toml.
     # Examples, tools, and plugins are checked below with explicit import roots.
@@ -472,7 +458,6 @@ def lint_core_impl(session: Session) -> None:
         *_pyrefly_cmd(python_version=session.python),
         silent=SILENT,
     )
-    session.run(*_flake8_cmd(".", extend_exclude="plugins,examples/plugins"))
     session.run(*_yamllint_cmd(*CORE_YAML_LINT_PATHS))
 
     pyrefly_check_subdirs = [
@@ -530,12 +515,11 @@ def lint_plugin(session: Session, plugin: Plugin) -> None:
 
     install_dev_deps(session)
 
-    session.run(*_flake8_cmd(plugin.abspath))
     path = plugin.abspath
     source_dir = plugin.source_dir
     session.chdir(path)
-    session.run(*_black_cmd(), silent=SILENT)
-    session.run(*_isort_cmd(), silent=SILENT)
+    session.run(*_ruff_lint_cmd(), silent=SILENT)
+    session.run(*_ruff_format_cmd(), silent=SILENT)
     session.chdir(BASE)
     session.run(*_yamllint_cmd(plugin.abspath), silent=SILENT)
 
@@ -657,7 +641,9 @@ def test_plugins_vs_core(session: Session) -> None:
 
 
 @nox.session(python=PYTHON_VERSIONS)  # type: ignore
-@nox.parametrize("plugin", list_plugins("plugins"), ids=[p.name for p in list_plugins("plugins")])  # type: ignore
+@nox.parametrize(
+    "plugin", list_plugins("plugins"), ids=[p.name for p in list_plugins("plugins")]
+)  # type: ignore
 def test_plugins(session: Session, plugin: Plugin) -> None:
     _upgrade_basic(session)
     session.install("pytest")

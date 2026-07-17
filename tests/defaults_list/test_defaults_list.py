@@ -640,10 +640,12 @@ def test_include_nested_group_pkg2(
             ["group1@wrong=file2"],
             raises(
                 ConfigCompositionException,
-                match=re.escape(dedent("""\
+                match=re.escape(
+                    dedent("""\
                         Could not override 'group1@wrong'.
                         Did you mean to override group1@pkg1?
-                        To append to your default list use +group1@wrong=file2""")),
+                        To append to your default list use +group1@wrong=file2""")
+                ),
             ),
             id="option_override:group_default_pkg1:bad_package_in_override",
         ),
@@ -2072,10 +2074,12 @@ def test_two_config_items(
             False,
             raises(
                 ConfigCompositionException,
-                match=re.escape(dedent("""\
+                match=re.escape(
+                    dedent("""\
                         You must specify 'db', e.g, db=<OPTION>
                         Available options:
-                        \tbase_db""")),
+                        \tbase_db""")
+                ),
             ),
             id="with_missing:not_ignore_missing",
         ),

@@ -1064,8 +1064,7 @@ def test_hydra_override_dirname_resolver_element_resolver(
         )
         with open_dict(cfg.hydra.sweep):
             cfg.hydra.sweep.subdir = (
-                "${hydra_override_dirname:{item_sep: '/', "
-                "element_resolver: pathsafe}}"
+                "${hydra_override_dirname:{item_sep: '/', element_resolver: pathsafe}}"
             )
 
         assert (

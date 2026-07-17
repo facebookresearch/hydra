@@ -82,9 +82,9 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
     if override.is_choice_sweep():
         assert isinstance(value, ChoiceSweep)
         for x in override.sweep_iterator(transformer=Transformer.encode):
-            assert isinstance(
-                x, (str, int, float, bool, type(None))
-            ), f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
+            assert isinstance(x, (str, int, float, bool, type(None))), (
+                f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
+            )
             choices.append(x)
         return CategoricalDistribution(choices)
 
@@ -94,9 +94,9 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
         assert value.stop is not None
         if value.shuffle:
             for x in override.sweep_iterator(transformer=Transformer.encode):
-                assert isinstance(
-                    x, (str, int, float, bool, type(None))
-                ), f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
+                assert isinstance(x, (str, int, float, bool, type(None))), (
+                    f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
+                )
                 choices.append(x)
             return CategoricalDistribution(choices)
         if (
@@ -273,9 +273,9 @@ class OptunaSweeperImpl(Sweeper):
         if isinstance(distribution, CategoricalDistribution):
             return distribution.choices
         elif isinstance(distribution, IntDistribution):
-            assert (
-                distribution.step is not None
-            ), "`step` of IntDistribution must be a positive integer."
+            assert distribution.step is not None, (
+                "`step` of IntDistribution must be a positive integer."
+            )
             n_items = (distribution.high - distribution.low) // distribution.step
             return [distribution.low + i * distribution.step for i in range(n_items)]
         elif (

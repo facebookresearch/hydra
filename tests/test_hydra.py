@@ -1508,7 +1508,8 @@ class TestTaskRunnerLogging:
 
 @mark.parametrize(
     "expected_regex",
-    [dedent(r"""
+    [
+        dedent(r"""
             Error executing job with overrides: \[\]
             Traceback \(most recent call last\):
               File ".*my_app\.py", line 9, in my_app
@@ -1517,7 +1518,8 @@ class TestTaskRunnerLogging:
             ZeroDivisionError: division by zero
 
             Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
-            """).strip()],
+            """).strip()
+    ],
 )
 def test_job_exception(
     tmpdir: Any,

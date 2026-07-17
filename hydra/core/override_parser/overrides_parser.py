@@ -88,14 +88,14 @@ class OverridesParser:
                 if isinstance(cause, LexerNoViableAltException):
                     prefix = "LexerNoViableAltException: "
                     start = len(prefix) + cause.startIndex + 1
-                    msg = f"{prefix}{override}" f"\n{'^'.rjust(start)}"
+                    msg = f"{prefix}{override}\n{'^'.rjust(start)}"
                     e.__cause__ = None
                 elif isinstance(cause, RecognitionException):
                     prefix = f"{e}"
                     msg = f"{prefix}"
                     e.__cause__ = None
                 else:
-                    msg = f"Error parsing override '{override}'" f"\n{e}"
+                    msg = f"Error parsing override '{override}'\n{e}"
                 raise OverrideParseException(
                     override=override,
                     message=f"Error when parsing index: {idx}, string: {override} out of {overrides}."

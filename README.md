@@ -10,7 +10,7 @@
 <p align="center">
   <a href="https://github.com/facebookresearch/hydra/blob/main/LICENSE"><img src="https://img.shields.io/pypi/l/hydra-core" alt="PyPI - License" /></a>
   <a href="https://hydra-framework.zulipchat.com/"><img src="https://img.shields.io/badge/zulip-join_chat-brightgreen.svg" alt="Zulip chat" /></a>
-  <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black" /></a>
+  <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/code%20style-ruff-261230.svg" alt="Code style: Ruff" /></a>
 </p>
 
 <p align="center">
