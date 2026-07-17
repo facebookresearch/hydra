@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-17",
-  "generated_at": "2026-07-17T14:25:20Z",
+  "generated_at": "2026-07-17T16:46:06Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 181,
@@ -3434,6 +3434,28 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2125"
     },
     {
+      "number": 2149,
+      "title": "[Bug] Documentation Binder link is broken.",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3280,
+          "url": "https://github.com/facebookresearch/hydra/pull/3280"
+        }
+      ],
+      "created": "2022-04-13",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "documentation",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2149"
+    },
+    {
       "number": 2162,
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "category": "Enhancement",
@@ -5368,28 +5390,6 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
-    },
-    {
-      "number": 2149,
-      "title": "[Bug] Documentation Binder link is broken.",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3280,
-          "url": "https://github.com/facebookresearch/hydra/pull/3280"
-        }
-      ],
-      "created": "2022-04-13",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "documentation",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2149"
     }
   ],
   "updates": [
