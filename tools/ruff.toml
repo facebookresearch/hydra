@@ -1,0 +1,15 @@
+cache-dir = "../.ruff_cache"
+extend = "../pyproject.toml"
+
+[lint.isort]
+known-first-party = ["tools"]
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[lint.per-file-ignores]
+"configen/example/my_app.py" = ["I001"]

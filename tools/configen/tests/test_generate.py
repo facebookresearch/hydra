@@ -1,20 +1,18 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import os
 import sys
-
 from difflib import unified_diff
 from pathlib import Path
 from textwrap import dedent
 from typing import Any
 
 from configen.config import ConfigenConf, Flags, ModuleConf
-from configen.configen import generate_module
 from hydra.test_utils.test_utils import chdir_hydra_root, run_python_script
-
 from hydra.utils import ConvertMode, get_class, instantiate, target_whitelist
 from omegaconf import OmegaConf
-
 from pytest import mark, param
+
+from configen.configen import generate_module
 from tests.test_modules import (
     Color,
     DictValues,
@@ -33,8 +31,6 @@ from tests.test_modules import (
     WithStringDefault,
     WithUntypedStringDefault,
 )
-
-from tests.test_modules.generated import PeskySentinelUsageConf
 
 chdir_hydra_root(subdir="tools/configen")
 

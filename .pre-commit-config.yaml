@@ -1,23 +1,12 @@
 repos:
-  - repo: https://github.com/pycqa/isort
-    rev: 8.0.1
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.22
     hooks:
-      - id: isort
-        files: 'hydra/.*'
-      - id: isort
-        files: 'plugins/.*'
-      - id: isort
-        files: 'tools/.*'
-
-  - repo: https://github.com/psf/black
-    rev: 26.3.1
-    hooks:
-      - id: black
-
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.3.0
-    hooks:
-      - id: flake8
+      - id: ruff-check
+        args: [--fix]
+        types_or: [python, pyi]
+      - id: ruff-format
+        types_or: [python, pyi]
 
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.38.0

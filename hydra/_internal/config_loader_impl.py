@@ -482,11 +482,13 @@ class ConfigLoaderImpl(ConfigLoader):
                         OmegaConf.update(cfg, key, value, merge=True, force_add=True)
                     else:
                         assert override.input_line is not None
-                        raise ConfigCompositionException(dedent(f"""\
+                        raise ConfigCompositionException(
+                            dedent(f"""\
                         Could not append to config. An item is already at '{override.key_or_group}'.
                         Either remove + prefix: '{override.input_line[1:]}'
                         Or add a second + to add or override '{override.key_or_group}': '+{override.input_line}'
-                        """))
+                        """)
+                        )
                 elif override.is_force_add():
                     OmegaConf.update(cfg, key, value, merge=True, force_add=True)
                 elif override.is_list_extend():
@@ -540,12 +542,14 @@ class ConfigLoaderImpl(ConfigLoader):
                 try:
                     url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/automatic_schema_matching"
                     if "defaults" in schema.config:
-                        raise ConfigCompositionException(dedent(f"""\
+                        raise ConfigCompositionException(
+                            dedent(f"""\
                             '{config_path}' is validated against ConfigStore schema with the same name.
                             This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
                             In addition, the automatically matched schema contains a defaults list.
                             This combination is no longer supported.
-                            See {url} for migration instructions."""))
+                            See {url} for migration instructions.""")
+                        )
                     else:
                         deprecation_warning(
                             dedent(f"""\

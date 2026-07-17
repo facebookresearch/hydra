@@ -244,7 +244,8 @@ def main(cfg: Config):
         return
 
     if OmegaConf.is_missing(cfg.configen, "modules"):  # type: ignore
-        log.error(dedent("""\
+        log.error(
+            dedent("""\
 
         Use --config-dir DIR --config-name NAME
         e.g:
@@ -253,7 +254,8 @@ def main(cfg: Config):
         If you have no config dir yet use init_config_dir=DIR to create an initial config dir.
         e.g:
         \tconfigen init_config_dir=conf
-        """))
+        """)
+        )
         sys.exit(1)
 
     for module in cfg.configen.modules:

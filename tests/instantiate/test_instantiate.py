@@ -826,9 +826,11 @@ def test_instantiate_target_raising_exception_taking_no_arguments(
     _target_ = "tests.instantiate.raise_exception_taking_no_argument"
     with raises(
         InstantiationException,
-        match=(dedent(rf"""
+        match=(
+            dedent(rf"""
                 Error in call to target '{re.escape(_target_)}':
-                ExceptionTakingNoArgument\('Err message',?\)""").strip()),
+                ExceptionTakingNoArgument\('Err message',?\)""").strip()
+        ),
     ):
         instantiate_func({}, _target_=_target_)
 
@@ -839,11 +841,13 @@ def test_instantiate_target_raising_exception_taking_no_arguments_nested(
     _target_ = "tests.instantiate.raise_exception_taking_no_argument"
     with raises(
         InstantiationException,
-        match=(dedent(rf"""
+        match=(
+            dedent(rf"""
                 Error in call to target '{re.escape(_target_)}':
                 ExceptionTakingNoArgument\('Err message',?\)
                 full_key: foo
-                """).strip()),
+                """).strip()
+        ),
     ):
         instantiate_func({"foo": {"_target_": _target_}})
 
@@ -1594,9 +1598,11 @@ def test_cannot_locate_target(instantiate_func: Any) -> None:
     cfg = OmegaConf.create({"foo": {"_target_": "not_found"}})
     with raises(
         InstantiationException,
-        match=re.escape(dedent("""\
+        match=re.escape(
+            dedent("""\
                 Error locating target 'not_found', set env var HYDRA_FULL_ERROR=1 to see chained exception.
-                full_key: foo""")),
+                full_key: foo""")
+        ),
     ) as exc_info:
         instantiate_func(cfg)
     err = exc_info.value
@@ -1640,11 +1646,13 @@ def test_blocklisted_target_fails(target: str) -> None:
     cfg = OmegaConf.create({"foo": {"_target_": target}})
     with raises(
         InstantiationException,
-        match=re.escape(dedent(f"""\
+        match=re.escape(
+            dedent(f"""\
                 Target '{target}' is blocklisted and cannot be instantiated from config
                 to prevent security vulnerabilities, set env var
                 HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE={target}:<other allowlisted targets> to bypass
-                full_key: foo""")),
+                full_key: foo""")
+        ),
     ) as exc_info:
         _instantiate2.instantiate(cfg)
     err = exc_info.value

@@ -402,9 +402,11 @@ def _update_overrides(
             pcp = parent.get_config_path()
             okey = last_override_seen.get_override_key()
             oval = last_override_seen.get_name()
-            raise ConfigCompositionException(dedent(f"""\
+            raise ConfigCompositionException(
+                dedent(f"""\
                     In {pcp}: Override '{okey} : {oval}' is defined before '{d.get_override_key()}: {d.get_name()}'.
-                    Overrides must be at the end of the defaults list"""))
+                    Overrides must be at the end of the defaults list""")
+            )
 
         if isinstance(d, GroupDefault):
             if legacy_hydra_override:
@@ -424,10 +426,12 @@ def _update_overrides(
                 if interpolated_subtree:
                     # Since interpolations are deferred for until all the config groups are already set,
                     # Their subtree may not contain config group overrides
-                    raise ConfigCompositionException(dedent(f"""\
+                    raise ConfigCompositionException(
+                        dedent(f"""\
                             {parent.get_config_path()}: Default List Overrides are not allowed in the subtree
                             of an in interpolated config group (override {d.get_override_key()}={d.get_name()}).
-                            """))
+                            """)
+                    )
                 overrides.add_override(parent.get_config_path(), d)
 
 

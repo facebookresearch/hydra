@@ -101,10 +101,9 @@ YAML linting, and security checks.
 
 For focused local checks, use the same tools the noxfile runs:
 
-- `black .` / `black --check .`
-- `isort . --check --diff`
+- `ruff format .` / `ruff format --check .`
+- `ruff check .` / `ruff check --fix .`
 - `pyrefly check --config pyproject.toml`
-- `flake8 --config .flake8`
 - `yamllint --strict .`
 - `bandit --exclude ./.nox/** -ll -r .`
 

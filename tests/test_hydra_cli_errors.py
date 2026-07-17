@@ -84,7 +84,7 @@ Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
         param(
             "--config-dir=/dir/not/found",
             [
-                f"""Additional config directory '{Path('/dir/not/found').absolute()}' not found
+                f"""Additional config directory '{Path("/dir/not/found").absolute()}' not found
 
 Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
 """

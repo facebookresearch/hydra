@@ -43,30 +43,55 @@
   name = "Maintenance Changes"
   showcontent = true
 
-[tool.black]
+[tool.ruff]
 line-length = 88
-target-version = ['py310']
-include = '\.pyi?$'
-exclude = '''
-(
-  /(
-      .eggs         # exclude a few common directories in the
-    | .git          # root of the project
-    | .hg
-    | .sl
-    | hydra/grammar/gen
-    | tools/configen/example/gen
-    | .tox
-    | .nox
-    | website
-    | .venv
-    | temp
-    | _build
-    | dist
-    | build
-  )
-)
-'''
+target-version = "py310"
+include = ["*.py", "*.pyi"]
+extend-exclude = [
+    ".sl",
+    "hydra/grammar/gen",
+    "temp",
+    "tools/configen/example/gen",
+    "tools/configen/tests/test_modules/expected",
+    "website",
+]
+
+[tool.ruff.lint]
+exclude = [
+    "examples/plugins/example_configsource_plugin/hydra_plugins/example_configsource_plugin/example_configsource_plugin.py",
+    "hydra/test_utils/config_source_common_tests.py",
+    "tests/test_apps/config_source_test/structured.py",
+]
+fixable = ["I"]
+ignore = ["E203", "E231", "E241", "E701"]
+preview = true
+select = ["E", "F", "I", "W", "CPY"]
+
+[tool.ruff.lint.per-file-ignores]
+".stubs/**" = ["CPY001"]
+"examples/plugins/**" = ["I001"]
+"hydra/plugins/**" = ["I001"]
+"tests/instantiate/__init__.py" = ["F401"]
+
+[tool.ruff.lint.flake8-copyright]
+notice-rgx = '(?i)Copyright \(c\) Facebook, Inc. and its affiliates. All Rights Reserved'
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 119
+
+[tool.ruff.lint.isort]
+known-first-party = ["hydra", "hydra_app"]
+section-order = [
+    "future",
+    "standard-library",
+    "libs",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+[tool.ruff.lint.isort.sections]
+libs = ["setuptools"]
 
 [tool.pyrefly]
 project-includes = [

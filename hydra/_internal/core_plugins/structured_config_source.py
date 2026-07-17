@@ -9,7 +9,6 @@ from hydra.plugins.config_source import ConfigResult, ConfigSource
 
 
 class StructuredConfigSource(ConfigSource):
-
     def __init__(self, provider: str, path: str) -> None:
         super().__init__(provider=provider, path=path)
         # Import the module, the __init__ there is expected to register the configs.
