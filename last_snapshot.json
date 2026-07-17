@@ -124,6 +124,7 @@
     "3078": "2026-07-15",
     "3103": "2026-06-24",
     "3104": "2026-06-08",
+    "3106": "2026-07-17",
     "3118": "2026-06-08",
     "3129": "2026-06-11",
     "3176": "2026-05-17",
@@ -142,7 +143,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-17T11:46:23Z",
+  "generated_at": "2026-07-17T12:30:26Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2057,21 +2058,6 @@
       "title": "Optuna sweeper n_jobs>1 is blocking",
       "updated_at": "2026-05-16T02:12:54Z"
     },
-    "3106": {
-      "category": "Bug",
-      "created_at": "2025-12-20T10:25:16Z",
-      "labels": [
-        "awaiting_response",
-        "bug"
-      ],
-      "pr_numbers": [
-        "3107"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
-      "updated_at": "2026-06-08T05:44:45Z"
-    },
     "3158": {
       "category": "Build",
       "created_at": "2026-05-10T16:52:50Z",
@@ -2373,6 +2359,16 @@
       "status": "not started",
       "title": "hydra.mini(): capability-based application entry point with opt-in behavior",
       "updated_at": "2026-07-16T14:18:12Z"
+    },
+    "3283": {
+      "category": "Enhancement",
+      "created_at": "2026-07-17T12:27:51Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Reject duplicate override targets during composition",
+      "updated_at": "2026-07-17T12:30:14Z"
     },
     "385": {
       "category": "Enhancement",
@@ -4149,6 +4145,21 @@
       "status": "done",
       "title": "[Bug] Updating config group from a config group of another config group only works with full path",
       "updated_at": "2026-05-16T02:12:55Z"
+    },
+    "3106": {
+      "category": "Bug",
+      "created_at": "2025-12-20T10:25:16Z",
+      "labels": [
+        "awaiting_response",
+        "bug"
+      ],
+      "pr_numbers": [
+        "3107"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
+      "updated_at": "2026-06-08T05:44:45Z"
     },
     "3118": {
       "category": "Bug",

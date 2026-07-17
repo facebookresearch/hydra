@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-17",
-  "generated_at": "2026-07-17T11:46:23Z",
+  "generated_at": "2026-07-17T12:30:26Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 182,
@@ -8,14 +8,14 @@
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 24,
-        "percentage": 13.2
+        "count": 23,
+        "percentage": 12.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 131,
-        "percentage": 72.0
+        "count": 132,
+        "percentage": 72.5
       },
       {
         "category": "Documentation",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 9
+        "count": 8
       },
       {
         "status": "blocked",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 172
+        "count": 173
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 141
+        "count": 142
       }
     ]
   },
@@ -218,27 +218,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3053"
-    },
-    {
-      "number": 3106,
-      "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3107,
-          "url": "https://github.com/facebookresearch/hydra/pull/3107"
-        }
-      ],
-      "created": "2025-12-20",
-      "updated": "2026-06-08",
-      "labels": [
-        "bug",
-        "awaiting_response"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3106"
     },
     {
       "number": 3202,
@@ -3068,6 +3047,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3279"
     },
     {
+      "number": 3283,
+      "title": "Reject duplicate override targets during composition",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-17",
+      "updated": "2026-07-17",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3283"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -5377,9 +5369,44 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
+    },
+    {
+      "number": 3106,
+      "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3107,
+          "url": "https://github.com/facebookresearch/hydra/pull/3107"
+        }
+      ],
+      "created": "2025-12-20",
+      "updated": "2026-06-08",
+      "labels": [
+        "awaiting_response",
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3106"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-17T12:30:26Z",
+      "kind": "closed",
+      "issue": 3106,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3106",
+      "title": "[Bug] Basic sweeper would behavior wrong with value type dict"
+    },
+    {
+      "ts": "2026-07-17T12:30:26Z",
+      "kind": "new",
+      "issue": 3283,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3283",
+      "title": "Reject duplicate override targets during composition"
+    },
     {
       "ts": "2026-07-16T18:09:43Z",
       "kind": "label",
@@ -6948,22 +6975,6 @@
       "issue": 902,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/902",
       "title": "[Feature Request] Replace lexer token names by their symbols in ANTLR error messages",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 845,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/845",
-      "title": "Add a standalone page describing @hydra.main() in details.",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 841,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/841",
-      "title": "Add docker example for Ray launcher.",
       "detail": "added \"triage\""
     }
   ]
