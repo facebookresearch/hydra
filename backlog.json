@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-17",
-  "generated_at": "2026-07-17T18:16:57Z",
+  "generated_at": "2026-07-17T18:57:26Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 180,
@@ -3085,6 +3085,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1830"
     },
     {
+      "number": 1859,
+      "title": "SLURM sweep with hydra",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-10-20",
+      "updated": "2026-07-15",
+      "labels": [
+        "question",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1859"
+    },
+    {
       "number": 1866,
       "title": "[Bug] recursive instantiation mutates original config object's interpolations",
       "category": "Bug",
@@ -5374,22 +5390,6 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
-    },
-    {
-      "number": 1859,
-      "title": "SLURM sweep with hydra",
-      "category": "Question",
-      "category_emoji": "❓",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2021-10-20",
-      "updated": "2026-07-15",
-      "labels": [
-        "question",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1859"
     }
   ],
   "updates": [
