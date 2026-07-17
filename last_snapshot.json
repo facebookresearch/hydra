@@ -2,6 +2,7 @@
   "closed_at": {
     "1463": "2026-07-16",
     "1830": "2026-07-16",
+    "1859": "2026-07-17",
     "1866": "2026-07-16",
     "1892": "2026-06-07",
     "1928": "2026-07-16",
@@ -144,7 +145,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-17T16:57:14Z",
+  "generated_at": "2026-07-17T18:16:57Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -528,19 +529,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
-      "updated_at": "2026-07-15T13:17:22Z"
-    },
-    "1859": {
-      "category": "Question",
-      "created_at": "2021-10-20T15:36:47Z",
-      "labels": [
-        "question",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "SLURM sweep with hydra",
       "updated_at": "2026-07-15T13:17:22Z"
     },
     "1865": {
@@ -2579,6 +2567,19 @@
       "status": "done",
       "title": "[Bug] Cannot use plugin's conf dataclasses in structured config",
       "updated_at": "2026-07-15T13:17:23Z"
+    },
+    "1859": {
+      "category": "Question",
+      "created_at": "2021-10-20T15:36:47Z",
+      "labels": [
+        "question",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "SLURM sweep with hydra",
+      "updated_at": "2026-07-15T13:17:22Z"
     },
     "1866": {
       "category": "Bug",

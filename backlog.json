@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-17",
-  "generated_at": "2026-07-17T16:57:14Z",
+  "generated_at": "2026-07-17T18:16:57Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 181,
+    "open_total": 180,
     "by_category": [
       {
         "category": "Bug",
@@ -15,19 +15,19 @@
         "category": "Enhancement",
         "emoji": "✨",
         "count": 132,
-        "percentage": 72.9
+        "percentage": 73.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 6.6
+        "percentage": 6.7
       },
       {
         "category": "Question",
         "emoji": "❓",
-        "count": 10,
-        "percentage": 5.5
+        "count": 9,
+        "percentage": 5.0
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 173
+        "count": 172
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 143
+        "count": 144
       }
     ]
   },
@@ -918,22 +918,6 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1855"
-    },
-    {
-      "number": 1859,
-      "title": "SLURM sweep with hydra",
-      "category": "Question",
-      "category_emoji": "❓",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-10-20",
-      "updated": "2026-07-15",
-      "labels": [
-        "question",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1859"
     },
     {
       "number": 1865,
@@ -5390,9 +5374,32 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
+    },
+    {
+      "number": 1859,
+      "title": "SLURM sweep with hydra",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-10-20",
+      "updated": "2026-07-15",
+      "labels": [
+        "question",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1859"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-17T18:16:57Z",
+      "kind": "closed",
+      "issue": 1859,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1859",
+      "title": "SLURM sweep with hydra"
+    },
     {
       "ts": "2026-07-17T14:25:20Z",
       "kind": "closed",
@@ -6966,14 +6973,6 @@
       "issue": 1081,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1081",
       "title": "[Feature Request] Configen adds url to original module documentation",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 934,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/934",
-      "title": "[Bug] tab completion slow with slow imports",
       "detail": "added \"triage\""
     }
   ]
