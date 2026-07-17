@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-17",
-  "generated_at": "2026-07-17T12:30:26Z",
+  "generated_at": "2026-07-17T14:25:20Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 182,
+    "open_total": 181,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 23,
-        "percentage": 12.6
+        "count": 22,
+        "percentage": 12.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 132,
-        "percentage": 72.5
+        "percentage": 72.9
       },
       {
         "category": "Documentation",
@@ -33,7 +33,7 @@
         "category": "Refactor",
         "emoji": "🔧",
         "count": 1,
-        "percentage": 0.5
+        "percentage": 0.6
       },
       {
         "category": "Build",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 8
+        "count": 7
       },
       {
         "status": "blocked",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 142
+        "count": 143
       }
     ]
   },
@@ -156,28 +156,6 @@
         "submitit"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1898"
-    },
-    {
-      "number": 2149,
-      "title": "[Bug] Documentation Binder link is broken.",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3280,
-          "url": "https://github.com/facebookresearch/hydra/pull/3280"
-        }
-      ],
-      "created": "2022-04-13",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "documentation",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2149"
     },
     {
       "number": 2889,
@@ -5094,6 +5072,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3104"
     },
     {
+      "number": 3106,
+      "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3107,
+          "url": "https://github.com/facebookresearch/hydra/pull/3107"
+        }
+      ],
+      "created": "2025-12-20",
+      "updated": "2026-06-08",
+      "labels": [
+        "awaiting_response",
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3106"
+    },
+    {
       "number": 3118,
       "title": "[Bug] update `antlr4` dependency to 4.13 :)",
       "category": "Bug",
@@ -5371,28 +5370,36 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
-      "number": 3106,
-      "title": "[Bug] Basic sweeper would behavior wrong with value type dict",
+      "number": 2149,
+      "title": "[Bug] Documentation Binder link is broken.",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [
         {
-          "number": 3107,
-          "url": "https://github.com/facebookresearch/hydra/pull/3107"
+          "number": 3280,
+          "url": "https://github.com/facebookresearch/hydra/pull/3280"
         }
       ],
-      "created": "2025-12-20",
-      "updated": "2026-06-08",
+      "created": "2022-04-13",
+      "updated": "2026-07-15",
       "labels": [
-        "awaiting_response",
-        "bug"
+        "bug",
+        "documentation",
+        "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3106"
+      "url": "https://github.com/facebookresearch/hydra/issues/2149"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-17T14:25:20Z",
+      "kind": "closed",
+      "issue": 2149,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2149",
+      "title": "[Bug] Documentation Binder link is broken."
+    },
     {
       "ts": "2026-07-17T12:30:26Z",
       "kind": "closed",
@@ -6967,14 +6974,6 @@
       "issue": 934,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/934",
       "title": "[Bug] tab completion slow with slow imports",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 902,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/902",
-      "title": "[Feature Request] Replace lexer token names by their symbols in ANTLR error messages",
       "detail": "added \"triage\""
     }
   ]

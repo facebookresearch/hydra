@@ -434,3 +434,4 @@
 {"ts": "2026-07-16T18:09:43Z", "kind": "label", "issue": 1865, "issue_url": "https://github.com/facebookresearch/hydra/issues/1865", "title": "Instantiation fails when _target_ arg interpolates to another node with _target_ key and object arg", "detail": "removed \"has-workaround\", \"triage\""}
 {"ts": "2026-07-17T12:30:26Z", "kind": "new", "issue": 3283, "issue_url": "https://github.com/facebookresearch/hydra/issues/3283", "title": "Reject duplicate override targets during composition"}
 {"ts": "2026-07-17T12:30:26Z", "kind": "closed", "issue": 3106, "issue_url": "https://github.com/facebookresearch/hydra/issues/3106", "title": "[Bug] Basic sweeper would behavior wrong with value type dict"}
+{"ts": "2026-07-17T14:25:20Z", "kind": "closed", "issue": 2149, "issue_url": "https://github.com/facebookresearch/hydra/issues/2149", "title": "[Bug] Documentation Binder link is broken."}

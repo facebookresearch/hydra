@@ -21,6 +21,7 @@
     "2102": "2026-07-16",
     "2107": "2026-07-16",
     "2125": "2026-07-16",
+    "2149": "2026-07-17",
     "2162": "2026-06-11",
     "2193": "2026-07-15",
     "2208": "2026-07-15",
@@ -143,7 +144,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-17T12:30:26Z",
+  "generated_at": "2026-07-17T14:25:20Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -878,22 +879,6 @@
       "status": "not started",
       "title": "[Feature Request] hydra.utils.instantiate support for lookup (without calling)",
       "updated_at": "2026-07-15T13:16:55Z"
-    },
-    "2149": {
-      "category": "Bug",
-      "created_at": "2022-04-13T17:23:25Z",
-      "labels": [
-        "bug",
-        "documentation",
-        "triage"
-      ],
-      "pr_numbers": [
-        "3280"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "[Bug] Documentation Binder link is broken.",
-      "updated_at": "2026-07-15T13:16:54Z"
     },
     "2170": {
       "category": "Bug",
@@ -2864,6 +2849,22 @@
       "status": "done",
       "title": "[Bug] Cannot find conf/ dir when outside of packaged app.",
       "updated_at": "2026-07-15T13:16:56Z"
+    },
+    "2149": {
+      "category": "Bug",
+      "created_at": "2022-04-13T17:23:25Z",
+      "labels": [
+        "bug",
+        "documentation",
+        "triage"
+      ],
+      "pr_numbers": [
+        "3280"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Documentation Binder link is broken.",
+      "updated_at": "2026-07-15T13:16:54Z"
     },
     "2162": {
       "category": "Enhancement",
