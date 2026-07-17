@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-17",
-  "generated_at": "2026-07-17T07:42:48Z",
+  "generated_at": "2026-07-17T11:41:43Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 182,
@@ -2847,7 +2847,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-10",
-      "updated": "2026-06-26",
+      "updated": "2026-07-17",
       "labels": [
         "documentation",
         "enhancement"

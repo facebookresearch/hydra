@@ -142,7 +142,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-17T07:42:48Z",
+  "generated_at": "2026-07-17T11:41:43Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -225,7 +225,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]",
-      "updated_at": "2026-07-17T03:57:27Z"
+      "updated_at": "2026-07-17T11:14:36Z"
     },
     "1228": {
       "category": "Documentation",
@@ -2187,7 +2187,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Create website surfaces for ecosystem and featured projects",
-      "updated_at": "2026-06-26T08:36:37Z"
+      "updated_at": "2026-07-17T08:04:05Z"
     },
     "3215": {
       "category": "Bug",
