@@ -142,7 +142,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-17T03:43:38Z",
+  "generated_at": "2026-07-17T07:42:48Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -225,7 +225,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]",
-      "updated_at": "2026-07-16T12:33:47Z"
+      "updated_at": "2026-07-17T03:57:27Z"
     },
     "1228": {
       "category": "Documentation",
