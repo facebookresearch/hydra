@@ -117,9 +117,11 @@ from .module_shadowed_by_function import a_function
             "tests.instantiate.import_error",
             raises(
                 ImportError,
-                match=re.escape(dedent("""\
+                match=re.escape(
+                    dedent("""\
                         Error loading 'tests.instantiate.import_error':
-                        AssertionError()""")),
+                        AssertionError()""")
+                ),
             ),
             id="import_assertion_error",
         ),

@@ -107,7 +107,7 @@ def _get_os_alias_target(target: str) -> str:
     for module in ("posix", "nt"):
         module_prefix = f"{module}."
         if target.startswith(module_prefix):
-            return f"os.{target[len(module_prefix):]}"
+            return f"os.{target[len(module_prefix) :]}"
     return target
 
 
@@ -148,11 +148,13 @@ def _validate_target_whitelist_pattern(pattern: Any) -> str:
     if "*" not in pattern:
         return pattern
     if pattern == "*" or not pattern.endswith(".*") or pattern.count("*") > 1:
-        raise InstantiationException(dedent(f"""\
+        raise InstantiationException(
+            dedent(f"""\
                 Invalid _target_whitelist_ entry '{pattern}'. Only trailing '.*'
                 package wildcards are supported. The wildcard '*' is not allowed
                 as a target whitelist pattern. To preserve legacy all-target
-                behavior, pass UNSAFE_ALLOW_ALL_TARGETS explicitly."""))
+                behavior, pass UNSAFE_ALLOW_ALL_TARGETS explicitly.""")
+        )
     prefix = pattern[:-2]
     if prefix == "" or prefix.endswith("."):
         raise InstantiationException(
@@ -616,10 +618,12 @@ def instantiate(
             target_whitelist=target_whitelist,
         )
     else:
-        raise InstantiationException(dedent(f"""\
+        raise InstantiationException(
+            dedent(f"""\
                 Cannot instantiate config of type {type(config).__name__}.
                 Top level config must be an OmegaConf DictConfig/ListConfig object,
-                a plain dict/list, or a Structured Config class or instance."""))
+                a plain dict/list, or a Structured Config class or instance.""")
+        )
 
 
 def _convert_node(node: Any, convert: Union[ConvertMode, str]) -> Any:

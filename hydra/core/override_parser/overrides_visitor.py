@@ -256,7 +256,8 @@ class HydraOverrideVisitor(OverrideParserVisitor):
             ) from e
 
     def _createPrimitive(
-        self, ctx: ParserRuleContext  # type: ignore[valid-type]
+        self,
+        ctx: ParserRuleContext,  # type: ignore[valid-type]
     ) -> Optional[Union[QuotedString, int, bool, float, str]]:
         ret: Optional[Union[int, bool, float, str]]
         first_idx = 0
