@@ -1,4 +1,5 @@
 defaults:
   - server/apache
+  - _self_
 
 debug: false

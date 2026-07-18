@@ -1,6 +1,7 @@
 defaults:
   - dataset: imagenet
   - model: alexnet
+  - _self_
 
 ray:
   init:
