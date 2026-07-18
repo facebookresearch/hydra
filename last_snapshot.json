@@ -152,7 +152,7 @@
     "3290": "2026-07-18",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-18T18:15:24Z",
+  "generated_at": "2026-07-18T20:41:16Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2297,9 +2297,11 @@
       "category": "Enhancement",
       "created_at": "2026-07-18T13:11:55Z",
       "labels": [],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3293"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "Support OmegaConf 2.4 experimental tuple configuration",
       "updated_at": "2026-07-18T13:11:55Z"
     },

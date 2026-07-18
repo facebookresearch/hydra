@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-18",
-  "generated_at": "2026-07-18T18:15:24Z",
+  "generated_at": "2026-07-18T20:41:16Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 178,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 2
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 170
+        "count": 169
       },
       {
         "status": "done",
@@ -91,6 +91,24 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 3287,
+      "title": "Support OmegaConf 2.4 experimental tuple configuration",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3293,
+          "url": "https://github.com/facebookresearch/hydra/pull/3293"
+        }
+      ],
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3287"
     },
     {
       "number": 845,
@@ -2953,19 +2971,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3283"
     },
     {
-      "number": 3287,
-      "title": "Support OmegaConf 2.4 experimental tuple configuration",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-18",
-      "updated": "2026-07-18",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3287"
-    },
-    {
       "number": 3291,
       "title": "Remove packaging from Hydra core runtime dependencies",
       "category": "Refactor",
@@ -5474,6 +5479,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-18T20:41:16Z",
+      "kind": "pr",
+      "issue": 3287,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3287",
+      "title": "Support OmegaConf 2.4 experimental tuple configuration",
+      "detail": "linked #3293"
+    },
+    {
+      "ts": "2026-07-18T20:41:16Z",
+      "kind": "status",
+      "issue": 3287,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3287",
+      "title": "Support OmegaConf 2.4 experimental tuple configuration",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3293,
+        "url": "https://github.com/facebookresearch/hydra/pull/3293"
+      }
+    },
+    {
       "ts": "2026-07-18T18:15:24Z",
       "kind": "closed",
       "issue": 3290,
@@ -7041,22 +7066,6 @@
       "issue": 1855,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1855",
       "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1832,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1832",
-      "title": "[Feature Request] Expand options to transform special characters for dir name",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1830,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1830",
-      "title": "[Bug] Cannot use plugin's conf dataclasses in structured config",
       "detail": "added \"triage\""
     }
   ]
