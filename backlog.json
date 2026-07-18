@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-18",
-  "generated_at": "2026-07-18T18:08:16Z",
+  "generated_at": "2026-07-18T18:15:24Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 179,
+    "open_total": 178,
     "by_category": [
       {
         "category": "Bug",
@@ -15,7 +15,7 @@
         "category": "Enhancement",
         "emoji": "✨",
         "count": 131,
-        "percentage": 73.2
+        "percentage": 73.6
       },
       {
         "category": "Documentation",
@@ -27,13 +27,13 @@
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.0
+        "percentage": 5.1
       },
       {
         "category": "Refactor",
         "emoji": "🔧",
-        "count": 3,
-        "percentage": 1.7
+        "count": 2,
+        "percentage": 1.1
       },
       {
         "category": "Build",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 1
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 150
+        "count": 151
       }
     ]
   },
@@ -91,24 +91,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 3290,
-      "title": "Remove packaging from Hydra runtime dependencies",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3292,
-          "url": "https://github.com/facebookresearch/hydra/pull/3292"
-        }
-      ],
-      "created": "2026-07-18",
-      "updated": "2026-07-18",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3290"
     },
     {
       "number": 845,
@@ -5470,9 +5452,34 @@
       "updated": "2026-07-18",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3289"
+    },
+    {
+      "number": 3290,
+      "title": "Remove packaging from Hydra runtime dependencies",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3292,
+          "url": "https://github.com/facebookresearch/hydra/pull/3292"
+        }
+      ],
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3290"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-18T18:15:24Z",
+      "kind": "closed",
+      "issue": 3290,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3290",
+      "title": "Remove packaging from Hydra runtime dependencies"
+    },
     {
       "ts": "2026-07-18T18:08:16Z",
       "kind": "pr",
@@ -7050,14 +7057,6 @@
       "issue": 1830,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1830",
       "title": "[Bug] Cannot use plugin's conf dataclasses in structured config",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1817,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1817",
-      "title": "Change default behavior to disallow writes to pre-existing output directory",
       "detail": "added \"triage\""
     }
   ]

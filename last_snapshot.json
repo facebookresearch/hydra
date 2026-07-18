@@ -149,9 +149,10 @@
     "3275": "2026-07-16",
     "3288": "2026-07-18",
     "3289": "2026-07-18",
+    "3290": "2026-07-18",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-18T18:08:16Z",
+  "generated_at": "2026-07-18T18:15:24Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2302,18 +2303,6 @@
       "title": "Support OmegaConf 2.4 experimental tuple configuration",
       "updated_at": "2026-07-18T13:11:55Z"
     },
-    "3290": {
-      "category": "Refactor",
-      "created_at": "2026-07-18T17:03:05Z",
-      "labels": [],
-      "pr_numbers": [
-        "3292"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "Remove packaging from Hydra runtime dependencies",
-      "updated_at": "2026-07-18T17:03:05Z"
-    },
     "3291": {
       "category": "Refactor",
       "created_at": "2026-07-18T17:03:51Z",
@@ -4426,6 +4415,18 @@
       "status": "done",
       "title": "Development environment can retain stale plugin dependency metadata",
       "updated_at": "2026-07-18T13:13:01Z"
+    },
+    "3290": {
+      "category": "Refactor",
+      "created_at": "2026-07-18T17:03:05Z",
+      "labels": [],
+      "pr_numbers": [
+        "3292"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Remove packaging from Hydra runtime dependencies",
+      "updated_at": "2026-07-18T17:03:05Z"
     },
     "692": {
       "category": "Enhancement",
