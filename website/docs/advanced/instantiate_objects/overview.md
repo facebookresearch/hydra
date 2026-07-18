@@ -18,6 +18,9 @@ Call/instantiate supports:
 - Constructing an object by calling the `__init__` method
 - Calling functions, static functions, class methods and other callable global objects
 
+Top-level list and tuple inputs are instantiated element by element. Partial
+instantiation is not supported for these sequence inputs.
+
 <details>
     <summary>Instantiate API (Expand for details)</summary>
 
@@ -34,15 +37,18 @@ Call/instantiate supports:
                                     may be overridden via a _recursive_ key in
                                     the kwargs
                        _convert_: Conversion strategy
-                            none    : Passed objects are DictConfig and ListConfig, default
-                            partial : Passed objects are converted to dict and list, with
-                                      the exception of Structured Configs (and their fields).
-                            object  : Passed objects are converted to dict and list.
+                            none    : Passed objects are DictConfig, ListConfig and
+                                      TupleConfig, default
+                            partial : Passed objects are converted to dict, list and
+                                      tuple, with the exception of Structured Configs
+                                      (and their fields).
+                            object  : Passed objects are converted to dict, list and tuple.
                                       Structured Configs are converted to instances of the
                                       backing dataclass / attr class.
-                            all     : Passed objects are dicts, lists and primitives without
-                                      a trace of OmegaConf containers. Structured configs
-                                      are converted to dicts / lists too.
+                            all     : Passed objects are dicts, lists, tuples and
+                                      primitives without a trace of OmegaConf containers.
+                                      Structured configs are converted to primitive
+                                      containers too.
                        _partial_: If True, return functools.partial wrapped method or object
                                   False by default. Configure per target.
         :param _target_whitelist_: A target string, list of target strings,
@@ -304,27 +310,28 @@ Trainer(
 
 ### Parameter conversion strategies
 By default, the parameters passed to the target are either primitives (int,
-float, bool etc) or OmegaConf containers (`DictConfig`, `ListConfig`).
-OmegaConf containers have many advantages over primitive dicts and lists,
+float, bool etc) or OmegaConf containers (`DictConfig`, `ListConfig`,
+`TupleConfig`). OmegaConf containers have many advantages over primitive dicts,
+lists, and tuples,
 including convenient attribute access for keys,
 [duck-typing as instances of dataclasses or attrs classes](https://omegaconf.readthedocs.io/en/latest/structured_config.html), and
 support for [variable interpolation](https://omegaconf.readthedocs.io/en/latest/usage.html#variable-interpolation)
 and [custom resolvers](https://omegaconf.readthedocs.io/en/latest/custom_resolvers.html).
 If the callable targeted by `instantiate` leverages OmegaConf's features, it
-will make sense to pass `DictConfig` and `ListConfig` instances directly to
-that callable.
+will make sense to pass `DictConfig`, `ListConfig`, and `TupleConfig` instances
+directly to that callable.
 
 That being said, in many cases it's desired to pass normal Python dicts and
-lists, rather than `DictConfig` or `ListConfig` instances, as arguments to your
-callable. You can change instantiate's argument conversion strategy using the
-`_convert_` parameter. Supported values are:
+lists and tuples, rather than `DictConfig`, `ListConfig`, or `TupleConfig`
+instances, as arguments to your callable. You can change instantiate's argument
+conversion strategy using the `_convert_` parameter. Supported values are:
 
 - `"none"` : Default behavior, Use OmegaConf containers
-- `"partial"` : Convert OmegaConf containers to dict and list, except
+- `"partial"` : Convert OmegaConf containers to dict, list, and tuple, except
   Structured Configs, which remain as DictConfig instances.
-- `"object"` : Convert OmegaConf containers to dict and list, except Structured
-  Configs, which are converted to instances of the backing dataclass / attr
-  class using `OmegaConf.to_object`.
+- `"object"` : Convert OmegaConf containers to dict, list, and tuple, except
+  Structured Configs, which are converted to instances of the backing dataclass
+  / attr class using `OmegaConf.to_object`.
 - `"all"` : Convert everything to primitive containers
 
 The conversion strategy applies recursively to all subconfigs of the instantiation target.

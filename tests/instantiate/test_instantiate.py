@@ -16,6 +16,7 @@ from omegaconf import (
     ListConfig,
     MissingMandatoryValue,
     OmegaConf,
+    TupleConfig,
 )
 from pytest import fixture, mark, param, raises, warns
 
@@ -672,18 +673,33 @@ def test_class_instantiate_omegaconf_node(instantiate_func: Any, config: Any) ->
 @mark.parametrize(
     "src",
     [
-        ListConfig(
-            [
-                {
-                    "_target_": "tests.instantiate.AClass",
-                    "b": 200,
-                    "c": {"x": 10, "y": "${0.b}"},
-                }
-            ]
-        )
+        param(
+            ListConfig(
+                [
+                    {
+                        "_target_": "tests.instantiate.AClass",
+                        "b": 200,
+                        "c": {"x": 10, "y": "${0.b}"},
+                    }
+                ]
+            ),
+            id="list",
+        ),
+        param(
+            OmegaConf.create(
+                (
+                    {
+                        "_target_": "tests.instantiate.AClass",
+                        "b": 200,
+                        "c": {"x": 10, "y": "${0.b}"},
+                    },
+                )
+            ),
+            id="tuple",
+        ),
     ],
 )
-def test_class_instantiate_list_item(instantiate_func: Any, config: Any) -> Any:
+def test_class_instantiate_sequence_item(instantiate_func: Any, config: Any) -> Any:
     obj = instantiate_func(config[0], a=10, d=AnotherClass(99))
     assert obj == AClass(a=10, b=200, c={"x": 10, "y": 200}, d=AnotherClass(99))
     assert OmegaConf.is_config(obj.c)
@@ -750,7 +766,8 @@ def test_instantiate_adam_conf(
     else:
         assert res.params == expected.params
     assert res.lr == expected.lr
-    assert list(res.betas) == list(expected.betas)  # OmegaConf converts tuples to lists
+    assert isinstance(res.betas, TupleConfig)
+    assert res.betas == expected.betas
     assert res.eps == expected.eps
     assert res.weight_decay == expected.weight_decay
     assert res.amsgrad == expected.amsgrad
@@ -762,8 +779,8 @@ def test_instantiate_adam_conf_with_convert(instantiate_func: Any) -> None:
     expected = Adam(lr=0.123, params=adam_params)
     assert res.params == expected.params
     assert res.lr == expected.lr
-    assert isinstance(res.betas, list)
-    assert list(res.betas) == list(expected.betas)  # OmegaConf converts tuples to lists
+    assert isinstance(res.betas, tuple)
+    assert res.betas == expected.betas
     assert res.eps == expected.eps
     assert res.weight_decay == expected.weight_decay
     assert res.amsgrad == expected.amsgrad
@@ -852,15 +869,72 @@ def test_instantiate_target_raising_exception_taking_no_arguments_nested(
         instantiate_func({"foo": {"_target_": _target_}})
 
 
-def test_toplevel_list_partial_not_allowed(instantiate_func: Any) -> None:
-    config = [{"_target_": "tests.instantiate.ClassA", "a": 10, "b": 20, "c": 30}]
+@mark.parametrize(
+    ("config", "sequence_type"),
+    [
+        param(
+            [{"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30}],
+            "list",
+            id="list",
+        ),
+        param(
+            ({"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30},),
+            "tuple",
+            id="tuple",
+        ),
+    ],
+)
+def test_toplevel_sequence_partial_not_allowed(
+    instantiate_func: Any, config: Any, sequence_type: str
+) -> None:
     with raises(
         InstantiationException,
         match=re.escape(
-            "The _partial_ keyword is not compatible with top-level list instantiation"
+            "The _partial_ keyword is not compatible with "
+            f"top-level {sequence_type} instantiation"
         ),
     ):
         instantiate_func(config, _partial_=True)
+
+
+@mark.parametrize(
+    "config",
+    [
+        param(
+            ({"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30},),
+            id="native",
+        ),
+        param(
+            OmegaConf.create(
+                (
+                    {
+                        "_target_": "tests.instantiate.AClass",
+                        "a": 10,
+                        "b": 20,
+                        "c": 30,
+                    },
+                )
+            ),
+            id="tuple-config",
+        ),
+    ],
+)
+@mark.parametrize(
+    ("convert", "expected_type"),
+    [
+        param(ConvertMode.NONE, TupleConfig, id="none"),
+        param(ConvertMode.PARTIAL, tuple, id="partial"),
+        param(ConvertMode.OBJECT, tuple, id="object"),
+        param(ConvertMode.ALL, tuple, id="all"),
+    ],
+)
+def test_instantiate_toplevel_tuple(
+    instantiate_func: Any, config: Any, convert: ConvertMode, expected_type: Any
+) -> None:
+    result = instantiate_func(config, _convert_=convert)
+
+    assert isinstance(result, expected_type)
+    assert result[0] == AClass(a=10, b=20, c=30)
 
 
 @mark.parametrize("is_partial", [True, False])
@@ -2255,6 +2329,26 @@ def test_instantiated_regular_class_container_types(
     assert isinstance(ret.b[0].b, expected_list)
 
 
+@mark.parametrize(
+    ("mode", "expected_tuple"),
+    [
+        param(ConvertMode.NONE, TupleConfig, id="none"),
+        param(ConvertMode.ALL, tuple, id="all"),
+        param(ConvertMode.PARTIAL, tuple, id="partial"),
+        param(ConvertMode.OBJECT, tuple, id="object"),
+    ],
+)
+def test_instantiated_regular_class_tuple_type(
+    instantiate_func: Any, mode: Any, expected_tuple: Any
+) -> None:
+    cfg = {"_target_": "tests.instantiate.SimpleClass", "a": (1, 2), "b": None}
+
+    ret = instantiate_func(cfg, _convert_=mode)
+
+    assert isinstance(ret.a, expected_tuple)
+    assert ret.a == (1, 2)
+
+
 def test_instantiated_regular_class_container_types_partial(
     instantiate_func: Any,
 ) -> None:
@@ -2329,7 +2423,11 @@ def test_nested_dataclass_targets_remain_objects_with_convert_none(
     assert ret_list[0] == top
 
     ret = instantiate_func(
-        {"nested": dataclass_target, "items": [dataclass_target]},
+        {
+            "nested": dataclass_target,
+            "items": [dataclass_target],
+            "tuple_items": (dataclass_target,),
+        },
         _convert_=ConvertMode.NONE,
     )
     assert isinstance(ret, DictConfig)
@@ -2338,6 +2436,9 @@ def test_nested_dataclass_targets_remain_objects_with_convert_none(
     assert isinstance(ret["items"], ListConfig)
     assert isinstance(ret["items"][0], SimpleDataClass)
     assert ret["items"][0] == top
+    assert isinstance(ret["tuple_items"], TupleConfig)
+    assert isinstance(ret["tuple_items"][0], SimpleDataClass)
+    assert ret["tuple_items"][0] == top
 
 
 @mark.parametrize(

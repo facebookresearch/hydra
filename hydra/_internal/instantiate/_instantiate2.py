@@ -374,22 +374,31 @@ def _get_target_name_for_check(target: Union[str, type, Callable[..., Any]]) -> 
     return f"{target_type.__module__}.{target_type.__qualname__}"
 
 
-def _prepare_input_dict_or_list(d: Union[Dict[Any, Any], List[Any]]) -> Any:
+def _prepare_input_container(
+    d: Union[Dict[Any, Any], List[Any], Tuple[Any, ...]],
+) -> Any:
     res: Any
     if isinstance(d, dict):
         res = {}
         for k, v in d.items():
             if k == "_target_":
                 v = _convert_target_to_string(d["_target_"])
-            elif isinstance(v, (dict, list)):
-                v = _prepare_input_dict_or_list(v)
+            elif isinstance(v, (dict, list)) or type(v) is tuple:
+                v = _prepare_input_container(v)
             res[k] = v
     elif isinstance(d, list):
         res = []
         for v in d:
-            if isinstance(v, (list, dict)):
-                v = _prepare_input_dict_or_list(v)
+            if isinstance(v, (list, dict)) or type(v) is tuple:
+                v = _prepare_input_container(v)
             res.append(v)
+    elif type(d) is tuple:
+        res = tuple(
+            _prepare_input_container(v)
+            if isinstance(v, (dict, list)) or type(v) is tuple
+            else v
+            for v in d
+        )
     else:
         assert False
     return res
@@ -460,9 +469,9 @@ def _deep_copy_full_config(subconfig: Any) -> Any:
         return copy.deepcopy(subconfig)
     full_key = str(full_key)
 
-    if OmegaConf.is_list(subconfig._get_parent()):
+    if OmegaConf.is_sequence(subconfig._get_parent()):
         # OmegaConf has a bug where _get_full_key doesn't add [] if the parent
-        # is a list, eg. instead of foo[0], it'll return foo0
+        # is a sequence, eg. instead of foo[0], it'll return foo0
         index = subconfig._key()
         full_key = full_key[: -len(str(index))] + f"[{index}]"
     root = subconfig._get_root()
@@ -497,15 +506,18 @@ def instantiate(
                                 may be overridden via a _recursive_ key in
                                 the kwargs
                    _convert_: Conversion strategy
-                        none    : Passed objects are DictConfig and ListConfig, default
-                        partial : Passed objects are converted to dict and list, with
-                                  the exception of Structured Configs (and their fields).
-                        object  : Passed objects are converted to dict and list.
+                        none    : Passed objects are DictConfig, ListConfig and
+                                  TupleConfig, default
+                        partial : Passed objects are converted to dict, list and
+                                  tuple, with the exception of Structured Configs
+                                  (and their fields).
+                        object  : Passed objects are converted to dict, list and tuple.
                                   Structured Configs are converted to instances of the
                                   backing dataclass / attr class.
-                        all     : Passed objects are dicts, lists and primitives without
-                                  a trace of OmegaConf containers. Structured configs
-                                  are converted to dicts / lists too.
+                        all     : Passed objects are dicts, lists, tuples and
+                                  primitives without a trace of OmegaConf containers.
+                                  Structured configs are converted to primitive
+                                  containers too.
                    _partial_: If True, return functools.partial wrapped method or object
                               False by default. Configure per target.
     :param _skip_instantiate_full_deepcopy_: If True, deep copy just the input config instead
@@ -546,13 +558,17 @@ def instantiate(
         )
         # TODO: print full key
 
-    if isinstance(config, (dict, list)):
-        config = _prepare_input_dict_or_list(config)
+    if isinstance(config, (dict, list)) or type(config) is tuple:
+        config = _prepare_input_container(config)
 
-    kwargs = _prepare_input_dict_or_list(kwargs)
+    kwargs = _prepare_input_container(kwargs)
 
     # Structured Config always converted first to OmegaConf
-    if is_structured_config(config) or isinstance(config, (dict, list)):
+    if (
+        is_structured_config(config)
+        or isinstance(config, (dict, list))
+        or type(config) is tuple
+    ):
         config = OmegaConf.structured(config, flags={"allow_objects": True})
 
     if OmegaConf.is_dict(config):
@@ -585,7 +601,7 @@ def instantiate(
             partial=_partial_,
             target_whitelist=target_whitelist,
         )
-    elif OmegaConf.is_list(config):
+    elif OmegaConf.is_sequence(config):
         # Finalize config (convert targets to strings, merge with kwargs)
         # Create copy to avoid mutating original
         if _skip_instantiate_full_deepcopy_:
@@ -605,8 +621,10 @@ def instantiate(
         _partial_ = kwargs.pop(_Keys.PARTIAL, False)
 
         if _partial_:
+            sequence_type = "tuple" if OmegaConf.is_tuple(config) else "list"
             raise InstantiationException(
-                "The _partial_ keyword is not compatible with top-level list instantiation"
+                "The _partial_ keyword is not compatible with "
+                f"top-level {sequence_type} instantiation"
             )
 
         return instantiate_node(
@@ -621,8 +639,8 @@ def instantiate(
         raise InstantiationException(
             dedent(f"""\
                 Cannot instantiate config of type {type(config).__name__}.
-                Top level config must be an OmegaConf DictConfig/ListConfig object,
-                a plain dict/list, or a Structured Config class or instance.""")
+                Top level config must be an OmegaConf DictConfig/ListConfig/TupleConfig object,
+                a plain dict/list/tuple, or a Structured Config class or instance.""")
         )
 
 
@@ -684,8 +702,9 @@ def instantiate_node(
             msg += f"\nfull_key: {full_key}"
         raise TypeError(msg)
 
-    # If OmegaConf list, create new list of instances if recursive
-    if OmegaConf.is_list(node):
+    # If OmegaConf sequence, create a new sequence of instances if recursive
+    if OmegaConf.is_sequence(node):
+        is_tuple = OmegaConf.is_tuple(node)
         items = [
             instantiate_node(
                 item,
@@ -697,15 +716,21 @@ def instantiate_node(
         ]
 
         if convert in (ConvertMode.ALL, ConvertMode.PARTIAL, ConvertMode.OBJECT):
-            # If ALL or PARTIAL or OBJECT, use plain list as container
-            return items
+            # If ALL or PARTIAL or OBJECT, use a plain sequence container
+            return tuple(items) if is_tuple else items
         else:
-            # Otherwise, use ListConfig as container
-            lst = OmegaConf.create([], flags={"allow_objects": True})
-            for item in items:
-                lst.append(_wrap_structured_config_as_object(item))
-            lst._set_parent(node)
-            return lst
+            # Otherwise, use the matching OmegaConf sequence container
+            if is_tuple:
+                seq = OmegaConf.create(
+                    tuple(_wrap_structured_config_as_object(item) for item in items),
+                    flags={"allow_objects": True},
+                )
+            else:
+                seq = OmegaConf.create([], flags={"allow_objects": True})
+                for item in items:
+                    seq.append(_wrap_structured_config_as_object(item))
+            seq._set_parent(node)
+            return seq
 
     elif OmegaConf.is_dict(node):
         if _Keys.TARGET_WHITELIST in node:
