@@ -1,6 +1,7 @@
 {
   "closed_at": {
     "1463": "2026-07-16",
+    "1817": "2026-07-18",
     "1830": "2026-07-16",
     "1832": "2026-07-18",
     "1859": "2026-07-17",
@@ -146,7 +147,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-18T07:35:10Z",
+  "generated_at": "2026-07-18T09:54:57Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -489,20 +490,6 @@
       "status": "not started",
       "title": "[Bug] Testing for hydra examples",
       "updated_at": "2026-07-15T13:17:25Z"
-    },
-    "1817": {
-      "category": "Enhancement",
-      "created_at": "2021-09-08T16:06:03Z",
-      "labels": [
-        "enhancement",
-        "triage",
-        "working_dir"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Change default behavior to disallow writes to pre-existing output directory",
-      "updated_at": "2026-07-15T13:17:24Z"
     },
     "1855": {
       "category": "Bug",
@@ -2541,6 +2528,20 @@
       "status": "done",
       "title": "[Feature Request] Fault tolerance option for Optuna Sweeper",
       "updated_at": "2026-07-15T13:17:32Z"
+    },
+    "1817": {
+      "category": "Enhancement",
+      "created_at": "2021-09-08T16:06:03Z",
+      "labels": [
+        "enhancement",
+        "triage",
+        "working_dir"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Change default behavior to disallow writes to pre-existing output directory",
+      "updated_at": "2026-07-15T13:17:24Z"
     },
     "1830": {
       "category": "Bug",
