@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-18",
-  "generated_at": "2026-07-18T05:25:35Z",
+  "generated_at": "2026-07-18T05:43:23Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 180,
+    "open_total": 179,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 22,
-        "percentage": 12.2
+        "percentage": 12.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 132,
-        "percentage": 73.3
+        "count": 131,
+        "percentage": 73.2
       },
       {
         "category": "Documentation",
@@ -61,37 +61,16 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 171
+        "count": 170
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 144
+        "count": 145
       }
     ]
   },
   "issues": [
-    {
-      "number": 2632,
-      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 2633,
-          "url": "https://github.com/facebookresearch/hydra/pull/2633"
-        }
-      ],
-      "created": "2023-04-04",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
     {
       "number": 1855,
       "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
@@ -113,6 +92,27 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1855"
+    },
+    {
+      "number": 2632,
+      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 2633,
+          "url": "https://github.com/facebookresearch/hydra/pull/2633"
+        }
+      ],
+      "created": "2023-04-04",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2632"
     },
     {
       "number": 845,
@@ -906,23 +906,6 @@
         "working_dir"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1817"
-    },
-    {
-      "number": 1832,
-      "title": "[Feature Request] Expand options to transform special characters for dir name",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-09-23",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage",
-        "has-workaround"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1832"
     },
     {
       "number": 1865,
@@ -5395,9 +5378,33 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
+    },
+    {
+      "number": 1832,
+      "title": "[Feature Request] Expand options to transform special characters for dir name",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-09-23",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "has-workaround",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1832"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-18T05:43:23Z",
+      "kind": "closed",
+      "issue": 1832,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1832",
+      "title": "[Feature Request] Expand options to transform special characters for dir name"
+    },
     {
       "ts": "2026-07-18T05:25:35Z",
       "kind": "pr",
@@ -6974,14 +6981,6 @@
       "issue": 1174,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1174",
       "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1164,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1164",
-      "title": "Move non-user facing tools out of `hydra/tools`",
       "detail": "added \"triage\""
     }
   ]
