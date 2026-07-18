@@ -223,6 +223,7 @@ e.g., If *db* is overridden to *sqlite*, *combination_specific_config* will beco
 
  - Interpolation keys in the Defaults List cannot reference values in the Final Config Object (it does not yet exist).
  - Defaults List interpolation keys are absolute (even in nested configs).
+ - OmegaConf resolvers are not supported in Defaults List interpolation.
  - The subtree expanded by an Interpolated Config may not contain Default List overrides.
 
 See [Patterns/Specializing Configs](/patterns/specializing_config.md) for more information.

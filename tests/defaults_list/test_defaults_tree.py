@@ -3,6 +3,7 @@ import re
 from textwrap import dedent
 from typing import Any, Dict, List, Optional
 
+from omegaconf import OmegaConf
 from pytest import mark, param, raises, warns
 
 from hydra import version
@@ -1914,6 +1915,44 @@ def test_placeholder(
             id="interpolation_with_package_override:override",
         ),
         param(
+            "interpolation_with_nested_package_override",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_with_nested_package_override"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="group_item1_pkg2"),
+                        children=[
+                            GroupDefault(group="group2", value="file1", package="pkg2"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="group2", value="file1"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_with_nested_package_override",
+        ),
+        param(
+            "interpolation_with_nested_package_override",
+            ["group1/group2@group1.pkg2=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_with_nested_package_override"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="group_item1_pkg2"),
+                        children=[
+                            GroupDefault(group="group2", value="file2", package="pkg2"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="group2", value="file2"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_with_nested_package_override:override",
+        ),
+        param(
             "interpolation_with_nested_defaults_list",
             [],
             DefaultsTreeNode(
@@ -1994,18 +2033,12 @@ def test_placeholder(
         param(
             "interpolation_resolver_in_nested",
             [],
-            DefaultsTreeNode(
-                node=ConfigDefault(path="interpolation_resolver_in_nested"),
-                children=[
-                    DefaultsTreeNode(
-                        node=GroupDefault(group="group1", value="resolver"),
-                        children=[
-                            GroupDefault(group="group2", value="file1"),
-                            ConfigDefault(path="_self_"),
-                        ],
-                    ),
-                    ConfigDefault(path="_self_"),
-                ],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "Error resolving interpolation '${oc.decode:file1}', "
+                    "possible interpolation keys: group1"
+                ),
             ),
             id="interpolation_resolver_in_nested",
         ),
@@ -2151,6 +2184,32 @@ def test_legacy_interpolation(
             input_overrides=overrides,
             expected=expected,
         )
+
+
+def test_legacy_interpolation_multi_digit_index(
+    hydra_restore_singletons: Any,
+) -> None:
+    msg = dedent(
+        """
+    Defaults list element 'target=.*' is using a deprecated interpolation form.
+    See http://hydra.cc/docs/1.1/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
+    )
+    known_choices = OmegaConf.create(
+        {"defaults": [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {"group": "file1"}]}
+    )
+
+    version.setbase("1.1")
+    default = GroupDefault(group="target", value="${defaults.10.group}")
+    default.update_parent("", "")
+    with warns(expected_warning=UserWarning, match=msg):
+        default.resolve_interpolation(known_choices)
+    assert default.value == "file1"
+
+    version.setbase("1.2")
+    default = GroupDefault(group="target", value="${defaults.10.group}")
+    default.update_parent("", "")
+    with raises(ConfigCompositionException, match=msg):
+        default.resolve_interpolation(known_choices)
 
 
 @mark.parametrize(

@@ -337,7 +337,7 @@ def _check_not_missing(
     return False
 
 
-def _create_interpolation_map(
+def _create_legacy_interpolation_map(
     overrides: Overrides,
     defaults_list: List[InputDefault],
     self_added: bool,
@@ -585,7 +585,13 @@ def _create_defaults_tree_impl(
                 add_child(children, new_root)
 
     # processed deferred interpolations
-    known_choices = _create_interpolation_map(overrides, defaults_list, self_added)
+    known_choices = OmegaConf.create(overrides.known_choices)
+    # TODO: Remove Hydra 1.1 compatibility in
+    # https://github.com/facebookresearch/hydra/issues/3221.
+    if not version.base_at_least("1.2"):
+        known_choices = _create_legacy_interpolation_map(
+            overrides, defaults_list, self_added
+        )
 
     for idx, dd in enumerate(children):
         if isinstance(dd, InputDefault) and dd.is_interpolation():
