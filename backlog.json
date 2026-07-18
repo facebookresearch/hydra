@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-18",
-  "generated_at": "2026-07-18T11:46:10Z",
+  "generated_at": "2026-07-18T12:19:28Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 177,
+    "open_total": 176,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 21,
-        "percentage": 11.9
+        "count": 20,
+        "percentage": 11.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 130,
-        "percentage": 73.4
+        "percentage": 73.9
       },
       {
         "category": "Documentation",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 1
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 147
+        "count": 148
       }
     ]
   },
@@ -91,29 +91,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 1781,
-      "title": "[Bug] Testing for hydra examples",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3286,
-          "url": "https://github.com/facebookresearch/hydra/pull/3286"
-        }
-      ],
-      "created": "2021-08-20",
-      "updated": "2026-07-18",
-      "labels": [
-        "maintenance",
-        "triage",
-        "tests",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1781"
     },
     {
       "number": 845,
@@ -2782,6 +2759,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3220"
     },
     {
+      "number": 3221,
+      "title": "Clean up deprecations older than Hydra 1.2",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-20",
+      "updated": "2026-06-25",
+      "labels": [
+        "maintenance"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3221"
+    },
+    {
       "number": 3222,
       "title": "Normalize slash-containing group default options",
       "category": "Enhancement",
@@ -2961,21 +2953,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3283"
     },
     {
-      "number": 3221,
-      "title": "Clean up deprecations older than Hydra 1.2",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-20",
-      "updated": "2026-06-25",
-      "labels": [
-        "maintenance"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3221"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -3071,6 +3048,28 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1832"
+    },
+    {
+      "number": 1855,
+      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3285,
+          "url": "https://github.com/facebookresearch/hydra/pull/3285"
+        }
+      ],
+      "created": "2021-10-14",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "defaults list",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1855"
     },
     {
       "number": 1859,
@@ -5380,29 +5379,37 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
-      "number": 1855,
-      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
+      "number": 1781,
+      "title": "[Bug] Testing for hydra examples",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [
         {
-          "number": 3285,
-          "url": "https://github.com/facebookresearch/hydra/pull/3285"
+          "number": 3286,
+          "url": "https://github.com/facebookresearch/hydra/pull/3286"
         }
       ],
-      "created": "2021-10-14",
-      "updated": "2026-07-15",
+      "created": "2021-08-20",
+      "updated": "2026-07-18",
       "labels": [
-        "bug",
-        "defaults list",
+        "maintenance",
+        "priority_low",
+        "tests",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1855"
+      "url": "https://github.com/facebookresearch/hydra/issues/1781"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-18T12:19:28Z",
+      "kind": "closed",
+      "issue": 1781,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1781",
+      "title": "[Bug] Testing for hydra examples"
+    },
     {
       "ts": "2026-07-18T11:46:10Z",
       "kind": "pr",
@@ -6984,14 +6991,6 @@
       "issue": 1622,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1622",
       "title": "keyword documentation for config.yaml",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1512,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1512",
-      "title": "Support multirun partial failure in Ax Sweeper",
       "detail": "added \"triage\""
     }
   ]
