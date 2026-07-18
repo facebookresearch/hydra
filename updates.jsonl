@@ -448,3 +448,6 @@
 {"ts": "2026-07-18T11:46:10Z", "kind": "pr", "issue": 1781, "issue_url": "https://github.com/facebookresearch/hydra/issues/1781", "title": "[Bug] Testing for hydra examples", "detail": "linked #3286"}
 {"ts": "2026-07-18T11:46:10Z", "kind": "pr", "issue": 3221, "issue_url": "https://github.com/facebookresearch/hydra/issues/3221", "title": "Clean up deprecations older than Hydra 1.2", "detail": "unlinked #3285"}
 {"ts": "2026-07-18T12:19:28Z", "kind": "closed", "issue": 1781, "issue_url": "https://github.com/facebookresearch/hydra/issues/1781", "title": "[Bug] Testing for hydra examples"}
+{"ts": "2026-07-18T13:14:43Z", "kind": "new", "issue": 3287, "issue_url": "https://github.com/facebookresearch/hydra/issues/3287", "title": "Support OmegaConf 2.4 experimental tuple configuration"}
+{"ts": "2026-07-18T13:14:43Z", "kind": "new", "issue": 3288, "issue_url": "https://github.com/facebookresearch/hydra/issues/3288", "title": "Development environment retains stale editable plugin dependency metadata"}
+{"ts": "2026-07-18T13:14:43Z", "kind": "new", "issue": 3289, "issue_url": "https://github.com/facebookresearch/hydra/issues/3289", "title": "Development environment can retain stale plugin dependency metadata"}

@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-18",
-  "generated_at": "2026-07-18T12:19:28Z",
+  "generated_at": "2026-07-18T13:14:43Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 176,
+    "open_total": 179,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 20,
-        "percentage": 11.4
+        "percentage": 11.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 130,
-        "percentage": 73.9
+        "count": 133,
+        "percentage": 74.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 6.8
+        "percentage": 6.7
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.1
+        "percentage": 5.0
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 4,
-        "percentage": 2.3
+        "percentage": 2.2
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 168
+        "count": 171
       },
       {
         "status": "done",
@@ -2953,6 +2953,45 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3283"
     },
     {
+      "number": 3287,
+      "title": "Support OmegaConf 2.4 experimental tuple configuration",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3287"
+    },
+    {
+      "number": 3288,
+      "title": "Development environment retains stale editable plugin dependency metadata",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3288"
+    },
+    {
+      "number": 3289,
+      "title": "Development environment can retain stale plugin dependency metadata",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3289"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -2991,6 +3030,29 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1463"
+    },
+    {
+      "number": 1781,
+      "title": "[Bug] Testing for hydra examples",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3286,
+          "url": "https://github.com/facebookresearch/hydra/pull/3286"
+        }
+      ],
+      "created": "2021-08-20",
+      "updated": "2026-07-18",
+      "labels": [
+        "maintenance",
+        "priority_low",
+        "tests",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1781"
     },
     {
       "number": 1817,
@@ -5377,32 +5439,30 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
-    },
-    {
-      "number": 1781,
-      "title": "[Bug] Testing for hydra examples",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3286,
-          "url": "https://github.com/facebookresearch/hydra/pull/3286"
-        }
-      ],
-      "created": "2021-08-20",
-      "updated": "2026-07-18",
-      "labels": [
-        "maintenance",
-        "priority_low",
-        "tests",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1781"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-18T13:14:43Z",
+      "kind": "new",
+      "issue": 3289,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3289",
+      "title": "Development environment can retain stale plugin dependency metadata"
+    },
+    {
+      "ts": "2026-07-18T13:14:43Z",
+      "kind": "new",
+      "issue": 3288,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3288",
+      "title": "Development environment retains stale editable plugin dependency metadata"
+    },
+    {
+      "ts": "2026-07-18T13:14:43Z",
+      "kind": "new",
+      "issue": 3287,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3287",
+      "title": "Support OmegaConf 2.4 experimental tuple configuration"
+    },
     {
       "ts": "2026-07-18T12:19:28Z",
       "kind": "closed",
@@ -6967,30 +7027,6 @@
       "issue": 1749,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1749",
       "title": "tests: Use multiline regex search instead of assert_regex_match",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1679,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1679",
-      "title": "[Feature Request] Resume study and avoid OOM when optimizing with Optuna plugin",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1636,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1636",
-      "title": "Updates to callback doc",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1622,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1622",
-      "title": "keyword documentation for config.yaml",
       "detail": "added \"triage\""
     }
   ]
