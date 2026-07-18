@@ -13,7 +13,7 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.313883d4.css">
-<script src="/assets/js/runtime~main.d31a348b.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.01f00c18.js" defer="defer"></script>
 <script src="/assets/js/main.8b5f38d8.js" defer="defer"></script>
 </head>
 <body>
@@ -81,6 +81,7 @@ e.g., If <em>db</em> is overridden to <em>sqlite</em>, <em>combination_specific_
 <ul>
 <li class="">Interpolation keys in the Defaults List cannot reference values in the Final Config Object (it does not yet exist).</li>
 <li class="">Defaults List interpolation keys are absolute (even in nested configs).</li>
+<li class="">OmegaConf resolvers are not supported in Defaults List interpolation.</li>
 <li class="">The subtree expanded by an Interpolated Config may not contain Default List overrides.</li>
 </ul>
 <p>See <a class="" href="/docs/patterns/specializing_config/">Patterns/Specializing Configs</a> for more information.</p>
