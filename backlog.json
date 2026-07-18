@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-18",
-  "generated_at": "2026-07-18T13:14:43Z",
+  "generated_at": "2026-07-18T15:28:40Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 179,
+    "open_total": 177,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 20,
-        "percentage": 11.2
+        "percentage": 11.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 133,
-        "percentage": 74.3
+        "count": 131,
+        "percentage": 74.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 6.7
+        "percentage": 6.8
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.0
+        "percentage": 5.1
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 4,
-        "percentage": 2.2
+        "percentage": 2.3
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 171
+        "count": 169
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 148
+        "count": 150
       }
     ]
   },
@@ -2966,32 +2966,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3287"
     },
     {
-      "number": 3288,
-      "title": "Development environment retains stale editable plugin dependency metadata",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-18",
-      "updated": "2026-07-18",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3288"
-    },
-    {
-      "number": 3289,
-      "title": "Development environment can retain stale plugin dependency metadata",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-18",
-      "updated": "2026-07-18",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3289"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -5439,9 +5413,49 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
+    },
+    {
+      "number": 3288,
+      "title": "Development environment retains stale editable plugin dependency metadata",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3288"
+    },
+    {
+      "number": 3289,
+      "title": "Development environment can retain stale plugin dependency metadata",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3289"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-18T15:28:40Z",
+      "kind": "closed",
+      "issue": 3289,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3289",
+      "title": "Development environment can retain stale plugin dependency metadata"
+    },
+    {
+      "ts": "2026-07-18T15:28:40Z",
+      "kind": "closed",
+      "issue": 3288,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3288",
+      "title": "Development environment retains stale editable plugin dependency metadata"
+    },
     {
       "ts": "2026-07-18T13:14:43Z",
       "kind": "new",
@@ -7011,22 +7025,6 @@
       "issue": 1758,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1758",
       "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1753,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1753",
-      "title": "[Feature Request] Add GCP support in Ray launcher.",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1749,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1749",
-      "title": "tests: Use multiline regex search instead of assert_regex_match",
       "detail": "added \"triage\""
     }
   ]
