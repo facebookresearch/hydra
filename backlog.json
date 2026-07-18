@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-18",
-  "generated_at": "2026-07-18T17:05:29Z",
+  "generated_at": "2026-07-18T18:08:16Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 179,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 2
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 171
+        "count": 170
       },
       {
         "status": "done",
@@ -91,6 +91,24 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 3290,
+      "title": "Remove packaging from Hydra runtime dependencies",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3292,
+          "url": "https://github.com/facebookresearch/hydra/pull/3292"
+        }
+      ],
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3290"
     },
     {
       "number": 845,
@@ -2966,19 +2984,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3287"
     },
     {
-      "number": 3290,
-      "title": "Remove packaging from Hydra runtime dependencies",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-18",
-      "updated": "2026-07-18",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3290"
-    },
-    {
       "number": 3291,
       "title": "Remove packaging from Hydra core runtime dependencies",
       "category": "Refactor",
@@ -5469,6 +5474,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-18T18:08:16Z",
+      "kind": "pr",
+      "issue": 3290,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3290",
+      "title": "Remove packaging from Hydra runtime dependencies",
+      "detail": "linked #3292"
+    },
+    {
+      "ts": "2026-07-18T18:08:16Z",
+      "kind": "status",
+      "issue": 3290,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3290",
+      "title": "Remove packaging from Hydra runtime dependencies",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3292,
+        "url": "https://github.com/facebookresearch/hydra/pull/3292"
+      }
+    },
+    {
       "ts": "2026-07-18T17:05:29Z",
       "kind": "new",
       "issue": 3291,
@@ -7033,22 +7058,6 @@
       "issue": 1817,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1817",
       "title": "Change default behavior to disallow writes to pre-existing output directory",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1781,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1781",
-      "title": "[Bug] Testing for hydra examples",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1767,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1767",
-      "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. ",
       "detail": "added \"triage\""
     }
   ]

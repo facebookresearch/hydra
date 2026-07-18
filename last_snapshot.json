@@ -151,7 +151,7 @@
     "3289": "2026-07-18",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-18T17:05:29Z",
+  "generated_at": "2026-07-18T18:08:16Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2306,9 +2306,11 @@
       "category": "Refactor",
       "created_at": "2026-07-18T17:03:05Z",
       "labels": [],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3292"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "Remove packaging from Hydra runtime dependencies",
       "updated_at": "2026-07-18T17:03:05Z"
     },

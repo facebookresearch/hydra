@@ -455,3 +455,5 @@
 {"ts": "2026-07-18T15:28:40Z", "kind": "closed", "issue": 3289, "issue_url": "https://github.com/facebookresearch/hydra/issues/3289", "title": "Development environment can retain stale plugin dependency metadata"}
 {"ts": "2026-07-18T17:05:29Z", "kind": "new", "issue": 3290, "issue_url": "https://github.com/facebookresearch/hydra/issues/3290", "title": "Remove packaging from Hydra runtime dependencies"}
 {"ts": "2026-07-18T17:05:29Z", "kind": "new", "issue": 3291, "issue_url": "https://github.com/facebookresearch/hydra/issues/3291", "title": "Remove packaging from Hydra core runtime dependencies"}
+{"ts": "2026-07-18T18:08:16Z", "kind": "status", "issue": 3290, "issue_url": "https://github.com/facebookresearch/hydra/issues/3290", "title": "Remove packaging from Hydra runtime dependencies", "detail": "not started → in progress", "pr": {"number": 3292, "url": "https://github.com/facebookresearch/hydra/pull/3292"}}
+{"ts": "2026-07-18T18:08:16Z", "kind": "pr", "issue": 3290, "issue_url": "https://github.com/facebookresearch/hydra/issues/3290", "title": "Remove packaging from Hydra runtime dependencies", "detail": "linked #3292"}
