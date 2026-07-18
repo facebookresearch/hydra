@@ -4,6 +4,7 @@
     "1817": "2026-07-18",
     "1830": "2026-07-16",
     "1832": "2026-07-18",
+    "1855": "2026-07-18",
     "1859": "2026-07-17",
     "1866": "2026-07-16",
     "1892": "2026-06-07",
@@ -147,7 +148,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-18T09:54:57Z",
+  "generated_at": "2026-07-18T11:46:10Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -485,27 +486,13 @@
         "tests",
         "triage"
       ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Testing for hydra examples",
-      "updated_at": "2026-07-15T13:17:25Z"
-    },
-    "1855": {
-      "category": "Bug",
-      "created_at": "2021-10-14T11:33:00Z",
-      "labels": [
-        "bug",
-        "defaults list",
-        "triage"
-      ],
       "pr_numbers": [
-        "3285"
+        "3286"
       ],
       "state": "OPEN",
       "status": "in progress",
-      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
-      "updated_at": "2026-07-15T13:17:22Z"
+      "title": "[Bug] Testing for hydra examples",
+      "updated_at": "2026-07-18T10:48:33Z"
     },
     "1865": {
       "category": "Bug",
@@ -2170,11 +2157,9 @@
       "labels": [
         "maintenance"
       ],
-      "pr_numbers": [
-        "3285"
-      ],
+      "pr_numbers": [],
       "state": "OPEN",
-      "status": "in progress",
+      "status": "not started",
       "title": "Clean up deprecations older than Hydra 1.2",
       "updated_at": "2026-06-25T03:00:01Z"
     },
@@ -2573,6 +2558,22 @@
       "status": "done",
       "title": "[Feature Request] Expand options to transform special characters for dir name",
       "updated_at": "2026-07-15T13:17:23Z"
+    },
+    "1855": {
+      "category": "Bug",
+      "created_at": "2021-10-14T11:33:00Z",
+      "labels": [
+        "bug",
+        "defaults list",
+        "triage"
+      ],
+      "pr_numbers": [
+        "3285"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
+      "updated_at": "2026-07-15T13:17:22Z"
     },
     "1859": {
       "category": "Question",

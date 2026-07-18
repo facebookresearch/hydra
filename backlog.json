@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-18",
-  "generated_at": "2026-07-18T09:54:57Z",
+  "generated_at": "2026-07-18T11:46:10Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 178,
+    "open_total": 177,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 22,
-        "percentage": 12.4
+        "count": 21,
+        "percentage": 11.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 130,
-        "percentage": 73.0
+        "percentage": 73.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 6.7
+        "percentage": 6.8
       },
       {
         "category": "Question",
@@ -39,14 +39,14 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 4,
-        "percentage": 2.2
+        "percentage": 2.3
       }
     ],
     "by_status": [
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 3
+        "count": 2
       },
       {
         "status": "community PR",
@@ -66,33 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 146
+        "count": 147
       }
     ]
   },
   "issues": [
-    {
-      "number": 1855,
-      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3285,
-          "url": "https://github.com/facebookresearch/hydra/pull/3285"
-        }
-      ],
-      "created": "2021-10-14",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage",
-        "defaults list"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1855"
-    },
     {
       "number": 2632,
       "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
@@ -115,24 +93,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
     },
     {
-      "number": 3221,
-      "title": "Clean up deprecations older than Hydra 1.2",
-      "category": "Refactor",
-      "category_emoji": "🔧",
+      "number": 1781,
+      "title": "[Bug] Testing for hydra examples",
+      "category": "Bug",
+      "category_emoji": "🐛",
       "status": "in progress",
       "status_emoji": "🔄",
       "prs": [
         {
-          "number": 3285,
-          "url": "https://github.com/facebookresearch/hydra/pull/3285"
+          "number": 3286,
+          "url": "https://github.com/facebookresearch/hydra/pull/3286"
         }
       ],
-      "created": "2026-06-20",
-      "updated": "2026-06-25",
+      "created": "2021-08-20",
+      "updated": "2026-07-18",
       "labels": [
-        "maintenance"
+        "maintenance",
+        "triage",
+        "tests",
+        "priority_low"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3221"
+      "url": "https://github.com/facebookresearch/hydra/issues/1781"
     },
     {
       "number": 845,
@@ -891,24 +872,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1767"
-    },
-    {
-      "number": 1781,
-      "title": "[Bug] Testing for hydra examples",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-08-20",
-      "updated": "2026-07-15",
-      "labels": [
-        "maintenance",
-        "triage",
-        "tests",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1781"
     },
     {
       "number": 1865,
@@ -2998,6 +2961,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3283"
     },
     {
+      "number": 3221,
+      "title": "Clean up deprecations older than Hydra 1.2",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-20",
+      "updated": "2026-06-25",
+      "labels": [
+        "maintenance"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3221"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -3036,6 +3014,23 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1463"
+    },
+    {
+      "number": 1817,
+      "title": "Change default behavior to disallow writes to pre-existing output directory",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-09-08",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage",
+        "working_dir"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1817"
     },
     {
       "number": 1830,
@@ -5385,24 +5380,72 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
-      "number": 1817,
-      "title": "Change default behavior to disallow writes to pre-existing output directory",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 1855,
+      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
+      "category": "Bug",
+      "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [],
-      "created": "2021-09-08",
+      "prs": [
+        {
+          "number": 3285,
+          "url": "https://github.com/facebookresearch/hydra/pull/3285"
+        }
+      ],
+      "created": "2021-10-14",
       "updated": "2026-07-15",
       "labels": [
-        "enhancement",
-        "triage",
-        "working_dir"
+        "bug",
+        "defaults list",
+        "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1817"
+      "url": "https://github.com/facebookresearch/hydra/issues/1855"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-18T11:46:10Z",
+      "kind": "pr",
+      "issue": 3221,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3221",
+      "title": "Clean up deprecations older than Hydra 1.2",
+      "detail": "unlinked #3285"
+    },
+    {
+      "ts": "2026-07-18T11:46:10Z",
+      "kind": "pr",
+      "issue": 1781,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1781",
+      "title": "[Bug] Testing for hydra examples",
+      "detail": "linked #3286"
+    },
+    {
+      "ts": "2026-07-18T11:46:10Z",
+      "kind": "closed",
+      "issue": 1855,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1855",
+      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` "
+    },
+    {
+      "ts": "2026-07-18T11:46:10Z",
+      "kind": "status",
+      "issue": 3221,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3221",
+      "title": "Clean up deprecations older than Hydra 1.2",
+      "detail": "in progress → not started"
+    },
+    {
+      "ts": "2026-07-18T11:46:10Z",
+      "kind": "status",
+      "issue": 1781,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1781",
+      "title": "[Bug] Testing for hydra examples",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3286,
+        "url": "https://github.com/facebookresearch/hydra/pull/3286"
+      }
+    },
     {
       "ts": "2026-07-18T09:54:57Z",
       "kind": "closed",
@@ -6949,46 +6992,6 @@
       "issue": 1512,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1512",
       "title": "Support multirun partial failure in Ax Sweeper",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1463,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1463",
-      "title": "[Feature Request] Fault tolerance option for Optuna Sweeper",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1431,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1431",
-      "title": "PrettyErrors doesn't work with Hydra",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1367,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1367",
-      "title": "[Feature Request] [Configen] Multiple path patterns",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1291,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1291",
-      "title": "ray launcher improvements",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1258,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1258",
-      "title": "[Feature Request] Tuple Sweeper OR Top-level dictionary overrides",
       "detail": "added \"triage\""
     }
   ]
