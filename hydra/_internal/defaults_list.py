@@ -337,23 +337,6 @@ def _check_not_missing(
     return False
 
 
-def _create_interpolation_map(
-    overrides: Overrides,
-    defaults_list: List[InputDefault],
-    self_added: bool,
-) -> DictConfig:
-    known_choices = OmegaConf.create(overrides.known_choices)
-    known_choices.defaults = []
-    for d in defaults_list:
-        if self_added and d.is_self():
-            continue
-        if isinstance(d, ConfigDefault):
-            known_choices.defaults.append(d.get_config_path())
-        elif isinstance(d, GroupDefault):
-            known_choices.defaults.append({d.get_override_key(): d.value})
-    return known_choices
-
-
 def _create_defaults_tree(
     repo: IConfigRepository,
     root: DefaultsTreeNode,
@@ -495,7 +478,6 @@ def _create_defaults_tree_impl(
     if defaults_list is None:
         defaults_list = []
 
-    self_added = False
     if (
         len(defaults_list) > 0
         or is_root_config
@@ -505,7 +487,7 @@ def _create_defaults_tree_impl(
             loaded.config, DictConfig
         ) and _has_config_content(loaded.config)
 
-        self_added = _validate_self(
+        _validate_self(
             containing_node=parent,
             defaults=defaults_list,
             has_config_content=has_config_content,
@@ -585,7 +567,7 @@ def _create_defaults_tree_impl(
                 add_child(children, new_root)
 
     # processed deferred interpolations
-    known_choices = _create_interpolation_map(overrides, defaults_list, self_added)
+    known_choices = OmegaConf.create(overrides.known_choices)
 
     for idx, dd in enumerate(children):
         if isinstance(dd, InputDefault) and dd.is_interpolation():

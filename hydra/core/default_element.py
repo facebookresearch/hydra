@@ -4,12 +4,13 @@ from dataclasses import dataclass, field
 from textwrap import dedent
 from typing import List, Optional, Pattern, Union
 
-from omegaconf import AnyNode, DictConfig, OmegaConf
-from omegaconf.errors import InterpolationResolutionError
+from omegaconf import AnyNode, DictConfig
 
 from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.errors import ConfigCompositionException
+
+_defaults_list_interpolation_pattern: Pattern[str] = re.compile(r"\${\s*([^{}]*?)\s*}")
 
 
 @dataclass
@@ -230,24 +231,27 @@ class InputDefault:
     def _resolve_interpolation_impl(
         self, known_choices: DictConfig, val: Optional[str]
     ) -> str:
-        node = OmegaConf.create({"_dummy_": val})
-        node._set_parent(known_choices)
-        try:
-            ret = node["_dummy_"]
-            assert isinstance(ret, str)
-            return ret
-        except InterpolationResolutionError:
-            options = [
-                x
-                for x in known_choices.keys()
-                if x != "defaults" and isinstance(x, str)
-            ]
+        assert val is not None
+
+        def replace(match: re.Match[str]) -> str:
+            key = match.group(1).strip()
+            if key in known_choices:
+                choice = known_choices[key]
+                if isinstance(choice, str):
+                    return choice
+            return match.group(0)
+
+        ret = _defaults_list_interpolation_pattern.sub(replace, val)
+        if "${" in ret:
+            options = [x for x in known_choices.keys() if isinstance(x, str)]
             if len(options) > 0:
                 options_str = ", ".join(options)
                 msg = f"Error resolving interpolation '{val}', possible interpolation keys: {options_str}"
             else:
                 msg = f"Error resolving interpolation '{val}'"
             raise ConfigCompositionException(msg)
+
+        return ret
 
     def get_override_key(self) -> str:
         default_pkg = self.get_default_package()
@@ -543,18 +547,13 @@ class GroupDefault(InputDefault):
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         name = self.get_name()
         if name is not None:
-            if re.match(_legacy_interpolation_pattern, name) is not None:
+            if re.search(_legacy_interpolation_pattern, name) is not None:
                 msg = dedent(
                     f"""
-Defaults list element '{self.get_override_key()}={name}' is using a deprecated interpolation form.
+Defaults list element '{self.get_override_key()}={name}' is using an unsupported interpolation form.
 See http://hydra.cc/docs/1.1/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
                 )
-                if not version.base_at_least("1.2"):
-                    deprecation_warning(
-                        message=msg,
-                    )
-                else:
-                    raise ConfigCompositionException(msg)
+                raise ConfigCompositionException(msg)
 
             self.value = self._resolve_interpolation_impl(known_choices, name)
 

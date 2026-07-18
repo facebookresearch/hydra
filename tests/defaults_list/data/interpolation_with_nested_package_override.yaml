@@ -1,0 +1,3 @@
+defaults:
+  - group1: group_item1_pkg2
+  - group2: ${ group1/group2@group1.pkg2 }

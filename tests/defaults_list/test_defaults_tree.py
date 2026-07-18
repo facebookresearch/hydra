@@ -1914,6 +1914,44 @@ def test_placeholder(
             id="interpolation_with_package_override:override",
         ),
         param(
+            "interpolation_with_nested_package_override",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_with_nested_package_override"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="group_item1_pkg2"),
+                        children=[
+                            GroupDefault(group="group2", value="file1", package="pkg2"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="group2", value="file1"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_with_nested_package_override",
+        ),
+        param(
+            "interpolation_with_nested_package_override",
+            ["group1/group2@group1.pkg2=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_with_nested_package_override"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="group_item1_pkg2"),
+                        children=[
+                            GroupDefault(group="group2", value="file2", package="pkg2"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="group2", value="file2"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_with_nested_package_override:override",
+        ),
+        param(
             "interpolation_with_nested_defaults_list",
             [],
             DefaultsTreeNode(
@@ -1994,18 +2032,12 @@ def test_placeholder(
         param(
             "interpolation_resolver_in_nested",
             [],
-            DefaultsTreeNode(
-                node=ConfigDefault(path="interpolation_resolver_in_nested"),
-                children=[
-                    DefaultsTreeNode(
-                        node=GroupDefault(group="group1", value="resolver"),
-                        children=[
-                            GroupDefault(group="group2", value="file1"),
-                            ConfigDefault(path="_self_"),
-                        ],
-                    ),
-                    ConfigDefault(path="_self_"),
-                ],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "Error resolving interpolation '${oc.decode:file1}', "
+                    "possible interpolation keys: group1"
+                ),
             ),
             id="interpolation_resolver_in_nested",
         ),
@@ -2133,24 +2165,17 @@ def test_legacy_interpolation(
 ) -> None:
     msg = dedent(
         """
-    Defaults list element '.*=.*' is using a deprecated interpolation form.
+    Defaults list element '.*=.*' is using an unsupported interpolation form.
     See http://hydra.cc/docs/1.1/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
     )
-    version.setbase("1.1")
-    with warns(expected_warning=UserWarning, match=msg):
-        _test_defaults_tree_impl(
-            config_name=config_name,
-            input_overrides=overrides,
-            expected=expected,
-        )
-
-    version.setbase("1.2")
-    with raises(ConfigCompositionException, match=msg):
-        _test_defaults_tree_impl(
-            config_name=config_name,
-            input_overrides=overrides,
-            expected=expected,
-        )
+    for version_base in ("1.1", "1.2"):
+        version.setbase(version_base)
+        with raises(ConfigCompositionException, match=msg):
+            _test_defaults_tree_impl(
+                config_name=config_name,
+                input_overrides=overrides,
+                expected=expected,
+            )
 
 
 @mark.parametrize(
