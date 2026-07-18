@@ -76,7 +76,7 @@ def test_initialize_bad_version_base(hydra_restore_singletons: Any) -> None:
 
 
 @mark.parametrize("version_base", ["1.2.0", "1.2.0.dev2", "1.2.0rc1"])
-def test_initialize_release_version_base(
+def test_initialize_hydra_version_string_base(
     hydra_restore_singletons: Any, version_base: str
 ) -> None:
     assert not GlobalHydra().is_initialized()
