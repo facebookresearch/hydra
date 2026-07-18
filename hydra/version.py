@@ -2,10 +2,9 @@
 
 # Source of truth for Hydra's version
 
+import re
 from textwrap import dedent
-from typing import Any, Optional
-
-from packaging.version import Version
+from typing import Any, Optional, Tuple
 
 from . import __version__
 from ._internal.deprecation_warning import deprecation_warning
@@ -14,20 +13,23 @@ from .errors import HydraException
 
 _UNSPECIFIED_: Any = object()
 
-__compat_version__: Version = Version("1.1")
+__compat_version__ = "1.1"
+
+_VERSION_PATTERN = re.compile(
+    r"(?P<major>[0-9]+)\.(?P<minor>[0-9]+)"
+    r"(?:\.[0-9]+(?:rc[0-9]+|\.dev[0-9]+)?)?"
+)
 
 
 class VersionBase(metaclass=Singleton):
     def __init__(self) -> None:
-        self.version_base: Optional[Version] = _UNSPECIFIED_
+        self.version_base: Optional[str] = _UNSPECIFIED_
 
-    def setbase(self, version: "Version") -> None:
-        assert isinstance(version, Version), (
-            f"Unexpected Version type : {type(version)}"
-        )
+    def setbase(self, version: str) -> None:
+        assert isinstance(version, str), f"Unexpected Version type : {type(version)}"
         self.version_base = version
 
-    def getbase(self) -> Optional[Version]:
+    def getbase(self) -> Optional[str]:
         return self.version_base
 
     @staticmethod
@@ -40,10 +42,20 @@ class VersionBase(metaclass=Singleton):
         Singleton._instances[VersionBase] = instance  # type: ignore
 
 
-def _get_version(ver: str) -> Version:
-    # Only consider major.minor as packaging will compare "1.2.0.dev2" < "1.2"
-    pver = Version(ver)
-    return Version(f"{pver.major}.{pver.minor}")
+def _parse_version(ver: str) -> Tuple[int, int]:
+    if not isinstance(ver, str):
+        raise TypeError(f"Expected version string, got {type(ver).__name__}")
+
+    match = _VERSION_PATTERN.fullmatch(ver)
+    if match is None:
+        raise ValueError(f"Invalid version: {ver!r}")
+
+    return int(match.group("major")), int(match.group("minor"))
+
+
+def _get_version(ver: str) -> str:
+    major, minor = _parse_version(ver)
+    return f"{major}.{minor}"
 
 
 def base_at_least(ver: str) -> bool:
@@ -51,11 +63,11 @@ def base_at_least(ver: str) -> bool:
     if type(_version_base) is type(_UNSPECIFIED_):
         VersionBase.instance().setbase(__compat_version__)
         _version_base = __compat_version__
-    assert isinstance(_version_base, Version)
-    return _version_base >= _get_version(ver)
+    assert isinstance(_version_base, str)
+    return _parse_version(_version_base) >= _parse_version(ver)
 
 
-def getbase() -> Optional[Version]:
+def getbase() -> Optional[str]:
     return VersionBase.instance().getbase()
 
 
@@ -77,6 +89,6 @@ def setbase(ver: Any) -> None:
         _version_base = _get_version(__version__)
     else:
         _version_base = _get_version(ver)
-        if _version_base < __compat_version__:
+        if _parse_version(_version_base) < _parse_version(__compat_version__):
             raise HydraException(f'version_base must be >= "{__compat_version__}"')
     VersionBase.instance().setbase(_version_base)

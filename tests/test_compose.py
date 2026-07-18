@@ -75,11 +75,31 @@ def test_initialize_bad_version_base(hydra_restore_singletons: Any) -> None:
         initialize(version_base=1.1)  # type: ignore
 
 
-def test_initialize_dev_version_base(hydra_restore_singletons: Any) -> None:
+@mark.parametrize("version_base", ["1.2.0", "1.2.0.dev2", "1.2.0rc1"])
+def test_initialize_release_version_base(
+    hydra_restore_singletons: Any, version_base: str
+) -> None:
     assert not GlobalHydra().is_initialized()
-    # packaging will compare "1.2.0.dev2" < "1.2", so need to ensure handled correctly
-    initialize(version_base="1.2.0.dev2")
+    initialize(version_base=version_base)
     assert version.base_at_least("1.2")
+
+
+def test_version_base_numeric_comparison(hydra_restore_singletons: Any) -> None:
+    version.setbase("1.10")
+
+    assert version.base_at_least("1.2")
+    assert not version.base_at_least("2.0")
+
+
+@mark.parametrize(
+    "version_base",
+    ["1", "one.two", "1.2rc1", "1.2.bad", "1.2.0a1", "1.2.0b1"],
+)
+def test_initialize_invalid_version_base(
+    hydra_restore_singletons: Any, version_base: str
+) -> None:
+    with raises(ValueError, match="Invalid version"):
+        initialize(version_base=version_base)
 
 
 def test_initialize_cur_version_base(hydra_restore_singletons: Any) -> None:
