@@ -145,7 +145,7 @@
     "3275": "2026-07-16",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-17T18:57:26Z",
+  "generated_at": "2026-07-18T05:25:35Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -525,9 +525,11 @@
         "defaults list",
         "triage"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3285"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
       "updated_at": "2026-07-15T13:17:22Z"
     },

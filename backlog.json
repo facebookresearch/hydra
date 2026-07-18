@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-07-17",
-  "generated_at": "2026-07-17T18:57:26Z",
+  "generated_on": "2026-07-18",
+  "generated_at": "2026-07-18T05:25:35Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 180,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 2
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 172
+        "count": 171
       },
       {
         "status": "done",
@@ -91,6 +91,28 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 1855,
+      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3285,
+          "url": "https://github.com/facebookresearch/hydra/pull/3285"
+        }
+      ],
+      "created": "2021-10-14",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "triage",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1855"
     },
     {
       "number": 845,
@@ -901,23 +923,6 @@
         "has-workaround"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1832"
-    },
-    {
-      "number": 1855,
-      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-10-14",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage",
-        "defaults list"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1855"
     },
     {
       "number": 1865,
@@ -5394,6 +5399,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-18T05:25:35Z",
+      "kind": "pr",
+      "issue": 1855,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1855",
+      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
+      "detail": "linked #3285"
+    },
+    {
+      "ts": "2026-07-18T05:25:35Z",
+      "kind": "status",
+      "issue": 1855,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1855",
+      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3285,
+        "url": "https://github.com/facebookresearch/hydra/pull/3285"
+      }
+    },
+    {
       "ts": "2026-07-17T18:16:57Z",
       "kind": "closed",
       "issue": 1859,
@@ -6957,22 +6982,6 @@
       "issue": 1164,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1164",
       "title": "Move non-user facing tools out of `hydra/tools`",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1085,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1085",
-      "title": "[Feature Request] shell completion for Enum type",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1081,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1081",
-      "title": "[Feature Request] Configen adds url to original module documentation",
       "detail": "added \"triage\""
     }
   ]
