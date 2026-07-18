@@ -151,7 +151,7 @@
     "3289": "2026-07-18",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-18T15:28:40Z",
+  "generated_at": "2026-07-18T17:05:29Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2301,6 +2301,26 @@
       "status": "not started",
       "title": "Support OmegaConf 2.4 experimental tuple configuration",
       "updated_at": "2026-07-18T13:11:55Z"
+    },
+    "3290": {
+      "category": "Refactor",
+      "created_at": "2026-07-18T17:03:05Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Remove packaging from Hydra runtime dependencies",
+      "updated_at": "2026-07-18T17:03:05Z"
+    },
+    "3291": {
+      "category": "Refactor",
+      "created_at": "2026-07-18T17:03:51Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Remove packaging from Hydra core runtime dependencies",
+      "updated_at": "2026-07-18T17:03:51Z"
     },
     "385": {
       "category": "Enhancement",

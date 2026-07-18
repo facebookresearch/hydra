@@ -1,45 +1,45 @@
 {
   "generated_on": "2026-07-18",
-  "generated_at": "2026-07-18T15:28:40Z",
+  "generated_at": "2026-07-18T17:05:29Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 177,
+    "open_total": 179,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 20,
-        "percentage": 11.3
+        "percentage": 11.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 131,
-        "percentage": 74.0
+        "percentage": 73.2
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 6.8
+        "percentage": 6.7
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.1
+        "percentage": 5.0
       },
       {
         "category": "Refactor",
         "emoji": "🔧",
-        "count": 1,
-        "percentage": 0.6
+        "count": 3,
+        "percentage": 1.7
       },
       {
         "category": "Build",
         "emoji": "🏗️",
         "count": 4,
-        "percentage": 2.3
+        "percentage": 2.2
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 169
+        "count": 171
       },
       {
         "status": "done",
@@ -2966,6 +2966,32 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3287"
     },
     {
+      "number": 3290,
+      "title": "Remove packaging from Hydra runtime dependencies",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3290"
+    },
+    {
+      "number": 3291,
+      "title": "Remove packaging from Hydra core runtime dependencies",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3291"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -5443,6 +5469,20 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-18T17:05:29Z",
+      "kind": "new",
+      "issue": 3291,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3291",
+      "title": "Remove packaging from Hydra core runtime dependencies"
+    },
+    {
+      "ts": "2026-07-18T17:05:29Z",
+      "kind": "new",
+      "issue": 3290,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3290",
+      "title": "Remove packaging from Hydra runtime dependencies"
+    },
+    {
       "ts": "2026-07-18T15:28:40Z",
       "kind": "closed",
       "issue": 3289,
@@ -7009,22 +7049,6 @@
       "issue": 1767,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1767",
       "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. ",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1764,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1764",
-      "title": "[ray launcher] fix how ray launcher gets the job return",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1758,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1758",
-      "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
       "detail": "added \"triage\""
     }
   ]
