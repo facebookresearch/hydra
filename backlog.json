@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-19",
-  "generated_at": "2026-07-19T18:50:26Z",
+  "generated_at": "2026-07-19T18:53:51Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 172,
+    "open_total": 171,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 20,
-        "percentage": 11.6
+        "percentage": 11.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 128,
-        "percentage": 74.4
+        "count": 127,
+        "percentage": 74.3
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.2
+        "percentage": 5.3
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 1.7
+        "percentage": 1.8
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 164
+        "count": 163
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 158
+        "count": 159
       }
     ]
   },
@@ -2871,21 +2871,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3283"
     },
     {
-      "number": 3296,
-      "title": "Better RDP login detection",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-19",
-      "updated": "2026-07-19",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3296"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -5488,9 +5473,31 @@
       "updated": "2026-07-18",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3291"
+    },
+    {
+      "number": 3296,
+      "title": "Better RDP login detection",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-07-19",
+      "updated": "2026-07-19",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3296"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-19T18:53:51Z",
+      "kind": "closed",
+      "issue": 3296,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3296",
+      "title": "Better RDP login detection"
+    },
     {
       "ts": "2026-07-19T18:50:26Z",
       "kind": "new",
@@ -7063,14 +7070,6 @@
       "issue": 1898,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1898",
       "title": "[Bug] Submitit has optional parameter tasks_per_node set",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1896,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1896",
-      "title": "[Feature Request] Override dictionary syntax",
       "detail": "added \"triage\""
     }
   ]
