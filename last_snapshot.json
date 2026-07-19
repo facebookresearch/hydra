@@ -157,7 +157,7 @@
     "3290": "2026-07-18",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-19T10:58:56Z",
+  "generated_at": "2026-07-19T11:34:17Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -425,14 +425,13 @@
       "labels": [
         "maintenance",
         "priority_low",
-        "tests",
-        "triage"
+        "tests"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "tests: Use multiline regex search instead of assert_regex_match",
-      "updated_at": "2026-07-15T13:17:29Z"
+      "updated_at": "2026-07-19T11:33:00Z"
     },
     "1865": {
       "category": "Bug",

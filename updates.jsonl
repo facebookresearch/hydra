@@ -465,3 +465,4 @@
 {"ts": "2026-07-19T10:14:25Z", "kind": "closed", "issue": 1764, "issue_url": "https://github.com/facebookresearch/hydra/issues/1764", "title": "[ray launcher] fix how ray launcher gets the job return"}
 {"ts": "2026-07-19T10:23:41Z", "kind": "closed", "issue": 1758, "issue_url": "https://github.com/facebookresearch/hydra/issues/1758", "title": "[Feature Request] Recursive config interpolation with custom object resolvers"}
 {"ts": "2026-07-19T10:58:56Z", "kind": "closed", "issue": 1753, "issue_url": "https://github.com/facebookresearch/hydra/issues/1753", "title": "[Feature Request] Add GCP support in Ray launcher."}
+{"ts": "2026-07-19T11:34:17Z", "kind": "label", "issue": 1749, "issue_url": "https://github.com/facebookresearch/hydra/issues/1749", "title": "tests: Use multiline regex search instead of assert_regex_match", "detail": "removed \"triage\""}
