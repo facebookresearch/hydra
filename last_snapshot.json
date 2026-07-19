@@ -147,12 +147,13 @@
     "3259": "2026-07-05",
     "3268": "2026-07-05",
     "3275": "2026-07-16",
+    "3287": "2026-07-19",
     "3288": "2026-07-18",
     "3289": "2026-07-18",
     "3290": "2026-07-18",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-18T20:41:16Z",
+  "generated_at": "2026-07-19T02:36:31Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2293,18 +2294,6 @@
       "title": "Reject duplicate override targets during composition",
       "updated_at": "2026-07-17T12:30:14Z"
     },
-    "3287": {
-      "category": "Enhancement",
-      "created_at": "2026-07-18T13:11:55Z",
-      "labels": [],
-      "pr_numbers": [
-        "3293"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "Support OmegaConf 2.4 experimental tuple configuration",
-      "updated_at": "2026-07-18T13:11:55Z"
-    },
     "3291": {
       "category": "Refactor",
       "created_at": "2026-07-18T17:03:51Z",
@@ -4397,6 +4386,18 @@
       "status": "done",
       "title": "[Bug] Bash completion executes non-Hydra Python scripts",
       "updated_at": "2026-07-16T05:39:12Z"
+    },
+    "3287": {
+      "category": "Enhancement",
+      "created_at": "2026-07-18T13:11:55Z",
+      "labels": [],
+      "pr_numbers": [
+        "3293"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Support OmegaConf 2.4 experimental tuple configuration",
+      "updated_at": "2026-07-18T13:11:55Z"
     },
     "3288": {
       "category": "Enhancement",

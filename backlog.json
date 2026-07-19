@@ -1,27 +1,27 @@
 {
-  "generated_on": "2026-07-18",
-  "generated_at": "2026-07-18T20:41:16Z",
+  "generated_on": "2026-07-19",
+  "generated_at": "2026-07-19T02:36:31Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 178,
+    "open_total": 177,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 20,
-        "percentage": 11.2
+        "percentage": 11.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 131,
-        "percentage": 73.6
+        "count": 130,
+        "percentage": 73.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 6.7
+        "percentage": 6.8
       },
       {
         "category": "Question",
@@ -39,14 +39,14 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 4,
-        "percentage": 2.2
+        "percentage": 2.3
       }
     ],
     "by_status": [
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 1
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 151
+        "count": 152
       }
     ]
   },
@@ -91,24 +91,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 3287,
-      "title": "Support OmegaConf 2.4 experimental tuple configuration",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3293,
-          "url": "https://github.com/facebookresearch/hydra/pull/3293"
-        }
-      ],
-      "created": "2026-07-18",
-      "updated": "2026-07-18",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3287"
     },
     {
       "number": 845,
@@ -5475,9 +5457,34 @@
       "updated": "2026-07-18",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3290"
+    },
+    {
+      "number": 3287,
+      "title": "Support OmegaConf 2.4 experimental tuple configuration",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3293,
+          "url": "https://github.com/facebookresearch/hydra/pull/3293"
+        }
+      ],
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3287"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-19T02:36:31Z",
+      "kind": "closed",
+      "issue": 3287,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3287",
+      "title": "Support OmegaConf 2.4 experimental tuple configuration"
+    },
     {
       "ts": "2026-07-18T20:41:16Z",
       "kind": "pr",
@@ -7058,14 +7065,6 @@
       "issue": 1859,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1859",
       "title": "SLURM sweep with hydra",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1855,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1855",
-      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
       "detail": "added \"triage\""
     }
   ]
