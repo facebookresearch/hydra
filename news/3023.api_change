@@ -1,0 +1,1 @@
+Remove the experimental ``on_compose_config`` callback hook.

@@ -132,7 +132,6 @@ class Hydra:
                 with_log_configuration=False,
                 run_mode=RunMode.MULTIRUN,
                 validate_sweep_overrides=False,
-                run_callback=False,
             )
             return cfg.hydra.mode
         except Exception:
@@ -256,7 +255,6 @@ class Hydra:
             overrides=overrides,
             run_mode=RunMode.RUN,
             with_log_configuration=False,
-            run_callback=False,
         )
         HydraConfig.instance().set_config(cfg)
         OmegaConf.set_readonly(cfg.hydra, None)
@@ -484,7 +482,6 @@ class Hydra:
             overrides=overrides,
             run_mode=run_mode,
             with_log_configuration=False,
-            run_callback=False,
         )
         HydraConfig.instance().set_config(cfg)
         cfg = self.get_sanitized_cfg(cfg, cfg_type="hydra")
@@ -564,7 +561,6 @@ class Hydra:
                 overrides=overrides,
                 run_mode=run_mode,
                 with_log_configuration=False,
-                run_callback=False,
             )
         )
         HydraConfig.instance().set_config(cfg)
@@ -645,7 +641,6 @@ class Hydra:
         with_log_configuration: bool = False,
         from_shell: bool = True,
         validate_sweep_overrides: bool = True,
-        run_callback: bool = True,
         activate_config_repository: bool = False,
     ) -> DictConfig:
         """
@@ -655,8 +650,6 @@ class Hydra:
         :param with_log_configuration: True to configure logging subsystem from the loaded config
         :param from_shell: True if the parameters are passed from the shell. used for more helpful error messages
         :param validate_sweep_overrides: True if sweep overrides should be validated
-        :param run_callback: True if the on_compose_config callback should be called, generally should always
-                             be True except for internal use cases
         :param activate_config_repository: True to retain the effective repository on the invocation loader
         :return:
         """
@@ -684,13 +677,6 @@ class Hydra:
             global log
             log = logging.getLogger(__name__)
             self._print_debug_info(config_name, overrides, run_mode)
-        if run_callback:
-            callbacks = Callbacks(cfg, check_cache=False)
-            callbacks.on_compose_config(
-                config=cfg,
-                config_name=config_name,
-                overrides=overrides,
-            )
         return cfg
 
     def _print_plugins_info(
