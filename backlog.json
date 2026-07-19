@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-19",
-  "generated_at": "2026-07-19T10:04:55Z",
+  "generated_at": "2026-07-19T10:14:25Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 176,
+    "open_total": 175,
     "by_category": [
       {
         "category": "Bug",
@@ -14,14 +14,14 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 130,
-        "percentage": 73.9
+        "count": 129,
+        "percentage": 73.7
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 12,
-        "percentage": 6.8
+        "percentage": 6.9
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 168
+        "count": 167
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 153
+        "count": 154
       }
     ]
   },
@@ -819,21 +819,6 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1758"
-    },
-    {
-      "number": 1764,
-      "title": "[ray launcher] fix how ray launcher gets the job return",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-08-12",
-      "updated": "2026-07-15",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1764"
     },
     {
       "number": 1865,
@@ -2989,6 +2974,21 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1463"
+    },
+    {
+      "number": 1767,
+      "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. ",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-08-13",
+      "updated": "2026-07-15",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1767"
     },
     {
       "number": 1781,
@@ -5462,22 +5462,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3290"
     },
     {
-      "number": 1767,
-      "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. ",
-      "category": "Build",
-      "category_emoji": "🏗️",
+      "number": 1764,
+      "title": "[ray launcher] fix how ray launcher gets the job return",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2021-08-13",
+      "created": "2021-08-12",
       "updated": "2026-07-15",
       "labels": [
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1767"
+      "url": "https://github.com/facebookresearch/hydra/issues/1764"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-19T10:14:25Z",
+      "kind": "closed",
+      "issue": 1764,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1764",
+      "title": "[ray launcher] fix how ray launcher gets the job return"
+    },
     {
       "ts": "2026-07-19T10:04:55Z",
       "kind": "closed",
@@ -7056,14 +7063,6 @@
       "issue": 1866,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1866",
       "title": "[Bug] recursive instantiation mutates original config object's interpolations",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1865,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1865",
-      "title": "Instantiation fails when _target_ arg interpolates to another node with _target_ key and object arg",
       "detail": "added \"triage\""
     }
   ]

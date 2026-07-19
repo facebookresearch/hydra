@@ -1,6 +1,7 @@
 {
   "closed_at": {
     "1463": "2026-07-16",
+    "1764": "2026-07-19",
     "1767": "2026-07-19",
     "1781": "2026-07-18",
     "1817": "2026-07-18",
@@ -154,7 +155,7 @@
     "3290": "2026-07-18",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-19T10:04:55Z",
+  "generated_at": "2026-07-19T10:14:25Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -458,18 +459,6 @@
       "status": "not started",
       "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
       "updated_at": "2026-07-15T13:17:27Z"
-    },
-    "1764": {
-      "category": "Enhancement",
-      "created_at": "2021-08-12T21:01:03Z",
-      "labels": [
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[ray launcher] fix how ray launcher gets the job return",
-      "updated_at": "2026-07-15T13:17:26Z"
     },
     "1865": {
       "category": "Bug",
@@ -2500,6 +2489,18 @@
       "status": "done",
       "title": "[Feature Request] Fault tolerance option for Optuna Sweeper",
       "updated_at": "2026-07-15T13:17:32Z"
+    },
+    "1764": {
+      "category": "Enhancement",
+      "created_at": "2021-08-12T21:01:03Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[ray launcher] fix how ray launcher gets the job return",
+      "updated_at": "2026-07-15T13:17:26Z"
     },
     "1767": {
       "category": "Build",
