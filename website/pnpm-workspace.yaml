@@ -51,6 +51,7 @@ overrides:
   webpack: "^5.94"
   webpack-dev-middleware: "^7.4.2"
   webpack-dev-server: "5.2.5"
+  websocket-driver: "0.7.5"
   ws: "8.21.0"
 patchedDependencies:
   gray-matter@4.0.3: patches/gray-matter@4.0.3.patch
