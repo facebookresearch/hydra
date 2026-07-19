@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-19",
-  "generated_at": "2026-07-19T02:36:31Z",
+  "generated_at": "2026-07-19T05:01:57Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 177,
@@ -5415,6 +5415,24 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
+      "number": 3287,
+      "title": "Support OmegaConf 2.4 experimental tuple configuration",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3293,
+          "url": "https://github.com/facebookresearch/hydra/pull/3293"
+        }
+      ],
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3287"
+    },
+    {
       "number": 3288,
       "title": "Development environment retains stale editable plugin dependency metadata",
       "category": "Enhancement",
@@ -5457,24 +5475,6 @@
       "updated": "2026-07-18",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3290"
-    },
-    {
-      "number": 3287,
-      "title": "Support OmegaConf 2.4 experimental tuple configuration",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3293,
-          "url": "https://github.com/facebookresearch/hydra/pull/3293"
-        }
-      ],
-      "created": "2026-07-18",
-      "updated": "2026-07-18",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3287"
     }
   ],
   "updates": [
