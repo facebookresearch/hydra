@@ -213,7 +213,7 @@ jobs:
       - name: Install release-tool dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements/requirements.txt read-version requests
+          pip install -r requirements/requirements.txt packaging read-version requests
 
       - name: Generate parser sources
         run: python setup.py antlr
@@ -263,7 +263,7 @@ jobs:
       - name: Install build dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements/requirements.txt build read-version requests twine
+          pip install -r requirements/requirements.txt build packaging read-version requests twine
 
       - name: Generate parser sources
         run: python setup.py antlr

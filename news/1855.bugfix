@@ -1,1 +1,1 @@
-Allow Defaults List interpolation to reference relocated config groups.
+Allow Defaults List interpolation to reference relocated config groups. Unsupported OmegaConf resolvers in Defaults Lists are no longer accepted.

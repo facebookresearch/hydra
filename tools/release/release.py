@@ -432,6 +432,7 @@ def check_build_artifacts(build_dir_path: Path) -> None:
         venv_path = Path(tmp) / "venv"
         _run_checked([sys.executable, "-m", "venv", str(venv_path)])
         smoke_python = _python_bin(venv_path)
+        _run_checked([str(smoke_python), "-m", "pip", "install", "--upgrade", "pip"])
         _run_checked(
             [
                 str(smoke_python),

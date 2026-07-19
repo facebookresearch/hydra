@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from contextlib import nullcontext
+
 import pytest
 
 from tools.release import release
@@ -177,6 +179,37 @@ def test_dispatch_publish_workflow_uses_json_boolean_input(monkeypatch) -> None:
             '"expected_version": "1.4.0.dev3", "publish": "true", '
             '"only": "hydra_optuna_sweeper"}',
         )
+    ]
+
+
+def test_check_build_artifacts_upgrades_smoke_environment_pip(
+    monkeypatch, tmp_path
+) -> None:
+    wheel = tmp_path / "package.whl"
+    wheel.touch()
+    smoke_dir = tmp_path / "smoke"
+    calls = []
+
+    def fake_run_checked(cmd, cwd=None, stdin=None):
+        calls.append(cmd)
+        return ""
+
+    monkeypatch.setattr(release, "_run_checked", fake_run_checked)
+    monkeypatch.setattr(
+        release.tempfile,
+        "TemporaryDirectory",
+        lambda prefix: nullcontext(str(smoke_dir)),
+    )
+
+    release.check_build_artifacts(tmp_path)
+
+    venv_path = smoke_dir / "venv"
+    smoke_python = release._python_bin(venv_path)
+    assert calls == [
+        [release.sys.executable, "-m", "twine", "check", str(wheel)],
+        [release.sys.executable, "-m", "venv", str(venv_path)],
+        [str(smoke_python), "-m", "pip", "install", "--upgrade", "pip"],
+        [str(smoke_python), "-m", "pip", "install", "--no-deps", str(wheel)],
     ]
 
 
