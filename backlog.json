@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-19",
-  "generated_at": "2026-07-19T15:45:10Z",
+  "generated_at": "2026-07-19T16:10:28Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 171,
@@ -726,10 +726,9 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2021-05-17",
-      "updated": "2026-07-15",
+      "updated": "2026-07-19",
       "labels": [
         "documentation",
-        "triage",
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1622"
@@ -5478,6 +5477,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-19T16:10:28Z",
+      "kind": "label",
+      "issue": 1622,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1622",
+      "title": "keyword documentation for config.yaml",
+      "detail": "removed \"triage\""
+    },
+    {
       "ts": "2026-07-19T15:45:10Z",
       "kind": "closed",
       "issue": 3291,
@@ -7050,14 +7057,6 @@
       "issue": 1890,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1890",
       "title": "HPO config standardization",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1888,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1888",
-      "title": "interpolation fail in compose API",
       "detail": "added \"triage\""
     }
   ]

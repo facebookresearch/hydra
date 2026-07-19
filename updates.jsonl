@@ -468,3 +468,4 @@
 {"ts": "2026-07-19T11:34:17Z", "kind": "label", "issue": 1749, "issue_url": "https://github.com/facebookresearch/hydra/issues/1749", "title": "tests: Use multiline regex search instead of assert_regex_match", "detail": "removed \"triage\""}
 {"ts": "2026-07-19T15:35:01Z", "kind": "closed", "issue": 1636, "issue_url": "https://github.com/facebookresearch/hydra/issues/1636", "title": "Updates to callback doc"}
 {"ts": "2026-07-19T15:45:10Z", "kind": "closed", "issue": 3291, "issue_url": "https://github.com/facebookresearch/hydra/issues/3291", "title": "Remove packaging from Hydra core runtime dependencies"}
+{"ts": "2026-07-19T16:10:28Z", "kind": "label", "issue": 1622, "issue_url": "https://github.com/facebookresearch/hydra/issues/1622", "title": "keyword documentation for config.yaml", "detail": "removed \"triage\""}
