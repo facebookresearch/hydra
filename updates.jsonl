@@ -463,3 +463,4 @@
 {"ts": "2026-07-19T02:36:31Z", "kind": "closed", "issue": 3287, "issue_url": "https://github.com/facebookresearch/hydra/issues/3287", "title": "Support OmegaConf 2.4 experimental tuple configuration"}
 {"ts": "2026-07-19T10:04:55Z", "kind": "closed", "issue": 1767, "issue_url": "https://github.com/facebookresearch/hydra/issues/1767", "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. "}
 {"ts": "2026-07-19T10:14:25Z", "kind": "closed", "issue": 1764, "issue_url": "https://github.com/facebookresearch/hydra/issues/1764", "title": "[ray launcher] fix how ray launcher gets the job return"}
+{"ts": "2026-07-19T10:23:41Z", "kind": "closed", "issue": 1758, "issue_url": "https://github.com/facebookresearch/hydra/issues/1758", "title": "[Feature Request] Recursive config interpolation with custom object resolvers"}
