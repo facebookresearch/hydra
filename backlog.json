@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-19",
-  "generated_at": "2026-07-19T07:45:24Z",
+  "generated_at": "2026-07-19T10:04:55Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 177,
+    "open_total": 176,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 20,
-        "percentage": 11.3
+        "percentage": 11.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 130,
-        "percentage": 73.4
+        "percentage": 73.9
       },
       {
         "category": "Documentation",
@@ -38,8 +38,8 @@
       {
         "category": "Build",
         "emoji": "🏗️",
-        "count": 4,
-        "percentage": 2.3
+        "count": 3,
+        "percentage": 1.7
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 169
+        "count": 168
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 152
+        "count": 153
       }
     ]
   },
@@ -834,21 +834,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1764"
-    },
-    {
-      "number": 1767,
-      "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. ",
-      "category": "Build",
-      "category_emoji": "🏗️",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-08-13",
-      "updated": "2026-07-15",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1767"
     },
     {
       "number": 1865,
@@ -5475,9 +5460,31 @@
       "updated": "2026-07-18",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3290"
+    },
+    {
+      "number": 1767,
+      "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. ",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-08-13",
+      "updated": "2026-07-15",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1767"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-19T10:04:55Z",
+      "kind": "closed",
+      "issue": 1767,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1767",
+      "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. "
+    },
     {
       "ts": "2026-07-19T02:36:31Z",
       "kind": "closed",
@@ -7057,14 +7064,6 @@
       "issue": 1865,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1865",
       "title": "Instantiation fails when _target_ arg interpolates to another node with _target_ key and object arg",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1859,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1859",
-      "title": "SLURM sweep with hydra",
       "detail": "added \"triage\""
     }
   ]
