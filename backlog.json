@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-19",
-  "generated_at": "2026-07-19T15:35:01Z",
+  "generated_at": "2026-07-19T15:45:10Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 172,
+    "open_total": 171,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 20,
-        "percentage": 11.6
+        "percentage": 11.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 127,
-        "percentage": 73.8
+        "percentage": 74.3
       },
       {
         "category": "Documentation",
@@ -27,19 +27,19 @@
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.2
+        "percentage": 5.3
       },
       {
         "category": "Refactor",
         "emoji": "🔧",
-        "count": 2,
-        "percentage": 1.2
+        "count": 1,
+        "percentage": 0.6
       },
       {
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 1.7
+        "percentage": 1.8
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 164
+        "count": 163
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 157
+        "count": 158
       }
     ]
   },
@@ -2872,19 +2872,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3283"
     },
     {
-      "number": 3291,
-      "title": "Remove packaging from Hydra core runtime dependencies",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-18",
-      "updated": "2026-07-18",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3291"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -2923,6 +2910,22 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1463"
+    },
+    {
+      "number": 1636,
+      "title": "Updates to callback doc",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-05-21",
+      "updated": "2026-07-15",
+      "labels": [
+        "documentation",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1636"
     },
     {
       "number": 1753,
@@ -5460,23 +5463,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3290"
     },
     {
-      "number": 1636,
-      "title": "Updates to callback doc",
-      "category": "Documentation",
-      "category_emoji": "📄",
+      "number": 3291,
+      "title": "Remove packaging from Hydra core runtime dependencies",
+      "category": "Refactor",
+      "category_emoji": "🔧",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2021-05-21",
-      "updated": "2026-07-15",
-      "labels": [
-        "documentation",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1636"
+      "created": "2026-07-18",
+      "updated": "2026-07-18",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3291"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-19T15:45:10Z",
+      "kind": "closed",
+      "issue": 3291,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3291",
+      "title": "Remove packaging from Hydra core runtime dependencies"
+    },
     {
       "ts": "2026-07-19T15:35:01Z",
       "kind": "closed",
@@ -7051,14 +7058,6 @@
       "issue": 1888,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1888",
       "title": "interpolation fail in compose API",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1885,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1885",
-      "title": "follow up with shell testing for #1842",
       "detail": "added \"triage\""
     }
   ]

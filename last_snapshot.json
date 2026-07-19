@@ -156,9 +156,10 @@
     "3288": "2026-07-18",
     "3289": "2026-07-18",
     "3290": "2026-07-18",
+    "3291": "2026-07-19",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-19T15:35:01Z",
+  "generated_at": "2026-07-19T15:45:10Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2232,16 +2233,6 @@
       "status": "not started",
       "title": "Reject duplicate override targets during composition",
       "updated_at": "2026-07-17T12:30:14Z"
-    },
-    "3291": {
-      "category": "Refactor",
-      "created_at": "2026-07-18T17:03:51Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Remove packaging from Hydra core runtime dependencies",
-      "updated_at": "2026-07-18T17:03:51Z"
     },
     "385": {
       "category": "Enhancement",
@@ -4434,6 +4425,16 @@
       "status": "done",
       "title": "Remove packaging from Hydra runtime dependencies",
       "updated_at": "2026-07-18T17:03:05Z"
+    },
+    "3291": {
+      "category": "Refactor",
+      "created_at": "2026-07-18T17:03:51Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Remove packaging from Hydra core runtime dependencies",
+      "updated_at": "2026-07-18T17:03:51Z"
     },
     "692": {
       "category": "Enhancement",
