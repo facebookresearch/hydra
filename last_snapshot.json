@@ -1,6 +1,7 @@
 {
   "closed_at": {
     "1463": "2026-07-16",
+    "1753": "2026-07-19",
     "1758": "2026-07-19",
     "1764": "2026-07-19",
     "1767": "2026-07-19",
@@ -156,7 +157,7 @@
     "3290": "2026-07-18",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-19T10:23:41Z",
+  "generated_at": "2026-07-19T10:58:56Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -432,19 +433,6 @@
       "status": "not started",
       "title": "tests: Use multiline regex search instead of assert_regex_match",
       "updated_at": "2026-07-15T13:17:29Z"
-    },
-    "1753": {
-      "category": "Enhancement",
-      "created_at": "2021-08-04T19:17:49Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] Add GCP support in Ray launcher.",
-      "updated_at": "2026-07-15T13:17:28Z"
     },
     "1865": {
       "category": "Bug",
@@ -2475,6 +2463,19 @@
       "status": "done",
       "title": "[Feature Request] Fault tolerance option for Optuna Sweeper",
       "updated_at": "2026-07-15T13:17:32Z"
+    },
+    "1753": {
+      "category": "Enhancement",
+      "created_at": "2021-08-04T19:17:49Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Add GCP support in Ray launcher.",
+      "updated_at": "2026-07-15T13:17:28Z"
     },
     "1758": {
       "category": "Enhancement",

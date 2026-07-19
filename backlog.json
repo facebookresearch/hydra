@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-19",
-  "generated_at": "2026-07-19T10:23:41Z",
+  "generated_at": "2026-07-19T10:58:56Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 174,
+    "open_total": 173,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 20,
-        "percentage": 11.5
+        "percentage": 11.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 128,
-        "percentage": 73.6
+        "count": 127,
+        "percentage": 73.4
       },
       {
         "category": "Documentation",
@@ -33,7 +33,7 @@
         "category": "Refactor",
         "emoji": "🔧",
         "count": 2,
-        "percentage": 1.1
+        "percentage": 1.2
       },
       {
         "category": "Build",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 166
+        "count": 165
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 155
+        "count": 156
       }
     ]
   },
@@ -785,22 +785,6 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1749"
-    },
-    {
-      "number": 1753,
-      "title": "[Feature Request] Add GCP support in Ray launcher.",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-08-04",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1753"
     },
     {
       "number": 1865,
@@ -2956,6 +2940,24 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1463"
+    },
+    {
+      "number": 1758,
+      "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-08-10",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "instantiate_api",
+        "priority_low",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1758"
     },
     {
       "number": 1764,
@@ -5459,25 +5461,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3290"
     },
     {
-      "number": 1758,
-      "title": "[Feature Request] Recursive config interpolation with custom object resolvers",
+      "number": 1753,
+      "title": "[Feature Request] Add GCP support in Ray launcher.",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2021-08-10",
+      "created": "2021-08-04",
       "updated": "2026-07-15",
       "labels": [
         "enhancement",
-        "instantiate_api",
-        "priority_low",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1758"
+      "url": "https://github.com/facebookresearch/hydra/issues/1753"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-19T10:58:56Z",
+      "kind": "closed",
+      "issue": 1753,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1753",
+      "title": "[Feature Request] Add GCP support in Ray launcher."
+    },
     {
       "ts": "2026-07-19T10:23:41Z",
       "kind": "closed",
@@ -7054,14 +7061,6 @@
       "issue": 1872,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1872",
       "title": "[Feature Request] Interpolate cmd options before passing to override_dirname for sweep",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1869,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1869",
-      "title": "Add more examples to the submitit plugin",
       "detail": "added \"triage\""
     }
   ]
