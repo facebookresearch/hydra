@@ -2,6 +2,7 @@
 import builtins
 import math
 import re
+from contextlib import nullcontext
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Union
 
@@ -40,6 +41,11 @@ from hydra.errors import HydraException
 UNQUOTED_SPECIAL = r"/-\+.$%*@?|"  # special characters allowed in unquoted strings
 
 parser = OverridesParser(create_functions())
+
+JSON_STR_DEPRECATION_WARNING = (
+    "json_str(...) is deprecated and will be removed in Hydra 1.5. "
+    "See https://github.com/facebookresearch/hydra/pull/2930#issuecomment-5018616929"
+)
 
 
 def parse_rule(value: str, rule_name: str) -> Any:
@@ -1982,12 +1988,18 @@ def test_cast_conversions(value: Any, expected_value: Any) -> None:
     for field in ("int", "float", "bool", "str", "json_str"):
         cast_str = f"{field}({value})"
         expected = getattr(expected_value, field)
-        if isinstance(expected, RaisesContext):
-            with expected:
-                parser.parse_rule(cast_str, "function")
-        else:
-            result = parser.parse_rule(cast_str, "function")
-            assert eq(result, expected), f"{field} cast result mismatch"
+        warning = (
+            warns(UserWarning, match=re.escape(JSON_STR_DEPRECATION_WARNING))
+            if field == "json_str"
+            else nullcontext()
+        )
+        with warning:
+            if isinstance(expected, RaisesContext):
+                with expected:
+                    parser.parse_rule(cast_str, "function")
+            else:
+                result = parser.parse_rule(cast_str, "function")
+                assert eq(result, expected), f"{field} cast result mismatch"
 
 
 @mark.parametrize(

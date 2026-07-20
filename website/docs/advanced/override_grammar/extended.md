@@ -227,8 +227,7 @@ shuffle([a,b,c]), shuffle(list=[a,b,c])              # shuffled list [a,b,c]
 ```
 
 ## Type casting
-You can cast values and sweeps to `int`, `float`, `bool`, `str` or `json_str`. Note that unlike the
-others, `json_str` will affect the whole container rather than just the values.
+You can cast values and sweeps to `int`, `float`, `bool` or `str`.
 ```python title="Example"
 int(3.14)                  # 3 (int)
 int(value=3.14)            # 3 (int)
@@ -238,7 +237,6 @@ bool(1)                    # true (bool)
 float(range(1,10))         # range(1.0,10.0)
 str([1,2,3])               # ['1','2','3']
 str({a:10})                # {a:'10'}
-json_str({a:10})           # '{"a":10}'
 ```
 
 Below are pseudo code snippets that illustrates the differences between Python's casting and Hydra's casting.

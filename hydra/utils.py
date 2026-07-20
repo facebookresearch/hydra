@@ -8,6 +8,7 @@ from typing import Any, Callable
 
 import hydra._internal.instantiate._instantiate2
 import hydra.types
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.utils import _locate
 from hydra.core.hydra_config import HydraConfig
 
@@ -122,31 +123,34 @@ def to_absolute_path(path: str) -> str:
     return str(ret)
 
 
-def to_hydra_override_value_str(obj: Any) -> str:
-    """
-    Basic conversion of an object to a string that can be used in a Hydra override.
-    Does not explicitly support all types but should work for basic structures.
-
-    >>> obj = {"foo": 1, "bar": "baz"}
-    >>> compose(config_name="config", overrides=[f"a={to_hydra_override_value_str(obj)}", "x=1"])
-
-    :param obj: object to convert
-    :return: string representation of the object that can be used in a Hydra override
-    """
+def _to_hydra_override_value_str(obj: Any) -> str:
     if isinstance(obj, dict):
         return (
             "{"
             + ", ".join(
-                f"{key}: {to_hydra_override_value_str(value)}"
+                f"{key}: {_to_hydra_override_value_str(value)}"
                 for key, value in obj.items()
             )
             + "}"
         )
     elif isinstance(obj, list):
         return (
-            "[" + ", ".join([to_hydra_override_value_str(value) for value in obj]) + "]"
+            "["
+            + ", ".join([_to_hydra_override_value_str(value) for value in obj])
+            + "]"
         )
     elif isinstance(obj, str):
         new_str = obj.replace('\\"', '\\\\"').replace('"', '\\"')
         return f'"{new_str}"'
     return json.dumps(obj)
+
+
+def to_hydra_override_value_str(obj: Any) -> str:
+    """Deprecated basic conversion of an object to a Hydra override value string."""
+    deprecation_warning(
+        "to_hydra_override_value_str() is deprecated and will be removed in "
+        "Hydra 1.5. See "
+        "https://github.com/facebookresearch/hydra/pull/2930#issuecomment-5018616929",
+        stacklevel=2,
+    )
+    return _to_hydra_override_value_str(obj)
