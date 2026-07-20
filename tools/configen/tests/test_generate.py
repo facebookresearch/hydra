@@ -1,6 +1,4 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import os
-import sys
 from difflib import unified_diff
 from pathlib import Path
 from textwrap import dedent
@@ -282,20 +280,15 @@ def test_instantiate_classes(
     assert obj == expected
 
 
-def test_example_application(monkeypatch: Any, tmpdir: Path):
-    monkeypatch.chdir("example")
+def test_example_application(tmpdir: Path):
     cmd = [
-        "my_app.py",
+        "-m",
+        "example.my_app",
         f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
         "user.name=Batman",
     ]
-    python_path = (
-        f"%PYTHONPATH%;{';'.join(sys.path)}"
-        if sys.platform.startswith("win")
-        else f"$PYTHONPATH:{':'.join(sys.path)}"
-    )
-    result, _err = run_python_script(cmd, dict(os.environ, PYTHONPATH=python_path))
+    result, _err = run_python_script(cmd)
     assert result == dedent("""\
     User: name=Batman, age=7
     Admin: name=Lex Luthor, age=10, private_key=deadbeef""")
