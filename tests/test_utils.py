@@ -96,7 +96,14 @@ def test_to_absolute_path_without_hydra(
 def test_to_hydra_override_value_str_roundtrip(
     hydra_restore_singletons: Any, obj: Any
 ) -> None:
-    override_str = utils.to_hydra_override_value_str(obj)
+    msg = (
+        "to_hydra_override_value_str() is deprecated and will be removed in "
+        "Hydra 1.5. See "
+        "https://github.com/facebookresearch/hydra/pull/2930#issuecomment-5018616929"
+    )
+    with warns(UserWarning, match=re.escape(msg)) as records:
+        override_str = utils.to_hydra_override_value_str(obj)
+    assert len(records) == 1
     override_params = f"++ov={override_str}"
     o = OverridesParser.create().parse_override(override_params)
     assert o.value() == obj

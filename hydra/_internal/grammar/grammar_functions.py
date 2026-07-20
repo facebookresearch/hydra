@@ -6,6 +6,7 @@ import random
 from copy import copy
 from typing import Any, Callable, Dict, List, Optional, Union
 
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.grammar.utils import is_type_matching
 from hydra.core.override_parser.types import (
     ChoiceSweep,
@@ -158,6 +159,11 @@ def extract_text(*args: Any, value: Optional[Any] = None) -> Any:
 
 
 def cast_json_str(*args: Any, value: Optional[Any] = None) -> Any:
+    deprecation_warning(
+        "json_str(...) is deprecated and will be removed in Hydra 1.5. "
+        "See https://github.com/facebookresearch/hydra/pull/2930#issuecomment-5018616929",
+        stacklevel=2,
+    )
     value = _normalize_cast_value(*args, value=value)
     json_val = value
     if isinstance(value, QuotedString):
