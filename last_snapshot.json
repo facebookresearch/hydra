@@ -160,7 +160,7 @@
     "3296": "2026-07-19",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-20T06:56:57Z",
+  "generated_at": "2026-07-20T08:04:16Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1977,11 +1977,13 @@
         "list composition",
         "maintenance"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3298"
+      ],
       "state": "OPEN",
-      "status": "not started",
-      "title": "Revert extend_list before Hydra 1.4.0",
-      "updated_at": "2026-06-07T19:12:43Z"
+      "status": "in progress",
+      "title": "Deprecate unreleased extend_list before Hydra 1.4.0",
+      "updated_at": "2026-07-20T07:24:42Z"
     },
     "3201": {
       "category": "Enhancement",

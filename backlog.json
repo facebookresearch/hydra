@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-20",
-  "generated_at": "2026-07-20T06:56:57Z",
+  "generated_at": "2026-07-20T08:04:16Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 171,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 2
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 163
+        "count": 162
       },
       {
         "status": "done",
@@ -91,6 +91,27 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 3200,
+      "title": "Deprecate unreleased extend_list before Hydra 1.4.0",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3298,
+          "url": "https://github.com/facebookresearch/hydra/pull/3298"
+        }
+      ],
+      "created": "2026-06-07",
+      "updated": "2026-07-20",
+      "labels": [
+        "maintenance",
+        "list composition"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3200"
     },
     {
       "number": 845,
@@ -2577,22 +2598,6 @@
       "updated": "2026-06-26",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3189"
-    },
-    {
-      "number": 3200,
-      "title": "Revert extend_list before Hydra 1.4.0",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-07",
-      "updated": "2026-06-07",
-      "labels": [
-        "maintenance",
-        "list composition"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3200"
     },
     {
       "number": 3201,
@@ -5492,6 +5497,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-20T08:04:16Z",
+      "kind": "pr",
+      "issue": 3200,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3200",
+      "title": "Deprecate unreleased extend_list before Hydra 1.4.0",
+      "detail": "linked #3298"
+    },
+    {
+      "ts": "2026-07-20T08:04:16Z",
+      "kind": "status",
+      "issue": 3200,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3200",
+      "title": "Deprecate unreleased extend_list before Hydra 1.4.0",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3298,
+        "url": "https://github.com/facebookresearch/hydra/pull/3298"
+      }
+    },
+    {
       "ts": "2026-07-19T18:53:51Z",
       "kind": "closed",
       "issue": 3296,
@@ -7054,22 +7079,6 @@
       "issue": 1901,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1901",
       "title": "[Feature Request] Derive structured configuration from class constructor ",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1899,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1899",
-      "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1898,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1898",
-      "title": "[Bug] Submitit has optional parameter tasks_per_node set",
       "detail": "added \"triage\""
     }
   ]

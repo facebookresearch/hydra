@@ -471,3 +471,5 @@
 {"ts": "2026-07-19T16:10:28Z", "kind": "label", "issue": 1622, "issue_url": "https://github.com/facebookresearch/hydra/issues/1622", "title": "keyword documentation for config.yaml", "detail": "removed \"triage\""}
 {"ts": "2026-07-19T18:50:26Z", "kind": "new", "issue": 3296, "issue_url": "https://github.com/facebookresearch/hydra/issues/3296", "title": "Better RDP login detection"}
 {"ts": "2026-07-19T18:53:51Z", "kind": "closed", "issue": 3296, "issue_url": "https://github.com/facebookresearch/hydra/issues/3296", "title": "Better RDP login detection"}
+{"ts": "2026-07-20T08:04:16Z", "kind": "status", "issue": 3200, "issue_url": "https://github.com/facebookresearch/hydra/issues/3200", "title": "Deprecate unreleased extend_list before Hydra 1.4.0", "detail": "not started → in progress", "pr": {"number": 3298, "url": "https://github.com/facebookresearch/hydra/pull/3298"}}
+{"ts": "2026-07-20T08:04:16Z", "kind": "pr", "issue": 3200, "issue_url": "https://github.com/facebookresearch/hydra/issues/3200", "title": "Deprecate unreleased extend_list before Hydra 1.4.0", "detail": "linked #3298"}
