@@ -41,6 +41,11 @@ UNQUOTED_SPECIAL = r"/-\+.$%*@?|"  # special characters allowed in unquoted stri
 
 parser = OverridesParser(create_functions())
 
+EXTEND_LIST_DEPRECATION_WARNING = (
+    "extend_list(...) is deprecated and will be removed in Hydra 1.5. "
+    "See https://github.com/facebookresearch/hydra/issues/3200"
+)
+
 
 def parse_rule(value: str, rule_name: str) -> Any:
     return parser.parse_rule(value, rule_name)
@@ -1048,14 +1053,15 @@ def test_list_extend_override(
     expected_key: str,
     expected_value: Any,
 ) -> None:
-    test_override(
-        "",
-        value,
-        OverrideType.EXTEND_LIST,
-        expected_key,
-        expected_value,
-        ValueType.ELEMENT,
-    )
+    with warns(UserWarning, match=re.escape(EXTEND_LIST_DEPRECATION_WARNING)):
+        test_override(
+            "",
+            value,
+            OverrideType.EXTEND_LIST,
+            expected_key,
+            expected_value,
+            ValueType.ELEMENT,
+        )
 
 
 def test_deprecated_name_package(hydra_restore_singletons: Any) -> None:

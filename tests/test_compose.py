@@ -33,6 +33,11 @@ from hydra.types import RunMode
 
 chdir_hydra_root()
 
+EXTEND_LIST_DEPRECATION_WARNING = (
+    "extend_list(...) is deprecated and will be removed in Hydra 1.5. "
+    "See https://github.com/facebookresearch/hydra/issues/3200"
+)
+
 
 @fixture
 def initialize_hydra(config_path: Optional[str]) -> Any:
@@ -493,8 +498,12 @@ def test_extending_list(
     ConfigStore.instance().store(name="config", node=Config)
 
     if isinstance(expected, dict):
-        cfg = compose(config_name="config", overrides=overrides)
+        with warns(
+            UserWarning, match=re.escape(EXTEND_LIST_DEPRECATION_WARNING)
+        ) as records:
+            cfg = compose(config_name="config", overrides=overrides)
         assert cfg == expected
+        assert len(records) == len(overrides)
     else:
         with expected:
             compose(config_name="config", overrides=overrides)
