@@ -6,7 +6,7 @@ from typing import Any, List
 
 from pytest import mark, param, raises
 
-from hydra._internal.config_repository import ConfigRepository
+from hydra._internal.config_repository import CachingConfigRepository, ConfigRepository
 from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra._internal.core_plugins import importlib_resources_config_source
 from hydra._internal.core_plugins.file_config_source import FileConfigSource
@@ -14,6 +14,7 @@ from hydra._internal.core_plugins.importlib_resources_config_source import (
     ImportlibResourcesConfigSource,
 )
 from hydra._internal.core_plugins.structured_config_source import StructuredConfigSource
+from hydra.core.config_store import ConfigStore
 from hydra.core.default_element import GroupDefault, InputDefault
 from hydra.core.plugins import Plugins
 from hydra.core.singleton import Singleton
@@ -57,6 +58,24 @@ def create_config_search_path(path: str) -> ConfigSearchPathImpl:
     csp = ConfigSearchPathImpl()
     csp.append(provider="test", path=path)
     return csp
+
+
+def test_caching_repository_uses_current_config_store(
+    hydra_restore_singletons: Any,
+) -> None:
+    Plugins.instance()
+    repository = CachingConfigRepository(
+        ConfigRepository(config_search_path=create_config_search_path("structured://"))
+    )
+
+    ConfigStore.instance().store(
+        name="registered_after_repository_copy", node={"value": 10}
+    )
+
+    assert repository.config_exists("registered_after_repository_copy.yaml")
+    result = repository.load_config("registered_after_repository_copy.yaml")
+    assert result is not None
+    assert result.config == {"value": 10}
 
 
 @mark.parametrize(
