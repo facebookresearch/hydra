@@ -134,46 +134,6 @@ tag(log,interval(0,1))          # 1.0 <= x < 1.0, tags=[log]
 tag(foo,bar,interval(0,1))      # 1.0 <= x < 1.0, tags=[foo,bar]
 ```
 
-## Extending lists
-
-### extend_list
-```python title="Signature"
-def extend_list(*args: Any) -> ListExtensionOverrideValue:
-    """
-    Extends an existing list in the config with the given values.
-    """
-```
-
-<div className="row">
-<div className="col col--6">
-
-```yaml title="Input config"
-tags:
-- database
-- log
-```
-
-</div>
-
-<div className="col  col--6">
-
-
-```yaml title="tag=extend_list(extended, experimental)"
-tags:
-- database
-- log
-- extended
-- experimental
-```
-
-</div>
-</div>
-
-Note that this cannot be used in conjunction with appending or removing config value. The following usages are invalid:
-* `+list_key=extend_list(val1, val2)`
-* `++list_key=extend_listval1, val2)`
-* `~list_key=extend_list(val1, val2)`
-
 ## Reordering lists and sweeps
 
 ### sort

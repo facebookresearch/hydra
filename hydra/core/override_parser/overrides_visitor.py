@@ -11,6 +11,7 @@ from omegaconf.vendor.antlr4 import (  # type: ignore[attr-defined]
 from omegaconf.vendor.antlr4.error.ErrorListener import ErrorListener
 from omegaconf.vendor.antlr4.tree.Tree import TerminalNodeImpl
 
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.grammar.functions import FunctionCall, Functions
 from hydra._internal.grammar.utils import _ESC_QUOTED_STR
 from hydra.core.override_parser.types import (
@@ -196,6 +197,12 @@ class HydraOverrideVisitor(OverrideParserVisitor):
                             raise HydraException(
                                 "Trying to use override symbols when extending a list"
                             )
+                        deprecation_warning(
+                            "extend_list(...) is deprecated and will be removed in "
+                            "Hydra 1.5. See "
+                            "https://github.com/facebookresearch/hydra/issues/3200",
+                            stacklevel=2,
+                        )
                         override_type = OverrideType.EXTEND_LIST
                         value = value.values
 

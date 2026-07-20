@@ -441,6 +441,7 @@ def glob(
 
 def extend_list(*args: Any) -> ListExtensionOverrideValue:
     """
-    Extends an existing list in the config with the given values.
+    Deprecated in Hydra 1.4 and scheduled for removal in Hydra 1.5.
+    See https://github.com/facebookresearch/hydra/issues/3200.
     """
     return ListExtensionOverrideValue(values=list(args))
