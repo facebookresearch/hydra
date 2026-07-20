@@ -1,4 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+"""Legacy Ray AWS tests disabled from automatic pytest collection.
+
+Hydra no longer has the AWS test infrastructure required to run these tests.
+"""
+
 import logging
 import os
 import random
