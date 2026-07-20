@@ -142,6 +142,7 @@
     "3188": "2026-06-26",
     "3192": "2026-06-07",
     "3195": "2026-05-30",
+    "3200": "2026-07-20",
     "3207": "2026-06-11",
     "3210": "2026-07-16",
     "3213": "2026-06-17",
@@ -160,7 +161,7 @@
     "3296": "2026-07-19",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-20T08:04:16Z",
+  "generated_at": "2026-07-20T08:22:31Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1969,21 +1970,6 @@
       "status": "not started",
       "title": "Feature request: support env files as first-class Hydra inputs",
       "updated_at": "2026-06-26T10:31:52Z"
-    },
-    "3200": {
-      "category": "Enhancement",
-      "created_at": "2026-06-07T19:12:43Z",
-      "labels": [
-        "list composition",
-        "maintenance"
-      ],
-      "pr_numbers": [
-        "3298"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "Deprecate unreleased extend_list before Hydra 1.4.0",
-      "updated_at": "2026-07-20T07:24:42Z"
     },
     "3201": {
       "category": "Enhancement",
@@ -4254,6 +4240,21 @@
       "status": "done",
       "title": "Add the ability to pass types or classes through a configuration file",
       "updated_at": "2026-05-29T13:22:48Z"
+    },
+    "3200": {
+      "category": "Enhancement",
+      "created_at": "2026-06-07T19:12:43Z",
+      "labels": [
+        "list composition",
+        "maintenance"
+      ],
+      "pr_numbers": [
+        "3298"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Deprecate unreleased extend_list before Hydra 1.4.0",
+      "updated_at": "2026-07-20T07:24:42Z"
     },
     "3207": {
       "category": "Build",

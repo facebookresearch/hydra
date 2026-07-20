@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-20",
-  "generated_at": "2026-07-20T08:04:16Z",
+  "generated_at": "2026-07-20T08:22:31Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 171,
+    "open_total": 170,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 20,
-        "percentage": 11.7
+        "percentage": 11.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 127,
-        "percentage": 74.3
+        "count": 126,
+        "percentage": 74.1
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 11,
-        "percentage": 6.4
+        "percentage": 6.5
       },
       {
         "category": "Question",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 1
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 159
+        "count": 160
       }
     ]
   },
@@ -91,27 +91,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 3200,
-      "title": "Deprecate unreleased extend_list before Hydra 1.4.0",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3298,
-          "url": "https://github.com/facebookresearch/hydra/pull/3298"
-        }
-      ],
-      "created": "2026-06-07",
-      "updated": "2026-07-20",
-      "labels": [
-        "maintenance",
-        "list composition"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3200"
     },
     {
       "number": 845,
@@ -5493,9 +5472,37 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3296"
+    },
+    {
+      "number": 3200,
+      "title": "Deprecate unreleased extend_list before Hydra 1.4.0",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3298,
+          "url": "https://github.com/facebookresearch/hydra/pull/3298"
+        }
+      ],
+      "created": "2026-06-07",
+      "updated": "2026-07-20",
+      "labels": [
+        "list composition",
+        "maintenance"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3200"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-20T08:22:31Z",
+      "kind": "closed",
+      "issue": 3200,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3200",
+      "title": "Deprecate unreleased extend_list before Hydra 1.4.0"
+    },
     {
       "ts": "2026-07-20T08:04:16Z",
       "kind": "pr",
@@ -7071,14 +7078,6 @@
       "issue": 1913,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1913",
       "title": "[Feature Request] Mixing `_global_` / `_here_` / `_package_`",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1901,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1901",
-      "title": "[Feature Request] Derive structured configuration from class constructor ",
       "detail": "added \"triage\""
     }
   ]
