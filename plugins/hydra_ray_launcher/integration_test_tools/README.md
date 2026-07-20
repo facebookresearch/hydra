@@ -16,6 +16,7 @@ ec2.Image(id='ami-0d65d5647e065a180') current state pending
 Sometimes it could take hours for a new AMI to be created. Proceed to the next step once the 
 AMI becomes available.
 
-- Update the `AWS_RAY_AMI` env variable in `tests/test_ray_aws_launcher.py`
+- Update the `AWS_RAY_AMI` env variable in
+  `tests/ray_aws_launcher_tests_disabled.py`.
 - Run the test locally and debug if needed.
 - Create a PR and make sure all CI pass!
