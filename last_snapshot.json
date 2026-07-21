@@ -161,7 +161,7 @@
     "3296": "2026-07-19",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-20T16:02:54Z",
+  "generated_at": "2026-07-21T06:26:07Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2048,9 +2048,11 @@
         "enhancement",
         "instantiate_api"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3302"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "Evaluate opt-out from eager resolution in instantiate",
       "updated_at": "2026-06-26T08:18:10Z"
     },

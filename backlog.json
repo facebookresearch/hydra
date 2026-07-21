@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-07-20",
-  "generated_at": "2026-07-20T16:02:54Z",
+  "generated_on": "2026-07-21",
+  "generated_at": "2026-07-21T06:26:07Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 170,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 2
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 162
+        "count": 161
       },
       {
         "status": "done",
@@ -91,6 +91,27 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
+    },
+    {
+      "number": 3216,
+      "title": "Evaluate opt-out from eager resolution in instantiate",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3302,
+          "url": "https://github.com/facebookresearch/hydra/pull/3302"
+        }
+      ],
+      "created": "2026-06-19",
+      "updated": "2026-06-26",
+      "labels": [
+        "enhancement",
+        "instantiate_api"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3216"
     },
     {
       "number": 845,
@@ -2627,22 +2648,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3206"
-    },
-    {
-      "number": 3216,
-      "title": "Evaluate opt-out from eager resolution in instantiate",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-19",
-      "updated": "2026-06-26",
-      "labels": [
-        "enhancement",
-        "instantiate_api"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3216"
     },
     {
       "number": 3220,
@@ -5497,6 +5502,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-21T06:26:07Z",
+      "kind": "pr",
+      "issue": 3216,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3216",
+      "title": "Evaluate opt-out from eager resolution in instantiate",
+      "detail": "linked #3302"
+    },
+    {
+      "ts": "2026-07-21T06:26:07Z",
+      "kind": "status",
+      "issue": 3216,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3216",
+      "title": "Evaluate opt-out from eager resolution in instantiate",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3302,
+        "url": "https://github.com/facebookresearch/hydra/pull/3302"
+      }
+    },
+    {
       "ts": "2026-07-20T08:22:31Z",
       "kind": "closed",
       "issue": 3200,
@@ -7062,22 +7087,6 @@
       "issue": 1923,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1923",
       "title": "[Feature Request] Document how configs typing validation works",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1918,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1918",
-      "title": "sweep parameters in a paired manner",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1913,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1913",
-      "title": "[Feature Request] Mixing `_global_` / `_here_` / `_package_`",
       "detail": "added \"triage\""
     }
   ]
