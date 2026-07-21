@@ -109,6 +109,32 @@ def test_partial_failure(
     assert "ZeroDivisionError: division by zero" in log_content
 
 
+def test_multiple_failures_log_to_own_job_files(
+    tmpdir: Any,
+) -> None:
+    cmd = [
+        sys.executable,
+        "tests/test_apps/app_can_fail/my_app.py",
+        "--multirun",
+        "+divisor=0,1,x",
+        f'hydra.run.dir="{str(tmpdir)}"',
+        f'hydra.sweep.dir="{str(tmpdir)}"',
+        "hydra.job.chdir=True",
+    ]
+    run_process(cmd=cmd, print_error=False, raise_exception=False)
+
+    succeeded_log = (tmpdir / "1" / "my_app.log").read()
+    assert "Job failed" not in succeeded_log
+
+    zero_division_log = (tmpdir / "0" / "my_app.log").read()
+    assert "Job failed" in zero_division_log
+    assert "ZeroDivisionError: division by zero" in zero_division_log
+
+    type_error_log = (tmpdir / "2" / "my_app.log").read()
+    assert "Job failed" in type_error_log
+    assert "TypeError" in type_error_log
+
+
 def test_glob_uses_primary_config_searchpath(tmpdir: Any) -> None:
     cmd = [
         sys.executable,
