@@ -13,8 +13,8 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.37158d48.css">
-<script src="/assets/js/runtime~main.5fb2bec2.js" defer="defer"></script>
-<script src="/assets/js/main.882b1f7f.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.7a5b7176.js" defer="defer"></script>
+<script src="/assets/js/main.f614ae09.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -58,6 +58,16 @@ preserve legacy all-target behavior, use <code>UNSAFE_ALLOW_ALL_TARGETS</code>:<
 <div class="language-python codeBlockContainer_amAr theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_Ie75"><pre tabindex="0" class="prism-code language-python codeBlock_O12j thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_fJnv"><div class="token-line" style="color:#bfc7d5"><span class="token keyword" style="font-style:italic">from</span><span class="token plain"> hydra</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token plain">utils </span><span class="token keyword" style="font-style:italic">import</span><span class="token plain"> UNSAFE_ALLOW_ALL_TARGETS</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"> instantiate</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">component </span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain"> instantiate</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    cfg</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token plain">component</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    _target_whitelist_</span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain">UNSAFE_ALLOW_ALL_TARGETS</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain"></span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><br></div></code></pre></div></div>
 <p><strong>Named arguments</strong> : Config fields (except reserved fields like <code>_target_</code>) are passed as named arguments to the target.
 Named arguments in the config can be overridden by passing named argument with the same name in the <code>instantiate()</code> call-site.</p>
+<p>Call-site arguments are applied separately from the input configuration. They
+replace the corresponding arguments passed to the target without modifying the
+input configuration. They therefore do not affect interpolation resolution or
+Structured Config coercion in the input configuration. Configuration values are
+resolved lazily as instantiation proceeds instead of resolving and copying the
+full configuration tree up front. This avoids processing unrelated configuration
+values and allows runtime state established by an earlier target to be used
+while resolving a later argument.</p>
+<p>See the <a class="" href="/docs/upgrades/1.3_to_1.4/instantiate_resolution/">Hydra 1.4 upgrade guide</a>
+for the compatibility impact and an example.</p>
 <p><strong>Positional arguments</strong> : The config may contain a <code>_args_</code> field representing positional arguments to pass to the target.
 The positional arguments can be overridden together by passing positional arguments in the <code>instantiate()</code> call-site.</p>
 <h3 class="anchor anchorTargetStickyNavbar_AKxV" id="simple-usage">Simple usage<a href="#simple-usage" class="hash-link" aria-label="Direct link to Simple usage" title="Direct link to Simple usage" translate="no">​</a></h3>
