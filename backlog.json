@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-21",
-  "generated_at": "2026-07-21T06:54:55Z",
+  "generated_at": "2026-07-21T07:51:16Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 169,
@@ -5251,6 +5251,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3213"
     },
     {
+      "number": 3216,
+      "title": "Evaluate opt-out from eager resolution in instantiate",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3302,
+          "url": "https://github.com/facebookresearch/hydra/pull/3302"
+        }
+      ],
+      "created": "2026-06-19",
+      "updated": "2026-06-26",
+      "labels": [
+        "enhancement",
+        "instantiate_api"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3216"
+    },
+    {
       "number": 3223,
       "title": "Prevent duplicate-load defaults-list interpolation workaround",
       "category": "Bug",
@@ -5478,27 +5499,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3296"
-    },
-    {
-      "number": 3216,
-      "title": "Evaluate opt-out from eager resolution in instantiate",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3302,
-          "url": "https://github.com/facebookresearch/hydra/pull/3302"
-        }
-      ],
-      "created": "2026-06-19",
-      "updated": "2026-06-26",
-      "labels": [
-        "enhancement",
-        "instantiate_api"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3216"
     }
   ],
   "updates": [
