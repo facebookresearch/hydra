@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-21",
-  "generated_at": "2026-07-21T06:26:07Z",
+  "generated_at": "2026-07-21T06:38:46Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 170,
@@ -377,18 +377,19 @@
     },
     {
       "number": 802,
-      "title": "Improving the test coverage in Hydra",
+      "title": "Improve Hydra test coverage to 100%",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-07-21",
-      "updated": "2026-07-15",
+      "updated": "2026-07-21",
       "labels": [
         "help wanted",
         "maintenance",
-        "triage"
+        "tests",
+        "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/802"
     },
@@ -5502,6 +5503,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-21T06:38:46Z",
+      "kind": "label",
+      "issue": 802,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/802",
+      "title": "Improve Hydra test coverage to 100%",
+      "detail": "added \"priority_low\", \"tests\"; removed \"triage\""
+    },
+    {
       "ts": "2026-07-21T06:26:07Z",
       "kind": "pr",
       "issue": 3216,
@@ -7079,14 +7088,6 @@
       "issue": 1928,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1928",
       "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\"",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1923,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1923",
-      "title": "[Feature Request] Document how configs typing validation works",
       "detail": "added \"triage\""
     }
   ]

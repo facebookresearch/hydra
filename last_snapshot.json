@@ -161,7 +161,7 @@
     "3296": "2026-07-19",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-21T06:26:07Z",
+  "generated_at": "2026-07-21T06:38:46Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2325,13 +2325,14 @@
       "labels": [
         "help wanted",
         "maintenance",
-        "triage"
+        "priority_low",
+        "tests"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
-      "title": "Improving the test coverage in Hydra",
-      "updated_at": "2026-07-15T13:17:41Z"
+      "title": "Improve Hydra test coverage to 100%",
+      "updated_at": "2026-07-21T06:37:13Z"
     },
     "841": {
       "category": "Enhancement",
