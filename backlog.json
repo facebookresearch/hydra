@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-21",
-  "generated_at": "2026-07-21T06:38:46Z",
+  "generated_at": "2026-07-21T06:54:55Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 170,
+    "open_total": 169,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 126,
-        "percentage": 74.1
+        "count": 125,
+        "percentage": 74.0
       },
       {
         "category": "Documentation",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 1
       },
       {
         "status": "community PR",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 160
+        "count": 161
       }
     ]
   },
@@ -91,27 +91,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
-    {
-      "number": 3216,
-      "title": "Evaluate opt-out from eager resolution in instantiate",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3302,
-          "url": "https://github.com/facebookresearch/hydra/pull/3302"
-        }
-      ],
-      "created": "2026-06-19",
-      "updated": "2026-06-26",
-      "labels": [
-        "enhancement",
-        "instantiate_api"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3216"
     },
     {
       "number": 845,
@@ -5499,9 +5478,37 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3296"
+    },
+    {
+      "number": 3216,
+      "title": "Evaluate opt-out from eager resolution in instantiate",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3302,
+          "url": "https://github.com/facebookresearch/hydra/pull/3302"
+        }
+      ],
+      "created": "2026-06-19",
+      "updated": "2026-06-26",
+      "labels": [
+        "enhancement",
+        "instantiate_api"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3216"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-21T06:54:55Z",
+      "kind": "closed",
+      "issue": 3216,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3216",
+      "title": "Evaluate opt-out from eager resolution in instantiate"
+    },
     {
       "ts": "2026-07-21T06:38:46Z",
       "kind": "label",
@@ -7080,14 +7087,6 @@
       "issue": 1933,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1933",
       "title": "[Bug] Selecting multiple configs from a group should allow selecting none",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1928,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1928",
-      "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\"",
       "detail": "added \"triage\""
     }
   ]

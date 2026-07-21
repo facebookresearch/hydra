@@ -146,6 +146,7 @@
     "3207": "2026-06-11",
     "3210": "2026-07-16",
     "3213": "2026-06-17",
+    "3216": "2026-07-21",
     "3223": "2026-06-20",
     "3228": "2026-06-22",
     "3231": "2026-06-23",
@@ -161,7 +162,7 @@
     "3296": "2026-07-19",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-21T06:38:46Z",
+  "generated_at": "2026-07-21T06:54:55Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2040,21 +2041,6 @@
       "status": "community PR",
       "title": "Log multirun job failures in per-job logs",
       "updated_at": "2026-06-19T05:31:01Z"
-    },
-    "3216": {
-      "category": "Enhancement",
-      "created_at": "2026-06-19T06:45:36Z",
-      "labels": [
-        "enhancement",
-        "instantiate_api"
-      ],
-      "pr_numbers": [
-        "3302"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "Evaluate opt-out from eager resolution in instantiate",
-      "updated_at": "2026-06-26T08:18:10Z"
     },
     "3220": {
       "category": "Enhancement",
@@ -4290,6 +4276,21 @@
       "status": "done",
       "title": "[Feature Request] Allow the config path in initialize to be absolute",
       "updated_at": "2026-06-17T12:15:42Z"
+    },
+    "3216": {
+      "category": "Enhancement",
+      "created_at": "2026-06-19T06:45:36Z",
+      "labels": [
+        "enhancement",
+        "instantiate_api"
+      ],
+      "pr_numbers": [
+        "3302"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Evaluate opt-out from eager resolution in instantiate",
+      "updated_at": "2026-06-26T08:18:10Z"
     },
     "3223": {
       "category": "Bug",
