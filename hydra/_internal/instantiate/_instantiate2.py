@@ -7,9 +7,9 @@ import os
 from contextvars import ContextVar
 from enum import Enum
 from textwrap import dedent
-from typing import Any, Callable, Dict, List, Sequence, Tuple, Union, cast
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union, cast
 
-from omegaconf import AnyNode, OmegaConf, SCMode
+from omegaconf import AnyNode, DictConfig, OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
 
 from hydra._internal.deprecation_warning import deprecation_warning
@@ -98,6 +98,7 @@ class _UnsafeAllowAllTargets:
 
 UNSAFE_ALLOW_ALL_TARGETS = _UnsafeAllowAllTargets()
 NormalizedTargetWhitelist = Union[Tuple[str, ...], _UnsafeAllowAllTargets, None]
+ConfigOverlay = Union[Dict[str, Any], DictConfig]
 _TARGET_WHITELIST_CONTEXT: ContextVar[NormalizedTargetWhitelist] = ContextVar(
     "hydra_instantiate_target_whitelist", default=None
 )
@@ -308,6 +309,10 @@ def _extract_pos_args(input_args: Any, kwargs: Any) -> Tuple[Any, Any]:
     return output_args, kwargs
 
 
+def _with_full_key(message: str, full_key: str) -> str:
+    return f"{message}\nfull_key: {full_key}" if full_key else message
+
+
 def _call_target(
     _target_: Callable[..., Any],
     _partial_: bool,
@@ -318,44 +323,28 @@ def _call_target(
     """Call target (type) with args and kwargs."""
     try:
         args, kwargs = _extract_pos_args(args, kwargs)
-        # detaching configs from parent.
-        # At this time, everything is resolved and the parent link can cause
-        # issues when serializing objects in some scenarios.
-        for arg in args:
-            if OmegaConf.is_config(arg):
-                arg._set_parent(None)
-        for v in kwargs.values():
-            if OmegaConf.is_config(v):
-                v._set_parent(None)
+        args = tuple(_prepare_call_argument(arg) for arg in args)
+        kwargs = {key: _prepare_call_argument(value) for key, value in kwargs.items()}
     except Exception as e:
         msg = (
             f"Error in collecting args and kwargs for '{_convert_target_to_string(_target_)}':"
             + f"\n{repr(e)}"
         )
-        if full_key:
-            msg += f"\nfull_key: {full_key}"
+        raise InstantiationException(_with_full_key(msg, full_key)) from e
 
-        raise InstantiationException(msg) from e
-
-    if _partial_:
-        try:
+    try:
+        if _partial_:
             return functools.partial(_target_, *args, **kwargs)
-        except Exception as e:
+        return _target_(*args, **kwargs)
+    except Exception as e:
+        if _partial_:
             msg = (
                 f"Error in creating partial({_convert_target_to_string(_target_)}, ...) object:"
                 + f"\n{repr(e)}"
             )
-            if full_key:
-                msg += f"\nfull_key: {full_key}"
-            raise InstantiationException(msg) from e
-    else:
-        try:
-            return _target_(*args, **kwargs)
-        except Exception as e:
+        else:
             msg = f"Error in call to target '{_convert_target_to_string(_target_)}':\n{repr(e)}"
-            if full_key:
-                msg += f"\nfull_key: {full_key}"
-            raise InstantiationException(msg) from e
+        raise InstantiationException(_with_full_key(msg, full_key)) from e
 
 
 def _convert_target_to_string(t: Any) -> Any:
@@ -377,31 +366,29 @@ def _get_target_name_for_check(target: Union[str, type, Callable[..., Any]]) -> 
 def _prepare_input_container(
     d: Union[Dict[Any, Any], List[Any], Tuple[Any, ...]],
 ) -> Any:
-    res: Any
     if isinstance(d, dict):
-        res = {}
+        result = {}
         for k, v in d.items():
             if k == "_target_":
                 v = _convert_target_to_string(d["_target_"])
-            elif isinstance(v, (dict, list)) or type(v) is tuple:
-                v = _prepare_input_container(v)
-            res[k] = v
-    elif isinstance(d, list):
-        res = []
-        for v in d:
-            if isinstance(v, (list, dict)) or type(v) is tuple:
-                v = _prepare_input_container(v)
-            res.append(v)
-    elif type(d) is tuple:
-        res = tuple(
-            _prepare_input_container(v)
-            if isinstance(v, (dict, list)) or type(v) is tuple
-            else v
-            for v in d
-        )
-    else:
-        assert False
-    return res
+            else:
+                v = _prepare_input_value(v)
+            result[k] = v
+        return result
+
+    if isinstance(d, list) or type(d) is tuple:
+        values = [_prepare_input_value(v) for v in d]
+        return values if isinstance(d, list) else tuple(values)
+
+    assert False
+
+
+def _prepare_input_value(
+    value: Any,
+) -> Any:
+    if isinstance(value, (dict, list)) or type(value) is tuple:
+        return _prepare_input_container(value)
+    return value
 
 
 def _resolve_target(
@@ -429,9 +416,7 @@ def _resolve_target(
                         to prevent security vulnerabilities, set env var
                         HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE={target_name}:<other allowlisted targets> to bypass"""
                     )
-                    if full_key:
-                        msg += f"\nfull_key: {full_key}"
-                    raise InstantiationException(msg)
+                    raise InstantiationException(_with_full_key(msg, full_key))
             _warn_legacy_target_whitelist(target_name)
         elif not _is_target_whitelisted(
             target_name, cast(Tuple[str, ...], target_whitelist)
@@ -439,56 +424,34 @@ def _resolve_target(
             msg = dedent(f"""\
                 Target '{target_name}' is not in the instantiate target whitelist.
                 Pass _target_whitelist_ from trusted code to allow expected targets.""")
-            if full_key:
-                msg += f"\nfull_key: {full_key}"
-            raise InstantiationException(msg)
+            raise InstantiationException(_with_full_key(msg, full_key))
 
         if isinstance(target, str):
             try:
                 target = _locate(target)
             except Exception as e:
                 msg = f"Error locating target '{target}', set env var HYDRA_FULL_ERROR=1 to see chained exception."
-                if full_key:
-                    msg += f"\nfull_key: {full_key}"
-                raise InstantiationException(msg) from e
+                raise InstantiationException(_with_full_key(msg, full_key)) from e
     if not callable(target):
         msg = f"Expected a callable target, got '{target}' of type '{type(target).__name__}'"
-        if full_key:
-            msg += f"\nfull_key: {full_key}"
-        raise InstantiationException(msg)
+        raise InstantiationException(_with_full_key(msg, full_key))
     return target
 
 
-def _deep_copy_full_config(subconfig: Any) -> Any:
-    """Deep copy full config from root to leaf and return the copied subconfig"""
-    if not OmegaConf.is_config(subconfig):
-        return copy.deepcopy(subconfig)
-
-    full_key = subconfig._get_full_key(None)
-    if full_key == "" or full_key is None:  # Do not exit early if full_key is 0
-        return copy.deepcopy(subconfig)
-    full_key = str(full_key)
-
-    if OmegaConf.is_sequence(subconfig._get_parent()):
-        # OmegaConf has a bug where _get_full_key doesn't add [] if the parent
-        # is a sequence, eg. instead of foo[0], it'll return foo0
-        index = subconfig._key()
-        full_key = full_key[: -len(str(index))] + f"[{index}]"
-    root = subconfig._get_root()
-    full_key = full_key.replace(root._get_full_key(None) or "", "", 1)
-    if OmegaConf.select(root, full_key) is not subconfig:
-        # The parent chain and full key are not consistent so don't
-        # try to copy the full config
-        return copy.deepcopy(subconfig)
-
-    full_config_copy = copy.deepcopy(root)
-    return OmegaConf.select(full_config_copy, full_key)
+def _prepare_call_argument(value: Any) -> Any:
+    if OmegaConf.is_config(value):
+        parent = value._get_parent()
+        value = copy.deepcopy(value)
+        value._set_parent(parent)
+        value._set_flag("readonly", False)
+        OmegaConf.resolve(value)
+        value._set_parent(None)
+    return value
 
 
 def instantiate(
     config: Any,
     *args: Any,
-    _skip_instantiate_full_deepcopy_: bool = False,
     _target_whitelist_: TargetWhitelist = None,
     **kwargs: Any,
 ) -> Any:
@@ -520,10 +483,6 @@ def instantiate(
                                   containers too.
                    _partial_: If True, return functools.partial wrapped method or object
                               False by default. Configure per target.
-    :param _skip_instantiate_full_deepcopy_: If True, deep copy just the input config instead
-                    of full config before resolving omegaconf interpolations, which may
-                    potentially modify the config's parent/sibling configs in place.
-                    False by default.
     :param _target_whitelist_: A target string, list of target strings,
                     target_whitelist() policy, or UNSAFE_ALLOW_ALL_TARGETS. A trailing
                     .* allows targets under a package prefix. Passing None preserves
@@ -572,50 +531,14 @@ def instantiate(
         config = OmegaConf.structured(config, flags={"allow_objects": True})
 
     if OmegaConf.is_dict(config):
-        # Finalize config (convert targets to strings, merge with kwargs)
-        # Create copy to avoid mutating original
-        if _skip_instantiate_full_deepcopy_:
-            config_copy = copy.deepcopy(config)
-            config_copy._set_parent(config._get_parent())
-        else:
-            config_copy = _deep_copy_full_config(config)
-        config_copy._set_flag(
-            flags=["allow_objects", "struct", "readonly"], values=[True, False, False]
-        )
-        config = config_copy
-
-        if kwargs:
-            config = OmegaConf.merge(config, kwargs)
-
-        OmegaConf.resolve(config)
-
-        _recursive_ = config.pop(_Keys.RECURSIVE, True)
-        _convert_ = config.pop(_Keys.CONVERT, ConvertMode.NONE)
-        _partial_ = config.pop(_Keys.PARTIAL, False)
-
         return instantiate_node(
             config,
             *args,
-            recursive=_recursive_,
-            convert=_convert_,
-            partial=_partial_,
+            overrides=kwargs,
+            is_root=True,
             target_whitelist=target_whitelist,
         )
     elif OmegaConf.is_sequence(config):
-        # Finalize config (convert targets to strings, merge with kwargs)
-        # Create copy to avoid mutating original
-        if _skip_instantiate_full_deepcopy_:
-            config_copy = copy.deepcopy(config)
-            config_copy._set_parent(config._get_parent())
-        else:
-            config_copy = _deep_copy_full_config(config)
-        config_copy._set_flag(
-            flags=["allow_objects", "struct", "readonly"], values=[True, False, False]
-        )
-        config = config_copy
-
-        OmegaConf.resolve(config)
-
         _recursive_ = kwargs.pop(_Keys.RECURSIVE, True)
         _convert_ = kwargs.pop(_Keys.CONVERT, ConvertMode.NONE)
         _partial_ = kwargs.pop(_Keys.PARTIAL, False)
@@ -665,17 +588,184 @@ def _wrap_structured_config_as_object(value: Any) -> Any:
     return value
 
 
+def _create_sequence_result(
+    items: List[Any],
+    *,
+    is_tuple: bool,
+    convert: Union[str, ConvertMode],
+    parent: Any = None,
+) -> Any:
+    if convert in (ConvertMode.ALL, ConvertMode.PARTIAL, ConvertMode.OBJECT):
+        return tuple(items) if is_tuple else items
+
+    if is_tuple:
+        result = OmegaConf.create(
+            tuple(_wrap_structured_config_as_object(item) for item in items),
+            flags={"allow_objects": True},
+        )
+    else:
+        result = OmegaConf.create([], flags={"allow_objects": True})
+        for item in items:
+            result.append(_wrap_structured_config_as_object(item))
+    if parent is not None:
+        result._set_parent(parent)
+    return result
+
+
+def _get_dict_override(value: Any) -> Optional[ConfigOverlay]:
+    if isinstance(value, dict):
+        return value
+    if OmegaConf.is_dict(value):
+        return cast(DictConfig, value)
+    if is_structured_config(value) and not isinstance(value, type):
+        config = OmegaConf.structured(value, flags={"allow_objects": True})
+        assert OmegaConf.is_dict(config)
+        return cast(DictConfig, config)
+    return None
+
+
+def _iter_effective_keys(node: Any, overrides: Optional[ConfigOverlay]) -> List[str]:
+    keys = list(node.keys())
+    if overrides:
+        keys.extend(key for key in overrides if key not in keys)
+    return keys
+
+
+def _get_effective_control(
+    node: Any,
+    overrides: Optional[ConfigOverlay],
+    key: _Keys,
+    default: Any,
+) -> Any:
+    if overrides is not None and key in overrides:
+        return overrides[key]
+    return node[key] if key in node else default
+
+
+def _is_missing_parameter(
+    node: Any, overrides: Optional[ConfigOverlay], key: str
+) -> bool:
+    if overrides is not None and key in overrides:
+        return isinstance(overrides[key], str) and overrides[key] == "???"
+    return OmegaConf.is_missing(node, key)
+
+
+def _instantiate_override(
+    value: Any,
+    *,
+    convert: Union[str, ConvertMode],
+    recursive: bool,
+    target_whitelist: NormalizedTargetWhitelist,
+) -> Any:
+    dict_override = _get_dict_override(value)
+    if not recursive:
+        if isinstance(dict_override, DictConfig) and (
+            dict_override._metadata.object_type not in (None, dict)
+        ):
+            return dict_override
+        return value
+
+    if dict_override is not None:
+        return instantiate_node(
+            OmegaConf.create({}),
+            overrides=dict_override,
+            convert=convert,
+            recursive=recursive,
+            target_whitelist=target_whitelist,
+        )
+
+    if isinstance(value, (list, tuple)):
+        items = [
+            _instantiate_override(
+                item,
+                convert=convert,
+                recursive=recursive,
+                target_whitelist=target_whitelist,
+            )
+            for item in value
+        ]
+        return _create_sequence_result(
+            items, is_tuple=isinstance(value, tuple), convert=convert
+        )
+
+    if OmegaConf.is_config(value):
+        return instantiate_node(
+            value,
+            convert=convert,
+            recursive=recursive,
+            target_whitelist=target_whitelist,
+        )
+    return value
+
+
+def _instantiate_effective_value(
+    node: Any,
+    key: str,
+    overrides: Optional[ConfigOverlay],
+    *,
+    convert: Union[str, ConvertMode],
+    recursive: bool,
+    target_whitelist: NormalizedTargetWhitelist,
+) -> Any:
+    if overrides is not None and key in overrides:
+        override = overrides[key]
+        dict_override = _get_dict_override(override)
+        if recursive and dict_override is not None:
+            configured_value = node._get_node(key) if key in node else None
+            if not OmegaConf.is_dict(configured_value):
+                configured_value = OmegaConf.create({})
+            return instantiate_node(
+                configured_value,
+                overrides=dict_override,
+                convert=convert,
+                recursive=recursive,
+                target_whitelist=target_whitelist,
+            )
+        return _instantiate_override(
+            override,
+            convert=convert,
+            recursive=recursive,
+            target_whitelist=target_whitelist,
+        )
+
+    value = node[key]
+    if recursive:
+        value = instantiate_node(
+            value,
+            convert=convert,
+            recursive=recursive,
+            target_whitelist=target_whitelist,
+        )
+    return value
+
+
 def instantiate_node(
     node: Any,
     *args: Any,
+    overrides: Optional[ConfigOverlay] = None,
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
     partial: bool = False,
+    is_root: bool = False,
     target_whitelist: NormalizedTargetWhitelist = None,
 ) -> Any:
     # Return None if config is None
-    if node is None or (OmegaConf.is_config(node) and node._is_none()):
+    if node is None or (
+        OmegaConf.is_config(node) and node._is_none() and not overrides
+    ):
         return None
+
+    if OmegaConf.is_config(node) and node._is_none() and overrides:
+        ref_type = node._metadata.ref_type
+        parent = node._get_parent()
+        key = node._key()
+        node = (
+            OmegaConf.structured(ref_type)
+            if is_structured_config(ref_type)
+            else OmegaConf.create({})
+        )
+        node._set_parent(parent)
+        node._set_key(key)
 
     if not OmegaConf.is_config(node):
         return node
@@ -684,17 +774,15 @@ def instantiate_node(
     if OmegaConf.is_dict(node):
         # using getitem instead of get(key, default) because OmegaConf will raise an exception
         # if the key type is incompatible on get.
-        convert = node[_Keys.CONVERT] if _Keys.CONVERT in node else convert
-        recursive = node[_Keys.RECURSIVE] if _Keys.RECURSIVE in node else recursive
-        partial = node[_Keys.PARTIAL] if _Keys.PARTIAL in node else partial
+        convert = _get_effective_control(node, overrides, _Keys.CONVERT, convert)
+        recursive = _get_effective_control(node, overrides, _Keys.RECURSIVE, recursive)
+        partial = _get_effective_control(node, overrides, _Keys.PARTIAL, partial)
 
     full_key = node._get_full_key(None)
 
     if not isinstance(recursive, bool):
         msg = f"Instantiation: _recursive_ flag must be a bool, got {type(recursive)}"
-        if full_key:
-            msg += f"\nfull_key: {full_key}"
-        raise TypeError(msg)
+        raise TypeError(_with_full_key(msg, full_key))
 
     if not isinstance(partial, bool):
         msg = f"Instantiation: _partial_ flag must be a bool, got {type(partial)}"
@@ -715,22 +803,9 @@ def instantiate_node(
             for item in node._iter_ex(resolve=True)
         ]
 
-        if convert in (ConvertMode.ALL, ConvertMode.PARTIAL, ConvertMode.OBJECT):
-            # If ALL or PARTIAL or OBJECT, use a plain sequence container
-            return tuple(items) if is_tuple else items
-        else:
-            # Otherwise, use the matching OmegaConf sequence container
-            if is_tuple:
-                seq = OmegaConf.create(
-                    tuple(_wrap_structured_config_as_object(item) for item in items),
-                    flags={"allow_objects": True},
-                )
-            else:
-                seq = OmegaConf.create([], flags={"allow_objects": True})
-                for item in items:
-                    seq.append(_wrap_structured_config_as_object(item))
-            seq._set_parent(node)
-            return seq
+        return _create_sequence_result(
+            items, is_tuple=is_tuple, convert=convert, parent=node
+        )
 
     elif OmegaConf.is_dict(node):
         if _Keys.TARGET_WHITELIST in node:
@@ -738,44 +813,55 @@ def instantiate_node(
                 "_target_whitelist_ must be passed to instantiate() from trusted "
                 "code, not configured inside the config being instantiated."
             )
-            if full_key:
-                msg += f"\nfull_key: {full_key}"
-            raise InstantiationException(msg)
+            raise InstantiationException(_with_full_key(msg, full_key))
 
         exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_"})
-        if _is_target(node):
-            _target_ = _resolve_target(
-                node.get(_Keys.TARGET), full_key, target_whitelist
+        if (overrides is not None and _Keys.TARGET in overrides) or _is_target(node):
+            target = (
+                overrides[_Keys.TARGET]
+                if overrides is not None and _Keys.TARGET in overrides
+                else node.get(_Keys.TARGET)
             )
+            _target_ = _resolve_target(target, full_key, target_whitelist)
             kwargs = {}
-            is_partial = node.get("_partial_", False) or partial
-            for key in node.keys():
+            is_partial = partial
+            for key in _iter_effective_keys(node, overrides):
                 if key not in exclude_keys:
-                    if OmegaConf.is_missing(node, key) and is_partial:
+                    if is_partial and _is_missing_parameter(node, overrides, key):
                         continue
-                    value = node[key]
-                    if recursive:
-                        value = instantiate_node(
-                            value,
-                            convert=convert,
-                            recursive=recursive,
-                            target_whitelist=target_whitelist,
-                        )
+                    value = _instantiate_effective_value(
+                        node,
+                        key,
+                        overrides,
+                        convert=convert,
+                        recursive=recursive,
+                        target_whitelist=target_whitelist,
+                    )
                     kwargs[key] = _convert_node(value, convert)
 
             return _call_target(_target_, partial, args, kwargs, full_key)
         else:
+            object_type = node._metadata.object_type
+            if isinstance(overrides, DictConfig):
+                override_type = overrides._metadata.object_type
+                if override_type not in (None, dict):
+                    object_type = override_type
+
             # If ALL or PARTIAL non structured or OBJECT non structured,
             # instantiate in dict and resolve interpolations eagerly.
             if convert == ConvertMode.ALL or (
                 convert in (ConvertMode.PARTIAL, ConvertMode.OBJECT)
-                and node._metadata.object_type in (None, dict)
+                and object_type in (None, dict)
             ):
                 dict_items = {}
-                for key, value in node.items():
+                for key in _iter_effective_keys(node, overrides):
+                    if is_root and key in exclude_keys:
+                        continue
                     # list items inherits recursive flag from the containing dict.
-                    dict_items[key] = instantiate_node(
-                        value,
+                    dict_items[key] = _instantiate_effective_value(
+                        node,
+                        key,
+                        overrides,
                         convert=convert,
                         recursive=recursive,
                         target_whitelist=target_whitelist,
@@ -784,17 +870,21 @@ def instantiate_node(
             else:
                 # Otherwise use DictConfig and resolve interpolations lazily.
                 cfg = OmegaConf.create({}, flags={"allow_objects": True})
-                for key, value in node.items():
+                for key in _iter_effective_keys(node, overrides):
+                    if is_root and key in exclude_keys:
+                        continue
                     cfg[key] = _wrap_structured_config_as_object(
-                        instantiate_node(
-                            value,
+                        _instantiate_effective_value(
+                            node,
+                            key,
+                            overrides,
                             convert=convert,
                             recursive=recursive,
                             target_whitelist=target_whitelist,
                         )
                     )
                 cfg._set_parent(node)
-                cfg._metadata.object_type = node._metadata.object_type
+                cfg._metadata.object_type = object_type
                 if convert == ConvertMode.OBJECT:
                     return OmegaConf.to_object(cfg)
                 return cfg

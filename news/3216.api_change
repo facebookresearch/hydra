@@ -1,0 +1,4 @@
+`hydra.utils.instantiate()` no longer eagerly resolves the entire configuration
+tree before instantiation. Interpolations are now resolved lazily. Applications
+that rely on eager resolution must call `OmegaConf.resolve(config)` before
+`instantiate(config)`.

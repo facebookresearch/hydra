@@ -157,6 +157,18 @@ component = instantiate(
 **Named arguments** : Config fields (except reserved fields like `_target_`) are passed as named arguments to the target.
 Named arguments in the config can be overridden by passing named argument with the same name in the `instantiate()` call-site.
 
+Call-site arguments are applied separately from the input configuration. They
+replace the corresponding arguments passed to the target without modifying the
+input configuration. They therefore do not affect interpolation resolution or
+Structured Config coercion in the input configuration. Configuration values are
+resolved lazily as instantiation proceeds instead of resolving and copying the
+full configuration tree up front. This avoids processing unrelated configuration
+values and allows runtime state established by an earlier target to be used
+while resolving a later argument.
+
+See the [Hydra 1.4 upgrade guide](/docs/upgrades/1.3_to_1.4/instantiate_resolution)
+for the compatibility impact and an example.
+
 **Positional arguments** : The config may contain a `_args_` field representing positional arguments to pass to the target.
 The positional arguments can be overridden together by passing positional arguments in the `instantiate()` call-site.
 

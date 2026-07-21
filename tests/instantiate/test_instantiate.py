@@ -107,6 +107,11 @@ def structured_config_object_node(value: Any) -> Any:
     return AnyNode(value, flags={"allow_objects": True})
 
 
+def register_test_resolver(name: str, value: Any) -> Any:
+    OmegaConf.register_resolver(name, lambda: value, replace=True)
+    return value
+
+
 @mark.parametrize(
     "recursive", [param(False, id="not_recursive"), param(True, id="recursive")]
 )
@@ -220,13 +225,13 @@ def structured_config_object_node(value: Any) -> Any:
         param(
             {"_target_": "tests.instantiate.AClass", "b": 200, "c": "${b}"},
             {"a": 10, "b": 99, "d": 40},
-            AClass(10, 99, 99, 40),
+            AClass(10, 99, 200, 40),
             id="class+override+interpolation",
         ),
         param(
             {"_target_": "tests.instantiate.AClass", "b": 200, "c": "${b}"},
             {"a": 10, "b": 99, "_partial_": True},
-            partial(AClass, a=10, b=99, c=99),
+            partial(AClass, a=10, b=99, c=200),
             id="class+override+interpolation+partial1",
         ),
         param(
@@ -237,7 +242,7 @@ def structured_config_object_node(value: Any) -> Any:
                 "c": "${b}",
             },
             {"a": 10, "b": 99},
-            partial(AClass, a=10, b=99, c=99),
+            partial(AClass, a=10, b=99, c=200),
             id="class+override+interpolation+partial2",
         ),
         # Check class and static methods
@@ -507,7 +512,6 @@ def test_none_cases(
     assert str(cfg) == original_config_str
 
 
-@mark.parametrize("skip_deepcopy", [True, False])
 @mark.parametrize("convert_to_list", [True, False])
 @mark.parametrize(
     "input_conf, passthrough, expected",
@@ -625,7 +629,6 @@ def test_interpolation_accessing_parent(
     passthrough: Dict[str, Any],
     expected: Any,
     convert_to_list: bool,
-    skip_deepcopy: bool,
 ) -> Any:
     if convert_to_list:
         input_conf = copy.deepcopy(input_conf)
@@ -634,24 +637,79 @@ def test_interpolation_accessing_parent(
     input_conf = OmegaConf.create(input_conf)
     original_config_str = str(input_conf)
     if convert_to_list:
-        obj = instantiate_func(
-            input_conf.node[0],
-            _skip_instantiate_full_deepcopy_=skip_deepcopy,
-            **passthrough,
-        )
+        obj = instantiate_func(input_conf.node[0], **passthrough)
     else:
-        obj = instantiate_func(
-            input_conf.node,
-            _skip_instantiate_full_deepcopy_=skip_deepcopy,
-            **passthrough,
-        )
+        obj = instantiate_func(input_conf.node, **passthrough)
     if isinstance(expected, partial):
         assert partial_equal(obj, expected)
     else:
         assert obj == expected
     assert input_conf == cfg_copy
-    if not skip_deepcopy:
-        assert str(input_conf) == original_config_str
+    assert str(input_conf) == original_config_str
+
+
+def test_instantiate_does_not_copy_unrelated_root_siblings(
+    instantiate_func: Any, monkeypatch: Any
+) -> None:
+    cfg = OmegaConf.create(
+        {
+            "node": {
+                "_target_": "tests.instantiate.AClass",
+                "a": "${value}",
+                "b": 20,
+                "c": 30,
+            },
+            "value": 10,
+            "unrelated": {"data": [1, 2, 3]},
+        },
+    )
+    original_deepcopy = copy.deepcopy
+
+    def deepcopy_except_root(value: Any, memo: Any = None) -> Any:
+        assert value is not cfg, "instantiate() copied the full configuration root"
+        if memo is None:
+            return original_deepcopy(value)
+        return original_deepcopy(value, memo)
+
+    monkeypatch.setattr(_instantiate2.copy, "deepcopy", deepcopy_except_root)
+
+    assert instantiate_func(cfg.node) == AClass(a=10, b=20, c=30)
+
+
+def test_non_recursive_config_argument_is_copied_before_resolve_and_detach(
+    instantiate_func: Any,
+) -> None:
+    cfg = OmegaConf.create(
+        {
+            "value": 10,
+            "node": {
+                "_target_": "tests.instantiate.ArgsClass",
+                "_recursive_": False,
+                "payload": {"value": "${value}"},
+            },
+        }
+    )
+    OmegaConf.set_readonly(cfg, True)
+    original_config = str(cfg)
+    source_payload = cfg.node.payload
+
+    result = instantiate_func(cfg.node)
+    payload = result.kwargs["payload"]
+
+    assert payload == {"value": 10}
+    assert payload is not source_payload
+    assert payload._get_parent() is None
+    assert source_payload._get_parent() is cfg.node
+    assert str(cfg) == original_config
+
+
+def test_top_level_instantiation_control_keys_are_not_in_result(
+    instantiate_func: Any,
+) -> None:
+    result = instantiate_func({"_convert_": "none", "value": 10})
+
+    assert result == {"value": 10}
+    assert "_convert_" not in result
 
 
 @mark.parametrize(
@@ -742,6 +800,144 @@ def test_regression_1483(instantiate_func: Any, is_partial: bool) -> None:
         pickle.dumps(res.keywords["lst"])  # type: ignore
     else:
         pickle.dumps(res.kwargs["lst"])
+
+
+def test_runtime_object_override_replaces_unresolvable_config_value(
+    instantiate_func: Any,
+) -> None:
+    runtime_value = Parameters([1, 2, 3])
+
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "value": "${missing}",
+        },
+        value=runtime_value,
+    )
+
+    assert result.kwargs["value"] is runtime_value
+
+
+@mark.parametrize(
+    ("runtime_value", "expected"),
+    [
+        param(
+            OmegaConf.create({"_target_": "tests.instantiate.AnotherClass", "x": 10}),
+            AnotherClass(10),
+            id="dictconfig",
+        ),
+        param(
+            [{"_target_": "tests.instantiate.AnotherClass", "x": 10}],
+            [AnotherClass(10)],
+            id="native-list-with-dict",
+        ),
+        param(
+            OmegaConf.create([{"_target_": "tests.instantiate.AnotherClass", "x": 10}]),
+            [AnotherClass(10)],
+            id="listconfig",
+        ),
+    ],
+)
+def test_runtime_container_override_is_instantiated(
+    instantiate_func: Any, runtime_value: Any, expected: Any
+) -> None:
+    result = instantiate_func(
+        {"_target_": "tests.instantiate.ArgsClass"}, value=runtime_value
+    )
+
+    assert result.kwargs["value"] == expected
+
+
+def test_nested_runtime_object_override_replaces_unresolvable_config_value(
+    instantiate_func: Any,
+) -> None:
+    runtime_value = Parameters([1, 2, 3])
+
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.Tree",
+            "value": 0,
+            "left": {
+                "_target_": "tests.instantiate.Tree",
+                "value": "${missing}",
+            },
+        },
+        left={"value": runtime_value},
+    )
+
+    assert result.left.value is runtime_value
+
+
+@mark.parametrize(
+    ("convert", "expected_type"),
+    [
+        param(ConvertMode.NONE, DictConfig, id="none"),
+        param(ConvertMode.PARTIAL, DictConfig, id="partial"),
+        param(ConvertMode.OBJECT, User, id="object"),
+        param(ConvertMode.ALL, dict, id="all"),
+    ],
+)
+@mark.parametrize("recursive", [False, True])
+def test_structured_runtime_override_preserves_conversion_behavior(
+    instantiate_func: Any,
+    convert: ConvertMode,
+    expected_type: Any,
+    recursive: bool,
+) -> None:
+    user = User(name="Bond", age=7)
+
+    result = instantiate_func(
+        {"_target_": "tests.instantiate.ArgsClass"},
+        user=user,
+        _convert_=convert,
+        _recursive_=recursive,
+    )
+
+    converted_user = result.kwargs["user"]
+    assert isinstance(converted_user, expected_type)
+    if OmegaConf.is_config(converted_user):
+        assert OmegaConf.get_type(converted_user) is User
+    if isinstance(converted_user, User):
+        assert converted_user == user
+    else:
+        assert converted_user == {"name": "Bond", "age": 7}
+
+
+def test_runtime_override_is_not_coerced_by_structured_config(
+    instantiate_func: Any,
+) -> None:
+    result = instantiate_func(
+        AdamConf(),
+        params=Parameters([]),
+        lr="runtime value",
+    )
+
+    assert result.lr == "runtime value"
+
+
+def test_nested_target_can_register_resolver_for_later_argument(
+    instantiate_func: Any,
+) -> None:
+    resolver_name = "hydra_instantiate_delayed_resolution"
+    OmegaConf.clear_resolver(resolver_name)
+    try:
+        result = instantiate_func(
+            {
+                "_target_": "tests.instantiate.ArgsClass",
+                "first": {
+                    "_target_": (
+                        "tests.instantiate.test_instantiate.register_test_resolver"
+                    ),
+                    "name": resolver_name,
+                    "value": 10,
+                },
+                "second": f"${{{resolver_name}:}}",
+            }
+        )
+    finally:
+        OmegaConf.clear_resolver(resolver_name)
+
+    assert result.kwargs == {"first": 10, "second": 10}
 
 
 @mark.parametrize(
@@ -1848,6 +2044,41 @@ def test_target_whitelist_applies_to_callable_targets() -> None:
         )
         == "callable class"
     )
+
+
+def test_non_recursive_plain_config_preserves_callable_target(
+    instantiate_func: Any,
+) -> None:
+    target = CallableClass()
+
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "_recursive_": False,
+            "payload": {"_target_": target},
+        }
+    )
+
+    payload = result.kwargs["payload"]
+    assert OmegaConf.is_dict(payload)
+    assert payload["_target_"] is target
+
+
+def test_callable_target_does_not_alias_literal_target_string(
+    instantiate_func: Any,
+) -> None:
+    target = CallableClass()
+    cfg = {
+        "_target_": "tests.instantiate.ArgsClass",
+        "callable": {"_target_": target},
+        "literal": {"_target_": "__hydra_callable_target_0__"},
+    }
+
+    with raises(
+        InstantiationException,
+        match="Error locating target '__hydra_callable_target_0__'",
+    ):
+        instantiate_func(cfg)
 
 
 @mark.parametrize(

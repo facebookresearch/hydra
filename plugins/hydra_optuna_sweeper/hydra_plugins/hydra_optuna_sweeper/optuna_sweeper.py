@@ -27,7 +27,6 @@ class OptunaSweeper(Sweeper):
 
         sampler = instantiate(
             sampler,
-            _skip_instantiate_full_deepcopy_=True,
             _target_whitelist_=(
                 "hydra_plugins.hydra_optuna_sweeper.*",
                 "optuna.samplers.*",
