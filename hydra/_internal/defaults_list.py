@@ -402,9 +402,14 @@ def _update_overrides(
             pcp = parent.get_config_path()
             okey = last_override_seen.get_override_key()
             oval = last_override_seen.get_name()
+            dvalue = (
+                d.get_options()
+                if isinstance(d, GroupDefault) and d.is_options()
+                else d.get_name()
+            )
             raise ConfigCompositionException(
                 dedent(f"""\
-                    In {pcp}: Override '{okey} : {oval}' is defined before '{d.get_override_key()}: {d.get_name()}'.
+                    In {pcp}: Override '{okey} : {oval}' is defined before '{d.get_override_key()}: {dvalue}'.
                     Overrides must be at the end of the defaults list""")
             )
 
