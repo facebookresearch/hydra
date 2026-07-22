@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-22",
-  "generated_at": "2026-07-22T07:51:00Z",
+  "generated_at": "2026-07-22T08:38:42Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 169,
@@ -677,9 +677,8 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2021-03-29",
-      "updated": "2026-07-15",
+      "updated": "2026-07-22",
       "labels": [
-        "triage",
         "ax",
         "sweep"
       ],
@@ -5503,6 +5502,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-22T08:38:42Z",
+      "kind": "label",
+      "issue": 1512,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1512",
+      "title": "Support multirun partial failure in Ax Sweeper",
+      "detail": "removed \"triage\""
+    },
+    {
       "ts": "2026-07-21T06:54:55Z",
       "kind": "closed",
       "issue": 3216,
@@ -7079,14 +7086,6 @@
       "issue": 1934,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1934",
       "title": "hydra.utils.instantiate using a config file",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1933,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1933",
-      "title": "[Bug] Selecting multiple configs from a group should allow selecting none",
       "detail": "added \"triage\""
     }
   ]

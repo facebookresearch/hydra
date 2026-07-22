@@ -162,7 +162,7 @@
     "3296": "2026-07-19",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-22T07:51:00Z",
+  "generated_at": "2026-07-22T08:38:42Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -346,14 +346,13 @@
       "created_at": "2021-03-29T16:25:59Z",
       "labels": [
         "ax",
-        "sweep",
-        "triage"
+        "sweep"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "Support multirun partial failure in Ax Sweeper",
-      "updated_at": "2026-07-15T13:17:30Z"
+      "updated_at": "2026-07-22T08:37:12Z"
     },
     "1547": {
       "category": "Enhancement",
