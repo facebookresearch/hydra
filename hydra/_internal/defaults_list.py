@@ -374,23 +374,48 @@ def _create_defaults_tree(
     return ret
 
 
-def _check_parent_traversal(d: GroupDefault, parent: InputDefault) -> None:
-    assert d.group is not None
-    group = d.group if not d.group.startswith("/") else d.group[1:]
-    if ".." not in group.split("/"):
+def _check_parent_traversal(default: InputDefault, parent: InputDefault) -> None:
+    if isinstance(default, ConfigDefault):
+        assert default.path is not None
+        paths = [("config", default.path)]
+    elif isinstance(default, GroupDefault):
+        assert default.group is not None
+        paths = [("config group", default.group)]
+        if default.is_name():
+            name = default.get_name()
+            if name is not None:
+                paths.append(("config option", name))
+        else:
+            paths.extend(("config option", option) for option in default.get_options())
+    else:
         return
 
-    pcp = parent.get_config_path()
-    location = f"In {pcp}: " if not parent.is_virtual() else ""
-    url = "https://hydra.cc/docs/advanced/defaults_list/"
-    raise ConfigCompositionException(
-        dedent(
-            f"""\
-            {location}Parent traversal ('..') in Defaults List config group paths is not supported ('{d.group}').
-            Config group paths are relative to the containing config or absolute when prefixed with '/'.
-            See {url} for more information."""
+    for path_type, path in paths:
+        if ".." not in path.split("/"):
+            continue
+
+        guidance = {
+            "config": "Use an absolute config path instead, such as '/group/config'.",
+            "config group": (
+                "Use an absolute config group path instead, such as '/group: option'."
+            ),
+            "config option": (
+                "Config options cannot contain parent traversal. Select the target "
+                "config directly. Use '/config' or '/group: option' in a Defaults "
+                "List, or 'group=option' (with '+' when adding a new default) on the "
+                "command line."
+            ),
+        }[path_type]
+        location = ""
+        if not parent.is_virtual():
+            location = f"In {parent.get_config_path()}: "
+        raise ConfigCompositionException(
+            f"{location}Parent traversal ('..') in Defaults List "
+            f"{path_type} paths is not supported ('{path}').\n"
+            f"{guidance}\n"
+            "See https://hydra.cc/docs/advanced/defaults_list/ for more "
+            "information."
         )
-    )
 
 
 def _update_overrides(
@@ -534,8 +559,7 @@ def _create_defaults_tree_impl(
         defaults_list.extend(overrides.append_group_defaults)
 
     for d in defaults_list:
-        if isinstance(d, GroupDefault):
-            _check_parent_traversal(d, parent)
+        _check_parent_traversal(d, parent)
 
     _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
 
@@ -569,6 +593,8 @@ def _create_defaults_tree_impl(
             if overrides.is_overridden(d):
                 assert isinstance(d, GroupDefault)
                 overrides.override_default_option(d)
+
+            _check_parent_traversal(d, parent)
 
             if isinstance(d, GroupDefault) and d.is_options():
                 # overriding may change from options to name
@@ -619,6 +645,7 @@ def _create_defaults_tree_impl(
     for idx, dd in enumerate(children):
         if isinstance(dd, InputDefault) and dd.is_interpolation():
             dd.resolve_interpolation(known_choices)
+            _check_parent_traversal(dd, parent)
             new_root = DefaultsTreeNode(node=dd, parent=root)
             dd.update_parent(parent.get_group_path(), parent.get_final_package())
             subtree = _create_defaults_tree_impl(
