@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-22",
-  "generated_at": "2026-07-22T08:38:42Z",
+  "generated_at": "2026-07-22T09:16:53Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 169,
+    "open_total": 168,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 20,
-        "percentage": 11.8
+        "count": 19,
+        "percentage": 11.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 125,
-        "percentage": 74.0
+        "percentage": 74.4
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.3
+        "percentage": 5.4
       },
       {
         "category": "Refactor",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 7
+        "count": 6
       },
       {
         "status": "blocked",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 161
+        "count": 162
       }
     ]
   },
@@ -217,26 +217,6 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3202"
-    },
-    {
-      "number": 3215,
-      "title": "Log multirun job failures in per-job logs",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3227,
-          "url": "https://github.com/facebookresearch/hydra/pull/3227"
-        }
-      ],
-      "created": "2026-06-19",
-      "updated": "2026-06-19",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3215"
     },
     {
       "number": 385,
@@ -5498,9 +5478,36 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3296"
+    },
+    {
+      "number": 3215,
+      "title": "Log multirun job failures in per-job logs",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3227,
+          "url": "https://github.com/facebookresearch/hydra/pull/3227"
+        }
+      ],
+      "created": "2026-06-19",
+      "updated": "2026-06-19",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3215"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-22T09:16:53Z",
+      "kind": "closed",
+      "issue": 3215,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3215",
+      "title": "Log multirun job failures in per-job logs"
+    },
     {
       "ts": "2026-07-22T08:38:42Z",
       "kind": "label",
@@ -7078,14 +7085,6 @@
       "issue": 1936,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1936",
       "title": "instantiate api - having to write a dataclass conf for every _target_ class ",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1934,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1934",
-      "title": "hydra.utils.instantiate using a config file",
       "detail": "added \"triage\""
     }
   ]

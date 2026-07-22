@@ -479,3 +479,4 @@
 {"ts": "2026-07-21T06:38:46Z", "kind": "label", "issue": 802, "issue_url": "https://github.com/facebookresearch/hydra/issues/802", "title": "Improve Hydra test coverage to 100%", "detail": "added \"priority_low\", \"tests\"; removed \"triage\""}
 {"ts": "2026-07-21T06:54:55Z", "kind": "closed", "issue": 3216, "issue_url": "https://github.com/facebookresearch/hydra/issues/3216", "title": "Evaluate opt-out from eager resolution in instantiate"}
 {"ts": "2026-07-22T08:38:42Z", "kind": "label", "issue": 1512, "issue_url": "https://github.com/facebookresearch/hydra/issues/1512", "title": "Support multirun partial failure in Ax Sweeper", "detail": "removed \"triage\""}
+{"ts": "2026-07-22T09:16:53Z", "kind": "closed", "issue": 3215, "issue_url": "https://github.com/facebookresearch/hydra/issues/3215", "title": "Log multirun job failures in per-job logs"}
