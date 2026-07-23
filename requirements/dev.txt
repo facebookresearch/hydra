@@ -1,16 +1,13 @@
 -r requirements.txt
 bandit
-black==24.3.0
+ruff==0.15.22
 build
 coverage
-flake8==6.0.0
-flake8-copyright
-isort==5.13.2
-mypy==1.8.0
+pyrefly==1.1.1
 nox
 packaging
 pre-commit
-pytest==8.3.5
+pytest==9.1.1
 pytest-benchmark
 read-version
 setuptools

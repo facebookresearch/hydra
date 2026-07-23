@@ -13,7 +13,7 @@ from hydra.core.utils import (
     setup_globals,
 )
 from hydra.types import HydraContext, TaskFunction
-from joblib import Parallel, delayed  # type: ignore
+from joblib import Parallel, delayed, parallel_backend  # type: ignore
 from omegaconf import DictConfig, open_dict
 
 from .joblib_launcher import JoblibLauncher
@@ -84,15 +84,37 @@ def launch(
 
     # Joblib's backend is hard-coded to loky since the threading
     # backend is incompatible with Hydra
-    joblib_cfg = launcher.joblib
+    joblib_cfg = dict(launcher.joblib)
     joblib_cfg["backend"] = "loky"
     process_joblib_cfg(joblib_cfg)
+    inner_max_num_threads = joblib_cfg.pop("inner_max_num_threads", None)
+
+    backend = None
+    backend_cfg = None
+    parallel_cfg = dict(joblib_cfg)
+    if inner_max_num_threads is not None:
+        backend = parallel_cfg.pop("backend")
+        parallel_cfg.pop("prefer", None)
+        parallel_cfg.pop("require", None)
+        backend_cfg = {"inner_max_num_threads": inner_max_num_threads}
+        if "n_jobs" in parallel_cfg:
+            backend_cfg["n_jobs"] = parallel_cfg.pop("n_jobs")
+
+    parallel_args = ",".join(f"{k}={v}" for k, v in parallel_cfg.items())
+    if backend_cfg is None:
+        launch_msg = f"Joblib.Parallel({parallel_args})"
+    else:
+        backend_args = ",".join(f"{k}={v}" for k, v in backend_cfg.items())
+        launch_msg = (
+            f"joblib.parallel_backend({backend},{backend_args}) "
+            f"with Joblib.Parallel({parallel_args})"
+        )
 
     log.info(
-        "Joblib.Parallel({}) is launching {} jobs".format(
-            ",".join(f"{k}={v}" for k, v in joblib_cfg.items()),
+        "{} is launching {} jobs".format(
+            launch_msg,
             len(job_overrides),
-        )
+        ),
     )
     log.info(f"Launching jobs, sweep output dir : {sweep_dir}")
     for idx, overrides in enumerate(job_overrides):
@@ -100,7 +122,7 @@ def launch(
 
     singleton_state = Singleton.get_state()
 
-    runs = Parallel(**joblib_cfg)(
+    calls = (
         delayed(execute_job)(
             initial_job_idx + idx,
             overrides,
@@ -111,6 +133,12 @@ def launch(
         )
         for idx, overrides in enumerate(job_overrides)
     )
+    if backend_cfg is None:
+        runs = Parallel(**parallel_cfg)(calls)
+    else:
+        assert backend is not None
+        with parallel_backend(backend, **backend_cfg):
+            runs = Parallel(**parallel_cfg)(calls)
 
     assert isinstance(runs, List)
     for run in runs:

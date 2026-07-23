@@ -1,20 +1,32 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
+import inspect
+import os
 import pickle
 import re
 from dataclasses import dataclass
 from functools import partial
 from textwrap import dedent
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 
-from omegaconf import MISSING, DictConfig, ListConfig, MissingMandatoryValue, OmegaConf
+from omegaconf import (
+    MISSING,
+    AnyNode,
+    DictConfig,
+    ListConfig,
+    MissingMandatoryValue,
+    OmegaConf,
+    TupleConfig,
+)
 from pytest import fixture, mark, param, raises, warns
 
-import hydra
 from hydra import version
+from hydra._internal.instantiate import _instantiate2
+from hydra._internal.instantiate._instantiate2 import _resolve_target
 from hydra.errors import InstantiationException
 from hydra.test_utils.test_utils import assert_multiline_regex_search
 from hydra.types import ConvertMode, TargetConf
+from hydra.utils import UNSAFE_ALLOW_ALL_TARGETS, target_whitelist
 from tests.instantiate import (
     AClass,
     Adam,
@@ -24,6 +36,7 @@ from tests.instantiate import (
     ASubclass,
     BadAdamConf,
     BClass,
+    CallableClass,
     CenterCrop,
     CenterCropConf,
     Compose,
@@ -59,14 +72,18 @@ from tests.instantiate import (
 
 @fixture(
     params=[
-        hydra._internal.instantiate._instantiate2.instantiate,
+        _instantiate2.instantiate,
     ],
     ids=[
         "instantiate2",
     ],
 )
 def instantiate_func(request: Any) -> Any:
-    return request.param
+    def wrapper(config: Any, *args: Any, **kwargs: Any) -> Any:
+        kwargs.setdefault("_target_whitelist_", UNSAFE_ALLOW_ALL_TARGETS)
+        return request.param(config, *args, **kwargs)
+
+    return wrapper
 
 
 @fixture(
@@ -84,6 +101,15 @@ def config(request: Any, src: Any) -> Any:
     cfg_copy = copy.deepcopy(config)
     yield config
     assert config == cfg_copy
+
+
+def structured_config_object_node(value: Any) -> Any:
+    return AnyNode(value, flags={"allow_objects": True})
+
+
+def register_test_resolver(name: str, value: Any) -> Any:
+    OmegaConf.register_resolver(name, lambda: value, replace=True)
+    return value
 
 
 @mark.parametrize(
@@ -199,13 +225,13 @@ def config(request: Any, src: Any) -> Any:
         param(
             {"_target_": "tests.instantiate.AClass", "b": 200, "c": "${b}"},
             {"a": 10, "b": 99, "d": 40},
-            AClass(10, 99, 99, 40),
+            AClass(10, 99, 200, 40),
             id="class+override+interpolation",
         ),
         param(
             {"_target_": "tests.instantiate.AClass", "b": 200, "c": "${b}"},
             {"a": 10, "b": 99, "_partial_": True},
-            partial(AClass, a=10, b=99, c=99),
+            partial(AClass, a=10, b=99, c=200),
             id="class+override+interpolation+partial1",
         ),
         param(
@@ -216,7 +242,7 @@ def config(request: Any, src: Any) -> Any:
                 "c": "${b}",
             },
             {"a": 10, "b": 99},
-            partial(AClass, a=10, b=99, c=99),
+            partial(AClass, a=10, b=99, c=200),
             id="class+override+interpolation+partial2",
         ),
         # Check class and static methods
@@ -486,7 +512,6 @@ def test_none_cases(
     assert str(cfg) == original_config_str
 
 
-@mark.parametrize("skip_deepcopy", [True, False])
 @mark.parametrize("convert_to_list", [True, False])
 @mark.parametrize(
     "input_conf, passthrough, expected",
@@ -604,7 +629,6 @@ def test_interpolation_accessing_parent(
     passthrough: Dict[str, Any],
     expected: Any,
     convert_to_list: bool,
-    skip_deepcopy: bool,
 ) -> Any:
     if convert_to_list:
         input_conf = copy.deepcopy(input_conf)
@@ -613,36 +637,89 @@ def test_interpolation_accessing_parent(
     input_conf = OmegaConf.create(input_conf)
     original_config_str = str(input_conf)
     if convert_to_list:
-        obj = instantiate_func(
-            input_conf.node[0],
-            _skip_instantiate_full_deepcopy_=skip_deepcopy,
-            **passthrough,
-        )
+        obj = instantiate_func(input_conf.node[0], **passthrough)
     else:
-        obj = instantiate_func(
-            input_conf.node,
-            _skip_instantiate_full_deepcopy_=skip_deepcopy,
-            **passthrough,
-        )
+        obj = instantiate_func(input_conf.node, **passthrough)
     if isinstance(expected, partial):
         assert partial_equal(obj, expected)
     else:
         assert obj == expected
     assert input_conf == cfg_copy
-    if not skip_deepcopy:
-        assert str(input_conf) == original_config_str
+    assert str(input_conf) == original_config_str
+
+
+def test_instantiate_does_not_copy_unrelated_root_siblings(
+    instantiate_func: Any, monkeypatch: Any
+) -> None:
+    cfg = OmegaConf.create(
+        {
+            "node": {
+                "_target_": "tests.instantiate.AClass",
+                "a": "${value}",
+                "b": 20,
+                "c": 30,
+            },
+            "value": 10,
+            "unrelated": {"data": [1, 2, 3]},
+        },
+    )
+    original_deepcopy = copy.deepcopy
+
+    def deepcopy_except_root(value: Any, memo: Any = None) -> Any:
+        assert value is not cfg, "instantiate() copied the full configuration root"
+        if memo is None:
+            return original_deepcopy(value)
+        return original_deepcopy(value, memo)
+
+    monkeypatch.setattr(_instantiate2.copy, "deepcopy", deepcopy_except_root)
+
+    assert instantiate_func(cfg.node) == AClass(a=10, b=20, c=30)
+
+
+def test_non_recursive_config_argument_is_copied_before_resolve_and_detach(
+    instantiate_func: Any,
+) -> None:
+    cfg = OmegaConf.create(
+        {
+            "value": 10,
+            "node": {
+                "_target_": "tests.instantiate.ArgsClass",
+                "_recursive_": False,
+                "payload": {"value": "${value}"},
+            },
+        }
+    )
+    OmegaConf.set_readonly(cfg, True)
+    original_config = str(cfg)
+    source_payload = cfg.node.payload
+
+    result = instantiate_func(cfg.node)
+    payload = result.kwargs["payload"]
+
+    assert payload == {"value": 10}
+    assert payload is not source_payload
+    assert payload._get_parent() is None
+    assert source_payload._get_parent() is cfg.node
+    assert str(cfg) == original_config
+
+
+def test_top_level_instantiation_control_keys_are_not_in_result(
+    instantiate_func: Any,
+) -> None:
+    result = instantiate_func({"_convert_": "none", "value": 10})
+
+    assert result == {"value": 10}
+    assert "_convert_" not in result
 
 
 @mark.parametrize(
     "src",
     [
-        (
-            {
-                "_target_": "tests.instantiate.AClass",
-                "b": 200,
-                "c": {"x": 10, "y": "${b}"},
-            }
-        )
+        {
+            "_target_": "tests.instantiate.AClass",
+            "b": 200,
+            "c": {"x": 10, "y": "${b}"},
+        }
     ],
 )
 def test_class_instantiate_omegaconf_node(instantiate_func: Any, config: Any) -> Any:
@@ -654,7 +731,7 @@ def test_class_instantiate_omegaconf_node(instantiate_func: Any, config: Any) ->
 @mark.parametrize(
     "src",
     [
-        (
+        param(
             ListConfig(
                 [
                     {
@@ -663,11 +740,24 @@ def test_class_instantiate_omegaconf_node(instantiate_func: Any, config: Any) ->
                         "c": {"x": 10, "y": "${0.b}"},
                     }
                 ]
-            )
-        )
+            ),
+            id="list",
+        ),
+        param(
+            OmegaConf.create(
+                (
+                    {
+                        "_target_": "tests.instantiate.AClass",
+                        "b": 200,
+                        "c": {"x": 10, "y": "${0.b}"},
+                    },
+                )
+            ),
+            id="tuple",
+        ),
     ],
 )
-def test_class_instantiate_list_item(instantiate_func: Any, config: Any) -> Any:
+def test_class_instantiate_sequence_item(instantiate_func: Any, config: Any) -> Any:
     obj = instantiate_func(config[0], a=10, d=AnotherClass(99))
     assert obj == AClass(a=10, b=200, c={"x": 10, "y": 200}, d=AnotherClass(99))
     assert OmegaConf.is_config(obj.c)
@@ -712,6 +802,144 @@ def test_regression_1483(instantiate_func: Any, is_partial: bool) -> None:
         pickle.dumps(res.kwargs["lst"])
 
 
+def test_runtime_object_override_replaces_unresolvable_config_value(
+    instantiate_func: Any,
+) -> None:
+    runtime_value = Parameters([1, 2, 3])
+
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "value": "${missing}",
+        },
+        value=runtime_value,
+    )
+
+    assert result.kwargs["value"] is runtime_value
+
+
+@mark.parametrize(
+    ("runtime_value", "expected"),
+    [
+        param(
+            OmegaConf.create({"_target_": "tests.instantiate.AnotherClass", "x": 10}),
+            AnotherClass(10),
+            id="dictconfig",
+        ),
+        param(
+            [{"_target_": "tests.instantiate.AnotherClass", "x": 10}],
+            [AnotherClass(10)],
+            id="native-list-with-dict",
+        ),
+        param(
+            OmegaConf.create([{"_target_": "tests.instantiate.AnotherClass", "x": 10}]),
+            [AnotherClass(10)],
+            id="listconfig",
+        ),
+    ],
+)
+def test_runtime_container_override_is_instantiated(
+    instantiate_func: Any, runtime_value: Any, expected: Any
+) -> None:
+    result = instantiate_func(
+        {"_target_": "tests.instantiate.ArgsClass"}, value=runtime_value
+    )
+
+    assert result.kwargs["value"] == expected
+
+
+def test_nested_runtime_object_override_replaces_unresolvable_config_value(
+    instantiate_func: Any,
+) -> None:
+    runtime_value = Parameters([1, 2, 3])
+
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.Tree",
+            "value": 0,
+            "left": {
+                "_target_": "tests.instantiate.Tree",
+                "value": "${missing}",
+            },
+        },
+        left={"value": runtime_value},
+    )
+
+    assert result.left.value is runtime_value
+
+
+@mark.parametrize(
+    ("convert", "expected_type"),
+    [
+        param(ConvertMode.NONE, DictConfig, id="none"),
+        param(ConvertMode.PARTIAL, DictConfig, id="partial"),
+        param(ConvertMode.OBJECT, User, id="object"),
+        param(ConvertMode.ALL, dict, id="all"),
+    ],
+)
+@mark.parametrize("recursive", [False, True])
+def test_structured_runtime_override_preserves_conversion_behavior(
+    instantiate_func: Any,
+    convert: ConvertMode,
+    expected_type: Any,
+    recursive: bool,
+) -> None:
+    user = User(name="Bond", age=7)
+
+    result = instantiate_func(
+        {"_target_": "tests.instantiate.ArgsClass"},
+        user=user,
+        _convert_=convert,
+        _recursive_=recursive,
+    )
+
+    converted_user = result.kwargs["user"]
+    assert isinstance(converted_user, expected_type)
+    if OmegaConf.is_config(converted_user):
+        assert OmegaConf.get_type(converted_user) is User
+    if isinstance(converted_user, User):
+        assert converted_user == user
+    else:
+        assert converted_user == {"name": "Bond", "age": 7}
+
+
+def test_runtime_override_is_not_coerced_by_structured_config(
+    instantiate_func: Any,
+) -> None:
+    result = instantiate_func(
+        AdamConf(),
+        params=Parameters([]),
+        lr="runtime value",
+    )
+
+    assert result.lr == "runtime value"
+
+
+def test_nested_target_can_register_resolver_for_later_argument(
+    instantiate_func: Any,
+) -> None:
+    resolver_name = "hydra_instantiate_delayed_resolution"
+    OmegaConf.clear_resolver(resolver_name)
+    try:
+        result = instantiate_func(
+            {
+                "_target_": "tests.instantiate.ArgsClass",
+                "first": {
+                    "_target_": (
+                        "tests.instantiate.test_instantiate.register_test_resolver"
+                    ),
+                    "name": resolver_name,
+                    "value": 10,
+                },
+                "second": f"${{{resolver_name}:}}",
+            }
+        )
+    finally:
+        OmegaConf.clear_resolver(resolver_name)
+
+    assert result.kwargs == {"first": 10, "second": 10}
+
+
 @mark.parametrize(
     "is_partial,expected_params",
     [(True, Parameters([1, 2, 3])), (False, partial(Parameters))],
@@ -734,7 +962,8 @@ def test_instantiate_adam_conf(
     else:
         assert res.params == expected.params
     assert res.lr == expected.lr
-    assert list(res.betas) == list(expected.betas)  # OmegaConf converts tuples to lists
+    assert isinstance(res.betas, TupleConfig)
+    assert res.betas == expected.betas
     assert res.eps == expected.eps
     assert res.weight_decay == expected.weight_decay
     assert res.amsgrad == expected.amsgrad
@@ -746,8 +975,8 @@ def test_instantiate_adam_conf_with_convert(instantiate_func: Any) -> None:
     expected = Adam(lr=0.123, params=adam_params)
     assert res.params == expected.params
     assert res.lr == expected.lr
-    assert isinstance(res.betas, list)
-    assert list(res.betas) == list(expected.betas)  # OmegaConf converts tuples to lists
+    assert isinstance(res.betas, tuple)
+    assert res.betas == expected.betas
     assert res.eps == expected.eps
     assert res.weight_decay == expected.weight_decay
     assert res.amsgrad == expected.amsgrad
@@ -811,11 +1040,9 @@ def test_instantiate_target_raising_exception_taking_no_arguments(
     with raises(
         InstantiationException,
         match=(
-            dedent(
-                rf"""
+            dedent(rf"""
                 Error in call to target '{re.escape(_target_)}':
-                ExceptionTakingNoArgument\('Err message',?\)"""
-            ).strip()
+                ExceptionTakingNoArgument\('Err message',?\)""").strip()
         ),
     ):
         instantiate_func({}, _target_=_target_)
@@ -828,27 +1055,82 @@ def test_instantiate_target_raising_exception_taking_no_arguments_nested(
     with raises(
         InstantiationException,
         match=(
-            dedent(
-                rf"""
+            dedent(rf"""
                 Error in call to target '{re.escape(_target_)}':
                 ExceptionTakingNoArgument\('Err message',?\)
                 full_key: foo
-                """
-            ).strip()
+                """).strip()
         ),
     ):
         instantiate_func({"foo": {"_target_": _target_}})
 
 
-def test_toplevel_list_partial_not_allowed(instantiate_func: Any) -> None:
-    config = [{"_target_": "tests.instantiate.ClassA", "a": 10, "b": 20, "c": 30}]
+@mark.parametrize(
+    ("config", "sequence_type"),
+    [
+        param(
+            [{"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30}],
+            "list",
+            id="list",
+        ),
+        param(
+            ({"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30},),
+            "tuple",
+            id="tuple",
+        ),
+    ],
+)
+def test_toplevel_sequence_partial_not_allowed(
+    instantiate_func: Any, config: Any, sequence_type: str
+) -> None:
     with raises(
         InstantiationException,
         match=re.escape(
-            "The _partial_ keyword is not compatible with top-level list instantiation"
+            "The _partial_ keyword is not compatible with "
+            f"top-level {sequence_type} instantiation"
         ),
     ):
         instantiate_func(config, _partial_=True)
+
+
+@mark.parametrize(
+    "config",
+    [
+        param(
+            ({"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30},),
+            id="native",
+        ),
+        param(
+            OmegaConf.create(
+                (
+                    {
+                        "_target_": "tests.instantiate.AClass",
+                        "a": 10,
+                        "b": 20,
+                        "c": 30,
+                    },
+                )
+            ),
+            id="tuple-config",
+        ),
+    ],
+)
+@mark.parametrize(
+    ("convert", "expected_type"),
+    [
+        param(ConvertMode.NONE, TupleConfig, id="none"),
+        param(ConvertMode.PARTIAL, tuple, id="partial"),
+        param(ConvertMode.OBJECT, tuple, id="object"),
+        param(ConvertMode.ALL, tuple, id="all"),
+    ],
+)
+def test_instantiate_toplevel_tuple(
+    instantiate_func: Any, config: Any, convert: ConvertMode, expected_type: Any
+) -> None:
+    result = instantiate_func(config, _convert_=convert)
+
+    assert isinstance(result, expected_type)
+    assert result[0] == AClass(a=10, b=20, c=30)
 
 
 @mark.parametrize("is_partial", [True, False])
@@ -1211,10 +1493,13 @@ def test_recursive_instantiation(
             ),
             {},
             Compose(
-                transforms=[
-                    partial(CenterCrop, size=10),  # type: ignore
-                    Rotation(degrees=45),
-                ],
+                transforms=cast(
+                    Any,
+                    [
+                        partial(CenterCrop, size=10),  # type: ignore
+                        Rotation(degrees=45),
+                    ],
+                ),
             ),
         ),
         param(
@@ -1227,10 +1512,13 @@ def test_recursive_instantiation(
             },
             {},
             Compose(
-                transforms=[
-                    partial(CenterCrop),  # type: ignore
-                    Rotation(degrees=45),
-                ]
+                transforms=cast(
+                    Any,
+                    [
+                        partial(CenterCrop),  # type: ignore
+                        Rotation(degrees=45),
+                    ],
+                )
             ),
             id="recursive:list:dict",
         ),
@@ -1244,10 +1532,13 @@ def test_recursive_instantiation(
             ),
             {},
             Mapping(
-                dictionary={
-                    "a": partial(Mapping, dictionary=None),  # type: ignore
-                    "b": Mapping(),
-                }
+                dictionary=cast(
+                    Any,
+                    {
+                        "a": partial(Mapping, dictionary=None),
+                        "b": Mapping(),
+                    },
+                )
             ),
         ),
         param(
@@ -1265,10 +1556,13 @@ def test_recursive_instantiation(
             },
             partial(
                 Mapping,
-                dictionary={
-                    "a": partial(Mapping),
-                    "b": partial(Mapping),
-                },
+                dictionary=cast(
+                    Any,
+                    {
+                        "a": partial(Mapping),
+                        "b": partial(Mapping),
+                    },
+                ),
             ),
         ),
     ],
@@ -1575,11 +1869,9 @@ def test_cannot_locate_target(instantiate_func: Any) -> None:
     with raises(
         InstantiationException,
         match=re.escape(
-            dedent(
-                """\
+            dedent("""\
                 Error locating target 'not_found', set env var HYDRA_FULL_ERROR=1 to see chained exception.
-                full_key: foo"""
-            )
+                full_key: foo""")
         ),
     ) as exc_info:
         instantiate_func(cfg)
@@ -1588,38 +1880,58 @@ def test_cannot_locate_target(instantiate_func: Any) -> None:
     chained = err.__cause__
     assert isinstance(chained, ImportError)
     assert_multiline_regex_search(
-        dedent(
-            """\
+        dedent("""\
             Error loading 'not_found':
             ModuleNotFoundError\\("No module named 'not_found'",?\\)
-            Are you sure that module 'not_found' is installed\\?"""
-        ),
+            Are you sure that module 'not_found' is installed\\?"""),
         chained.args[0],
     )
 
 
-def test_blocklisted_target_fails(instantiate_func: Any) -> None:
-    cfg = OmegaConf.create({"foo": {"_target_": "os.getcwd"}})
+@mark.parametrize(
+    "target",
+    [
+        "builtins.compile",
+        "ctypes.CDLL",
+        "ctypes.WinDLL",
+        "ctypes.windll.LoadLibrary",
+        "importlib.import_module",
+        "os.execl",
+        "os.getcwd",
+        "os.popen",
+        "os.posix_spawn",
+        "posix.kill",
+        "posix.remove",
+        "posix.system",
+        "nt.startfile",
+        "nt.system",
+        "pty.spawn",
+        "runpy.run_path",
+        "subprocess.Popen",
+        "subprocess.check_output",
+        "subprocess.run",
+    ],
+)
+def test_blocklisted_target_fails(target: str) -> None:
+    cfg = OmegaConf.create({"foo": {"_target_": target}})
     with raises(
         InstantiationException,
         match=re.escape(
-            dedent(
-                """\
-                Target 'os.getcwd' is blocklisted and cannot be instantiated from config
+            dedent(f"""\
+                Target '{target}' is blocklisted and cannot be instantiated from config
                 to prevent security vulnerabilities, set env var
-                HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE=os.getcwd:<other allowlisted targets> to bypass
-                full_key: foo"""
-            )
+                HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE={target}:<other allowlisted targets> to bypass
+                full_key: foo""")
         ),
     ) as exc_info:
-        instantiate_func(cfg)
+        _instantiate2.instantiate(cfg)
     err = exc_info.value
     assert hasattr(err, "__cause__")
     chained = err.__cause__
     assert chained is None
 
 
-def test_allowlist_works(instantiate_func: Any, monkeypatch: Any) -> None:
+def test_allowlist_works(monkeypatch: Any) -> None:
     cfg = OmegaConf.create(
         {
             "foo": {"_target_": "builtins.exec", "_args_": ["5+8"]},
@@ -1629,9 +1941,286 @@ def test_allowlist_works(instantiate_func: Any, monkeypatch: Any) -> None:
     monkeypatch.setenv(
         "HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE", "builtins.exec:builtins.eval"
     )
-    res = instantiate_func(cfg)
+    with warns(UserWarning, match="_target_whitelist_"):
+        res = _instantiate2.instantiate(cfg)
     assert res.foo is None
     assert res.bar == 3
+
+
+def test_allowlist_works_for_prefix_blocked_target(monkeypatch: Any) -> None:
+    monkeypatch.setenv("HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE", "os.execl")
+    with warns(UserWarning, match="_target_whitelist_"):
+        assert _resolve_target("os.execl", "") is os.execl
+
+
+def test_target_whitelist_warns_in_legacy_mode() -> None:
+    cfg = {"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30}
+    with warns(UserWarning, match="_target_whitelist_"):
+        assert _instantiate2.instantiate(cfg) == AClass(a=10, b=20, c=30)
+
+
+def test_target_whitelist_warning_points_to_user_callsite() -> None:
+    def call_legacy_instantiate(config: Any) -> Any:
+        nonlocal expected_lineno
+        frame = inspect.currentframe()
+        assert frame is not None
+        expected_lineno = frame.f_lineno + 1
+        return _instantiate2.instantiate(config)
+
+    expected_lineno = -1
+    cfg = {
+        "nested": {
+            "_target_": "tests.instantiate.AClass",
+            "a": 10,
+            "b": 20,
+            "c": 30,
+        }
+    }
+    with warns(UserWarning, match="_target_whitelist_") as records:
+        assert call_legacy_instantiate(cfg) == {"nested": AClass(a=10, b=20, c=30)}
+
+    assert os.path.samefile(records[0].filename, __file__)
+    assert records[0].lineno == expected_lineno
+
+
+def test_target_whitelist_applies_to_callable_targets() -> None:
+    cfg = {"_target_": AClass, "a": 10, "b": 20, "c": 30}
+    with warns(UserWarning, match="_target_whitelist_"):
+        assert _instantiate2.instantiate(cfg) == AClass(a=10, b=20, c=30)
+
+    assert _instantiate2.instantiate(
+        cfg, _target_whitelist_="tests.instantiate.AClass"
+    ) == AClass(a=10, b=20, c=30)
+
+    cfg = OmegaConf.create(
+        {"_target_": module_function, "x": 10},
+        flags={"allow_objects": True},
+    )
+    with warns(UserWarning, match="_target_whitelist_"):
+        assert _instantiate2.instantiate(cfg) == 10
+
+    with raises(
+        InstantiationException,
+        match=(
+            "Target 'tests.instantiate.module_function' is not in the "
+            "instantiate target whitelist"
+        ),
+    ):
+        _instantiate2.instantiate(cfg, _target_whitelist_=[])
+
+    assert (
+        _instantiate2.instantiate(
+            cfg, _target_whitelist_="tests.instantiate.module_function"
+        )
+        == 10
+    )
+
+    cfg = OmegaConf.create(
+        {"_target_": eval, "_args_": ["1+2"]},
+        flags={"allow_objects": True},
+    )
+    with raises(
+        InstantiationException,
+        match="Target 'builtins.eval' is blocklisted",
+    ):
+        _instantiate2.instantiate(cfg)
+
+    target = CallableClass()
+    cfg = OmegaConf.create(
+        {"_target_": target},
+        flags={"allow_objects": True},
+    )
+    assert (
+        _instantiate2.instantiate(
+            cfg, _target_whitelist_="tests.instantiate.CallableClass"
+        )
+        == "callable class"
+    )
+
+    cfg = {"_target_": target}
+    assert (
+        _instantiate2.instantiate(
+            cfg, _target_whitelist_="tests.instantiate.CallableClass"
+        )
+        == "callable class"
+    )
+
+
+def test_non_recursive_plain_config_preserves_callable_target(
+    instantiate_func: Any,
+) -> None:
+    target = CallableClass()
+
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "_recursive_": False,
+            "payload": {"_target_": target},
+        }
+    )
+
+    payload = result.kwargs["payload"]
+    assert OmegaConf.is_dict(payload)
+    assert payload["_target_"] is target
+
+
+def test_callable_target_does_not_alias_literal_target_string(
+    instantiate_func: Any,
+) -> None:
+    target = CallableClass()
+    cfg = {
+        "_target_": "tests.instantiate.ArgsClass",
+        "callable": {"_target_": target},
+        "literal": {"_target_": "__hydra_callable_target_0__"},
+    }
+
+    with raises(
+        InstantiationException,
+        match="Error locating target '__hydra_callable_target_0__'",
+    ):
+        instantiate_func(cfg)
+
+
+@mark.parametrize(
+    "target_whitelist",
+    [
+        "tests.instantiate.*",
+        ["tests.instantiate.AClass"],
+    ],
+)
+def test_target_whitelist_allows_expected_targets(
+    instantiate_func: Any, target_whitelist: Any
+) -> None:
+    cfg = {"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30}
+    assert instantiate_func(cfg, _target_whitelist_=target_whitelist) == AClass(
+        a=10, b=20, c=30
+    )
+
+
+def test_target_whitelist_context_allows_expected_targets() -> None:
+    cfg = {"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30}
+    with target_whitelist("tests.instantiate.*"):
+        assert _instantiate2.instantiate(cfg) == AClass(a=10, b=20, c=30)
+
+
+def test_target_whitelist_context_stacks_additively() -> None:
+    class_cfg = {
+        "_target_": "tests.instantiate.AClass",
+        "a": 10,
+        "b": 20,
+        "c": 30,
+    }
+    function_cfg = {"_target_": "tests.instantiate.module_function", "x": 10}
+
+    with target_whitelist("tests.instantiate.AClass"):
+        assert _instantiate2.instantiate(class_cfg) == AClass(a=10, b=20, c=30)
+        with target_whitelist("tests.instantiate.module_function"):
+            assert _instantiate2.instantiate(class_cfg) == AClass(a=10, b=20, c=30)
+            assert _instantiate2.instantiate(function_cfg) == 10
+
+        with raises(
+            InstantiationException,
+            match="Target 'tests.instantiate.module_function' is not in the instantiate target whitelist",
+        ):
+            _instantiate2.instantiate(function_cfg)
+
+
+def test_target_whitelist_context_reset_replaces_outer_context() -> None:
+    cfg = {"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30}
+
+    with target_whitelist("tests.instantiate.*"):
+        with target_whitelist([], reset=True):
+            with raises(
+                InstantiationException,
+                match="Target 'tests.instantiate.AClass' is not in the instantiate target whitelist",
+            ):
+                _instantiate2.instantiate(cfg)
+
+        assert _instantiate2.instantiate(cfg) == AClass(a=10, b=20, c=30)
+
+
+def test_target_whitelist_policy_can_be_passed_to_instantiate(
+    instantiate_func: Any,
+) -> None:
+    cfg = {"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30}
+    policy = target_whitelist("tests.instantiate.*", reset=True)
+    assert instantiate_func(cfg, _target_whitelist_=policy) == AClass(a=10, b=20, c=30)
+
+
+def test_target_whitelist_policy_reset_replaces_context_for_instantiate() -> None:
+    cfg = {"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30}
+
+    with target_whitelist("tests.instantiate.*"):
+        with raises(
+            InstantiationException,
+            match="Target 'tests.instantiate.AClass' is not in the instantiate target whitelist",
+        ):
+            _instantiate2.instantiate(
+                cfg, _target_whitelist_=target_whitelist([], reset=True)
+            )
+
+
+@mark.parametrize(
+    "target_whitelist",
+    [
+        [],
+        "tests.other.*",
+        ["tests.instantiate.BClass"],
+    ],
+)
+def test_target_whitelist_blocks_unlisted_targets(
+    instantiate_func: Any, target_whitelist: Any
+) -> None:
+    cfg = {"_target_": "tests.instantiate.AClass", "a": 10}
+    with raises(
+        InstantiationException,
+        match="Target 'tests.instantiate.AClass' is not in the instantiate target whitelist",
+    ):
+        instantiate_func(cfg, _target_whitelist_=target_whitelist)
+
+
+@mark.parametrize("target_whitelist", ["*", "*.*", "tests.*.AClass"])
+def test_target_whitelist_rejects_broad_wildcards(
+    instantiate_func: Any, target_whitelist: str
+) -> None:
+    cfg = {"_target_": "tests.instantiate.AClass", "a": 10}
+    with raises(
+        InstantiationException,
+        match="Invalid _target_whitelist_ entry",
+    ):
+        instantiate_func(cfg, _target_whitelist_=target_whitelist)
+
+
+def test_target_whitelist_in_config_is_rejected(instantiate_func: Any) -> None:
+    cfg = {
+        "_target_": "tests.instantiate.AClass",
+        "_target_whitelist_": "tests.instantiate.*",
+        "a": 10,
+    }
+    with raises(
+        InstantiationException,
+        match="_target_whitelist_ must be passed to instantiate\\(\\)",
+    ):
+        instantiate_func(cfg)
+
+
+def test_target_whitelist_can_explicitly_allow_blocklisted_targets(
+    instantiate_func: Any,
+) -> None:
+    cfg = {"_target_": "builtins.eval", "_args_": ["1+2"]}
+    assert instantiate_func(cfg, _target_whitelist_="builtins.eval") == 3
+
+
+def test_target_whitelist_unsafe_allows_all_targets(instantiate_func: Any) -> None:
+    cfg = {"_target_": "builtins.eval", "_args_": ["1+2"]}
+    assert instantiate_func(cfg, _target_whitelist_=UNSAFE_ALLOW_ALL_TARGETS) == 3
+
+
+def test_allowlist_works_for_canonical_os_alias(monkeypatch: Any) -> None:
+    alias_target = "nt.system" if os.name == "nt" else "posix.system"
+    monkeypatch.setenv("HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE", "os.system")
+    with warns(UserWarning, match="no\n_target_whitelist_"):
+        assert _resolve_target(alias_target, "") is os.system
 
 
 @mark.parametrize(
@@ -1858,14 +2447,17 @@ def test_convert_and_recursive_node(
                 },
             },
             (
-                # a is a DictConfig because of top level DictConfig
                 OmegaConf.create(
                     {
-                        "a": SimpleDataClass(
-                            a=OmegaConf.create({"foo": 99}), b=OmegaConf.create([1, 99])
+                        "a": structured_config_object_node(
+                            SimpleDataClass(
+                                a=OmegaConf.create({"foo": 99}),
+                                b=OmegaConf.create([1, 99]),
+                            )
                         ),
                         "b": None,
-                    }
+                    },
+                    flags={"allow_objects": True},
                 ),
                 {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
                 {"a": SimpleDataClass(a={"foo": 99}, b=[1, 99]), "b": None},
@@ -1968,6 +2560,26 @@ def test_instantiated_regular_class_container_types(
     assert isinstance(ret.b[0].b, expected_list)
 
 
+@mark.parametrize(
+    ("mode", "expected_tuple"),
+    [
+        param(ConvertMode.NONE, TupleConfig, id="none"),
+        param(ConvertMode.ALL, tuple, id="all"),
+        param(ConvertMode.PARTIAL, tuple, id="partial"),
+        param(ConvertMode.OBJECT, tuple, id="object"),
+    ],
+)
+def test_instantiated_regular_class_tuple_type(
+    instantiate_func: Any, mode: Any, expected_tuple: Any
+) -> None:
+    cfg = {"_target_": "tests.instantiate.SimpleClass", "a": (1, 2), "b": None}
+
+    ret = instantiate_func(cfg, _convert_=mode)
+
+    assert isinstance(ret.a, expected_tuple)
+    assert ret.a == (1, 2)
+
+
 def test_instantiated_regular_class_container_types_partial(
     instantiate_func: Any,
 ) -> None:
@@ -2022,6 +2634,42 @@ def test_instantiated_regular_class_container_types_object2(
     assert isinstance(ret.a, list)
     assert isinstance(ret.a[0], dict)
     assert isinstance(ret.a[1], User)
+
+
+def test_nested_dataclass_targets_remain_objects_with_convert_none(
+    instantiate_func: Any,
+) -> None:
+    dataclass_target = {
+        "_target_": "tests.instantiate.SimpleDataClass",
+        "a": "foo",
+        "b": 123,
+    }
+
+    top = instantiate_func(dataclass_target, _convert_=ConvertMode.NONE)
+    assert isinstance(top, SimpleDataClass)
+
+    ret_list = instantiate_func([dataclass_target], _convert_=ConvertMode.NONE)
+    assert isinstance(ret_list, ListConfig)
+    assert isinstance(ret_list[0], SimpleDataClass)
+    assert ret_list[0] == top
+
+    ret = instantiate_func(
+        {
+            "nested": dataclass_target,
+            "items": [dataclass_target],
+            "tuple_items": (dataclass_target,),
+        },
+        _convert_=ConvertMode.NONE,
+    )
+    assert isinstance(ret, DictConfig)
+    assert isinstance(ret.nested, SimpleDataClass)
+    assert ret.nested == top
+    assert isinstance(ret["items"], ListConfig)
+    assert isinstance(ret["items"][0], SimpleDataClass)
+    assert ret["items"][0] == top
+    assert isinstance(ret["tuple_items"], TupleConfig)
+    assert isinstance(ret["tuple_items"][0], SimpleDataClass)
+    assert ret["tuple_items"][0] == top
 
 
 @mark.parametrize(

@@ -156,13 +156,15 @@ class BuildPyCommand(build_py.build_py):
 
 
 class Develop(develop.develop):
-    def run(self) -> None:  # type: ignore
+    def run(self) -> None:
         if not self.dry_run:
             run_antlr(self)
         develop.develop.run(self)
 
 
 class SDistCommand(sdist.sdist):
+    dry_run: bool
+
     def run(self) -> None:
         if not self.dry_run:
             self.run_command("clean")
@@ -214,23 +216,23 @@ class ANTLRCommand(Command):  # type: ignore
         build_dir = Path(__file__).parent.absolute()
         project_root = build_dir.parent
         lib = "antlr4"
-        pkgname = 'omegaconf.vendor'
+        pkgname = "omegaconf.vendor"
 
         replacements = [
             partial(  # import antlr4 -> import omegaconf.vendor.antlr4
-                re.compile(r'(^\s*)import {}\n'.format(lib), flags=re.M).sub,
-                r'\1from {} import {}\n'.format(pkgname, lib)
+                re.compile(r"(^\s*)import {}\n".format(lib), flags=re.M).sub,
+                r"\1from {} import {}\n".format(pkgname, lib),
             ),
             partial(  # from antlr4 -> from fomegaconf.vendor.antlr4
-                re.compile(r'(^\s*)from {}(\.|\s+)'.format(lib), flags=re.M).sub,
-                r'\1from {}.{}\2'.format(pkgname, lib)
+                re.compile(r"(^\s*)from {}(\.|\s+)".format(lib), flags=re.M).sub,
+                r"\1from {}.{}\2".format(pkgname, lib),
             ),
         ]
 
         path = project_root / "hydra" / "grammar" / "gen"
         for item in path.iterdir():
             if item.is_file() and item.name.endswith(".py"):
-                text = item.read_text('utf8')
+                text = item.read_text("utf8")
                 for replacement in replacements:
                     text = replacement(text)
-                item.write_text(text, 'utf8')
+                item.write_text(text, "utf8")

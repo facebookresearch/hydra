@@ -8,6 +8,7 @@ from typing import Any, List, Optional
 import optuna
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
+from hydra.errors import InstantiationException
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import (
     TSweepRunner,
@@ -15,25 +16,32 @@ from hydra.test_utils.test_utils import (
     run_process,
     run_python_script,
 )
+from hydra.utils import instantiate
 from omegaconf import DictConfig, OmegaConf
 from optuna.distributions import (
     BaseDistribution,
     CategoricalDistribution,
-    DiscreteUniformDistribution,
-    IntLogUniformDistribution,
-    IntUniformDistribution,
-    LogUniformDistribution,
-    UniformDistribution,
+    FloatDistribution,
+    IntDistribution,
 )
 from optuna.samplers import RandomSampler
-from pytest import mark, warns
+from pytest import mark, raises, warns
 
 from hydra_plugins.hydra_optuna_sweeper import _impl
 from hydra_plugins.hydra_optuna_sweeper._impl import OptunaSweeperImpl
-from hydra_plugins.hydra_optuna_sweeper.config import Direction
+from hydra_plugins.hydra_optuna_sweeper.config import Direction, MOTPESamplerConfig
 from hydra_plugins.hydra_optuna_sweeper.optuna_sweeper import OptunaSweeper
 
 chdir_plugin_root()
+
+SQLALCHEMY_UTC_WARNING_FILTER = (
+    r"-W ignore:datetime.datetime.utcfromtimestamp() is deprecated:"
+    r"DeprecationWarning:sqlalchemy.sql.sqltypes"
+)
+
+
+def run_optuna_script(cmd: List[str]) -> None:
+    run_python_script([SQLALCHEMY_UTC_WARNING_FILTER, *cmd])
 
 
 def test_discovery() -> None:
@@ -59,24 +67,24 @@ def check_distribution(expected: BaseDistribution, actual: BaseDistribution) -> 
             {"type": "categorical", "choices": [1, 2, 3]},
             CategoricalDistribution([1, 2, 3]),
         ),
-        ({"type": "int", "low": 0, "high": 10}, IntUniformDistribution(0, 10)),
+        ({"type": "int", "low": 0, "high": 10}, IntDistribution(0, 10)),
         (
             {"type": "int", "low": 0, "high": 10, "step": 2},
-            IntUniformDistribution(0, 10, step=2),
+            IntDistribution(0, 10, step=2),
         ),
-        ({"type": "int", "low": 0, "high": 5}, IntUniformDistribution(0, 5)),
+        ({"type": "int", "low": 0, "high": 5}, IntDistribution(0, 5)),
         (
             {"type": "int", "low": 1, "high": 100, "log": True},
-            IntLogUniformDistribution(1, 100),
+            IntDistribution(1, 100, log=True),
         ),
-        ({"type": "float", "low": 0, "high": 1}, UniformDistribution(0, 1)),
+        ({"type": "float", "low": 0, "high": 1}, FloatDistribution(0, 1)),
         (
             {"type": "float", "low": 0, "high": 10, "step": 2},
-            DiscreteUniformDistribution(0, 10, 2),
+            FloatDistribution(0, 10, step=2),
         ),
         (
             {"type": "float", "low": 1, "high": 100, "log": True},
-            LogUniformDistribution(1, 100),
+            FloatDistribution(1, 100, log=True),
         ),
     ],
 )
@@ -92,12 +100,12 @@ def test_create_optuna_distribution_from_config(input: Any, expected: Any) -> No
         ("key=choice(true, false)", CategoricalDistribution([True, False])),
         ("key=choice('hello', 'world')", CategoricalDistribution(["hello", "world"])),
         ("key=shuffle(range(1,3))", CategoricalDistribution((1, 2))),
-        ("key=range(1,3)", IntUniformDistribution(1, 3)),
-        ("key=interval(1, 5)", UniformDistribution(1, 5)),
-        ("key=int(interval(1, 5))", IntUniformDistribution(1, 5)),
-        ("key=tag(log, interval(1, 5))", LogUniformDistribution(1, 5)),
-        ("key=tag(log, int(interval(1, 5)))", IntLogUniformDistribution(1, 5)),
-        ("key=range(0.5, 5.5, step=1)", DiscreteUniformDistribution(0.5, 5.5, 1)),
+        ("key=range(1,3)", IntDistribution(1, 3)),
+        ("key=interval(1, 5)", FloatDistribution(1, 5)),
+        ("key=int(interval(1, 5))", IntDistribution(1, 5)),
+        ("key=tag(log, interval(1, 5))", FloatDistribution(1, 5, log=True)),
+        ("key=tag(log, int(interval(1, 5)))", IntDistribution(1, 5, log=True)),
+        ("key=range(0.5, 5.5, step=1)", FloatDistribution(0.5, 5.5, step=1)),
     ],
 )
 def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> None:
@@ -110,22 +118,25 @@ def test_create_optuna_distribution_from_override(input: Any, expected: Any) -> 
 @mark.parametrize(
     "input, expected",
     [
-        (["key=choice(1,2)"], ({"key": CategoricalDistribution([1, 2])}, {})),
-        (["key=5"], ({}, {"key": "5"})),
+        (["key=choice(1,2)"], ({"key": CategoricalDistribution([1, 2])}, {}, [])),
+        (["key=5"], ({}, {"key": "5"}, [])),
         (
             ["key1=choice(1,2)", "key2=5"],
-            ({"key1": CategoricalDistribution([1, 2])}, {"key2": "5"}),
+            ({"key1": CategoricalDistribution([1, 2])}, {"key2": "5"}, []),
         ),
         (
             ["key1=choice(1,2)", "key2=5", "key3=range(1,3)"],
             (
                 {
                     "key1": CategoricalDistribution([1, 2]),
-                    "key3": IntUniformDistribution(1, 3),
+                    "key3": IntDistribution(1, 3),
                 },
                 {"key2": "5"},
+                [],
             ),
         ),
+        (["~z"], ({}, {}, ["~z"])),
+        (["~z=10"], ({}, {}, ["~z=10"])),
     ],
 )
 def test_create_params_from_overrides(input: Any, expected: Any) -> None:
@@ -173,7 +184,7 @@ def test_optuna_example(with_commandline: bool, tmpdir: Path) -> None:
             "x=choice(0, 1, 2)",
             "y=0",  # Fixed parameter
         ]
-    run_python_script(cmd)
+    run_optuna_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     study = optuna.load_study(storage=storage, study_name=study_name)
     best_trial = study.best_trial
@@ -212,7 +223,7 @@ def test_example_with_grid_sampler(
         f"hydra.sweeper.storage={storage}",
         f"hydra.sweeper.study_name={study_name}",
     ]
-    run_python_script(cmd)
+    run_optuna_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     bv, bx, by, bz = (
@@ -245,7 +256,7 @@ def test_optuna_multi_objective_example(with_commandline: bool, tmpdir: Path) ->
             "x=range(0, 5)",
             "y=range(0, 3)",
         ]
-    run_python_script(cmd)
+    run_optuna_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     assert returns.name == "optuna"
@@ -284,7 +295,7 @@ def test_optuna_custom_search_space_example(tmpdir: Path) -> None:
         "hydra.sweeper.sampler.seed=123",
         f"max_z_difference_from_x={max_z_difference_from_x}",
     ]
-    run_python_script(cmd)
+    run_optuna_script(cmd)
     returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
     assert isinstance(returns, DictConfig)
     assert returns.name == "optuna"
@@ -371,23 +382,32 @@ def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
         assert error_string not in err
 
 
-def test_example_with_deprecated_search_space(
+def test_motpe_sampler_removed() -> None:
+    with raises(
+        InstantiationException,
+        match="The 'motpe' sampler was removed in Optuna 4.0",
+    ):
+        instantiate(
+            OmegaConf.structured(MOTPESamplerConfig),
+            _target_whitelist_="hydra_plugins.hydra_optuna_sweeper.config.raise_motpe_removed",
+        )
+
+
+def test_example_with_removed_motpe(
     tmpdir: Path,
 ) -> None:
     cmd = [
-        "-W ignore::UserWarning",
-        "example/sphere.py",
+        sys.executable,
+        "example/multi-objective.py",
         "--multirun",
         "--config-dir=tests/conf",
-        "--config-name=test_deprecated_search_space",
+        "--config-name=test_motpe",
         "hydra.sweep.dir=" + str(tmpdir),
         "hydra.job.chdir=True",
         "hydra.sweeper.n_trials=20",
         "hydra.sweeper.n_jobs=1",
     ]
 
-    run_python_script(cmd)
-    returns = OmegaConf.load(f"{tmpdir}/optimization_results.yaml")
-    assert isinstance(returns, DictConfig)
-    assert returns.name == "optuna"
-    assert abs(returns["best_params"]["x"]) <= 5.5
+    out, err = run_process(cmd, print_error=False, raise_exception=False)
+    assert "motpe" in err
+    assert "sampler was removed in Optuna 4.0" in err

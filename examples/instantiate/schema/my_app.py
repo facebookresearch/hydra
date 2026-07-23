@@ -6,7 +6,7 @@ from omegaconf import MISSING
 
 import hydra
 from hydra.core.config_store import ConfigStore
-from hydra.utils import instantiate
+from hydra.utils import instantiate, target_whitelist
 
 
 class DBConnection:
@@ -71,7 +71,8 @@ cs.store(group="db", name="postgresql", node=PostGreSQLConfig)
 
 @hydra.main(version_base=None, config_name="config")
 def my_app(cfg: Config) -> None:
-    connection = instantiate(cfg.db)
+    with target_whitelist("my_app.*"):
+        connection = instantiate(cfg.db)
     connection.connect()
 
 

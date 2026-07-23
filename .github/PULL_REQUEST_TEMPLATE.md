@@ -8,6 +8,11 @@
 
 Yes/No
 
+### For non-trivial features, API changes, or behavior changes: is there an issue or design discussion where maintainers agreed on the direction?
+
+(Link to the issue or discussion. Pull requests without prior design alignment
+may be redirected to discussion before implementation review.)
+
 ## Test Plan
 
 (How should this PR be tested? Do you require special setup to run the test or repro the fixed bug?)

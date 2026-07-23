@@ -18,15 +18,8 @@ Call/instantiate supports:
 - Constructing an object by calling the `__init__` method
 - Calling functions, static functions, class methods and other callable global objects
 
-
-:::warning
-This may pose a security risk since the config can be used to execute arbitrary code. Make
-sure to use this only with trusted configs.
-
-There is a default list of blocklisted modules. To bypass it, set the env var
-HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE with a colon-separated list of modules to allowlist,
-eg. `HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE=os.rename:shutil.move`
-:::
+Top-level list and tuple inputs are instantiated element by element. Partial
+instantiation is not supported for these sequence inputs.
 
 <details>
     <summary>Instantiate API (Expand for details)</summary>
@@ -44,17 +37,25 @@ eg. `HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE=os.rename:shutil.move`
                                     may be overridden via a _recursive_ key in
                                     the kwargs
                        _convert_: Conversion strategy
-                            none    : Passed objects are DictConfig and ListConfig, default
-                            partial : Passed objects are converted to dict and list, with
-                                      the exception of Structured Configs (and their fields).
-                            object  : Passed objects are converted to dict and list.
+                            none    : Passed objects are DictConfig, ListConfig and
+                                      TupleConfig, default
+                            partial : Passed objects are converted to dict, list and
+                                      tuple, with the exception of Structured Configs
+                                      (and their fields).
+                            object  : Passed objects are converted to dict, list and tuple.
                                       Structured Configs are converted to instances of the
                                       backing dataclass / attr class.
-                            all     : Passed objects are dicts, lists and primitives without
-                                      a trace of OmegaConf containers. Structured configs
-                                      are converted to dicts / lists too.
+                            all     : Passed objects are dicts, lists, tuples and
+                                      primitives without a trace of OmegaConf containers.
+                                      Structured configs are converted to primitive
+                                      containers too.
                        _partial_: If True, return functools.partial wrapped method or object
                                   False by default. Configure per target.
+        :param _target_whitelist_: A target string, list of target strings,
+                                   object returned by target_whitelist(), or
+                                   UNSAFE_ALLOW_ALL_TARGETS. Passing None
+                                   preserves legacy behavior unless a
+                                   target_whitelist() context is active.
         :param args: Optional positional parameters pass-through
         :param kwargs: Optional named parameters to override
                        parameters in the config object. Parameters not present
@@ -71,11 +72,102 @@ eg. `HYDRA_INSTANTIATE_ALLOWLIST_OVERRIDE=os.rename:shutil.move`
 
 </details><br/>
 
+<details>
+    <summary>Target whitelist API (Expand for details)</summary>
+
+    ```python
+    def target_whitelist(
+        target_whitelist: str | Sequence[str] | UNSAFE_ALLOW_ALL_TARGETS | None,
+        reset: bool = False,
+    ):
+        """
+        Create a target whitelist object for hydra.utils.instantiate().
+
+        The returned object can be used as a context manager to apply a whitelist
+        to instantiate() calls in the current context, or passed to instantiate()
+        as _target_whitelist_.
+
+        :param target_whitelist: A target string, list of target strings, or
+                                 UNSAFE_ALLOW_ALL_TARGETS. A trailing .*
+                                 allows targets under a package prefix.
+        :param reset: If True, ignore any outer target_whitelist() context.
+                      If False, add these targets to the current context.
+        """
+    ```
+
+</details><br/>
+
 The config passed to these functions must have a key called `_target_`, with the value of a fully qualified class name, class method, static method or callable.
 For convenience, `None` config results in a `None` object.
 
+Create a whitelist object with `target_whitelist()`. Use it as a context manager
+to apply a whitelist to every `instantiate()` call in a block. This is useful
+when another function or framework calls `instantiate()` internally, or when
+calling `instantiate()` multiple times with the same whitelist:
+
+```python
+from hydra.utils import instantiate, target_whitelist
+
+with target_whitelist("my_app.*"):
+    framework_function(cfg)
+```
+
+Or pass it directly to one `instantiate()` call:
+
+```python
+model = instantiate(
+    cfg.model,
+    _target_whitelist_=target_whitelist("my_app.models.*"),
+)
+```
+
+Nested `target_whitelist()` scopes stack by default: an inner scope adds its
+targets to the outer scope.
+
+```python
+with target_whitelist("my_app.models.*"):
+    with target_whitelist("my_app.optimizers.*"):
+        train(cfg)
+```
+
+Use `reset=True` when the inner scope should replace the outer scope instead of
+adding to it:
+
+```python
+with target_whitelist("my_app.*"):
+    with target_whitelist("my_app.models.*", reset=True):
+        instantiate(cfg.model)
+```
+
+For simple direct calls, `_target_whitelist_` also accepts a string or list of
+strings.
+
+The wildcard `*` by itself is not allowed as a whitelist entry. To explicitly
+preserve legacy all-target behavior, use `UNSAFE_ALLOW_ALL_TARGETS`:
+
+```python
+from hydra.utils import UNSAFE_ALLOW_ALL_TARGETS, instantiate
+
+component = instantiate(
+    cfg.component,
+    _target_whitelist_=UNSAFE_ALLOW_ALL_TARGETS,
+)
+```
+
 **Named arguments** : Config fields (except reserved fields like `_target_`) are passed as named arguments to the target.
 Named arguments in the config can be overridden by passing named argument with the same name in the `instantiate()` call-site.
+
+Call-site arguments are applied separately from the input configuration. They
+replace the corresponding arguments passed to the target without modifying the
+input configuration. They therefore do not affect interpolation resolution or
+Structured Config coercion in the input configuration. Configuration values are
+resolved lazily as instantiation proceeds instead of resolving and copying the
+full configuration tree up front. This avoids processing unrelated configuration
+values and allows runtime state established by an earlier target to be used
+while resolving a later argument.
+
+See the [Hydra 1.4 upgrade guide](/docs/upgrades/1.3_to_1.4/instantiate_resolution)
+for the compatibility impact and an example.
 
 **Positional arguments** : The config may contain a `_args_` field representing positional arguments to pass to the target.
 The positional arguments can be overridden together by passing positional arguments in the `instantiate()` call-site.
@@ -103,10 +195,6 @@ optimizer:
   _target_: my_app.Optimizer
   algo: SGD
   lr: 0.01
-
-
-
-
 ```
 
 
@@ -115,18 +203,26 @@ optimizer:
 <div className="col col--6">
 
 ```python title="Instantiation"
-opt = instantiate(cfg.optimizer)
+with target_whitelist("my_app.*"):
+    opt = instantiate(cfg.optimizer)
 print(opt)
 # Optimizer(algo=SGD,lr=0.01)
-
-# override parameters on the call-site
-opt = instantiate(cfg.optimizer, lr=0.2)
-print(opt)
-# Optimizer(algo=SGD,lr=0.2)
 ```
 
 </div>
 </div>
+
+You can override parameters at the call-site:
+
+```python
+with target_whitelist("my_app.*"):
+    opt = instantiate(
+        cfg.optimizer,
+        lr=0.2,
+    )
+print(opt)
+# Optimizer(algo=SGD,lr=0.2)
+```
 
 
 ### Recursive instantiation
@@ -163,20 +259,22 @@ trainer:
 
 Hydra will instantiate nested objects recursively by default.
 ```python
-trainer = instantiate(cfg.trainer)
-print(trainer)
-# Trainer(
-#  optimizer=Optimizer(algo=SGD,lr=0.01),
-#  dataset=Dataset(name=Imagenet, path=/datasets/imagenet)
-# )
+with target_whitelist("my_app.*"):
+    trainer = instantiate(cfg.trainer)
+    print(trainer)
+    # Trainer(
+    #  optimizer=Optimizer(algo=SGD,lr=0.01),
+    #  dataset=Dataset(name=Imagenet, path=/datasets/imagenet)
+    # )
 ```
 You can override parameters for nested objects:
 ```python
-trainer = instantiate(
-    cfg.trainer,
-    optimizer={"lr": 0.3},
-    dataset={"name": "cifar10", "path": "/datasets/cifar10"},
-)
+with target_whitelist("my_app.*"):
+    trainer = instantiate(
+        cfg.trainer,
+        optimizer={"lr": 0.3},
+        dataset={"name": "cifar10", "path": "/datasets/cifar10"},
+    )
 print(trainer)
 # Trainer(
 #   optimizer=Optimizer(algo=SGD,lr=0.3),
@@ -186,21 +284,28 @@ print(trainer)
 
 Similarly, positional arguments of nested objects can be overridden:
 ```python
-obj = instantiate(
-    cfg.object,
-    # pass 1 and 2 as positional arguments to the target object
-    1, 2,
-    # pass 3 and 4 as positional arguments to a nested child object
-    child={"_args_": [3, 4]},
-)
+with target_whitelist("my_app.*"):
+    obj = instantiate(
+        cfg.object,
+        # pass 1 and 2 as positional arguments
+        # to the target object
+        1, 2,
+        # pass 3 and 4 as positional arguments
+        # to a nested child object
+        child={"_args_": [3, 4]},
+    )
 ```
 
 ### Disable recursive instantiation
 You can disable recursive instantiation by setting `_recursive_` to `False` in the config node or in the call-site
 In that case the Trainer object will receive an OmegaConf DictConfig for nested dataset and optimizer instead of the instantiated objects.
 ```python
-optimizer = instantiate(cfg.trainer, _recursive_=False)
-print(optimizer)
+trainer = instantiate(
+    cfg.trainer,
+    _recursive_=False,
+    _target_whitelist_="my_app.Trainer",
+)
+print(trainer)
 ```
 
 Output:
@@ -217,27 +322,28 @@ Trainer(
 
 ### Parameter conversion strategies
 By default, the parameters passed to the target are either primitives (int,
-float, bool etc) or OmegaConf containers (`DictConfig`, `ListConfig`).
-OmegaConf containers have many advantages over primitive dicts and lists,
+float, bool etc) or OmegaConf containers (`DictConfig`, `ListConfig`,
+`TupleConfig`). OmegaConf containers have many advantages over primitive dicts,
+lists, and tuples,
 including convenient attribute access for keys,
 [duck-typing as instances of dataclasses or attrs classes](https://omegaconf.readthedocs.io/en/latest/structured_config.html), and
 support for [variable interpolation](https://omegaconf.readthedocs.io/en/latest/usage.html#variable-interpolation)
 and [custom resolvers](https://omegaconf.readthedocs.io/en/latest/custom_resolvers.html).
 If the callable targeted by `instantiate` leverages OmegaConf's features, it
-will make sense to pass `DictConfig` and `ListConfig` instances directly to
-that callable.
+will make sense to pass `DictConfig`, `ListConfig`, and `TupleConfig` instances
+directly to that callable.
 
 That being said, in many cases it's desired to pass normal Python dicts and
-lists, rather than `DictConfig` or `ListConfig` instances, as arguments to your
-callable. You can change instantiate's argument conversion strategy using the
-`_convert_` parameter. Supported values are:
+lists and tuples, rather than `DictConfig`, `ListConfig`, or `TupleConfig`
+instances, as arguments to your callable. You can change instantiate's argument
+conversion strategy using the `_convert_` parameter. Supported values are:
 
 - `"none"` : Default behavior, Use OmegaConf containers
-- `"partial"` : Convert OmegaConf containers to dict and list, except
+- `"partial"` : Convert OmegaConf containers to dict, list, and tuple, except
   Structured Configs, which remain as DictConfig instances.
-- `"object"` : Convert OmegaConf containers to dict and list, except Structured
-  Configs, which are converted to instances of the backing dataclass / attr
-  class using `OmegaConf.to_object`.
+- `"object"` : Convert OmegaConf containers to dict, list, and tuple, except
+  Structured Configs, which are converted to instances of the backing dataclass
+  / attr class using `OmegaConf.to_object`.
 - `"all"` : Convert everything to primitive containers
 
 The conversion strategy applies recursively to all subconfigs of the instantiation target.
@@ -265,22 +371,22 @@ cfg = OmegaConf.create(
     }
 )
 
-obj_none = instantiate(cfg, _convert_="none")
+obj_none = instantiate(cfg, _convert_="none", _target_whitelist_="__main__.*")
 assert isinstance(obj_none, MyTarget)
 assert isinstance(obj_none.foo, DictConfig)
 assert isinstance(obj_none.bar, DictConfig)
 
-obj_partial = instantiate(cfg, _convert_="partial")
+obj_partial = instantiate(cfg, _convert_="partial", _target_whitelist_="__main__.*")
 assert isinstance(obj_partial, MyTarget)
 assert isinstance(obj_partial.foo, DictConfig)
 assert isinstance(obj_partial.bar, dict)
 
-obj_object = instantiate(cfg, _convert_="object")
+obj_object = instantiate(cfg, _convert_="object", _target_whitelist_="__main__.*")
 assert isinstance(obj_object, MyTarget)
 assert isinstance(obj_object.foo, Foo)
 assert isinstance(obj_object.bar, dict)
 
-obj_all = instantiate(cfg, _convert_="all")
+obj_all = instantiate(cfg, _convert_="all", _target_whitelist_="__main__.*")
 assert isinstance(obj_all, MyTarget)
 assert isinstance(obj_all.foo, dict)
 assert isinstance(obj_all.bar, dict)
@@ -292,16 +398,16 @@ instances of `MyTarget` that are equivalent to the above:
 
 ```python
 cfg_none = OmegaConf.create({..., "_convert_": "none"})
-obj_none = instantiate(cfg_none)
+obj_none = instantiate(cfg_none, _target_whitelist_="__main__.*")
 
 cfg_partial = OmegaConf.create({..., "_convert_": "partial"})
-obj_partial = instantiate(cfg_partial)
+obj_partial = instantiate(cfg_partial, _target_whitelist_="__main__.*")
 
 cfg_object = OmegaConf.create({..., "_convert_": "object"})
-obj_object = instantiate(cfg_object)
+obj_object = instantiate(cfg_object, _target_whitelist_="__main__.*")
 
 cfg_all = OmegaConf.create({..., "_convert_": "all"})
-obj_all = instantiate(cfg_all)
+obj_all = instantiate(cfg_all, _target_whitelist_="__main__.*")
 ```
 
 ### Partial Instantiation
@@ -352,7 +458,8 @@ model:
 <div className="col col--7">
 
 ```python title="Instantiation"
-model = instantiate(cfg.model)
+with target_whitelist("my_app.*"):
+    model = instantiate(cfg.model)
 print(model)
 # "Model(Optimizer=Optimizer(algo=SGD,lr=0.01),lr=0.01)
 ```
@@ -363,7 +470,11 @@ print(model)
 If you are repeatedly instantiating the same config,
 using `_partial_=True` may provide a significant speedup as compared with regular (non-partial) instantiation.
 ```python
-factory = instantiate(config, _partial_=True)
+factory = instantiate(
+    config,
+    _partial_=True,
+    _target_whitelist_="my_app.*",
+)
 obj = factory()
 ```
 In the above example, repeatedly calling `factory` would be faster than repeatedly calling `instantiate(config)`.
@@ -381,7 +492,11 @@ bar_conf = {
     "foo": {"_target_": "__main__.Foo"},
 }
 
-bar_factory = instantiate(bar_conf, _partial_=True)
+bar_factory = instantiate(
+    bar_conf,
+    _partial_=True,
+    _target_whitelist_="__main__.*",
+)
 bar1 = bar_factory()
 bar2 = bar_factory()
 
@@ -401,7 +516,11 @@ you will need to provide a dotpath looking up that function in Python's [`builti
 ```python
 from hydra.utils import instantiate
 # instantiate({"_target_": "len"}, [1,2,3])  # this gives an InstantiationException
-instantiate({"_target_": "builtins.len"}, [1,2,3])  # this works, returns the number 3
+instantiate(
+    {"_target_": "builtins.len"},
+    [1,2,3],
+    _target_whitelist_="builtins.len",
+)  # this works, returns the number 3
 ```
 
 ### Dotpath lookup machinery

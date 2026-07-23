@@ -1,0 +1,5 @@
+# @package _global_
+defaults:
+  - override /hydra/launcher: custom_launcher
+
+experiment: custom_launcher

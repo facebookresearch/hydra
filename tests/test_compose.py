@@ -29,8 +29,14 @@ from hydra.errors import (
     OverrideParseException,
 )
 from hydra.test_utils.test_utils import chdir_hydra_root
+from hydra.types import RunMode
 
 chdir_hydra_root()
+
+EXTEND_LIST_DEPRECATION_WARNING = (
+    "extend_list(...) is deprecated and will be removed in Hydra 1.5. "
+    "See https://github.com/facebookresearch/hydra/issues/3200"
+)
 
 
 @fixture
@@ -70,18 +76,35 @@ def test_initialize_old_version_base(hydra_restore_singletons: Any) -> None:
 
 def test_initialize_bad_version_base(hydra_restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
-    with raises(
-        TypeError,
-        match="expected string or bytes-like object",
-    ):
+    with raises(TypeError):
         initialize(version_base=1.1)  # type: ignore
 
 
-def test_initialize_dev_version_base(hydra_restore_singletons: Any) -> None:
+@mark.parametrize("version_base", ["1.2.0", "1.2.0.dev2", "1.2.0rc1"])
+def test_initialize_hydra_version_string_base(
+    hydra_restore_singletons: Any, version_base: str
+) -> None:
     assert not GlobalHydra().is_initialized()
-    # packaging will compare "1.2.0.dev2" < "1.2", so need to ensure handled correctly
-    initialize(version_base="1.2.0.dev2")
+    initialize(version_base=version_base)
     assert version.base_at_least("1.2")
+
+
+def test_version_base_numeric_comparison(hydra_restore_singletons: Any) -> None:
+    version.setbase("1.10")
+
+    assert version.base_at_least("1.2")
+    assert not version.base_at_least("2.0")
+
+
+@mark.parametrize(
+    "version_base",
+    ["1", "one.two", "1.2rc1", "1.2.bad", "1.2.0a1", "1.2.0b1"],
+)
+def test_initialize_invalid_version_base(
+    hydra_restore_singletons: Any, version_base: str
+) -> None:
+    with raises(ValueError, match="Invalid version"):
+        initialize(version_base=version_base)
 
 
 def test_initialize_cur_version_base(hydra_restore_singletons: Any) -> None:
@@ -475,8 +498,12 @@ def test_extending_list(
     ConfigStore.instance().store(name="config", node=Config)
 
     if isinstance(expected, dict):
-        cfg = compose(config_name="config", overrides=overrides)
+        with warns(
+            UserWarning, match=re.escape(EXTEND_LIST_DEPRECATION_WARNING)
+        ) as records:
+            cfg = compose(config_name="config", overrides=overrides)
         assert cfg == expected
+        assert len(records) == len(overrides)
     else:
         with expected:
             compose(config_name="config", overrides=overrides)
@@ -529,6 +556,46 @@ class TestAdd:
             ),
         ):
             compose(overrides=["++group=a1"])
+
+    @mark.parametrize("override", ["+nested/choice=two", "+nested/choice=[two]"])
+    def test_add_config_group_from_nested_primary_config(self, override: str) -> None:
+        cs = ConfigStore.instance()
+        cs.store(
+            node={"a": 1},
+            name="base",
+            group="nested",
+            package="_global_",
+        )
+        cs.store(
+            node={"a": 2},
+            name="two",
+            group="nested/choice",
+            package="_global_",
+        )
+
+        cfg = compose(config_name="nested/base", overrides=[override])
+
+        assert cfg == {"a": 2}
+
+    def test_add_config_group_from_nested_primary_config_uses_default_package(
+        self,
+    ) -> None:
+        cs = ConfigStore.instance()
+        cs.store(
+            node={"a": 1},
+            name="base",
+            group="nested",
+            package="_global_",
+        )
+        cs.store(
+            node={"a": 2},
+            name="two",
+            group="nested/choice",
+        )
+
+        cfg = compose(config_name="nested/base", overrides=["+nested/choice=two"])
+
+        assert cfg == {"a": 1, "nested": {"choice": {"a": 2}}}
 
     def test_add_to_structured_config(self, hydra_restore_singletons: Any) -> None:
         @dataclass
@@ -690,6 +757,37 @@ class TestConfigSearchPathOverride:
         ):
             compose(config_name=config_name, overrides=[override])
 
+    def test_compose_searchpath_does_not_change_active_repository(
+        self, init_configs: Any
+    ) -> None:
+        gh = GlobalHydra.instance()
+        assert gh.hydra is not None
+        cfg = gh.hydra.compose_config(
+            config_name="with_sp",
+            overrides=["+group1=file1"],
+            run_mode=RunMode.RUN,
+            from_shell=False,
+            activate_config_repository=True,
+        )
+        assert cfg.foo == 10
+
+        config_loader = gh.hydra.config_loader
+        options = config_loader.get_group_options("group1")
+        sources = [
+            (source.provider, source.path) for source in config_loader.get_sources()
+        ]
+        assert options == ["abc.cde", "file1", "file2"]
+        assert (
+            "hydra.searchpath in main",
+            "hydra.test_utils.configs",
+        ) in sources
+
+        assert compose(config_name="without_sp") == {}
+        assert config_loader.get_group_options("group1") == options
+        assert [
+            (source.provider, source.path) for source in config_loader.get_sources()
+        ] == sources
+
 
 def test_deprecated_compose(hydra_restore_singletons: Any) -> None:
     from hydra import initialize
@@ -780,12 +878,10 @@ def test_deprecated_initialize_config_module(hydra_restore_singletons: Any) -> N
 
 
 def test_initialize_without_config_path(tmpdir: Path) -> None:
-    expected0 = dedent(
-        f"""
+    expected0 = dedent(f"""
         The version_base parameter is not specified.
         Please specify a compatibility version level, or None.
-        Will assume defaults for version {version.__compat_version__}"""
-    )
+        Will assume defaults for version {version.__compat_version__}""")
     expected1 = dedent(
         """\
         config_path is not specified in hydra.initialize().
@@ -835,13 +931,11 @@ def test_error_assigning_null_to_logging_config(
 def test_deprecated_compose_strict_flag(
     strict: bool, hydra_restore_singletons: Any
 ) -> None:
-    msg = dedent(
-        """\
+    msg = dedent("""\
 
         The strict flag in the compose API is deprecated.
         See https://hydra.cc/docs/1.2/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
-        """
-    )
+        """)
 
     version.setbase("1.1")
 

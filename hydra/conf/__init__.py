@@ -51,11 +51,8 @@ class JobConf:
     # Will be non-optional and default to False in Hydra 1.3
     chdir: Optional[bool] = None
 
-    # Populated automatically by Hydra.
-    # Concatenation of job overrides that can be used as a part
-    # of the directory name.
-    # This can be configured via hydra.job.config.override_dirname
-    override_dirname: str = MISSING
+    # Deprecated. Use the hydra_override_dirname resolver instead.
+    override_dirname: str = "${hydra_override_dirname:}"
 
     # Job ID in underlying scheduling system
     id: str = MISSING
@@ -75,7 +72,7 @@ class JobConf:
     @dataclass
     class JobConfig:
         @dataclass
-        # configuration for the ${hydra.job.override_dirname} runtime variable
+        # Default configuration for the ${hydra_override_dirname:} resolver.
         class OverrideDirname:
             kv_sep: str = "="
             item_sep: str = ","

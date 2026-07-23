@@ -1,0 +1,16 @@
+{
+  "ignore_dirs": [
+    ".awd",
+    ".benchmarks",
+    ".mypy_cache",
+    ".nox",
+    "__pycache__",
+    "build",
+    "multirun",
+    "outputs",
+    "temp",
+    "website/.docusaurus",
+    "website/build",
+    "website/node_modules"
+  ]
+}

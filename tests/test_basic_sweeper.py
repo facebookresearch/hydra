@@ -71,26 +71,25 @@ def test_partial_failure(
         "--multirun",
         "+divisor=1,0",
         f'hydra.run.dir="{str(tmpdir)}"',
+        f'hydra.sweep.dir="{str(tmpdir)}"',
         "hydra.job.chdir=True",
         "hydra.hydra_logging.formatters.simple.format='[HYDRA] %(message)s'",
     ]
     out, err = run_process(cmd=cmd, print_error=False, raise_exception=False)
 
     expected_out_regex = re.escape(
-        dedent(
-            """
+        dedent("""
             [HYDRA] Launching 2 jobs locally
             [HYDRA] \t#0 : +divisor=1
             val=1.0
             [HYDRA] \t#1 : +divisor=0
-            """
-        ).strip()
+            """).strip()
     )
 
     assert_multiline_regex_search(expected_out_regex, out)
+    assert "Job failed" not in out
 
-    expected_err_regex = dedent(
-        r"""
+    expected_err_regex = dedent(r"""
         Error executing job with overrides: \['\+divisor=0'\](
         )?
         Traceback \(most recent call last\):
@@ -100,7 +99,54 @@ def test_partial_failure(
         ZeroDivisionError: division by zero
 
         Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
-        """
-    ).strip()
+        """).strip()
 
     assert_multiline_regex_search(expected_err_regex, err)
+
+    job_log = tmpdir / "1" / "my_app.log"
+    log_content = job_log.read()
+    assert "Job failed" in log_content
+    assert "ZeroDivisionError: division by zero" in log_content
+
+
+def test_multiple_failures_log_to_own_job_files(
+    tmpdir: Any,
+) -> None:
+    cmd = [
+        sys.executable,
+        "tests/test_apps/app_can_fail/my_app.py",
+        "--multirun",
+        "+divisor=0,1,x",
+        f'hydra.run.dir="{str(tmpdir)}"',
+        f'hydra.sweep.dir="{str(tmpdir)}"',
+        "hydra.job.chdir=True",
+    ]
+    run_process(cmd=cmd, print_error=False, raise_exception=False)
+
+    succeeded_log = (tmpdir / "1" / "my_app.log").read()
+    assert "Job failed" not in succeeded_log
+
+    zero_division_log = (tmpdir / "0" / "my_app.log").read()
+    assert "Job failed" in zero_division_log
+    assert "ZeroDivisionError: division by zero" in zero_division_log
+
+    type_error_log = (tmpdir / "2" / "my_app.log").read()
+    assert "Job failed" in type_error_log
+    assert "TypeError" in type_error_log
+
+
+def test_glob_uses_primary_config_searchpath(tmpdir: Any) -> None:
+    cmd = [
+        sys.executable,
+        "tests/test_apps/glob_searchpath/my_app.py",
+        "+group1@=glob(file*)",
+        f"hydra.sweep.dir={tmpdir}",
+        "hydra.job.chdir=False",
+        "--multirun",
+    ]
+    out, err = run_process(cmd=cmd, print_error=False, raise_exception=False)
+
+    assert err == ""
+    assert "Launching 2 jobs locally" in out
+    assert "foo=10" in out
+    assert "foo=20" in out

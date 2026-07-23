@@ -51,6 +51,8 @@ class IConfigRepository(ABC):
 
 
 class ConfigRepository(IConfigRepository):
+    _KNOWN_DEFAULTS_LIST_KEYWORDS = ("optional", "override")
+
     config_search_path: ConfigSearchPath
     sources: List[ConfigSource]
 
@@ -172,19 +174,17 @@ class ConfigRepository(IConfigRepository):
             # DEPRECATED: remove in 1.2
             url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
             deprecation_warning(
-                message=dedent(
-                    f"""\
+                message=dedent(f"""\
                     In {config_path}: Defaults List contains deprecated keyword _name_, see {url}
-                    """
-                ),
+                    """),
             )
 
         res: List[InputDefault] = []
         for item in defaults._iter_ex(resolve=False):
             default: InputDefault
             if isinstance(item, DictConfig):
+                old_optional = None
                 if not version.base_at_least("1.2"):
-                    old_optional = None
                     if len(item) > 1:
                         if "optional" in item:
                             old_optional = item.pop("optional")
@@ -201,7 +201,9 @@ class ConfigRepository(IConfigRepository):
                 assert isinstance(key, str)
                 config_group, package, _package2 = self._split_group(key)
                 keywords = ConfigRepository.Keywords()
-                self._extract_keywords_from_config_group(config_group, keywords)
+                self._extract_keywords_from_config_group(
+                    config_path, config_group, keywords
+                )
 
                 if not version.base_at_least("1.2"):
                     if not keywords.optional and old_optional is not None:
@@ -303,18 +305,22 @@ class ConfigRepository(IConfigRepository):
 
     @staticmethod
     def _extract_keywords_from_config_group(
-        group: str, keywords: "ConfigRepository.Keywords"
+        config_path: str, group: str, keywords: "ConfigRepository.Keywords"
     ) -> None:
-        elements = group.split(" ")
+        elements = group.split()
+        if not elements:
+            raise ValueError(f"In {config_path}: Missing group name in defaults list")
         group = elements[-1]
         elements = elements[0:-1]
-        for idx, e in enumerate(elements):
-            if e == "optional":
+        for keyword in elements:
+            if keyword not in ConfigRepository._KNOWN_DEFAULTS_LIST_KEYWORDS:
+                raise ValueError(
+                    f"In {config_path}: Unsupported keyword '{keyword}' in defaults list"
+                )
+            if keyword == "optional":
                 keywords.optional = True
-            elif e == "override":
+            elif keyword == "override":
                 keywords.override = True
-            else:
-                break
         keywords.group = group
 
 

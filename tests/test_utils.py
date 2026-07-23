@@ -96,7 +96,14 @@ def test_to_absolute_path_without_hydra(
 def test_to_hydra_override_value_str_roundtrip(
     hydra_restore_singletons: Any, obj: Any
 ) -> None:
-    override_str = utils.to_hydra_override_value_str(obj)
+    msg = (
+        "to_hydra_override_value_str() is deprecated and will be removed in "
+        "Hydra 1.5. See "
+        "https://github.com/facebookresearch/hydra/pull/2930#issuecomment-5018616929"
+    )
+    with warns(UserWarning, match=re.escape(msg)) as records:
+        override_str = utils.to_hydra_override_value_str(obj)
+    assert len(records) == 1
     override_params = f"++ov={override_str}"
     o = OverridesParser.create().parse_override(override_params)
     assert o.value() == obj
@@ -198,8 +205,7 @@ class TestRunAndReport:
         [
             param(
                 DemoFunctions.simple_error,
-                dedent(
-                    r"""
+                dedent(r"""
                     Traceback \(most recent call last\):
                       File "[^"]+", line \d+, in run_and_report
                         return func\(\)(
@@ -208,14 +214,12 @@ class TestRunAndReport:
                         assert False, "simple_err_msg"
                     AssertionError: simple_err_msg
                     assert False
-                    """
-                ).strip(),
+                    """).strip(),
                 id="simple_failure_full_traceback",
             ),
             param(
                 DemoFunctions.run_job_wrapper,
-                dedent(
-                    r"""
+                dedent(r"""
                     Traceback \(most recent call last\):
                       File "[^"]+", line \d+, in nested_error
                         assert False, "nested_err"
@@ -223,22 +227,19 @@ class TestRunAndReport:
                     assert False
 
                     Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
-                    """
-                ).strip(),
+                    """).strip(),
                 id="strip_run_job_from_top_of_stack",
             ),
             param(
                 DemoFunctions.omegaconf_job_wrapper,
-                dedent(
-                    r"""
+                dedent(r"""
                     Traceback \(most recent call last\):
                       File "[^"]+", line \d+, in job_calling_omconf
                         OmegaConf.resolve\(123\)  # type: ignore(\n    [~\^]+)?
                     ValueError: Invalid config type \(int\), expected an OmegaConf Container
 
                     Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
-                    """
-                ).strip(),
+                    """).strip(),
                 id="strip_omegaconf_from_bottom_of_stack",
             ),
         ],
@@ -258,16 +259,14 @@ class TestRunAndReport:
         the frames in the stacktrace.
         """
         demo_func = self.DemoFunctions.run_job_wrapper
-        expected_traceback_regex = dedent(
-            r"""
+        expected_traceback_regex = dedent(r"""
             Traceback \(most recent call last\):$
               File "[^"]+", line \d+, in nested_error$
                 assert False, "nested_err"$
             AssertionError: nested_err$
             assert False$
             Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
-            """
-        )
+            """)
         mock_stderr = io.StringIO()
         with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr):
             # Patch `inspect.getmodule` so that it will return None. This simulates a
@@ -290,12 +289,10 @@ class TestRunAndReport:
         def throws(*args: Any, **kwargs: Any) -> NoReturn:
             assert False, "Error thrown"
 
-        expected_traceback_regex = dedent(
-            r"""
+        expected_traceback_regex = dedent(r"""
             An error occurred during Hydra's exception formatting:$
             AssertionError\(.*Error thrown.*\)$
-            """
-        )
+            """)
         mock_stderr = io.StringIO()
         with (
             raises(AssertionError, match="nested_err"),

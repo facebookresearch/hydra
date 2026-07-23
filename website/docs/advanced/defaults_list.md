@@ -36,6 +36,13 @@ OPTION                 : CONFIG_NAME|CONFIG_NAMES|null
 *CONFIG_GROUP* : A path to a set of configs.
 The path is relative to the containing config.
 It can be made absolute by prefixing it with a `/`.
+Parent traversal with `..` is not supported anywhere in a Defaults List config
+path. For a config or config group path, use an absolute path such as
+`/group/config` or `/group: option`. A config option cannot contain parent
+traversal. Select the target config directly instead. Use an absolute config
+path or group such as `/config` or `/group: option` in a Defaults List. In a
+command-line override, target the group directly with `group=option`, using
+`+group=option` when adding a new default.
 The path separator is `/` regardless of the operating system.
 
 *OPTION*: The currently selected *CONFIG_NAME* or *CONFIG_NAMES* from a *CONFIG_GROUP*.
@@ -135,6 +142,11 @@ A Config Group's option can also be overridden via the command line. e.g:
 $ python my_app.py server/db=sqlite
 ```
 
+A non-overridable *CONFIG* entry can also be deleted by exact config path. e.g:
+```
+$ python my_app.py ~server/apache
+```
+
 ## Composition order
 The Defaults List is ordered:
 - If multiple configs define the same value, the last one wins.
@@ -218,6 +230,7 @@ e.g., If *db* is overridden to *sqlite*, *combination_specific_config* will beco
 
  - Interpolation keys in the Defaults List cannot reference values in the Final Config Object (it does not yet exist).
  - Defaults List interpolation keys are absolute (even in nested configs).
+ - OmegaConf resolvers are not supported in Defaults List interpolation.
  - The subtree expanded by an Interpolated Config may not contain Default List overrides.
 
 See [Patterns/Specializing Configs](/patterns/specializing_config.md) for more information.

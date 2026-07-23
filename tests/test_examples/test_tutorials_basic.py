@@ -7,9 +7,9 @@ from textwrap import dedent
 from typing import Any, List
 
 try:
-    from _pytest.python_api import RaisesContext
+    from _pytest.raises import RaisesExc as RaisesContext
 except ImportError:
-    from _pytest.raises import RaisesExc as RaisesContext  # type: ignore
+    from _pytest.python_api import RaisesContext  # type: ignore[attr-defined,no-redef]
 from omegaconf import DictConfig, OmegaConf
 from pytest import mark, raises
 
@@ -69,14 +69,12 @@ def test_tutorial_working_directory_original_cwd(tmpdir: Path) -> None:
     result, _err = run_python_script(cmd)
     assert (
         result.strip()
-        == dedent(
-            f"""
+        == dedent(f"""
             Current working directory : {tmpdir}
             Orig working directory    : {os.getcwd()}
             to_absolute_path('foo')   : {Path(os.getcwd()) / "foo"}
             to_absolute_path('/foo')  : {Path("/foo").resolve()}
-            """
-        ).strip()
+            """).strip()
     )
 
 
@@ -189,7 +187,21 @@ def test_tutorial_config_groups(
 @mark.parametrize(
     "args,expected",
     [
-        ([], {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}}),
+        (
+            [],
+            {"db": {"driver": "mysql", "pass": "secret", "user": "omry"}},
+        ),
+        (
+            ["+db/mysql/engine=innodb"],
+            {
+                "db": {
+                    "driver": "mysql",
+                    "pass": "secret",
+                    "mysql": {"engine": {"name": "innodb"}},
+                    "user": "omry",
+                }
+            },
+        ),
         (
             ["db=postgresql"],
             {

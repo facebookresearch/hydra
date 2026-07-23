@@ -2,6 +2,7 @@
 """
 Common test functions testing launchers
 """
+
 import copy
 import os
 import re
@@ -233,7 +234,7 @@ class LauncherTestSuite:
         def my_custom_resolver() -> Any:
             return "foo"
 
-        OmegaConf.register_new_resolver("my_custom_resolver", my_custom_resolver)
+        OmegaConf.register_resolver("my_custom_resolver", my_custom_resolver)
         with sweep:
             assert sweep.returns is not None
             job_ret = sweep.returns[0]
@@ -557,7 +558,7 @@ class IntegrationTestSuite:
                     "hydra": {
                         "sweep": {
                             "dir": "hydra_cfg",
-                            "subdir": "${hydra.job.override_dirname}",
+                            "subdir": "${hydra_override_dirname:}",
                         }
                     },
                     "a": "hello",
@@ -573,7 +574,7 @@ class IntegrationTestSuite:
                     "hydra": {
                         "sweep": {
                             "dir": "hydra_cfg",
-                            "subdir": "${hydra.job.override_dirname}",
+                            "subdir": "${hydra_override_dirname:}",
                         },
                         "job": {
                             "config": {

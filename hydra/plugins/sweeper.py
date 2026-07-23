@@ -2,6 +2,7 @@
 """
 Sweeper plugin interface
 """
+
 from abc import abstractmethod
 from typing import Any, List, Sequence, Optional
 

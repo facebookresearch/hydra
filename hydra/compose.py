@@ -29,9 +29,9 @@ def compose(
     if overrides is None:
         overrides = []
 
-    assert (
-        GlobalHydra().is_initialized()
-    ), "GlobalHydra is not initialized, use @hydra.main() or call one of the hydra initialization methods first"
+    assert GlobalHydra().is_initialized(), (
+        "GlobalHydra is not initialized, use @hydra.main() or call one of the hydra initialization methods first"
+    )
 
     gh = GlobalHydra.instance()
     assert gh.hydra is not None
@@ -54,12 +54,10 @@ def compose(
             raise TypeError("got an unexpected 'strict' argument")
         else:
             deprecation_warning(
-                dedent(
-                    """
+                dedent("""
                     The strict flag in the compose API is deprecated.
                     See https://hydra.cc/docs/1.2/upgrades/0.11_to_1.0/strict_mode_flag_deprecated for more info.
-                    """
-                )
+                    """)
             )
             OmegaConf.set_struct(cfg, strict)
 

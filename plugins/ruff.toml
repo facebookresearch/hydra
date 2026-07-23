@@ -1,0 +1,12 @@
+cache-dir = "../.ruff_cache"
+extend = "../pyproject.toml"
+
+[lint.isort]
+known-first-party = ["hydra_plugins"]
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]

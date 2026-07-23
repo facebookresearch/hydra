@@ -35,11 +35,8 @@ from optuna.distributions import (
     BaseDistribution,
     CategoricalChoiceType,
     CategoricalDistribution,
-    DiscreteUniformDistribution,
-    IntLogUniformDistribution,
-    IntUniformDistribution,
-    LogUniformDistribution,
-    UniformDistribution,
+    FloatDistribution,
+    IntDistribution,
 )
 from optuna.trial import Trial
 
@@ -49,7 +46,7 @@ log = logging.getLogger(__name__)
 
 
 def create_optuna_distribution_from_config(
-    config: MutableMapping[str, Any]
+    config: MutableMapping[str, Any],
 ) -> BaseDistribution:
     kwargs = dict(config)
     if isinstance(config["type"], str):
@@ -62,17 +59,17 @@ def create_optuna_distribution_from_config(
         assert param.low is not None
         assert param.high is not None
         if param.log:
-            return IntLogUniformDistribution(int(param.low), int(param.high))
+            return IntDistribution(int(param.low), int(param.high), log=True)
         step = int(param.step) if param.step is not None else 1
-        return IntUniformDistribution(int(param.low), int(param.high), step=step)
+        return IntDistribution(int(param.low), int(param.high), step=step)
     if param.type == DistributionType.float:
         assert param.low is not None
         assert param.high is not None
         if param.log:
-            return LogUniformDistribution(param.low, param.high)
+            return FloatDistribution(param.low, param.high, log=True)
         if param.step is not None:
-            return DiscreteUniformDistribution(param.low, param.high, param.step)
-        return UniformDistribution(param.low, param.high)
+            return FloatDistribution(param.low, param.high, step=param.step)
+        return FloatDistribution(param.low, param.high)
     raise NotImplementedError(f"{param.type} is not supported by Optuna sweeper.")
 
 
@@ -85,9 +82,9 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
     if override.is_choice_sweep():
         assert isinstance(value, ChoiceSweep)
         for x in override.sweep_iterator(transformer=Transformer.encode):
-            assert isinstance(
-                x, (str, int, float, bool, type(None))
-            ), f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
+            assert isinstance(x, (str, int, float, bool, type(None))), (
+                f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
+            )
             choices.append(x)
         return CategoricalDistribution(choices)
 
@@ -97,9 +94,9 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
         assert value.stop is not None
         if value.shuffle:
             for x in override.sweep_iterator(transformer=Transformer.encode):
-                assert isinstance(
-                    x, (str, int, float, bool, type(None))
-                ), f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
+                assert isinstance(x, (str, int, float, bool, type(None))), (
+                    f"A choice sweep expects str, int, float, bool, or None type. Got {type(x)}."
+                )
                 choices.append(x)
             return CategoricalDistribution(choices)
         if (
@@ -107,10 +104,12 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
             or isinstance(value.stop, float)
             or isinstance(value.step, float)
         ):
-            return DiscreteUniformDistribution(value.start, value.stop, value.step)
-        return IntUniformDistribution(
-            int(value.start), int(value.stop), step=int(value.step)
-        )
+            return FloatDistribution(
+                float(value.start),
+                float(value.stop),
+                step=float(value.step) if value.step else None,
+            )
+        return IntDistribution(int(value.start), int(value.stop), step=int(value.step))
 
     if override.is_interval_sweep():
         assert isinstance(value, IntervalSweep)
@@ -118,32 +117,37 @@ def create_optuna_distribution_from_override(override: Override) -> Any:
         assert value.end is not None
         if "log" in value.tags:
             if isinstance(value.start, int) and isinstance(value.end, int):
-                return IntLogUniformDistribution(int(value.start), int(value.end))
-            return LogUniformDistribution(value.start, value.end)
+                return IntDistribution(int(value.start), int(value.end), log=True)
+            return FloatDistribution(value.start, value.end, log=True)
         else:
             if isinstance(value.start, int) and isinstance(value.end, int):
-                return IntUniformDistribution(value.start, value.end)
-            return UniformDistribution(value.start, value.end)
+                return IntDistribution(value.start, value.end)
+            return FloatDistribution(value.start, value.end)
 
     raise NotImplementedError(f"{override} is not supported by Optuna sweeper.")
 
 
 def create_params_from_overrides(
     arguments: List[str],
-) -> Tuple[Dict[str, BaseDistribution], Dict[str, Any]]:
+) -> Tuple[Dict[str, BaseDistribution], Dict[str, Any], List[str]]:
     parser = OverridesParser.create()
     parsed = parser.parse_overrides(arguments)
     search_space_distributions = dict()
     fixed_params = dict()
+    fixed_overrides = []
 
     for override in parsed:
+        if override.is_delete():
+            assert override.input_line is not None
+            fixed_overrides.append(override.input_line)
+            continue
         param_name = override.get_key_element()
         value = create_optuna_distribution_from_override(override)
         if isinstance(value, BaseDistribution):
             search_space_distributions[param_name] = value
         else:
             fixed_params[param_name] = value
-    return search_space_distributions, fixed_params
+    return search_space_distributions, fixed_params, fixed_overrides
 
 
 class OptunaSweeperImpl(Sweeper):
@@ -192,13 +196,11 @@ class OptunaSweeperImpl(Sweeper):
                 )
             else:
                 deprecation_warning(
-                    message=dedent(
-                        f"""\
+                    message=dedent(f"""\
                         `hydra.sweeper.search_space` is deprecated and will be removed in the next major release.
                         Please configure with `hydra.sweeper.params`.
                         {url}
-                        """
-                    ),
+                        """),
                 )
                 self.search_space_distributions = {
                     str(x): create_optuna_distribution_from_config(y)
@@ -232,6 +234,7 @@ class OptunaSweeperImpl(Sweeper):
         trials: List[Trial],
         search_space_distributions: Dict[str, BaseDistribution],
         fixed_params: Dict[str, Any],
+        fixed_overrides: List[str],
     ) -> Sequence[Sequence[str]]:
         overrides = []
         for trial in trials:
@@ -254,7 +257,10 @@ class OptunaSweeperImpl(Sweeper):
             params = dict(trial.params)
             params.update(fixed_params)
 
-            overrides.append(tuple(f"{name}={val}" for name, val in params.items()))
+            overrides.append(
+                tuple(f"{name}={val}" for name, val in params.items())
+                + tuple(fixed_overrides)
+            )
         return overrides
 
     def _parse_sweeper_params_config(self) -> List[str]:
@@ -266,15 +272,18 @@ class OptunaSweeperImpl(Sweeper):
     def _to_grid_sampler_choices(self, distribution: BaseDistribution) -> Any:
         if isinstance(distribution, CategoricalDistribution):
             return distribution.choices
-        elif isinstance(distribution, IntUniformDistribution):
-            assert (
-                distribution.step is not None
-            ), "`step` of IntUniformDistribution must be a positive integer."
+        elif isinstance(distribution, IntDistribution):
+            assert distribution.step is not None, (
+                "`step` of IntDistribution must be a positive integer."
+            )
             n_items = (distribution.high - distribution.low) // distribution.step
             return [distribution.low + i * distribution.step for i in range(n_items)]
-        elif isinstance(distribution, DiscreteUniformDistribution):
-            n_items = int((distribution.high - distribution.low) // distribution.q)
-            return [distribution.low + i * distribution.q for i in range(n_items)]
+        elif (
+            isinstance(distribution, FloatDistribution)
+            and distribution.step is not None
+        ):
+            n_items = int((distribution.high - distribution.low) // distribution.step)
+            return [distribution.low + i * distribution.step for i in range(n_items)]
         else:
             raise ValueError("GridSampler only supports discrete distributions.")
 
@@ -296,6 +305,7 @@ class OptunaSweeperImpl(Sweeper):
         (
             override_search_space_distributions,
             fixed_params,
+            fixed_overrides,
         ) = create_params_from_overrides(params_conf)
 
         search_space_distributions = dict()
@@ -345,7 +355,7 @@ class OptunaSweeperImpl(Sweeper):
 
             trials = [study.ask() for _ in range(batch_size)]
             overrides = self._configure_trials(
-                trials, search_space_distributions, fixed_params
+                trials, search_space_distributions, fixed_params, fixed_overrides
             )
 
             returns = self.launcher.launch(overrides, initial_job_idx=self.job_idx)

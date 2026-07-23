@@ -12,9 +12,9 @@ from tests.test_apps.app_with_cfg_decorated.decorators.outer_decorator import (
 )
 
 
-@outer_decorator("test")  # type: ignore[misc]
+@outer_decorator("test")
 @hydra.main(version_base=None, config_path=".", config_name="config")
-@inner_decorator  # type: ignore[misc]
+@inner_decorator
 def main(conf: DictConfig) -> None:
     assert conf.dataset.name == "imagenet"
 

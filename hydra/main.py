@@ -65,11 +65,9 @@ def main(
         elif version_base is _UNSPECIFIED_:
             url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
             deprecation_warning(
-                message=dedent(
-                    f"""
+                message=dedent(f"""
                 config_path is not specified in @hydra.main().
-                See {url} for more information."""
-                ),
+                See {url} for more information."""),
                 stacklevel=2,
             )
             config_path = "."

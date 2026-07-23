@@ -1,7 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+from base64 import b64encode
+from pickle import UnpicklingError
 from typing import List
 
+import pytest
 from hydra.core.plugins import Plugins
+from hydra.errors import CompactHydraException
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
@@ -9,8 +13,11 @@ from hydra.test_utils.launcher_common_tests import (
 )
 from hydra.test_utils.test_utils import TSweepRunner, chdir_plugin_root
 from pytest import mark
+from rq.serializers import DefaultSerializer
 
+from hydra_plugins.hydra_rq_launcher._core import _get_job_result
 from hydra_plugins.hydra_rq_launcher.rq_launcher import RQLauncher
+from hydra_plugins.hydra_rq_launcher.serializer import CloudpickleSerializer
 
 chdir_plugin_root()
 
@@ -66,3 +73,67 @@ def test_example_app(
         assert sweep.returns is not None and len(sweep.returns[0]) == 4
         for ret in sweep.returns[0]:
             assert tuple(ret.overrides) in overrides
+
+
+def test_cloudpickle_serializer() -> None:
+    def value(x: int) -> int:
+        return x + 1
+
+    assert CloudpickleSerializer.loads(CloudpickleSerializer.dumps(value))(41) == 42
+
+
+def test_unserializable_rq_result_error() -> None:
+    class Connection:
+        def hget(self, key: str, field: str) -> bytes:
+            assert key == "rq:job:123"
+            assert field == "result"
+            return b"Unserializable return value"
+
+    class Job:
+        key = "rq:job:123"
+        connection = Connection()
+
+        def get_id(self) -> str:
+            return "123"
+
+        @property
+        def result(self) -> object:
+            raise UnpicklingError("pickle data was truncated")
+
+    with pytest.raises(CompactHydraException, match="cloudpickle serializer"):
+        _get_job_result(Job())
+
+
+def test_unserializable_rq_result_stream_error() -> None:
+    class Connection:
+        def hget(self, key: str, field: str) -> None:
+            assert key == "rq:job:123"
+            assert field == "result"
+            return None
+
+        def xrevrange(self, key: str, start: str, end: str, count: int) -> List[object]:
+            assert key == "rq:results:123"
+            assert start == "+"
+            assert end == "-"
+            assert count == 1
+            return [
+                (
+                    b"1-0",
+                    {
+                        b"return_value": b64encode(
+                            DefaultSerializer.dumps("Unserializable return value")
+                        ),
+                    },
+                )
+            ]
+
+    class Job:
+        id = "123"
+        key = "rq:job:123"
+        connection = Connection()
+
+        def return_value(self) -> object:
+            raise UnpicklingError("pickle data was truncated")
+
+    with pytest.raises(CompactHydraException, match="cloudpickle serializer"):
+        _get_job_result(Job())

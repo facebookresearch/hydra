@@ -11,6 +11,9 @@ from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.errors import ConfigCompositionException
 
+_defaults_list_interpolation_pattern: Pattern[str] = re.compile(r"\${\s*([^{}]*?)\s*}")
+_legacy_interpolation_pattern: Pattern[str] = re.compile(r"\${defaults\.\d+\.")
+
 
 @dataclass
 class ResultDefault:
@@ -122,11 +125,9 @@ class InputDefault:
                 path = self.get_config_path()
                 url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
                 deprecation_warning(
-                    message=dedent(
-                        f"""\
+                    message=dedent(f"""\
                         In '{path}': Usage of deprecated keyword in package header '# @package {package_header}'.
-                        See {url} for more information"""
-                    ),
+                        See {url} for more information"""),
                 )
 
             if package_header == "_group_":
@@ -232,13 +233,30 @@ class InputDefault:
     def _resolve_interpolation_impl(
         self, known_choices: DictConfig, val: Optional[str]
     ) -> str:
-        node = OmegaConf.create({"_dummy_": val})
-        node._set_parent(known_choices)
-        try:
-            ret = node["_dummy_"]
-            assert isinstance(ret, str)
-            return ret
-        except InterpolationResolutionError:
+        assert val is not None
+
+        if not version.base_at_least("1.2") and re.search(
+            _legacy_interpolation_pattern, val
+        ):
+            node = OmegaConf.create({"_dummy_": val})
+            node._set_parent(known_choices)
+            try:
+                resolved = node["_dummy_"]
+                assert isinstance(resolved, str)
+                return resolved
+            except InterpolationResolutionError:
+                pass
+
+        def replace(match: re.Match[str]) -> str:
+            key = match.group(1).strip()
+            if key in known_choices:
+                choice = known_choices[key]
+                if isinstance(choice, str):
+                    return choice
+            return match.group(0)
+
+        ret = _defaults_list_interpolation_pattern.sub(replace, val)
+        if "${" in ret:
             options = [
                 x
                 for x in known_choices.keys()
@@ -250,6 +268,8 @@ class InputDefault:
             else:
                 msg = f"Error resolving interpolation '{val}'"
             raise ConfigCompositionException(msg)
+
+        return ret
 
     def get_override_key(self) -> str:
         default_pkg = self.get_default_package()
@@ -423,8 +443,11 @@ class ConfigDefault(InputDefault):
         return node._is_interpolation()
 
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
-        path = self.get_config_path()
-        self.path = self._resolve_interpolation_impl(known_choices, path)
+        assert self.path is not None
+        absolute = self.path.startswith("/")
+        path = self.path[1:] if absolute else self.path
+        resolved = self._resolve_interpolation_impl(known_choices, path)
+        self.path = f"/{resolved.lstrip('/')}" if absolute else resolved
 
     def is_missing(self) -> bool:
         return self.get_name() == "???"
@@ -434,9 +457,6 @@ class ConfigDefault(InputDefault):
 
     def is_external_append(self) -> bool:
         return False
-
-
-_legacy_interpolation_pattern: Pattern[str] = re.compile(r"\${defaults\.\d\.")
 
 
 @dataclass(repr=False)
@@ -477,7 +497,7 @@ class GroupDefault(InputDefault):
             absolute = True
         else:
             group = self.group
-            absolute = False
+            absolute = self.external_append
 
         if self.parent_base_dir == "" or absolute:
             return group
@@ -507,7 +527,7 @@ class GroupDefault(InputDefault):
     def get_final_package(self, default_to_package_header: bool = True) -> str:
         name = self.get_name() if self.is_name() else None
         return self._get_final_package(
-            self._get_parent_package(),
+            "" if self.external_append else self._get_parent_package(),
             self.get_package(default_to_package_header=default_to_package_header),
             name,
         )
@@ -542,16 +562,14 @@ class GroupDefault(InputDefault):
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         name = self.get_name()
         if name is not None:
-            if re.match(_legacy_interpolation_pattern, name) is not None:
+            if re.search(_legacy_interpolation_pattern, name) is not None:
                 msg = dedent(
                     f"""
 Defaults list element '{self.get_override_key()}={name}' is using a deprecated interpolation form.
 See http://hydra.cc/docs/1.1/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
                 )
                 if not version.base_at_least("1.2"):
-                    deprecation_warning(
-                        message=msg,
-                    )
+                    deprecation_warning(message=msg)
                 else:
                     raise ConfigCompositionException(msg)
 

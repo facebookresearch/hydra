@@ -5,13 +5,13 @@ import os
 import re
 import sys
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
 from os.path import splitext
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Dict, Optional, Sequence, Union, cast
+from typing import Any, Dict, List, Optional, Sequence, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
@@ -75,6 +75,21 @@ def _save_config(cfg: DictConfig, filename: str, output_dir: Path) -> None:
         file.write(OmegaConf.to_yaml(cfg))
 
 
+def _log_job_error_to_file() -> None:
+    record = log.makeRecord(
+        name=log.name,
+        level=logging.ERROR,
+        fn=__file__,
+        lno=0,
+        msg="Job failed",
+        args=(),
+        exc_info=sys.exc_info(),
+    )
+    for handler in logging.getLogger().handlers:
+        if isinstance(handler, logging.FileHandler) and record.levelno >= handler.level:
+            handler.handle(record)
+
+
 def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
     """
     :param overrides: overrides list
@@ -136,7 +151,12 @@ def run_job(
                 del task_cfg["hydra"]
 
         ret.cfg = task_cfg
-        hydra_cfg = copy.deepcopy(HydraConfig.instance().cfg)
+        hydra_cfg = HydraConfig.instance().cfg
+        assert isinstance(hydra_cfg, DictConfig)
+        env_set = hydra_cfg.hydra.job.env_set
+        with read_write(env_set):
+            OmegaConf.resolve(env_set)
+        hydra_cfg = copy.deepcopy(hydra_cfg)
         assert isinstance(hydra_cfg, DictConfig)
         ret.hydra_cfg = hydra_cfg
         overrides = OmegaConf.to_container(config.hydra.overrides.task)
@@ -154,11 +174,9 @@ def run_job(
         if _chdir is None:
             url = "https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/"
             deprecation_warning(
-                message=dedent(
-                    f"""\
+                message=dedent(f"""\
                     Future Hydra versions will no longer change working directory at job runtime by default.
-                    See {url} for more information."""
-                ),
+                    See {url} for more information."""),
                 stacklevel=2,
             )
             _chdir = True
@@ -180,20 +198,35 @@ def run_job(
             _save_config(hydra_cfg, "hydra.yaml", hydra_output)
             _save_config(config.hydra.overrides.task, "overrides.yaml", hydra_output)
 
+        interrupt: Optional[KeyboardInterrupt] = None
         with env_override(hydra_cfg.hydra.job.env_set):
             callbacks.on_job_start(config=config, task_function=task_function)
             try:
                 ret.return_value = task_function(task_cfg)
                 ret.status = JobStatus.COMPLETED
             except Exception as e:
+                _log_job_error_to_file()
                 ret.return_value = e
                 ret.status = JobStatus.FAILED
+            except KeyboardInterrupt as e:
+                # record the interrupt like any other failure so callbacks see
+                # it, but re-raise after finalization so it still propagates
+                # (multirun relies on it to stop the remaining jobs)
+                ret.return_value = e
+                ret.status = JobStatus.FAILED
+                interrupt = e
 
         ret.task_name = JobRuntime.instance().get("name")
 
         _flush_loggers()
 
         callbacks.on_job_end(config=config, job_return=ret)
+
+        if interrupt is not None:
+            # expose the populated JobReturn to callers (Hydra.run) so
+            # on_run_end can receive the real job metadata after the re-raise
+            setattr(interrupt, "job_return", ret)
+            raise interrupt
 
         return ret
     finally:
@@ -207,15 +240,164 @@ def get_valid_filename(s: str) -> str:
     return re.sub(r"(?u)[^-\w.]", "", s)
 
 
+@dataclass
+class OverrideDirnameOptions:
+    kv_sep: str = "="
+    item_sep: str = ","
+    exclude_keys: List[str] = field(default_factory=list)
+    element_resolver: Optional[str] = None
+
+
+def _get_override_dirname_options(
+    options: Optional[Union[Dict[str, Any], DictConfig]], hydra_conf: DictConfig
+) -> OverrideDirnameOptions:
+    if options is None:
+        old = hydra_conf.job.config.override_dirname
+        if not isinstance(old.kv_sep, str):
+            raise TypeError("hydra_override_dirname kv_sep must be a string")
+        if not isinstance(old.item_sep, str):
+            raise TypeError("hydra_override_dirname item_sep must be a string")
+        if not OmegaConf.is_list(old.exclude_keys):
+            raise TypeError("hydra_override_dirname exclude_keys must be a list")
+        if not all(isinstance(key, str) for key in old.exclude_keys):
+            raise TypeError("hydra_override_dirname exclude_keys must contain strings")
+        return OverrideDirnameOptions(
+            kv_sep=old.kv_sep,
+            item_sep=old.item_sep,
+            exclude_keys=list(old.exclude_keys),
+        )
+
+    if isinstance(options, DictConfig):
+        options = cast(Dict[str, Any], OmegaConf.to_container(options, resolve=True))
+
+    if not isinstance(options, dict):
+        raise TypeError("hydra_override_dirname options must be a dictionary")
+
+    kv_sep = options.get("kv_sep", "=")
+    if not isinstance(kv_sep, str):
+        raise TypeError("hydra_override_dirname kv_sep must be a string")
+
+    item_sep = options.get("item_sep", ",")
+    if not isinstance(item_sep, str):
+        raise TypeError("hydra_override_dirname item_sep must be a string")
+
+    exclude_keys = options.get("exclude_keys", [])
+    if not isinstance(exclude_keys, (list, tuple)) and not OmegaConf.is_list(
+        exclude_keys
+    ):
+        raise TypeError("hydra_override_dirname exclude_keys must be a list")
+    if not all(isinstance(key, str) for key in exclude_keys):
+        raise TypeError("hydra_override_dirname exclude_keys must contain strings")
+
+    element_resolver = options.get("element_resolver")
+    if element_resolver is not None and not isinstance(element_resolver, str):
+        raise TypeError("hydra_override_dirname element_resolver must be a string")
+
+    return OverrideDirnameOptions(
+        kv_sep=kv_sep,
+        item_sep=item_sep,
+        exclude_keys=list(exclude_keys),
+        element_resolver=element_resolver,
+    )
+
+
+def _resolve_override_dirname_item(item: str, root: DictConfig) -> str:
+    if "${" not in item:
+        return item
+
+    key = "_hydra_override_dirname_item"
+    cfg = copy.deepcopy(root)
+    with open_dict(cfg):
+        cfg[key] = item
+    resolved = OmegaConf.select(cfg, key)
+    assert resolved is not None
+    return str(resolved)
+
+
+def hydra_override_dirname(
+    options: Optional[Union[Dict[str, Any], DictConfig]] = None,
+    *,
+    _root_: DictConfig,
+    _parent_: DictConfig,
+    _node_: Any,
+) -> str:
+    hydra_root = _root_
+    hydra_conf = OmegaConf.select(hydra_root, "hydra", default=None)
+    if hydra_conf is None:
+        hydra_conf = cast(DictConfig, HydraConfig.get())
+    assert isinstance(hydra_conf, DictConfig)
+
+    opts = _get_override_dirname_options(options, hydra_conf)
+
+    element_resolver = None
+    if opts.element_resolver is not None:
+        if not OmegaConf.has_resolver(opts.element_resolver):
+            raise ValueError(f"Unknown OmegaConf resolver '{opts.element_resolver}'")
+        element_resolver = OmegaConf._get_resolver(opts.element_resolver)
+        assert element_resolver is not None
+
+    task_overrides = OmegaConf.to_container(
+        hydra_conf.overrides.task,
+        resolve=False,
+    )
+    assert isinstance(task_overrides, list)
+
+    from hydra.core.override_parser.overrides_parser import OverridesParser
+
+    parsed_overrides = OverridesParser.create().parse_overrides(task_overrides)
+    exclude_keys = set(opts.exclude_keys)
+    items = []
+    for override in parsed_overrides:
+        if override.key_or_group in exclude_keys:
+            continue
+
+        assert override.input_line is not None
+        items.append(override.input_line)
+
+    items.sort()
+    for idx, item in enumerate(items):
+        item = re.sub(pattern="[=]", repl=opts.kv_sep, string=item)
+        item = _resolve_override_dirname_item(item, _root_)
+        if element_resolver is not None:
+            item = str(element_resolver(_root_, _parent_, _node_, (item,), (item,)))
+        items[idx] = item
+
+    return opts.item_sep.join(items)
+
+
+def hydra_deprecated_override_dirname(
+    *,
+    _root_: DictConfig,
+    _parent_: DictConfig,
+    _node_: Any,
+) -> str:
+    deprecation_warning(
+        "hydra.job.override_dirname is deprecated. "
+        "Use ${hydra_override_dirname:} instead.",
+        stacklevel=3,
+    )
+    return hydra_override_dirname(_root_=_root_, _parent_=_parent_, _node_=_node_)
+
+
 def setup_globals() -> None:
     # please add documentation when you add a new resolver
-    OmegaConf.register_new_resolver(
+    OmegaConf.register_resolver(
+        "hydra_override_dirname",
+        hydra_override_dirname,
+        replace=True,
+    )
+    OmegaConf.register_resolver(
+        "hydra_deprecated_override_dirname",
+        hydra_deprecated_override_dirname,
+        replace=True,
+    )
+    OmegaConf.register_resolver(
         "now",
         lambda pattern: datetime.now().strftime(pattern),
         use_cache=True,
         replace=True,
     )
-    OmegaConf.register_new_resolver(
+    OmegaConf.register_resolver(
         "hydra",
         lambda path: OmegaConf.select(cast(DictConfig, HydraConfig.get()), path),
         replace=True,
@@ -227,7 +409,7 @@ def setup_globals() -> None:
         "minor": f"{vi[0]}.{vi[1]}",
         "micro": f"{vi[0]}.{vi[1]}.{vi[2]}",
     }
-    OmegaConf.register_new_resolver(
+    OmegaConf.register_resolver(
         "python_version", lambda level="minor": version_dict.get(level), replace=True
     )
 
@@ -284,12 +466,10 @@ def validate_config_path(config_path: Optional[str]) -> None:
     if config_path is not None:
         split_file = splitext(config_path)
         if split_file[1] in (".yaml", ".yml"):
-            msg = dedent(
-                """\
+            msg = dedent("""\
             Using config_path to specify the config name is not supported, specify the config name via config_name.
             See https://hydra.cc/docs/1.2/upgrades/0.11_to_1.0/config_path_changes
-            """
-            )
+            """)
             raise ValueError(msg)
 
 

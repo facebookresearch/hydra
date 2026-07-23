@@ -9,7 +9,7 @@ from pathlib import Path
 
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from textwrap import dedent
-from typing import Any, Dict, List, Optional, Set, Type, get_type_hints
+from typing import Any, Dict, List, Optional, Set, Type, cast, get_type_hints
 
 import hydra
 from jinja2 import Environment, PackageLoader, Template
@@ -38,12 +38,13 @@ sys.path.append(os.getcwd())
 
 log = logging.getLogger(__name__)
 
-jinja_env = Environment(
+# Configen renders Python source, not HTML, so Jinja autoescape is not applicable.
+jinja_env = Environment(  # nosec B701
     loader=PackageLoader("configen", "templates"),
     keep_trailing_newline=True,
     trim_blocks=True,
 )
-jinja_env.tests["empty"] = lambda x: x == inspect.Signature.empty
+cast(Dict[str, Any], jinja_env.tests)["empty"] = lambda x: x == inspect.Signature.empty
 
 
 def init_config(conf_dir: str) -> None:
@@ -187,7 +188,7 @@ def generate_module(cfg: ConfigenConf, module: ModuleConf) -> str:
                 collect_imports(imports, Any)
 
             if not missing_value:
-                if type_ == str or type(default_) == str:
+                if type_ is str or type(default_) is str:
                     default_ = f'"{default_}"'
                 elif isinstance(default_, list):
                     default_ = f"field(default_factory=lambda: {default_})"
@@ -244,8 +245,7 @@ def main(cfg: Config):
 
     if OmegaConf.is_missing(cfg.configen, "modules"):  # type: ignore
         log.error(
-            dedent(
-                """\
+            dedent("""\
 
         Use --config-dir DIR --config-name NAME
         e.g:
@@ -254,8 +254,7 @@ def main(cfg: Config):
         If you have no config dir yet use init_config_dir=DIR to create an initial config dir.
         e.g:
         \tconfigen init_config_dir=conf
-        """
-            )
+        """)
         )
         sys.exit(1)
 

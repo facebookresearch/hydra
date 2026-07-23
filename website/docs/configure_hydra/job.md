@@ -20,10 +20,8 @@ The Structured Config is below, the latest definition is <GithubLink to="hydra/c
       # Change current working dir to the output dir.
       chdir: bool = True
 
-      # Concatenation of job overrides that can be used as a part
-      # of the directory name.
-      # This can be configured in hydra.job.config.override_dirname
-      override_dirname: str = MISSING
+      # Deprecated. Use the hydra_override_dirname resolver instead.
+      override_dirname: str = "${hydra_override_dirname:}"
 
       # Job ID in underlying scheduling system
       id: str = MISSING
@@ -43,7 +41,7 @@ The Structured Config is below, the latest definition is <GithubLink to="hydra/c
       @dataclass
       class JobConfig:
           @dataclass
-          # configuration for the ${hydra.job.override_dirname} runtime variable
+          # Default configuration for the ${hydra_override_dirname:} resolver.
           class OverrideDirname:
               kv_sep: str = "="
               item_sep: str = ","
@@ -69,7 +67,7 @@ Learn more at the [Output/Working directory](/tutorials/basic/running_your_app/3
 
 
 ### hydra.job.override_dirname
-Enables the creation of an output directory which is based on command line overrides.
+This field is deprecated. Use the `hydra_override_dirname` resolver to create an output directory based on command line overrides.
 Learn more at the [Customizing Working Directory](/configure_hydra/workdir.md) page.
 
 ### hydra.job.id

@@ -2,7 +2,7 @@
 from omegaconf import DictConfig
 
 import hydra
-from hydra.utils import instantiate
+from hydra.utils import instantiate, target_whitelist
 
 
 class DBConnection:
@@ -32,7 +32,8 @@ class PostgreSQLConnection(DBConnection):
 
 @hydra.main(version_base=None, config_path="conf", config_name="config")
 def my_app(cfg: DictConfig) -> None:
-    connection = instantiate(cfg.db)
+    with target_whitelist("my_app.*"):
+        connection = instantiate(cfg.db)
     connection.connect()
 
 

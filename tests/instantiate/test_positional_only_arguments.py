@@ -3,9 +3,13 @@ from typing import Any
 
 from pytest import mark, param
 
-from hydra.utils import instantiate
+from hydra.utils import UNSAFE_ALLOW_ALL_TARGETS, instantiate
 
 from .positional_only import PosOnlyArgsClass
+
+
+def unsafe_instantiate(config: Any, *args: Any) -> Any:
+    return instantiate(config, *args, _target_whitelist_=UNSAFE_ALLOW_ALL_TARGETS)
 
 
 @mark.parametrize(
@@ -40,4 +44,4 @@ from .positional_only import PosOnlyArgsClass
     ],
 )
 def test_positional_only_arguments(cfg: Any, args: Any, expected: Any) -> None:
-    assert instantiate(cfg, *args) == expected
+    assert unsafe_instantiate(cfg, *args) == expected

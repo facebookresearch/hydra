@@ -1,3 +1,1 @@
-omegaconf>=2.4.0.dev4
-importlib-resources;python_version<'3.9'
-packaging
+omegaconf>=2.4.0.dev13

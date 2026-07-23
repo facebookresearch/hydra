@@ -1,10 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import builtins
+import decimal
 import json
 import random
 from copy import copy
 from typing import Any, Callable, Dict, List, Optional, Union
 
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.grammar.utils import is_type_matching
 from hydra.core.override_parser.types import (
     ChoiceSweep,
@@ -157,6 +159,11 @@ def extract_text(*args: Any, value: Optional[Any] = None) -> Any:
 
 
 def cast_json_str(*args: Any, value: Optional[Any] = None) -> Any:
+    deprecation_warning(
+        "json_str(...) is deprecated and will be removed in Hydra 1.5. "
+        "See https://github.com/facebookresearch/hydra/pull/2930#issuecomment-5018616929",
+        stacklevel=2,
+    )
     value = _normalize_cast_value(*args, value=value)
     json_val = value
     if isinstance(value, QuotedString):
@@ -203,7 +210,7 @@ def cast_bool(*args: CastType, value: Optional[CastType] = None) -> Any:
 
 
 def choice(
-    *args: Union[str, int, float, bool, Dict[Any, Any], List[Any], ChoiceSweep]
+    *args: Union[str, int, float, bool, Dict[Any, Any], List[Any], ChoiceSweep],
 ) -> ChoiceSweep:
     """
     A choice sweep over the specified values
@@ -361,25 +368,55 @@ def _sort_sweep(
     elif isinstance(sweep, RangeSweep):
         assert sweep.start is not None
         assert sweep.stop is not None
-        if not reverse:
-            # ascending
-            if sweep.start > sweep.stop:
-                start = sweep.stop + abs(sweep.step)
-                stop = sweep.start + abs(sweep.step)
-                sweep.start = start
-                sweep.stop = stop
-                sweep.step = -sweep.step
-        else:
-            # descending
-            if sweep.start < sweep.stop:
-                start = sweep.stop - abs(sweep.step)
-                stop = sweep.start - abs(sweep.step)
-                sweep.start = start
-                sweep.stop = stop
-                sweep.step = -sweep.step
+        if (sweep.step > 0) == reverse:
+            _reverse_range_sweep(sweep)
         return sweep
     else:
         assert False
+
+
+def _reverse_range_sweep(sweep: RangeSweep) -> None:
+    r = sweep.range()
+    if isinstance(r, builtins.range):
+        count = len(r)
+        if count > 1:
+            first = r[0]
+            last = r[-1]
+            sweep.start = last
+            sweep.step = -sweep.step
+            sweep.stop = first + sweep.step
+    else:
+        start = decimal.Decimal(str(sweep.start))
+        stop = decimal.Decimal(str(sweep.stop))
+        step = decimal.Decimal(str(sweep.step))
+        count = _float_range_count(start=start, stop=stop, step=step)
+        if count > 1:
+            first = start
+            last = start + (count - 1) * step
+            sweep.start = last
+            sweep.step = -step
+            sweep.stop = first + sweep.step / 2
+
+
+def _float_range_count(
+    start: decimal.Decimal, stop: decimal.Decimal, step: decimal.Decimal
+) -> int:
+    if step == 0:
+        return 0
+    if step > 0:
+        if start >= stop:
+            return 0
+        distance = stop - start
+    else:
+        if start <= stop:
+            return 0
+        distance = start - stop
+    step = abs(step)
+    quotient, remainder = divmod(distance, step)
+    count = int(quotient)
+    if remainder != 0:
+        count += 1
+    return count
 
 
 def glob(
@@ -404,6 +441,7 @@ def glob(
 
 def extend_list(*args: Any) -> ListExtensionOverrideValue:
     """
-    Extends an existing list in the config with the given values.
+    Deprecated in Hydra 1.4 and scheduled for removal in Hydra 1.5.
+    See https://github.com/facebookresearch/hydra/issues/3200.
     """
     return ListExtensionOverrideValue(values=list(args))

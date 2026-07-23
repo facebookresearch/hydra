@@ -1,20 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import os
-import sys
-
 from difflib import unified_diff
 from pathlib import Path
 from textwrap import dedent
 from typing import Any
 
 from configen.config import ConfigenConf, Flags, ModuleConf
-from configen.configen import generate_module
 from hydra.test_utils.test_utils import chdir_hydra_root, run_python_script
-
-from hydra.utils import ConvertMode, get_class, instantiate
+from hydra.utils import ConvertMode, get_class, instantiate, target_whitelist
 from omegaconf import OmegaConf
-
 from pytest import mark, param
+
+from configen.configen import generate_module
 from tests.test_modules import (
     Color,
     DictValues,
@@ -33,8 +29,6 @@ from tests.test_modules import (
     WithStringDefault,
     WithUntypedStringDefault,
 )
-
-from tests.test_modules.generated import PeskySentinelUsageConf
 
 chdir_hydra_root(subdir="tools/configen")
 
@@ -281,26 +275,20 @@ def test_instantiate_classes(
     schema = OmegaConf.structured(get_class(full_class))
     cfg = OmegaConf.merge(schema, params)
     kwargs["config"] = cfg
-    obj = instantiate(*args, **kwargs)
+    with target_whitelist("tests.test_modules.*"):
+        obj = instantiate(*args, **kwargs)
     assert obj == expected
 
 
-def test_example_application(monkeypatch: Any, tmpdir: Path):
-    monkeypatch.chdir("example")
+def test_example_application(tmpdir: Path):
     cmd = [
-        "my_app.py",
+        "-m",
+        "example.my_app",
         f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
         "user.name=Batman",
     ]
-    python_path = (
-        f"%PYTHONPATH%;{';'.join(sys.path)}"
-        if sys.platform.startswith("win")
-        else f"$PYTHONPATH:{':'.join(sys.path)}"
-    )
-    result, _err = run_python_script(cmd, dict(os.environ, PYTHONPATH=python_path))
-    assert result == dedent(
-        """\
+    result, _err = run_python_script(cmd)
+    assert result == dedent("""\
     User: name=Batman, age=7
-    Admin: name=Lex Luthor, age=10, private_key=deadbeef"""
-    )
+    Admin: name=Lex Luthor, age=10, private_key=deadbeef""")

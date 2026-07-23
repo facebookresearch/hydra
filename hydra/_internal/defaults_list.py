@@ -72,25 +72,30 @@ class Overrides:
             if override.is_sweep_override():
                 continue
             is_group = repo.group_exists(override.key_or_group)
+            is_config = repo.config_exists(override.key_or_group)
             value = override.value()
             is_dict = isinstance(override.value(), dict)
-            if is_dict or not is_group:
+            if override.is_delete() and (is_group or is_config):
+                key = override.get_key_element()[1:]
+                if is_group:
+                    if value is not None and not isinstance(value, str):
+                        raise ValueError(
+                            f"Config group override deletion value must be a string : {override}"
+                        )
+                    self.deletions[key] = Deletion(name=value)
+                else:
+                    if value is not None:
+                        raise ValueError(
+                            f"Config path deletion does not support a value : {override}"
+                        )
+                    self.deletions[key] = Deletion(name=None)
+            elif is_dict or not is_group:
                 self.config_overrides.append(override)
             elif override.is_force_add():
                 # This could probably be made to work if there is a compelling use case.
                 raise ConfigCompositionException(
                     f"force-add of config groups is not supported: '{override.input_line}'"
                 )
-            elif override.is_delete():
-                key = override.get_key_element()[1:]
-                value = override.value()
-                if value is not None and not isinstance(value, str):
-                    raise ValueError(
-                        f"Config group override deletion value must be a string : {override}"
-                    )
-
-                self.deletions[key] = Deletion(name=value)
-
             elif not isinstance(value, (str, list)):
                 raise ValueError(
                     f"Config group override must be a string or a list. Got {type(value).__name__}"
@@ -193,22 +198,28 @@ class Overrides:
             self.known_choices_per_group[group].add(key)
 
     def is_deleted(self, default: InputDefault) -> bool:
-        if not isinstance(default, GroupDefault):
-            return False
-        key = default.get_override_key()
-        if key in self.deletions:
-            deletion = self.deletions[key]
-            if deletion.name is None:
-                return True
-            else:
-                return deletion.name == default.get_name()
+        if isinstance(default, GroupDefault):
+            key = default.get_override_key()
+            if key in self.deletions:
+                deletion = self.deletions[key]
+                if deletion.name is None:
+                    return True
+                else:
+                    return deletion.name == default.get_name()
+        elif isinstance(default, ConfigDefault):
+            key = default.get_config_path()
+            if key in self.deletions:
+                return self.deletions[key].name is None
         return False
 
     def delete(self, default: InputDefault) -> None:
-        assert isinstance(default, GroupDefault)
-        default.deleted = True
-
-        key = default.get_override_key()
+        if isinstance(default, GroupDefault):
+            default.deleted = True
+            key = default.get_override_key()
+        else:
+            assert isinstance(default, ConfigDefault)
+            default.deleted = True
+            key = default.get_config_path()
         self.deletions[key].used = True
 
 
@@ -313,12 +324,10 @@ def _check_not_missing(
                 results_filter=ObjectType.CONFIG,
             )
             opt_list = "\n".join("\t" + x for x in options)
-            msg = dedent(
-                f"""\
+            msg = dedent(f"""\
                 You must specify '{override_key}', e.g, {override_key}=<OPTION>
                 Available options:
-                """
-            )
+                """)
             raise ConfigCompositionException(msg + opt_list)
         elif isinstance(default, ConfigDefault):
             raise ValueError(f"Missing ConfigDefault is not supported : {path}")
@@ -328,7 +337,7 @@ def _check_not_missing(
     return False
 
 
-def _create_interpolation_map(
+def _create_legacy_interpolation_map(
     overrides: Overrides,
     defaults_list: List[InputDefault],
     self_added: bool,
@@ -365,6 +374,50 @@ def _create_defaults_tree(
     return ret
 
 
+def _check_parent_traversal(default: InputDefault, parent: InputDefault) -> None:
+    if isinstance(default, ConfigDefault):
+        assert default.path is not None
+        paths = [("config", default.path)]
+    elif isinstance(default, GroupDefault):
+        assert default.group is not None
+        paths = [("config group", default.group)]
+        if default.is_name():
+            name = default.get_name()
+            if name is not None:
+                paths.append(("config option", name))
+        else:
+            paths.extend(("config option", option) for option in default.get_options())
+    else:
+        return
+
+    for path_type, path in paths:
+        if ".." not in path.split("/"):
+            continue
+
+        guidance = {
+            "config": "Use an absolute config path instead, such as '/group/config'.",
+            "config group": (
+                "Use an absolute config group path instead, such as '/group: option'."
+            ),
+            "config option": (
+                "Config options cannot contain parent traversal. Select the target "
+                "config directly. Use '/config' or '/group: option' in a Defaults "
+                "List, or 'group=option' (with '+' when adding a new default) on the "
+                "command line."
+            ),
+        }[path_type]
+        location = ""
+        if not parent.is_virtual():
+            location = f"In {parent.get_config_path()}: "
+        raise ConfigCompositionException(
+            f"{location}Parent traversal ('..') in Defaults List "
+            f"{path_type} paths is not supported ('{path}').\n"
+            f"{guidance}\n"
+            "See https://hydra.cc/docs/advanced/defaults_list/ for more "
+            "information."
+        )
+
+
 def _update_overrides(
     defaults_list: List[InputDefault],
     overrides: Overrides,
@@ -393,25 +446,26 @@ def _update_overrides(
             pcp = parent.get_config_path()
             okey = last_override_seen.get_override_key()
             oval = last_override_seen.get_name()
+            dvalue = (
+                d.get_options()
+                if isinstance(d, GroupDefault) and d.is_options()
+                else d.get_name()
+            )
             raise ConfigCompositionException(
-                dedent(
-                    f"""\
-                    In {pcp}: Override '{okey} : {oval}' is defined before '{d.get_override_key()}: {d.get_name()}'.
-                    Overrides must be at the end of the defaults list"""
-                )
+                dedent(f"""\
+                    In {pcp}: Override '{okey} : {oval}' is defined before '{d.get_override_key()}: {dvalue}'.
+                    Overrides must be at the end of the defaults list""")
             )
 
         if isinstance(d, GroupDefault):
             if legacy_hydra_override:
                 d.override = True
                 url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/defaults_list_override"
-                msg = dedent(
-                    f"""\
+                msg = dedent(f"""\
                     In {parent.get_config_path()}: Invalid overriding of {d.group}:
                     Default list overrides requires 'override' keyword.
                     See {url} for more information.
-                    """
-                )
+                    """)
                 deprecation_warning(msg)
 
             if d.override:
@@ -422,12 +476,10 @@ def _update_overrides(
                     # Since interpolations are deferred for until all the config groups are already set,
                     # Their subtree may not contain config group overrides
                     raise ConfigCompositionException(
-                        dedent(
-                            f"""\
+                        dedent(f"""\
                             {parent.get_config_path()}: Default List Overrides are not allowed in the subtree
                             of an in interpolated config group (override {d.get_override_key()}={d.get_name()}).
-                            """
-                        )
+                            """)
                     )
                 overrides.add_override(parent.get_config_path(), d)
 
@@ -511,6 +563,9 @@ def _create_defaults_tree_impl(
     if is_root_config:
         defaults_list.extend(overrides.append_group_defaults)
 
+    for d in defaults_list:
+        _check_parent_traversal(d, parent)
+
     _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
 
     def add_child(
@@ -544,6 +599,8 @@ def _create_defaults_tree_impl(
                 assert isinstance(d, GroupDefault)
                 overrides.override_default_option(d)
 
+            _check_parent_traversal(d, parent)
+
             if isinstance(d, GroupDefault) and d.is_options():
                 # overriding may change from options to name
                 for item in reversed(d.get_options()):
@@ -553,14 +610,23 @@ def _create_defaults_tree_impl(
                         )
 
                     assert d.group is not None
-                    node = ConfigDefault(
-                        path=d.group + "/" + item,
-                        package=d.package,
-                        optional=d.is_optional(),
-                    )
-                    node.update_parent(
-                        parent.get_group_path(), parent.get_final_package()
-                    )
+                    if d.is_external_append():
+                        node = ConfigDefault(
+                            path=f"{d.get_group_path()}/{item}",
+                            package=d.package,
+                            optional=d.is_optional(),
+                        )
+                        # External appends are already absolute in Hydra's config namespace.
+                        node.update_parent("", "")
+                    else:
+                        node = ConfigDefault(
+                            path=f"{d.group}/{item}",
+                            package=d.package,
+                            optional=d.is_optional(),
+                        )
+                        node.update_parent(
+                            parent.get_group_path(), parent.get_final_package()
+                        )
                     new_root = DefaultsTreeNode(node=node, parent=root)
                     add_child(children, new_root)
 
@@ -573,11 +639,18 @@ def _create_defaults_tree_impl(
                 add_child(children, new_root)
 
     # processed deferred interpolations
-    known_choices = _create_interpolation_map(overrides, defaults_list, self_added)
+    known_choices = OmegaConf.create(overrides.known_choices)
+    # TODO: Remove Hydra 1.1 compatibility in
+    # https://github.com/facebookresearch/hydra/issues/3221.
+    if not version.base_at_least("1.2"):
+        known_choices = _create_legacy_interpolation_map(
+            overrides, defaults_list, self_added
+        )
 
     for idx, dd in enumerate(children):
         if isinstance(dd, InputDefault) and dd.is_interpolation():
             dd.resolve_interpolation(known_choices)
+            _check_parent_traversal(dd, parent)
             new_root = DefaultsTreeNode(node=dd, parent=root)
             dd.update_parent(parent.get_group_path(), parent.get_final_package())
             subtree = _create_defaults_tree_impl(
@@ -768,11 +841,9 @@ def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> N
         options = repo.get_group_options(group, ObjectType.CONFIG)
 
     if element.primary:
-        msg = dedent(
-            f"""\
+        msg = dedent(f"""\
         Cannot find primary config '{element.get_config_path()}'. Check that it's in your config search path.
-        """
-        )
+        """)
     else:
         parent = tree.parent.node if tree.parent is not None else None
         if isinstance(element, GroupDefault):
@@ -781,11 +852,9 @@ def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> N
                 opt_list = "\n".join("\t" + x for x in options)
                 msg = f"{msg}\nAvailable options in '{group}':\n" + opt_list
         else:
-            msg = dedent(
-                f"""\
+            msg = dedent(f"""\
             Could not load '{element.get_config_path()}'.
-            """
-            )
+            """)
 
         if parent is not None:
             msg = f"In '{parent.get_config_path()}': {msg}"

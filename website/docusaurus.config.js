@@ -5,15 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {fbContent} = require('docusaurus-plugin-internaldocs-fb/internal');
-
 module.exports = {
     title: 'Hydra',
     tagline: 'A framework for elegantly configuring complex applications',
     url: 'https://hydra.cc',
     baseUrl: '/',
     onBrokenLinks: 'throw',
-    onBrokenMarkdownLinks: 'warn',
+    markdown: {
+        hooks: {
+            onBrokenMarkdownLinks: 'warn',
+        },
+    },
     trailingSlash: true,
     favicon: 'img/Hydra-head.svg',
     organizationName: 'facebookresearch', // Usually your GitHub org/user name.
@@ -30,14 +32,6 @@ module.exports = {
         },
     },
     themeConfig: {
-        announcementBar: {
-            id: 'support_ukraine',
-            content:
-              'Support Ukraine 🇺🇦 <a target="_blank" rel="noopener noreferrer" href="https://opensource.fb.com/support-ukraine"> Help Provide Humanitarian Aid to Ukraine</a>.',
-            backgroundColor: '#20232a',
-            textColor: '#fff',
-            isCloseable: false,
-        },
         algolia: {
             appId: 'KVTVP1D78C',
             apiKey: '9585f41bc128c5a99dd9f22827e1e836',
@@ -115,28 +109,17 @@ module.exports = {
                 },
             ],
 
-
-            logo: {
-                alt: 'Facebook Open Source Logo',
-                src: 'https://docusaurus.io/img/oss_logo.png',
-            },
             copyright: `Copyright © ${new Date().getFullYear()} Meta Platforms, Inc`,
         },
     },
     presets: [
         [
-            require.resolve('docusaurus-plugin-internaldocs-fb/docusaurus-preset'),
+            '@docusaurus/preset-classic',
             {
                 docs: {
                     sidebarPath: require.resolve('./sidebars.js'),
-                    showLastUpdateAuthor: fbContent({
-                        internal: false,
-                        external: true,
-                    }),
-                    showLastUpdateTime: fbContent({
-                        internal: false,
-                        external: true,
-                    }),
+                    showLastUpdateAuthor: false,
+                    showLastUpdateTime: false,
                     editUrl: 'https://github.com/facebookresearch/hydra/edit/main/website/',
                     lastVersion: 'current',
                 },

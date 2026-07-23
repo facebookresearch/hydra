@@ -1,0 +1,1 @@
+Fix `sort()` of a `range()` returning wrong values when the range does not land exactly on `stop` (e.g. `sort(range(0, 5, 2))`).

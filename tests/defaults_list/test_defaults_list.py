@@ -6,7 +6,10 @@ from typing import Any, List, Optional
 from pytest import mark, param, raises, warns
 
 from hydra import version
-from hydra._internal.defaults_list import create_defaults_list
+from hydra._internal.defaults_list import (
+    _check_parent_traversal,
+    create_defaults_list,
+)
 from hydra.core.default_element import (
     ConfigDefault,
     GroupDefault,
@@ -56,6 +59,14 @@ Plugins.instance()
             id="optional",
         ),
         param(
+            "keyword_whitespace",
+            [
+                GroupDefault(group="group1", value="file1", optional=True),
+                GroupDefault(group="group2", value="file2", override=True),
+            ],
+            id="keyword_whitespace",
+        ),
+        param(
             "config_default",
             [ConfigDefault(path="empty")],
             id="non_config_group_default",
@@ -69,6 +80,27 @@ def test_loaded_defaults_list(
     result = repo.load_config(config_path=config_path)
     assert result is not None
     assert result.defaults_list == expected_list
+
+
+def test_unknown_keyword_in_defaults_list() -> None:
+    repo = create_repo()
+    with raises(
+        ValueError,
+        match=re.escape(
+            "In unknown_keyword: Unsupported keyword 'optioal' in defaults list"
+        ),
+    ):
+        repo.load_config(config_path="unknown_keyword")
+
+
+@mark.parametrize("config_name", ["empty_group", "whitespace_group"])
+def test_missing_group_name_in_defaults_list(config_name: str) -> None:
+    repo = create_repo()
+    with raises(
+        ValueError,
+        match=re.escape(f"In {config_name}: Missing group name in defaults list"),
+    ):
+        repo.load_config(config_path=config_name)
 
 
 @mark.parametrize(
@@ -90,12 +122,10 @@ class TestDeprecatedOptional:
     ) -> None:
         version.setbase("1.1")
         repo = create_repo()
-        warning = dedent(
-            """
+        warning = dedent("""
                 In optional_deprecated: 'optional: true' is deprecated.
                 Use 'optional group1: file1' instead.
-                Support for the old style is removed for Hydra version_base >= 1.2"""
-        )
+                Support for the old style is removed for Hydra version_base >= 1.2""")
         with warns(
             UserWarning,
             match=re.escape(warning),
@@ -614,12 +644,10 @@ def test_include_nested_group_pkg2(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    dedent(
-                        """\
+                    dedent("""\
                         Could not override 'group1@wrong'.
                         Did you mean to override group1@pkg1?
-                        To append to your default list use +group1@wrong=file2"""
-                    )
+                        To append to your default list use +group1@wrong=file2""")
                 ),
             ),
             id="option_override:group_default_pkg1:bad_package_in_override",
@@ -1417,6 +1445,47 @@ def test_experiment_use_case(
     )
 
 
+@mark.parametrize("override", ["+nested/choice=two", "+nested/choice=[two]"])
+def test_external_append_is_rooted_at_search_path(override: str) -> None:
+    _test_defaults_list_impl(
+        config_name="nested/base",
+        overrides=[override],
+        expected=[
+            ResultDefault(
+                config_path="nested/base",
+                package="",
+                is_self=True,
+                primary=True,
+            ),
+            ResultDefault(
+                config_path="nested/choice/two",
+                package="",
+                parent="nested/base",
+            ),
+        ],
+    )
+
+
+def test_external_append_package_is_rooted_at_search_path() -> None:
+    _test_defaults_list_impl(
+        config_name="nested/base",
+        overrides=["+nested/choice=default_package"],
+        expected=[
+            ResultDefault(
+                config_path="nested/base",
+                package="",
+                is_self=True,
+                primary=True,
+            ),
+            ResultDefault(
+                config_path="nested/choice/default_package",
+                package="nested.choice",
+                parent="nested/base",
+            ),
+        ],
+    )
+
+
 @mark.parametrize(
     "config_name,overrides,expected",
     [
@@ -1951,6 +2020,19 @@ def test_with_none_primary_with_hydra(
             ],
             id="two_config_items",
         ),
+        param(
+            "two_config_items",
+            ["~group1/file1"],
+            [
+                ResultDefault(
+                    config_path="group1/file2",
+                    package="group1",
+                    parent="two_config_items",
+                ),
+                ResultDefault(config_path="two_config_items", package="", is_self=True),
+            ],
+            id="two_config_items:delete_config_path",
+        ),
     ],
 )
 def test_two_config_items(
@@ -1996,12 +2078,10 @@ def test_two_config_items(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    dedent(
-                        """\
+                    dedent("""\
                         You must specify 'db', e.g, db=<OPTION>
                         Available options:
-                        \tbase_db"""
-                    )
+                        \tbase_db""")
                 ),
             ),
             id="with_missing:not_ignore_missing",
@@ -2120,4 +2200,148 @@ def test_select_multi_pkg(
         overrides=overrides,
         expected=expected,
         skip_missing=skip_missing,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,error_path_type,error_path",
+    [
+        param(
+            "error_parent_traversal_escapes_root",
+            [],
+            "config group",
+            "../group1",
+            id="config-group-escapes-root",
+        ),
+        param(
+            "group1/error_parent_traversal_within_root",
+            [],
+            "config group",
+            "../group2",
+            id="nested-config-group",
+        ),
+        param(
+            "error_parent_traversal_config",
+            [],
+            "config",
+            "../group1/file1",
+            id="config-escapes-root",
+        ),
+        param(
+            "group1/error_parent_traversal_config",
+            [],
+            "config",
+            "../group2/file1",
+            id="nested-config",
+        ),
+        param(
+            "error_parent_traversal_option",
+            [],
+            "config option",
+            "../file1",
+            id="config-option",
+        ),
+        param(
+            "error_parent_traversal_options",
+            [],
+            "config option",
+            "../file1",
+            id="config-options-list",
+        ),
+        param(
+            "empty",
+            ["+group1=../file1"],
+            "config option",
+            "../file1",
+            id="cli-append-option",
+        ),
+        param(
+            "empty",
+            ["+group1=[file1,../file1]"],
+            "config option",
+            "../file1",
+            id="cli-append-options-list",
+        ),
+        param(
+            "group_default",
+            ["group1=../file1"],
+            "config option",
+            "../file1",
+            id="cli-override-option",
+        ),
+    ],
+)
+def test_parent_traversal_error(
+    config_name: str,
+    overrides: List[str],
+    error_path_type: str,
+    error_path: str,
+) -> None:
+    guidance = {
+        "config": "Use an absolute config path instead, such as '/group/config'.",
+        "config group": (
+            "Use an absolute config group path instead, such as '/group: option'."
+        ),
+        "config option": (
+            "Config options cannot contain parent traversal. Select the target "
+            "config directly. Use '/config' or '/group: option' in a Defaults "
+            "List, or 'group=option' (with '+' when adding a new default) on the "
+            "command line."
+        ),
+    }[error_path_type]
+    expected = raises(
+        ConfigCompositionException,
+        match=re.escape(
+            "Parent traversal ('..') in Defaults List "
+            f"{error_path_type} paths is not supported ('{error_path}').\n"
+            f"{guidance}"
+        ),
+    )
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+    )
+
+
+@mark.parametrize(
+    "default",
+    [
+        param(
+            ConfigDefault(path="group1/file..1"),
+            id="config",
+        ),
+        param(
+            GroupDefault(group="group..1", value="file1"),
+            id="config-group",
+        ),
+        param(
+            GroupDefault(group="group1", value="file..1"),
+            id="config-option",
+        ),
+    ],
+)
+def test_parent_traversal_substring_is_allowed(default: InputDefault) -> None:
+    parent = ConfigDefault(path="empty")
+    parent.update_parent("", "")
+
+    _check_parent_traversal(default, parent)
+
+
+def test_parent_traversal_error_explains_supported_paths() -> None:
+    expected = raises(
+        ConfigCompositionException,
+        match=re.escape(
+            "In group1/error_parent_traversal_config: Parent traversal ('..') "
+            "in Defaults List config paths is not supported "
+            "('../group2/file1').\n"
+            "Use an absolute config path instead, such as '/group/config'.\n"
+            "See https://hydra.cc/docs/advanced/defaults_list/ for more "
+            "information."
+        ),
+    )
+    _test_defaults_list_impl(
+        config_name="group1/error_parent_traversal_config",
+        overrides=[],
+        expected=expected,
     )

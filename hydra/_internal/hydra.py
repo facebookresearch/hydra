@@ -7,7 +7,15 @@ from argparse import ArgumentParser
 from collections import defaultdict
 from typing import Any, Callable, DefaultDict, List, Optional, Sequence, Type, Union
 
-from omegaconf import Container, DictConfig, OmegaConf, flag_override
+from omegaconf import (
+    MISSING,
+    Container,
+    DictConfig,
+    ListConfig,
+    OmegaConf,
+    flag_override,
+)
+from omegaconf.errors import InterpolationToMissingValueError
 
 from hydra._internal.utils import get_column_widths, run_and_report
 from hydra.core.config_loader import ConfigLoader
@@ -17,6 +25,7 @@ from hydra.core.plugins import Plugins
 from hydra.core.utils import (
     JobReturn,
     JobRuntime,
+    JobStatus,
     configure_log,
     run_job,
     setup_globals,
@@ -35,6 +44,39 @@ from .config_loader_impl import ConfigLoaderImpl
 from .utils import create_automatic_config_search_path
 
 log: Optional[logging.Logger] = None
+
+
+def _resolve_node_interpolations(cfg: Any) -> None:
+    if cfg._is_missing() or cfg._is_none():
+        return
+
+    if isinstance(cfg, DictConfig):
+        keys: Sequence[Any] = list(cfg.keys())
+    else:
+        assert isinstance(cfg, ListConfig)
+        keys = range(len(cfg))
+
+    for key in keys:
+        if OmegaConf.is_missing(cfg, key):
+            continue
+
+        node = cfg._get_node(key)
+        if isinstance(node, Container):
+            _resolve_node_interpolations(node)
+            continue
+
+        try:
+            cfg[key] = cfg[key]
+        except InterpolationToMissingValueError:
+            cfg[key] = MISSING
+
+
+def _resolve_for_cfg_output(cfg: Container) -> None:
+    try:
+        OmegaConf.resolve(cfg)
+    except InterpolationToMissingValueError:
+        with flag_override(cfg, ["readonly", "struct"], False):
+            _resolve_node_interpolations(cfg)
 
 
 class Hydra:
@@ -90,7 +132,6 @@ class Hydra:
                 with_log_configuration=False,
                 run_mode=RunMode.MULTIRUN,
                 validate_sweep_overrides=False,
-                run_callback=False,
             )
             return cfg.hydra.mode
         except Exception:
@@ -108,6 +149,7 @@ class Hydra:
             overrides=overrides,
             with_log_configuration=with_log_configuration,
             run_mode=RunMode.RUN,
+            activate_config_repository=True,
         )
         if cfg.hydra.mode is None:
             cfg.hydra.mode = RunMode.RUN
@@ -117,16 +159,30 @@ class Hydra:
         callbacks = Callbacks(cfg)
         callbacks.on_run_start(config=cfg, config_name=config_name)
 
-        ret = run_job(
-            hydra_context=HydraContext(
-                config_loader=self.config_loader, callbacks=callbacks
-            ),
-            task_function=task_function,
-            config=cfg,
-            job_dir_key="hydra.run.dir",
-            job_subdir_key=None,
-            configure_logging=with_log_configuration,
-        )
+        try:
+            ret = run_job(
+                hydra_context=HydraContext(
+                    config_loader=self.config_loader, callbacks=callbacks
+                ),
+                task_function=task_function,
+                config=cfg,
+                job_dir_key="hydra.run.dir",
+                job_subdir_key=None,
+                configure_logging=with_log_configuration,
+            )
+        except KeyboardInterrupt as e:
+            # run_job attaches its populated JobReturn to the interrupt before
+            # re-raising; fall back to a minimal one if the interrupt happened
+            # before the job ran (e.g. during on_job_start)
+            job_return = getattr(e, "job_return", None)
+            if not isinstance(job_return, JobReturn):
+                job_return = JobReturn()
+                job_return.status = JobStatus.FAILED
+                job_return.return_value = e
+            callbacks.on_run_end(
+                config=cfg, config_name=config_name, job_return=job_return
+            )
+            raise
         callbacks.on_run_end(config=cfg, config_name=config_name, job_return=ret)
 
         # access the result to trigger an exception in case the job failed.
@@ -146,6 +202,7 @@ class Hydra:
             overrides=overrides,
             with_log_configuration=with_log_configuration,
             run_mode=RunMode.MULTIRUN,
+            activate_config_repository=True,
         )
 
         callbacks = Callbacks(cfg)
@@ -198,7 +255,6 @@ class Hydra:
             overrides=overrides,
             run_mode=RunMode.RUN,
             with_log_configuration=False,
-            run_callback=False,
         )
         HydraConfig.instance().set_config(cfg)
         OmegaConf.set_readonly(cfg.hydra, None)
@@ -220,7 +276,7 @@ class Hydra:
             if package is not None:
                 print(f"# @package {package}")
             if resolve:
-                OmegaConf.resolve(ret)
+                _resolve_for_cfg_output(ret)
             sys.stdout.write(OmegaConf.to_yaml(ret))
 
     @staticmethod
@@ -278,7 +334,9 @@ class Hydra:
                 overrides = action
             else:
                 s += f"{','.join(action.option_strings)} : {action.help}\n"
-        s += "Overrides : " + overrides.help
+        overrides_help = overrides.help
+        assert isinstance(overrides_help, str)
+        s += "Overrides : " + overrides_help
         return s
 
     def list_all_config_groups(self, parent: str = "") -> Sequence[str]:
@@ -424,7 +482,6 @@ class Hydra:
             overrides=overrides,
             run_mode=run_mode,
             with_log_configuration=False,
-            run_callback=False,
         )
         HydraConfig.instance().set_config(cfg)
         cfg = self.get_sanitized_cfg(cfg, cfg_type="hydra")
@@ -504,7 +561,6 @@ class Hydra:
                 overrides=overrides,
                 run_mode=run_mode,
                 with_log_configuration=False,
-                run_callback=False,
             )
         )
         HydraConfig.instance().set_config(cfg)
@@ -585,7 +641,7 @@ class Hydra:
         with_log_configuration: bool = False,
         from_shell: bool = True,
         validate_sweep_overrides: bool = True,
-        run_callback: bool = True,
+        activate_config_repository: bool = False,
     ) -> DictConfig:
         """
         :param config_name:
@@ -594,30 +650,33 @@ class Hydra:
         :param with_log_configuration: True to configure logging subsystem from the loaded config
         :param from_shell: True if the parameters are passed from the shell. used for more helpful error messages
         :param validate_sweep_overrides: True if sweep overrides should be validated
-        :param run_callback: True if the on_compose_config callback should be called, generally should always
-                             be True except for internal use cases
+        :param activate_config_repository: True to retain the effective repository on the invocation loader
         :return:
         """
 
-        cfg = self.config_loader.load_configuration(
-            config_name=config_name,
-            overrides=overrides,
-            run_mode=run_mode,
-            from_shell=from_shell,
-            validate_sweep_overrides=validate_sweep_overrides,
-        )
+        if activate_config_repository and isinstance(
+            self.config_loader, ConfigLoaderImpl
+        ):
+            cfg = self.config_loader._load_configuration_with_active_repository(
+                config_name=config_name,
+                overrides=overrides,
+                run_mode=run_mode,
+                from_shell=from_shell,
+                validate_sweep_overrides=validate_sweep_overrides,
+            )
+        else:
+            cfg = self.config_loader.load_configuration(
+                config_name=config_name,
+                overrides=overrides,
+                run_mode=run_mode,
+                from_shell=from_shell,
+                validate_sweep_overrides=validate_sweep_overrides,
+            )
         if with_log_configuration:
             configure_log(cfg.hydra.hydra_logging, cfg.hydra.verbose)
             global log
             log = logging.getLogger(__name__)
             self._print_debug_info(config_name, overrides, run_mode)
-        if run_callback:
-            callbacks = Callbacks(cfg, check_cache=False)
-            callbacks.on_compose_config(
-                config=cfg,
-                config_name=config_name,
-                overrides=overrides,
-            )
         return cfg
 
     def _print_plugins_info(

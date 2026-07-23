@@ -3,6 +3,7 @@ import re
 from textwrap import dedent
 from typing import Any, Dict, List, Optional
 
+from omegaconf import OmegaConf
 from pytest import mark, param, raises, warns
 
 from hydra import version
@@ -447,12 +448,10 @@ def test_defaults_tree_with_package_overrides(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    dedent(
-                        """\
+                    dedent("""\
                         Could not override 'group1@wrong'.
                         Did you mean to override group1@pkg1?
-                        To append to your default list use +group1@wrong=file2"""
-                    )
+                        To append to your default list use +group1@wrong=file2""")
                 ),
             ),
             id="option_override:group_default_pkg1:bad_package_in_override",
@@ -481,12 +480,10 @@ def test_defaults_tree_with_package_overrides(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    dedent(
-                        """\
+                    dedent("""\
                         Could not override 'group1/group2'.
                         Did you mean to override group1/group2@group1.pkg2?
-                        To append to your default list use +group1/group2=file2"""
-                    )
+                        To append to your default list use +group1/group2=file2""")
                 ),
             ),
             id="option_override:include_nested_group_pkg2:missing_package_in_override",
@@ -620,14 +617,25 @@ def test_defaults_tree_with_package_overrides__group_override(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    dedent(
-                        """\
+                    dedent("""\
                         In override_wrong_order: Override 'group1 : file2' is defined before 'group1: file1'.
-                        Overrides must be at the end of the defaults list"""
-                    )
+                        Overrides must be at the end of the defaults list""")
                 ),
             ),
             id="test_override_wrong_order_in_defaults_list",
+        ),
+        param(
+            "override_list",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent("""\
+                        In override_list: Override 'group1 : file2' is defined before 'group1: ['file1', 'file2']'.
+                        Overrides must be at the end of the defaults list""")
+                ),
+            ),
+            id="test_override_before_list_in_defaults_list",
         ),
     ],
 )
@@ -943,12 +951,10 @@ def test_legacy_override_hydra_version_base_1_1(
 ) -> None:
     version.setbase("1.1")
     msg_regex = r"Invalid overriding of hydra/(help|output):" + re.escape(
-        dedent(
-            """
+        dedent("""
             Default list overrides requires 'override' keyword.
             See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/defaults_list_override for more information.
-            """
-        )
+            """)
     )
     with warns(expected_warning=UserWarning, match=msg_regex):
         _test_defaults_tree_impl(
@@ -1577,11 +1583,9 @@ def test_name_collision(
             [],
             raises(
                 ConfigCompositionException,
-                match=dedent(
-                    """\
+                match=dedent("""\
                 You must specify 'db', e.g, db=<OPTION>
-                Available options:"""
-                ),
+                Available options:"""),
             ),
             id="with_missing",
         ),
@@ -1590,11 +1594,9 @@ def test_name_collision(
             [],
             raises(
                 ConfigCompositionException,
-                match=dedent(
-                    """\
+                match=dedent("""\
                 You must specify 'db@_global_', e.g, db@_global_=<OPTION>
-                Available options:"""
-                ),
+                Available options:"""),
             ),
             id="with_missing_at_global",
         ),
@@ -1615,11 +1617,9 @@ def test_name_collision(
             [],
             raises(
                 ConfigCompositionException,
-                match=dedent(
-                    """\
+                match=dedent("""\
                 You must specify 'db@foo', e.g, db@foo=<OPTION>
-                Available options:"""
-                ),
+                Available options:"""),
             ),
             id="with_missing_at_foo",
         ),
@@ -1640,11 +1640,9 @@ def test_name_collision(
             ["+group1=with_missing"],
             raises(
                 ConfigCompositionException,
-                match=dedent(
-                    """\
+                match=dedent("""\
                     You must specify 'group1/group2', e.g, group1/group2=<OPTION>
-                    Available options"""
-                ),
+                    Available options"""),
             ),
             id="nested_missing",
         ),
@@ -1671,11 +1669,9 @@ def test_name_collision(
             ["+group1=with_missing_at_foo"],
             raises(
                 ConfigCompositionException,
-                match=dedent(
-                    """\
+                match=dedent("""\
                     You must specify 'group1/group2@group1.foo', e.g, group1/group2@group1.foo=<OPTION>
-                    Available options"""
-                ),
+                    Available options"""),
             ),
             id="nested_missing_at_foo",
         ),
@@ -1932,6 +1928,44 @@ def test_placeholder(
             id="interpolation_with_package_override:override",
         ),
         param(
+            "interpolation_with_nested_package_override",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_with_nested_package_override"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="group_item1_pkg2"),
+                        children=[
+                            GroupDefault(group="group2", value="file1", package="pkg2"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="group2", value="file1"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_with_nested_package_override",
+        ),
+        param(
+            "interpolation_with_nested_package_override",
+            ["group1/group2@group1.pkg2=file2"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_with_nested_package_override"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="group_item1_pkg2"),
+                        children=[
+                            GroupDefault(group="group2", value="file2", package="pkg2"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="group2", value="file2"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_with_nested_package_override:override",
+        ),
+        param(
             "interpolation_with_nested_defaults_list",
             [],
             DefaultsTreeNode(
@@ -1983,12 +2017,10 @@ def test_placeholder(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    dedent(
-                        """\
+                    dedent("""\
                 group1_group2/file1_file1_defaults_with_override: Default List Overrides are not allowed in the subtree
                 of an in interpolated config group (override group1_group2/foo=bar).
-                """
-                    )
+                """)
                 ),
             ),
             id="interpolation_with_nested_defaults_list_with_override",
@@ -2014,18 +2046,12 @@ def test_placeholder(
         param(
             "interpolation_resolver_in_nested",
             [],
-            DefaultsTreeNode(
-                node=ConfigDefault(path="interpolation_resolver_in_nested"),
-                children=[
-                    DefaultsTreeNode(
-                        node=GroupDefault(group="group1", value="resolver"),
-                        children=[
-                            GroupDefault(group="group2", value="file1"),
-                            ConfigDefault(path="_self_"),
-                        ],
-                    ),
-                    ConfigDefault(path="_self_"),
-                ],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "Error resolving interpolation '${oc.decode:file1}', "
+                    "possible interpolation keys: group1"
+                ),
             ),
             id="interpolation_resolver_in_nested",
         ),
@@ -2041,6 +2067,51 @@ def test_placeholder(
                 ],
             ),
             id="interpolation_config_default",
+        ),
+        param(
+            "interpolation_config_default_in_nested",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_config_default_in_nested"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="group1", value="config_default_interpolation"
+                        ),
+                        children=[
+                            ConfigDefault(path="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="group2", value="file1"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_config_default_in_nested",
+        ),
+        param(
+            "interpolation_config_default_absolute_in_nested",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(
+                    path="interpolation_config_default_absolute_in_nested"
+                ),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="group1",
+                            value="config_default_absolute_interpolation",
+                        ),
+                        children=[
+                            ConfigDefault(path="/file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="group2", value="file1"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="interpolation_config_default_absolute_in_nested",
         ),
         param(
             "interpolation_bad_key",
@@ -2126,6 +2197,32 @@ def test_legacy_interpolation(
             input_overrides=overrides,
             expected=expected,
         )
+
+
+def test_legacy_interpolation_multi_digit_index(
+    hydra_restore_singletons: Any,
+) -> None:
+    msg = dedent(
+        """
+    Defaults list element 'target=.*' is using a deprecated interpolation form.
+    See http://hydra.cc/docs/1.1/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
+    )
+    known_choices = OmegaConf.create(
+        {"defaults": [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {"group": "file1"}]}
+    )
+
+    version.setbase("1.1")
+    default = GroupDefault(group="target", value="${defaults.10.group}")
+    default.update_parent("", "")
+    with warns(expected_warning=UserWarning, match=msg):
+        default.resolve_interpolation(known_choices)
+    assert default.value == "file1"
+
+    version.setbase("1.2")
+    default = GroupDefault(group="target", value="${defaults.10.group}")
+    default.update_parent("", "")
+    with raises(ConfigCompositionException, match=msg):
+        default.resolve_interpolation(known_choices)
 
 
 @mark.parametrize(
@@ -2252,6 +2349,19 @@ def test_override_nested_to_null(
                 match="Could not delete 'group1=wrong'. No match in the defaults list",
             ),
             id="delete:include_nested_group:group1=wrong",
+        ),
+        param(
+            "two_config_items",
+            ["~group1/file1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="two_config_items"),
+                children=[
+                    ConfigDefault(path="group1/file1", deleted=True),
+                    ConfigDefault(path="group1/file2"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="delete:two_config_items:group1/file1",
         ),
         param(
             "two_group_defaults_different_pkgs",
@@ -2443,12 +2553,10 @@ def test_missing_config_errors(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    dedent(
-                        """\
+                    dedent("""\
                 Could not override 'group1@foo'.
                 Did you mean to override group1?
-                To append to your default list use +group1@foo=file1"""
-                    )
+                To append to your default list use +group1@foo=file1""")
                 ),
             ),
             id="no_match_package_one_candidate",
@@ -2459,12 +2567,10 @@ def test_missing_config_errors(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    dedent(
-                        """\
+                    dedent("""\
                         Could not override 'group1@foo'.
                         Did you mean to override one of group1@pkg1, group1@pkg2?
-                        To append to your default list use +group1@foo=file1"""
-                    )
+                        To append to your default list use +group1@foo=file1""")
                 ),
             ),
             id="no_match_package_multiple_candidates",
@@ -2977,6 +3083,20 @@ def test_deprecated_package_header_keywords(
                 children=[ConfigDefault(path="_self_")],
             ),
             id="select_multi:override_to_empty_list",
+        ),
+        param(
+            "select_multi",
+            ["~group1/file1"],
+            False,
+            DefaultsTreeNode(
+                node=ConfigDefault(path="select_multi"),
+                children=[
+                    ConfigDefault(path="group1/file1", deleted=True),
+                    ConfigDefault(path="group1/file2"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="select_multi:delete_config_path",
         ),
         param(
             "select_multi",

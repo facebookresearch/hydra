@@ -2,16 +2,18 @@
 import builtins
 import math
 import re
+from contextlib import nullcontext
 from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Union
 
 try:
-    from _pytest.python_api import RaisesContext
+    from _pytest.raises import RaisesExc as RaisesContext
 except ImportError:
-    from _pytest.raises import RaisesExc as RaisesContext  # type: ignore
+    from _pytest.python_api import RaisesContext  # type: ignore[attr-defined,no-redef]
 from pytest import mark, param, raises, warns
 
 from hydra import version
+from hydra._internal.grammar import grammar_functions
 from hydra._internal.grammar.functions import Functions
 from hydra._internal.grammar.utils import escape_special_characters
 from hydra.core.override_parser.overrides_parser import (
@@ -39,6 +41,16 @@ from hydra.errors import HydraException
 UNQUOTED_SPECIAL = r"/-\+.$%*@?|"  # special characters allowed in unquoted strings
 
 parser = OverridesParser(create_functions())
+
+JSON_STR_DEPRECATION_WARNING = (
+    "json_str(...) is deprecated and will be removed in Hydra 1.5. "
+    "See https://github.com/facebookresearch/hydra/pull/2930#issuecomment-5018616929"
+)
+
+EXTEND_LIST_DEPRECATION_WARNING = (
+    "extend_list(...) is deprecated and will be removed in Hydra 1.5. "
+    "See https://github.com/facebookresearch/hydra/issues/3200"
+)
 
 
 def parse_rule(value: str, rule_name: str) -> Any:
@@ -1047,14 +1059,15 @@ def test_list_extend_override(
     expected_key: str,
     expected_value: Any,
 ) -> None:
-    test_override(
-        "",
-        value,
-        OverrideType.EXTEND_LIST,
-        expected_key,
-        expected_value,
-        ValueType.ELEMENT,
-    )
+    with warns(UserWarning, match=re.escape(EXTEND_LIST_DEPRECATION_WARNING)):
+        test_override(
+            "",
+            value,
+            OverrideType.EXTEND_LIST,
+            expected_key,
+            expected_value,
+            ValueType.ELEMENT,
+        )
 
 
 def test_deprecated_name_package(hydra_restore_singletons: Any) -> None:
@@ -1403,13 +1416,29 @@ def test_tag_sweep(value: str, expected: str) -> None:
         ),
         param(
             "sort(range(1.5,-0.5,-0.5))",
-            RangeSweep(start=0.0, stop=2.0, step=0.5),
+            RangeSweep(start=0.0, stop=1.75, step=0.5),
             id="sort(range(1.5,-0.5,-0.5))",
         ),
         param(
             "sort(range(0,2,0.5),reverse=true)",
-            RangeSweep(start=1.5, stop=-0.5, step=-0.5),
+            RangeSweep(start=1.5, stop=-0.25, step=-0.5),
             id="range:sort:reverse)",
+        ),
+        # ranges that do not land exactly on ``stop`` (last element != stop - step)
+        param(
+            "sort(range(0,5,2),reverse=True)",
+            RangeSweep(start=4, stop=-2, step=-2),
+            id="sort:range:non_landing:reverse",
+        ),
+        param(
+            "sort(range(4,-1,-2))",
+            RangeSweep(start=0, stop=6, step=2),
+            id="sort:range:non_landing:ascending",
+        ),
+        param(
+            "sort(range(7,0,-3))",
+            RangeSweep(start=1, stop=10, step=3),
+            id="sort:range:non_landing:ascending2",
         ),
         param(
             "shuffle(range(1, 10))",
@@ -1421,6 +1450,36 @@ def test_tag_sweep(value: str, expected: str) -> None:
 def test_sort(value: str, expected: str) -> None:
     ret = parse_rule(value, "function")
     assert ret == expected
+
+
+@mark.parametrize(
+    "start, stop, step",
+    [
+        param(0, 5, 2, id="int:non_landing"),
+        param(4, -1, -2, id="int:non_landing:neg_step"),
+        param(7, 0, -3, id="int:non_landing:neg_step2"),
+        param(1, 10, 1, id="int:landing"),
+        param(0, 1, 1, id="int:single_element"),
+        param(0, 0, 1, id="int:empty"),
+        param(1, 0, 1, id="int:empty_positive_step"),
+        param(0, 2, 0.5, id="float:landing"),
+        param(0, 1.3, 0.5, id="float:non_landing"),
+        param(1.3, 0, -0.5, id="float:non_landing:neg_step"),
+        param(0, 1, 0.1, id="float:decimal_step"),
+        param(0, 1, 0.2, id="float:decimal_step2"),
+        param(0, 0.3, 0.1, id="float:short_decimal_step"),
+        param(1, 0, -0.1, id="float:negative_decimal_step"),
+    ],
+)
+def test_sort_range_materializes_to_sorted_values(
+    start: float, stop: float, step: float
+) -> None:
+    original = list(grammar_functions.range(start, stop, step).range())
+    for reverse in (False, True):
+        sweep = grammar_functions.sort(
+            grammar_functions.range(start, stop, step), reverse=reverse
+        )
+        assert list(sweep.range()) == sorted(original, reverse=reverse)
 
 
 @mark.parametrize(
@@ -1935,12 +1994,18 @@ def test_cast_conversions(value: Any, expected_value: Any) -> None:
     for field in ("int", "float", "bool", "str", "json_str"):
         cast_str = f"{field}({value})"
         expected = getattr(expected_value, field)
-        if isinstance(expected, RaisesContext):
-            with expected:
-                parser.parse_rule(cast_str, "function")
-        else:
-            result = parser.parse_rule(cast_str, "function")
-            assert eq(result, expected), f"{field} cast result mismatch"
+        warning = (
+            warns(UserWarning, match=re.escape(JSON_STR_DEPRECATION_WARNING))
+            if field == "json_str"
+            else nullcontext()
+        )
+        with warning:
+            if isinstance(expected, RaisesContext):
+                with expected:
+                    parser.parse_rule(cast_str, "function")
+            else:
+                result = parser.parse_rule(cast_str, "function")
+                assert eq(result, expected), f"{field} cast result mismatch"
 
 
 @mark.parametrize(

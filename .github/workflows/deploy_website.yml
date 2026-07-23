@@ -9,16 +9,24 @@ on:
     branches:
       - main
 
+
+permissions:
+  contents: read
+
 jobs:
   deploy:
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Deploy website
+    - uses: actions/checkout@v5
+    - uses: actions/setup-node@v6
+      with:
+        node-version: "24"
+    - name: Build or deploy website
       env:
-        WEBSITE_GITHUB_TOKEN: ${{ secrets.WEBSITE_GITHUB_TOKEN }}
+        WEBSITE_GITHUB_TOKEN: ${{ github.event_name != 'pull_request' && secrets.WEBSITE_GITHUB_TOKEN || '' }}
+        IS_PULL_REQUEST: ${{ github.event_name == 'pull_request' }}
       run: |
         SUBDIR=website
         git fetch
@@ -29,11 +37,16 @@ jobs:
         if [[ ! $(git rev-parse --verify -q "$REV^{commit}") ||  $(git diff-index $REV -- $SUBDIR) ]]; then
           echo "Changes detected in directory $SUBDIR between origin/main and this diff"
           cd $SUBDIR
-          yarn --no-progress
-          git config --global user.email omry@users.noreply.github.com
-          git config --global user.name omry
-          echo "machine github.com login docusaurus-bot password $WEBSITE_GITHUB_TOKEN" > ~/.netrc
-          yarn install && GIT_USER=docusaurus-bot yarn deploy
+          corepack enable
+          corepack pnpm install --frozen-lockfile
+          if [[ "$IS_PULL_REQUEST" == "true" ]]; then
+            corepack pnpm run build
+          else
+            git config --global user.email omry@users.noreply.github.com
+            git config --global user.name omry
+            echo "machine github.com login docusaurus-bot password $WEBSITE_GITHUB_TOKEN" > ~/.netrc
+            GIT_USER=docusaurus-bot corepack pnpm run deploy
+          fi
         else
           echo "No changes detected in directory $SUBDIR between origin/main and this diff"
         fi

@@ -30,16 +30,22 @@ def is_fish_supported() -> bool:
     proc = subprocess.run(
         ["fish", "--version"], stdout=subprocess.PIPE, encoding="utf-8"
     )
-    matches = re.match(r".*version\s+(\d\.\d\.\d)(.*)", proc.stdout)
+    matches = re.match(r".*version\s+(\d+(?:\.\d+){2})(.*)", proc.stdout)
     if not matches:
         return False
 
     fish_version, git_version = matches.groups()
 
+    fish_version_parsed = version.parse(fish_version)
+    min_fish_version = version.parse("3.1.2")
+    max_fish_version = version.parse("4.0.0")
+
     # Release after 3.1.2 or git build after 3.1.2 contain space fix.
-    if version.parse(fish_version) > version.parse("3.1.2"):
+    # Fish 4.x changed completion behavior enough that these integration tests no
+    # longer register completions correctly.
+    if min_fish_version < fish_version_parsed < max_fish_version:
         return True
-    elif version.parse(fish_version) >= version.parse("3.1.2") and git_version:
+    elif min_fish_version <= fish_version_parsed < max_fish_version and git_version:
         return True
     else:
         return False
@@ -86,6 +92,59 @@ def test_bash_completion_with_dot_in_path() -> None:
     assert stderr == b""
     assert stdout == b"TRUE\n"
     return
+
+
+@mark.skipif(sys.platform == "win32", reason="does not run on windows")
+def test_bash_completion_does_not_execute_non_hydra_script(tmp_path: Path) -> None:
+    completion_app = Path("hydra/test_utils/completion.py").resolve()
+    completion_test = Path(
+        "tests/scripts/test_bash_completion_non_hydra.bash"
+    ).resolve()
+    script = tmp_path / "non_hydra.py"
+    script.write_text('from pathlib import Path\nPath("executed").touch()\n')
+
+    subprocess.check_call(
+        [
+            "bash",
+            str(completion_test),
+            "python",
+            str(completion_app),
+        ],
+        cwd=tmp_path,
+        env={"PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}"},
+    )
+
+    assert not (tmp_path / "executed").exists()
+
+
+@mark.skipif(sys.platform == "win32", reason="does not run on windows")
+def test_bash_completion_does_not_execute_python_option_as_script(
+    tmp_path: Path,
+) -> None:
+    completion_app = Path("hydra/test_utils/completion.py").resolve()
+    completion_test = Path(
+        "tests/scripts/test_bash_completion_non_hydra.bash"
+    ).resolve()
+    (tmp_path / "--").write_text("# @hydra.main\n")
+    (tmp_path / "-sc").write_text(
+        'from pathlib import Path\nPath("executed").touch()\n'
+    )
+
+    subprocess.check_call(
+        [
+            "bash",
+            str(completion_test),
+            "python",
+            str(completion_app),
+        ],
+        cwd=tmp_path,
+        env={
+            "COMP_LINE": "python -- ",
+            "PATH": f"{Path(sys.executable).parent}{os.pathsep}{os.environ['PATH']}",
+        },
+    )
+
+    assert not (tmp_path / "executed").exists()
 
 
 base_completion_list: List[str] = [
@@ -442,6 +501,7 @@ def test_file_completion(
         "python  foo.py",
         "python tutorials/hydra_app/example/hydra_app/main.py",
         "python foo.py",
+        "python my-app/run.py",
     ],
 )
 @mark.parametrize(

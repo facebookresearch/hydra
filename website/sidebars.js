@@ -18,6 +18,7 @@ module.exports = AddFBInternalOnly({
     docs: {
         About: [
             'intro',
+            'version_archive',
         ],
         Tutorials: [
             'tutorials/intro',
@@ -158,6 +159,15 @@ module.exports = AddFBInternalOnly({
         'Upgrade Guide': [
             'upgrades/intro',
             'upgrades/version_base',
+            {
+                type: 'category',
+                label: '1.3 to 1.4',
+                items: [
+                    'upgrades/1.3_to_1.4/hydra_job_override_dirname',
+                    'upgrades/1.3_to_1.4/instantiate_resolution',
+                    'upgrades/1.3_to_1.4/instantiate_target_whitelist',
+                ],
+            },
             {
                 type: 'category',
                 label: '1.1 to 1.2',

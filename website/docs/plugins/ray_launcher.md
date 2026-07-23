@@ -14,6 +14,16 @@ import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
 The Ray Launcher plugin provides 2 launchers: `ray_aws` and `ray`.
  `ray_aws` launches jobs remotely on AWS and is built on top of [ray autoscaler sdk](https://docs.ray.io/en/releases-1.3.0/cluster/sdk.html). `ray` launches jobs on your local machine or existing ray cluster.
 
+:::note Ray AWS support
+The local `ray` launcher is supported as a normal Hydra plugin.
+
+The `ray_aws` launcher is maintained on a best-effort basis. Historically, this path has required substantially more maintainer attention and infrastructure resources than other Hydra plugins. It depends on Ray autoscaler behavior and live AWS infrastructure, both of which are comparatively unstable external surfaces for Hydra to validate. Running reliable end-to-end coverage also has a real cloud-cost burden, which is difficult to justify within the project's limited maintenance budget.
+
+Fixes for `ray_aws` are welcome from users who can validate them on AWS. PRs that change `ray_aws` behavior must include cheap local validation where possible and a clear report of real AWS testing for behavior that cannot be covered locally.
+
+In the long term, if the `ray_aws` launcher becomes completely non-functional and there is no maintainer or user-contributor path to validate and repair it, support may be dropped entirely.
+:::
+
 ### Installation
 
 ```commandline

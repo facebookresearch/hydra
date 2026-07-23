@@ -1,0 +1,1 @@
+Resolve hydra.job.env_set interpolations before setting environment variables.

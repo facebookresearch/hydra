@@ -6,7 +6,7 @@ from omegaconf import MISSING
 
 import hydra
 from hydra.core.config_store import ConfigStore
-from hydra.utils import instantiate
+from hydra.utils import instantiate, target_whitelist
 
 
 class Tree:
@@ -48,7 +48,8 @@ def pretty_print(tree: Tree, name: str = "root", depth: int = 0) -> None:
 
 @hydra.main(version_base=None, config_path=".", config_name="config")
 def my_app(cfg: Config) -> None:
-    tree: Tree = instantiate(cfg.tree)
+    with target_whitelist("my_app.*"):
+        tree: Tree = instantiate(cfg.tree)
     pretty_print(tree)
 
 

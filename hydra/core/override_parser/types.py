@@ -33,12 +33,12 @@ class QuotedString:
     def with_quotes(self) -> str:
         qc = "'" if self.quote == Quote.single else '"'
         esc_qc = rf"\{qc}"
+        text = self.text + qc  # add the closing quote
+        pattern = _ESC_QUOTED_STR[qc]
 
         match = None
         if "\\" in self.text:
-            text = self.text + qc  # add the closing quote
             # Are there \ preceding a quote (including the closing one)?
-            pattern = _ESC_QUOTED_STR[qc]
             match = pattern.search(text)
 
         if match is None:
@@ -89,14 +89,15 @@ class ChoiceSweep(Sweep):
 
 @dataclass
 class FloatRange:
-    start: Union[decimal.Decimal, float]
-    stop: Union[decimal.Decimal, float]
-    step: Union[decimal.Decimal, float]
+    start: Union[decimal.Decimal, float, int]
+    stop: Union[decimal.Decimal, float, int]
+    step: Union[decimal.Decimal, float, int]
+    _idx: int = field(default=0, init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
-        self.start = decimal.Decimal(self.start)
-        self.stop = decimal.Decimal(self.stop)
-        self.step = decimal.Decimal(self.step)
+        self.start = decimal.Decimal(str(self.start))
+        self.stop = decimal.Decimal(str(self.stop))
+        self.step = decimal.Decimal(str(self.step))
 
     def __iter__(self) -> Any:
         return self
@@ -105,18 +106,17 @@ class FloatRange:
         assert isinstance(self.start, decimal.Decimal)
         assert isinstance(self.stop, decimal.Decimal)
         assert isinstance(self.step, decimal.Decimal)
+        current = self.start + self.step * self._idx
         if self.step > 0:
-            if self.start < self.stop:
-                ret = float(self.start)
-                self.start += self.step
-                return ret
+            if current < self.stop:
+                self._idx += 1
+                return float(current)
             else:
                 raise StopIteration
         elif self.step < 0:
-            if self.start > self.stop:
-                ret = float(self.start)
-                self.start += self.step
-                return ret
+            if current > self.stop:
+                self._idx += 1
+                return float(current)
             else:
                 raise StopIteration
         else:
@@ -131,9 +131,9 @@ class RangeSweep(Sweep):
     Discrete range of numbers
     """
 
-    start: Optional[Union[int, float]] = None
-    stop: Optional[Union[int, float]] = None
-    step: Union[int, float] = 1
+    start: Optional[Union[int, float, decimal.Decimal]] = None
+    stop: Optional[Union[int, float, decimal.Decimal]] = None
+    step: Union[int, float, decimal.Decimal] = 1
 
     shuffle: bool = False
 
@@ -303,12 +303,15 @@ class Override:
         if isinstance(value, list):
             return [Override._convert_value(x) for x in value]
         elif isinstance(value, dict):
-            return {
-                # We ignore potential type mismatch here so as to let OmegaConf
-                # raise an explicit error in case of invalid type.
-                Override._convert_value(k): Override._convert_value(v)  # type: ignore
-                for k, v in value.items()
-            }
+            return cast(
+                Dict[str, Any],
+                {
+                    # We ignore potential type mismatch here so as to let OmegaConf
+                    # raise an explicit error in case of invalid type.
+                    Override._convert_value(k): Override._convert_value(v)
+                    for k, v in value.items()
+                },
+            )
         elif isinstance(value, QuotedString):
             return value.text
         else:
@@ -463,7 +466,10 @@ class Override:
             return str(value)
         elif is_structured_config(value):
             return Override._get_value_element_as_str(
-                OmegaConf.to_container(OmegaConf.structured(value))
+                cast(
+                    ParsedElementType,
+                    OmegaConf.to_container(OmegaConf.structured(value)),
+                )
             )
         else:
             assert False
@@ -498,9 +504,7 @@ class Override:
             if self.package is not None and "_name_" in self.package:
                 url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
                 deprecation_warning(
-                    message=dedent(
-                        f"""\
+                    message=dedent(f"""\
                         In override {self.input_line}: _name_ keyword is deprecated in packages, see {url}
-                        """
-                    ),
+                        """),
                 )
