@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-23",
-  "generated_at": "2026-07-23T19:37:59Z",
+  "generated_at": "2026-07-23T20:03:28Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 164,
+    "open_total": 163,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 122,
-        "percentage": 74.4
+        "count": 121,
+        "percentage": 74.2
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 159
+        "count": 158
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 166
+        "count": 167
       }
     ]
   },
@@ -324,6 +324,23 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/841"
+    },
+    {
+      "number": 845,
+      "title": "Add a standalone page describing @hydra.main() in details.",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2020-08-05",
+      "updated": "2026-07-15",
+      "labels": [
+        "documentation",
+        "good first issue",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/845"
     },
     {
       "number": 851,
@@ -2371,21 +2388,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3082"
     },
     {
-      "number": 3091,
-      "title": "Optuna sweeper n_jobs>1 is blocking",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2025-10-30",
-      "updated": "2026-05-16",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3091"
-    },
-    {
       "number": 3158,
       "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
       "category": "Build",
@@ -2722,23 +2724,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3283"
     },
     {
-      "number": 845,
-      "title": "Add a standalone page describing @hydra.main() in details.",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2020-08-05",
-      "updated": "2026-07-15",
-      "labels": [
-        "documentation",
-        "good first issue",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/845"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -2793,6 +2778,24 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1636"
+    },
+    {
+      "number": 1679,
+      "title": "[Feature Request] Resume study and avoid OOM when optimizing with Optuna plugin",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-06-17",
+      "updated": "2026-07-16",
+      "labels": [
+        "enhancement",
+        "help wanted",
+        "plugin",
+        "wishlist"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1679"
     },
     {
       "number": 1753,
@@ -3639,6 +3642,26 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2416"
     },
     {
+      "number": 2435,
+      "title": "[Feature Request] Optuna experiment stream processing",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-10-24",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "launchers",
+        "optuna",
+        "plugin",
+        "sweep",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2435"
+    },
+    {
       "number": 2445,
       "title": "[Bug] Navigating to certain pages in the hosted documentation fails with `t is undefined`",
       "category": "Bug",
@@ -4215,6 +4238,22 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2823"
+    },
+    {
+      "number": 2828,
+      "title": "[Feature Request] Adding the best trial number in the `optimization_results.yaml` file",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-01-03",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2828"
     },
     {
       "number": 2829,
@@ -5435,61 +5474,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3296"
     },
     {
-      "number": 1679,
-      "title": "[Feature Request] Resume study and avoid OOM when optimizing with Optuna plugin",
+      "number": 3091,
+      "title": "Optuna sweeper n_jobs>1 is blocking",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2021-06-17",
-      "updated": "2026-07-16",
+      "created": "2025-10-30",
+      "updated": "2026-05-16",
       "labels": [
-        "enhancement",
-        "help wanted",
-        "plugin",
-        "wishlist"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1679"
-    },
-    {
-      "number": 2435,
-      "title": "[Feature Request] Optuna experiment stream processing",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-10-24",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "launchers",
-        "optuna",
-        "plugin",
-        "sweep",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2435"
-    },
-    {
-      "number": 2828,
-      "title": "[Feature Request] Adding the best trial number in the `optimization_results.yaml` file",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2024-01-03",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2828"
+      "url": "https://github.com/facebookresearch/hydra/issues/3091"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-23T20:03:28Z",
+      "kind": "closed",
+      "issue": 3091,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3091",
+      "title": "Optuna sweeper n_jobs>1 is blocking"
+    },
     {
       "ts": "2026-07-23T19:37:59Z",
       "kind": "pr",
@@ -7062,14 +7069,6 @@
       "issue": 1989,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1989",
       "title": "Feature Request: allow limited use of \"override\" keyword in interpolated config",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1983,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1983",
-      "title": "[Feature Request] Copying a config field between different branches in one config",
       "detail": "added \"triage\""
     }
   ]
