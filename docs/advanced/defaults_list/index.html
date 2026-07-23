@@ -13,7 +13,7 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.37158d48.css">
-<script src="/assets/js/runtime~main.7a5b7176.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.dda1f871.js" defer="defer"></script>
 <script src="/assets/js/main.f614ae09.js" defer="defer"></script>
 </head>
 <body>
@@ -38,6 +38,13 @@ is not a part of output config.</p>
 <p><em>CONFIG_GROUP</em> : A path to a set of configs.
 The path is relative to the containing config.
 It can be made absolute by prefixing it with a <code>/</code>.
+Parent traversal with <code>..</code> is not supported anywhere in a Defaults List config
+path. For a config or config group path, use an absolute path such as
+<code>/group/config</code> or <code>/group: option</code>. A config option cannot contain parent
+traversal. Select the target config directly instead. Use an absolute config
+path or group such as <code>/config</code> or <code>/group: option</code> in a Defaults List. In a
+command-line override, target the group directly with <code>group=option</code>, using
+<code>+group=option</code> when adding a new default.
 The path separator is <code>/</code> regardless of the operating system.</p>
 <p><em>OPTION</em>: The currently selected <em>CONFIG_NAME</em> or <em>CONFIG_NAMES</em> from a <em>CONFIG_GROUP</em>.</p>
 <p><em>PACKAGE</em> : Where to place the content of the config within the output config.
