@@ -1,27 +1,27 @@
 {
-  "generated_on": "2026-07-22",
-  "generated_at": "2026-07-22T09:16:53Z",
+  "generated_on": "2026-07-23",
+  "generated_at": "2026-07-23T07:51:50Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 168,
+    "open_total": 167,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 19,
-        "percentage": 11.3
+        "count": 18,
+        "percentage": 10.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 125,
-        "percentage": 74.4
+        "percentage": 74.9
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 11,
-        "percentage": 6.5
+        "percentage": 6.6
       },
       {
         "category": "Question",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 6
+        "count": 5
       },
       {
         "status": "blocked",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 162
+        "count": 163
       }
     ]
   },
@@ -196,27 +196,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3053"
-    },
-    {
-      "number": 3202,
-      "title": "Disallow parent traversal in Defaults List config groups",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3246,
-          "url": "https://github.com/facebookresearch/hydra/pull/3246"
-        }
-      ],
-      "created": "2026-06-08",
-      "updated": "2026-06-28",
-      "labels": [
-        "maintenance",
-        "defaults list"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3202"
     },
     {
       "number": 385,
@@ -1215,21 +1194,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2227"
-    },
-    {
-      "number": 2236,
-      "title": "`AssertionError` with unusual defaults list",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-05-26",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2236"
     },
     {
       "number": 2237,
@@ -2817,6 +2781,22 @@
       "updated": "2026-07-17",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3283"
+    },
+    {
+      "number": 3202,
+      "title": "Disallow parent traversal in Defaults List config groups",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-08",
+      "updated": "2026-06-28",
+      "labels": [
+        "maintenance",
+        "defaults list"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3202"
     },
     {
       "number": 692,
@@ -5230,6 +5210,26 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3213"
     },
     {
+      "number": 3215,
+      "title": "Log multirun job failures in per-job logs",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3227,
+          "url": "https://github.com/facebookresearch/hydra/pull/3227"
+        }
+      ],
+      "created": "2026-06-19",
+      "updated": "2026-06-19",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3215"
+    },
+    {
       "number": 3216,
       "title": "Evaluate opt-out from eager resolution in instantiate",
       "category": "Enhancement",
@@ -5480,27 +5480,45 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3296"
     },
     {
-      "number": 3215,
-      "title": "Log multirun job failures in per-job logs",
+      "number": 2236,
+      "title": "`AssertionError` with unusual defaults list",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3227,
-          "url": "https://github.com/facebookresearch/hydra/pull/3227"
-        }
-      ],
-      "created": "2026-06-19",
-      "updated": "2026-06-19",
+      "prs": [],
+      "created": "2022-05-26",
+      "updated": "2026-07-15",
       "labels": [
         "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3215"
+      "url": "https://github.com/facebookresearch/hydra/issues/2236"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-23T07:51:50Z",
+      "kind": "pr",
+      "issue": 3202,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3202",
+      "title": "Disallow parent traversal in Defaults List config groups",
+      "detail": "unlinked #3246"
+    },
+    {
+      "ts": "2026-07-23T07:51:50Z",
+      "kind": "closed",
+      "issue": 2236,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2236",
+      "title": "`AssertionError` with unusual defaults list"
+    },
+    {
+      "ts": "2026-07-23T07:51:50Z",
+      "kind": "status",
+      "issue": 3202,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3202",
+      "title": "Disallow parent traversal in Defaults List config groups",
+      "detail": "community PR → not started"
+    },
     {
       "ts": "2026-07-22T09:16:53Z",
       "kind": "closed",
@@ -7061,30 +7079,6 @@
       "issue": 1942,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1942",
       "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1939,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1939",
-      "title": "Implement #1389 or similar functionality",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1937,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1937",
-      "title": "[Feature Request] Conditionally disable the creation of folders in output/multirun via the CLI",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1936,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1936",
-      "title": "instantiate api - having to write a dataclass conf for every _target_ class ",
       "detail": "added \"triage\""
     }
   ]
