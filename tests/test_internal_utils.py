@@ -2,7 +2,7 @@
 from typing import Any, Callable, Optional
 
 from omegaconf import DictConfig, OmegaConf
-from pytest import mark, param
+from pytest import mark, param, raises
 
 from hydra._internal import utils
 from hydra._internal.utils import get_args
@@ -97,3 +97,8 @@ def test_get_args_override_ordering(
     parsed = get_args(args)
     assert parsed.overrides == expected_overrides
     assert parsed.multirun == expected_multirun
+
+
+def test_get_args_rejects_unknown_option() -> None:
+    with raises(SystemExit):
+        get_args(["task=1", "--bad-flag", "db=mysql"])

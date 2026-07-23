@@ -1824,6 +1824,17 @@ def test_hydra_resolver_in_output_dir(tmpdir: Path, multirun: bool) -> None:
             id="multi_run_commandline",
         ),
         param(
+            ["x=1", "--multirun", "hydra.mode=MULTIRUN"],
+            dedent("""\
+                [HYDRA] Launching 1 jobs locally
+                [HYDRA] \t#0 : x=1
+                RunMode.MULTIRUN"""),
+            False,
+            False,
+            None,
+            id="multi_run_commandline_between_overrides",
+        ),
+        param(
             [],
             dedent("""\
                 RunMode.RUN"""),
