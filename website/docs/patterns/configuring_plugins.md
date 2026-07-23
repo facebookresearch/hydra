@@ -5,6 +5,8 @@ title: Configuring Plugins
 
 import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
+<ExampleGithubLink text="Example Launcher plugin" to="examples/plugins/example_launcher_plugin"/>
+
 Hydra plugins usually come with sensible defaults which work with minimal configuration.
 There are two primary ways to customize the configuration of a plugin:
 - Overriding it directly in your primary config
@@ -58,6 +60,8 @@ We can directly override Launcher config in primary config.
 <div className="col col--4">
 
 ```yaml title="config.yaml" 
+a: 1
+
 hydra:
   launcher:
     ton_fuel: 2

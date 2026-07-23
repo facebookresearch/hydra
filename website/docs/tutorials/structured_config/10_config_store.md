@@ -3,6 +3,10 @@ id: config_store
 title: Config Store API
 ---
 
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink to="examples/tutorials/structured_configs/1_minimal"/>
+
 Throughout the rest of tutorials, we will be using `ConfigStore` to register dataclasses as input configs in Hydra. 
 `ConfigStore` is a singleton storing configs in memory. 
 The primary API for interacting with the `ConfigStore` is the store method described below.
@@ -88,12 +92,7 @@ that is not the only way! We can also use `ConfigStore` to make another config g
 To achieve this, we add a few lines (highlighted) in the above `my_app.py` file:
 
 
-```python title="my_app.py" {6-14}
-import hydra
-from omegaconf import OmegaConf, DictConfig
-from hydra.core.config_store import ConfigStore
-from dataclasses import dataclass
-
+```python title="my_app.py" {1-9}
 @dataclass
 class PostgresSQLConfig:
     driver: str = "postgresql"
