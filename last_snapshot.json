@@ -172,7 +172,7 @@
     "3309": "2026-07-24",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-24T12:32:14Z",
+  "generated_at": "2026-07-24T17:19:03Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -504,10 +504,10 @@
         "triage"
       ],
       "pr_numbers": [
-        "2034"
+        "3311"
       ],
       "state": "OPEN",
-      "status": "community PR",
+      "status": "in progress",
       "title": "HPO config standardization",
       "updated_at": "2026-07-15T13:17:16Z"
     },

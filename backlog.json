@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-24",
-  "generated_at": "2026-07-24T12:32:14Z",
+  "generated_at": "2026-07-24T17:19:03Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 163,
@@ -46,12 +46,12 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 0
+        "count": 1
       },
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 2
+        "count": 1
       },
       {
         "status": "blocked",
@@ -76,12 +76,12 @@
       "title": "HPO config standardization",
       "category": "Enhancement",
       "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
+      "status": "in progress",
+      "status_emoji": "🔄",
       "prs": [
         {
-          "number": 2034,
-          "url": "https://github.com/facebookresearch/hydra/pull/2034"
+          "number": 3311,
+          "url": "https://github.com/facebookresearch/hydra/pull/3311"
         }
       ],
       "created": "2021-11-15",
@@ -5554,6 +5554,34 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-24T17:19:03Z",
+      "kind": "pr",
+      "issue": 1890,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1890",
+      "title": "HPO config standardization",
+      "detail": "unlinked #2034"
+    },
+    {
+      "ts": "2026-07-24T17:19:03Z",
+      "kind": "pr",
+      "issue": 1890,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1890",
+      "title": "HPO config standardization",
+      "detail": "linked #3311"
+    },
+    {
+      "ts": "2026-07-24T17:19:03Z",
+      "kind": "status",
+      "issue": 1890,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1890",
+      "title": "HPO config standardization",
+      "detail": "community PR → in progress",
+      "pr": {
+        "number": 3311,
+        "url": "https://github.com/facebookresearch/hydra/pull/3311"
+      }
+    },
+    {
       "ts": "2026-07-24T10:37:25Z",
       "kind": "closed",
       "issue": 3309,
@@ -7100,30 +7128,6 @@
       "issue": 2140,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2140",
       "title": "[Feature Request] hydra.utils.instantiate support for lookup (without calling)",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2125,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2125",
-      "title": "[Bug] Cannot find conf/ dir when outside of packaged app.",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2121,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2121",
-      "title": "[Bug] Recursion overflow from `--help` if `group=''`",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2107,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2107",
-      "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`",
       "detail": "added \"triage\""
     }
   ]
