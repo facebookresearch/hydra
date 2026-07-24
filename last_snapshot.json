@@ -169,7 +169,7 @@
     "3296": "2026-07-19",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-24T03:36:25Z",
+  "generated_at": "2026-07-24T05:44:30Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2115,6 +2115,42 @@
       "status": "not started",
       "title": "Reject duplicate override targets during composition",
       "updated_at": "2026-07-17T12:30:14Z"
+    },
+    "3306": {
+      "category": "Bug",
+      "created_at": "2026-07-24T05:42:53Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug]",
+      "updated_at": "2026-07-24T05:42:53Z"
+    },
+    "3307": {
+      "category": "Bug",
+      "created_at": "2026-07-24T05:42:59Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug]",
+      "updated_at": "2026-07-24T05:42:59Z"
+    },
+    "3308": {
+      "category": "Bug",
+      "created_at": "2026-07-24T05:43:01Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug]",
+      "updated_at": "2026-07-24T05:43:01Z"
     },
     "385": {
       "category": "Enhancement",

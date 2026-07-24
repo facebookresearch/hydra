@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-24",
-  "generated_at": "2026-07-24T03:36:25Z",
+  "generated_at": "2026-07-24T05:44:30Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 162,
+    "open_total": 165,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 17,
-        "percentage": 10.5
+        "count": 20,
+        "percentage": 12.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 121,
-        "percentage": 74.7
+        "percentage": 73.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 11,
-        "percentage": 6.8
+        "percentage": 6.7
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.6
+        "percentage": 5.5
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 1.9
+        "percentage": 1.8
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 158
+        "count": 161
       },
       {
         "status": "done",
@@ -2704,6 +2704,51 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3283"
     },
     {
+      "number": 3306,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-24",
+      "updated": "2026-07-24",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3306"
+    },
+    {
+      "number": 3307,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-24",
+      "updated": "2026-07-24",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3307"
+    },
+    {
+      "number": 3308,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-24",
+      "updated": "2026-07-24",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3308"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4818,6 +4863,26 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3050"
     },
     {
+      "number": 3053,
+      "title": "[Bug] --multirun yields error on specific command line flag ordering",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3133,
+          "url": "https://github.com/facebookresearch/hydra/pull/3133"
+        }
+      ],
+      "created": "2025-04-13",
+      "updated": "2026-06-07",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3053"
+    },
+    {
       "number": 3058,
       "title": "[Question] How to Submit SLURM Jobs Eagerly?",
       "category": "Question",
@@ -5467,29 +5532,30 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3296"
-    },
-    {
-      "number": 3053,
-      "title": "[Bug] --multirun yields error on specific command line flag ordering",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3133,
-          "url": "https://github.com/facebookresearch/hydra/pull/3133"
-        }
-      ],
-      "created": "2025-04-13",
-      "updated": "2026-06-07",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3053"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-24T05:44:30Z",
+      "kind": "new",
+      "issue": 3308,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3308",
+      "title": "[Bug]"
+    },
+    {
+      "ts": "2026-07-24T05:44:30Z",
+      "kind": "new",
+      "issue": 3307,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3307",
+      "title": "[Bug]"
+    },
+    {
+      "ts": "2026-07-24T05:44:30Z",
+      "kind": "new",
+      "issue": 3306,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3306",
+      "title": "[Bug]"
+    },
     {
       "ts": "2026-07-24T03:36:25Z",
       "kind": "closed",
@@ -7044,30 +7110,6 @@
       "issue": 2039,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2039",
       "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2027,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2027",
-      "title": "[Feature Request] Concatenate Multiple Config List elements",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2017,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2017",
-      "title": "[Bug] Hydra resolver does not work in compose_api",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2000,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2000",
-      "title": "[Feature Request] Minimal Version of Hydra With Bare-Bones Config Support",
       "detail": "added \"triage\""
     }
   ]

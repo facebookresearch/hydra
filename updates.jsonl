@@ -491,3 +491,6 @@
 {"ts": "2026-07-23T19:37:59Z", "kind": "pr", "issue": 845, "issue_url": "https://github.com/facebookresearch/hydra/issues/845", "title": "Add a standalone page describing @hydra.main() in details.", "detail": "unlinked #3136"}
 {"ts": "2026-07-23T20:03:28Z", "kind": "closed", "issue": 3091, "issue_url": "https://github.com/facebookresearch/hydra/issues/3091", "title": "Optuna sweeper n_jobs>1 is blocking"}
 {"ts": "2026-07-24T03:36:25Z", "kind": "closed", "issue": 3053, "issue_url": "https://github.com/facebookresearch/hydra/issues/3053", "title": "[Bug] --multirun yields error on specific command line flag ordering"}
+{"ts": "2026-07-24T05:44:30Z", "kind": "new", "issue": 3306, "issue_url": "https://github.com/facebookresearch/hydra/issues/3306", "title": "[Bug]"}
+{"ts": "2026-07-24T05:44:30Z", "kind": "new", "issue": 3307, "issue_url": "https://github.com/facebookresearch/hydra/issues/3307", "title": "[Bug]"}
+{"ts": "2026-07-24T05:44:30Z", "kind": "new", "issue": 3308, "issue_url": "https://github.com/facebookresearch/hydra/issues/3308", "title": "[Bug]"}
