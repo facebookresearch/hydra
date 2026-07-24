@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-24",
-  "generated_at": "2026-07-24T09:17:32Z",
+  "generated_at": "2026-07-24T10:37:25Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 164,
+    "open_total": 163,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 19,
-        "percentage": 11.6
+        "percentage": 11.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 121,
-        "percentage": 73.8
+        "count": 120,
+        "percentage": 73.6
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 162
+        "count": 161
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 170
+        "count": 171
       }
     ]
   },
@@ -2708,24 +2708,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3308"
     },
     {
-      "number": 3309,
-      "title": "Expose Submitit's custom Python executable in the Submitit launcher",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-24",
-      "updated": "2026-07-24",
-      "labels": [
-        "enhancement",
-        "plugin",
-        "submitit",
-        "launchers"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3309"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -3854,6 +3836,27 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2575"
+    },
+    {
+      "number": 2632,
+      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 2633,
+          "url": "https://github.com/facebookresearch/hydra/pull/2633"
+        }
+      ],
+      "created": "2023-04-04",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2632"
     },
     {
       "number": 2655,
@@ -5531,28 +5534,32 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3296"
     },
     {
-      "number": 2632,
-      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
+      "number": 3309,
+      "title": "Expose Submitit's custom Python executable in the Submitit launcher",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 2633,
-          "url": "https://github.com/facebookresearch/hydra/pull/2633"
-        }
-      ],
-      "created": "2023-04-04",
-      "updated": "2026-07-15",
+      "prs": [],
+      "created": "2026-07-24",
+      "updated": "2026-07-24",
       "labels": [
         "enhancement",
-        "triage"
+        "launchers",
+        "plugin",
+        "submitit"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2632"
+      "url": "https://github.com/facebookresearch/hydra/issues/3309"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-24T10:37:25Z",
+      "kind": "closed",
+      "issue": 3309,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3309",
+      "title": "Expose Submitit's custom Python executable in the Submitit launcher"
+    },
     {
       "ts": "2026-07-24T09:17:32Z",
       "kind": "closed",
@@ -7117,14 +7124,6 @@
       "issue": 2107,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2107",
       "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2102,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2102",
-      "title": "[Bug] Structured config in config store is not found with SearchPathPlugin",
       "detail": "added \"triage\""
     }
   ]
