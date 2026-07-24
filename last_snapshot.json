@@ -170,10 +170,13 @@
     "3290": "2026-07-18",
     "3291": "2026-07-19",
     "3296": "2026-07-19",
+    "3306": "2026-07-24",
+    "3307": "2026-07-24",
+    "3308": "2026-07-24",
     "3309": "2026-07-24",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-24T20:25:05Z",
+  "generated_at": "2026-07-24T20:37:25Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2072,42 +2075,6 @@
       "status": "not started",
       "title": "Reject duplicate override targets during composition",
       "updated_at": "2026-07-17T12:30:14Z"
-    },
-    "3306": {
-      "category": "Bug",
-      "created_at": "2026-07-24T05:42:53Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug]",
-      "updated_at": "2026-07-24T05:42:53Z"
-    },
-    "3307": {
-      "category": "Bug",
-      "created_at": "2026-07-24T05:42:59Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug]",
-      "updated_at": "2026-07-24T05:42:59Z"
-    },
-    "3308": {
-      "category": "Bug",
-      "created_at": "2026-07-24T05:43:01Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug]",
-      "updated_at": "2026-07-24T05:43:01Z"
     },
     "3313": {
       "category": "Enhancement",
@@ -4508,6 +4475,42 @@
       "status": "done",
       "title": "Better RDP login detection",
       "updated_at": "2026-07-19T18:49:01Z"
+    },
+    "3306": {
+      "category": "Bug",
+      "created_at": "2026-07-24T05:42:53Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug]",
+      "updated_at": "2026-07-24T05:42:53Z"
+    },
+    "3307": {
+      "category": "Bug",
+      "created_at": "2026-07-24T05:42:59Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug]",
+      "updated_at": "2026-07-24T05:42:59Z"
+    },
+    "3308": {
+      "category": "Bug",
+      "created_at": "2026-07-24T05:43:01Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug]",
+      "updated_at": "2026-07-24T05:43:01Z"
     },
     "3309": {
       "category": "Enhancement",

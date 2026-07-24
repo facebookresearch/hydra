@@ -505,3 +505,6 @@
 {"ts": "2026-07-24T19:00:52Z", "kind": "pr", "issue": 1890, "issue_url": "https://github.com/facebookresearch/hydra/issues/1890", "title": "HPO config standardization", "detail": "unlinked #3311"}
 {"ts": "2026-07-24T19:49:28Z", "kind": "new", "issue": 3313, "issue_url": "https://github.com/facebookresearch/hydra/issues/3313", "title": "Standardize Ax Sweeper parameters and remove the Ax upper bound"}
 {"ts": "2026-07-24T20:25:05Z", "kind": "closed", "issue": 1898, "issue_url": "https://github.com/facebookresearch/hydra/issues/1898", "title": "[Bug] Submitit has optional parameter tasks_per_node set"}
+{"ts": "2026-07-24T20:37:25Z", "kind": "closed", "issue": 3306, "issue_url": "https://github.com/facebookresearch/hydra/issues/3306", "title": "[Bug]"}
+{"ts": "2026-07-24T20:37:25Z", "kind": "closed", "issue": 3307, "issue_url": "https://github.com/facebookresearch/hydra/issues/3307", "title": "[Bug]"}
+{"ts": "2026-07-24T20:37:25Z", "kind": "closed", "issue": 3308, "issue_url": "https://github.com/facebookresearch/hydra/issues/3308", "title": "[Bug]"}

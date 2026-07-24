@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-24",
-  "generated_at": "2026-07-24T20:25:05Z",
+  "generated_at": "2026-07-24T20:37:25Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 163,
+    "open_total": 160,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 18,
-        "percentage": 11.0
+        "count": 15,
+        "percentage": 9.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 121,
-        "percentage": 74.2
+        "percentage": 75.6
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 11,
-        "percentage": 6.7
+        "percentage": 6.9
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.5
+        "percentage": 5.6
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 1.8
+        "percentage": 1.9
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 163
+        "count": 160
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 172
+        "count": 175
       }
     ]
   },
@@ -2636,51 +2636,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3283"
     },
     {
-      "number": 3306,
-      "title": "[Bug]",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-24",
-      "updated": "2026-07-24",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3306"
-    },
-    {
-      "number": 3307,
-      "title": "[Bug]",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-24",
-      "updated": "2026-07-24",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3307"
-    },
-    {
-      "number": 3308,
-      "title": "[Bug]",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-24",
-      "updated": "2026-07-24",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3308"
-    },
-    {
       "number": 3313,
       "title": "Standardize Ax Sweeper parameters and remove the Ax upper bound",
       "category": "Enhancement",
@@ -2982,6 +2937,28 @@
       "updated": "2021-11-22",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
+      "number": 1898,
+      "title": "[Bug] Submitit has optional parameter tasks_per_node set",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 2157,
+          "url": "https://github.com/facebookresearch/hydra/pull/2157"
+        }
+      ],
+      "created": "2021-11-22",
+      "updated": "2026-07-16",
+      "labels": [
+        "bug",
+        "submitit",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1898"
     },
     {
       "number": 1928,
@@ -5543,29 +5520,73 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3309"
     },
     {
-      "number": 1898,
-      "title": "[Bug] Submitit has optional parameter tasks_per_node set",
+      "number": 3306,
+      "title": "[Bug]",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 2157,
-          "url": "https://github.com/facebookresearch/hydra/pull/2157"
-        }
-      ],
-      "created": "2021-11-22",
-      "updated": "2026-07-16",
+      "prs": [],
+      "created": "2026-07-24",
+      "updated": "2026-07-24",
       "labels": [
-        "bug",
-        "submitit",
-        "sweep"
+        "bug"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1898"
+      "url": "https://github.com/facebookresearch/hydra/issues/3306"
+    },
+    {
+      "number": 3307,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-07-24",
+      "updated": "2026-07-24",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3307"
+    },
+    {
+      "number": 3308,
+      "title": "[Bug]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-07-24",
+      "updated": "2026-07-24",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3308"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-24T20:37:25Z",
+      "kind": "closed",
+      "issue": 3308,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3308",
+      "title": "[Bug]"
+    },
+    {
+      "ts": "2026-07-24T20:37:25Z",
+      "kind": "closed",
+      "issue": 3307,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3307",
+      "title": "[Bug]"
+    },
+    {
+      "ts": "2026-07-24T20:37:25Z",
+      "kind": "closed",
+      "issue": 3306,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3306",
+      "title": "[Bug]"
+    },
     {
       "ts": "2026-07-24T20:25:05Z",
       "kind": "closed",
@@ -7115,30 +7136,6 @@
       "issue": 2208,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2208",
       "title": "instantiate converts inner structured configs back to Dict/ListConf",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2196,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2196",
-      "title": "CI: Testing Hydra against OmegaConf's master branch",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2194,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2194",
-      "title": "Support for warning handling",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2193,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2193",
-      "title": "[Bug] Not failing when required fields are missing when using structured config",
       "detail": "added \"triage\""
     }
   ]
