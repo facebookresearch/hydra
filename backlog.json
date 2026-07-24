@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-24",
-  "generated_at": "2026-07-24T07:50:56Z",
+  "generated_at": "2026-07-24T09:17:32Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 165,
+    "open_total": 164,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 19,
-        "percentage": 11.5
+        "percentage": 11.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 122,
-        "percentage": 73.9
+        "count": 121,
+        "percentage": 73.8
       },
       {
         "category": "Documentation",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -66,32 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 169
+        "count": 170
       }
     ]
   },
   "issues": [
-    {
-      "number": 2632,
-      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 2633,
-          "url": "https://github.com/facebookresearch/hydra/pull/2633"
-        }
-      ],
-      "created": "2023-04-04",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2632"
-    },
     {
       "number": 1890,
       "title": "HPO config standardization",
@@ -5550,9 +5529,37 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3296"
+    },
+    {
+      "number": 2632,
+      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 2633,
+          "url": "https://github.com/facebookresearch/hydra/pull/2633"
+        }
+      ],
+      "created": "2023-04-04",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2632"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-24T09:17:32Z",
+      "kind": "closed",
+      "issue": 2632,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2632",
+      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit"
+    },
     {
       "ts": "2026-07-24T06:38:27Z",
       "kind": "new",
@@ -7118,14 +7125,6 @@
       "issue": 2102,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2102",
       "title": "[Bug] Structured config in config store is not found with SearchPathPlugin",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2091,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2091",
-      "title": "Replace dictionary (instead of merging) from command line",
       "detail": "added \"triage\""
     }
   ]

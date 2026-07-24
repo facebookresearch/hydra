@@ -64,6 +64,7 @@
     "2562": "2026-06-30",
     "2564": "2026-06-30",
     "2575": "2026-06-30",
+    "2632": "2026-07-24",
     "2655": "2026-06-30",
     "2656": "2026-06-30",
     "2662": "2026-06-30",
@@ -170,7 +171,7 @@
     "3296": "2026-07-19",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-24T07:50:56Z",
+  "generated_at": "2026-07-24T09:17:32Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1134,21 +1135,6 @@
       "status": "not started",
       "title": "Is there a way to disable Hydra exceptions/errors override?",
       "updated_at": "2026-07-15T13:16:31Z"
-    },
-    "2632": {
-      "category": "Enhancement",
-      "created_at": "2023-04-04T15:52:47Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [
-        "2633"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
-      "updated_at": "2026-07-15T13:16:30Z"
     },
     "2657": {
       "category": "Enhancement",
@@ -3228,6 +3214,21 @@
       "status": "done",
       "title": "[Bug] Schema validation for recursively instantiated targets failing",
       "updated_at": "2025-05-23T07:26:41Z"
+    },
+    "2632": {
+      "category": "Enhancement",
+      "created_at": "2023-04-04T15:52:47Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [
+        "2633"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
+      "updated_at": "2026-07-15T13:16:30Z"
     },
     "2655": {
       "category": "Bug",
