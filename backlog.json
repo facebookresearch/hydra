@@ -1,33 +1,33 @@
 {
-  "generated_on": "2026-07-23",
-  "generated_at": "2026-07-23T20:03:28Z",
+  "generated_on": "2026-07-24",
+  "generated_at": "2026-07-24T03:36:25Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 163,
+    "open_total": 162,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 18,
-        "percentage": 11.0
+        "count": 17,
+        "percentage": 10.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 121,
-        "percentage": 74.2
+        "percentage": 74.7
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 11,
-        "percentage": 6.7
+        "percentage": 6.8
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.5
+        "percentage": 5.6
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 1.8
+        "percentage": 1.9
       }
     ],
     "by_status": [
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 4
+        "count": 3
       },
       {
         "status": "blocked",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 167
+        "count": 168
       }
     ]
   },
@@ -154,26 +154,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2889"
-    },
-    {
-      "number": 3053,
-      "title": "[Bug] --multirun yields error on specific command line flag ordering",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3133,
-          "url": "https://github.com/facebookresearch/hydra/pull/3133"
-        }
-      ],
-      "created": "2025-04-13",
-      "updated": "2026-06-07",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3053"
     },
     {
       "number": 385,
@@ -4992,6 +4972,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3078"
     },
     {
+      "number": 3091,
+      "title": "Optuna sweeper n_jobs>1 is blocking",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2025-10-30",
+      "updated": "2026-05-16",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3091"
+    },
+    {
       "number": 3103,
       "title": "[Feature Request] Get swept list without `hydra.main`",
       "category": "Enhancement",
@@ -5474,22 +5469,34 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3296"
     },
     {
-      "number": 3091,
-      "title": "Optuna sweeper n_jobs>1 is blocking",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 3053,
+      "title": "[Bug] --multirun yields error on specific command line flag ordering",
+      "category": "Bug",
+      "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [],
-      "created": "2025-10-30",
-      "updated": "2026-05-16",
-      "labels": [
-        "triage"
+      "prs": [
+        {
+          "number": 3133,
+          "url": "https://github.com/facebookresearch/hydra/pull/3133"
+        }
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3091"
+      "created": "2025-04-13",
+      "updated": "2026-06-07",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3053"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-24T03:36:25Z",
+      "kind": "closed",
+      "issue": 3053,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3053",
+      "title": "[Bug] --multirun yields error on specific command line flag ordering"
+    },
     {
       "ts": "2026-07-23T20:03:28Z",
       "kind": "closed",
@@ -7061,14 +7068,6 @@
       "issue": 2000,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2000",
       "title": "[Feature Request] Minimal Version of Hydra With Bare-Bones Config Support",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 1989,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1989",
-      "title": "Feature Request: allow limited use of \"override\" keyword in interpolated config",
       "detail": "added \"triage\""
     }
   ]
