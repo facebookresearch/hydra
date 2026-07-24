@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-24",
-  "generated_at": "2026-07-24T17:19:03Z",
+  "generated_at": "2026-07-24T19:00:52Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 163,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 161
+        "count": 162
       },
       {
         "status": "done",
@@ -71,27 +71,6 @@
     ]
   },
   "issues": [
-    {
-      "number": 1890,
-      "title": "HPO config standardization",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3311,
-          "url": "https://github.com/facebookresearch/hydra/pull/3311"
-        }
-      ],
-      "created": "2021-11-15",
-      "updated": "2026-07-15",
-      "labels": [
-        "triage",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1890"
-    },
     {
       "number": 1898,
       "title": "[Bug] Submitit has optional parameter tasks_per_node set",
@@ -2706,6 +2685,22 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3308"
+    },
+    {
+      "number": 1890,
+      "title": "HPO config standardization",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-11-15",
+      "updated": "2026-07-24",
+      "labels": [
+        "triage",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1890"
     },
     {
       "number": 692,
@@ -5554,6 +5549,22 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-24T19:00:52Z",
+      "kind": "pr",
+      "issue": 1890,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1890",
+      "title": "HPO config standardization",
+      "detail": "unlinked #3311"
+    },
+    {
+      "ts": "2026-07-24T19:00:52Z",
+      "kind": "status",
+      "issue": 1890,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1890",
+      "title": "HPO config standardization",
+      "detail": "in progress → not started"
+    },
+    {
       "ts": "2026-07-24T17:19:03Z",
       "kind": "pr",
       "issue": 1890,
@@ -7112,22 +7123,6 @@
       "issue": 2170,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2170",
       "title": "[Bug] `???` defaults cannot display `--help`",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2149,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2149",
-      "title": "[Bug] Documentation Binder link is broken.",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2140,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2140",
-      "title": "[Feature Request] hydra.utils.instantiate support for lookup (without calling)",
       "detail": "added \"triage\""
     }
   ]

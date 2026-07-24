@@ -501,3 +501,5 @@
 {"ts": "2026-07-24T17:19:03Z", "kind": "status", "issue": 1890, "issue_url": "https://github.com/facebookresearch/hydra/issues/1890", "title": "HPO config standardization", "detail": "community PR → in progress", "pr": {"number": 3311, "url": "https://github.com/facebookresearch/hydra/pull/3311"}}
 {"ts": "2026-07-24T17:19:03Z", "kind": "pr", "issue": 1890, "issue_url": "https://github.com/facebookresearch/hydra/issues/1890", "title": "HPO config standardization", "detail": "linked #3311"}
 {"ts": "2026-07-24T17:19:03Z", "kind": "pr", "issue": 1890, "issue_url": "https://github.com/facebookresearch/hydra/issues/1890", "title": "HPO config standardization", "detail": "unlinked #2034"}
+{"ts": "2026-07-24T19:00:52Z", "kind": "status", "issue": 1890, "issue_url": "https://github.com/facebookresearch/hydra/issues/1890", "title": "HPO config standardization", "detail": "in progress → not started"}
+{"ts": "2026-07-24T19:00:52Z", "kind": "pr", "issue": 1890, "issue_url": "https://github.com/facebookresearch/hydra/issues/1890", "title": "HPO config standardization", "detail": "unlinked #3311"}
