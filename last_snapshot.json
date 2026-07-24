@@ -15,6 +15,7 @@
     "1859": "2026-07-17",
     "1866": "2026-07-16",
     "1892": "2026-06-07",
+    "1898": "2026-07-24",
     "1928": "2026-07-16",
     "1933": "2026-07-16",
     "1934": "2026-07-16",
@@ -172,7 +173,7 @@
     "3309": "2026-07-24",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-24T19:53:04Z",
+  "generated_at": "2026-07-24T20:25:05Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -521,22 +522,6 @@
       "status": "not started",
       "title": "[Feature Request] Override dictionary syntax",
       "updated_at": "2026-07-15T13:17:16Z"
-    },
-    "1898": {
-      "category": "Bug",
-      "created_at": "2021-11-22T08:16:43Z",
-      "labels": [
-        "bug",
-        "submitit",
-        "sweep"
-      ],
-      "pr_numbers": [
-        "2157"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "[Bug] Submitit has optional parameter tasks_per_node set",
-      "updated_at": "2026-07-16T17:48:16Z"
     },
     "1899": {
       "category": "Bug",
@@ -2539,6 +2524,22 @@
       "status": "done",
       "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
       "updated_at": "2021-11-22T21:10:28Z"
+    },
+    "1898": {
+      "category": "Bug",
+      "created_at": "2021-11-22T08:16:43Z",
+      "labels": [
+        "bug",
+        "submitit",
+        "sweep"
+      ],
+      "pr_numbers": [
+        "2157"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Submitit has optional parameter tasks_per_node set",
+      "updated_at": "2026-07-16T17:48:16Z"
     },
     "1928": {
       "category": "Bug",

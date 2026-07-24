@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-24",
-  "generated_at": "2026-07-24T19:53:04Z",
+  "generated_at": "2026-07-24T20:25:05Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 164,
+    "open_total": 163,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 19,
-        "percentage": 11.6
+        "count": 18,
+        "percentage": 11.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 121,
-        "percentage": 73.8
+        "percentage": 74.2
       },
       {
         "category": "Documentation",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 1
+        "count": 0
       },
       {
         "status": "blocked",
@@ -66,33 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 171
+        "count": 172
       }
     ]
   },
   "issues": [
-    {
-      "number": 1898,
-      "title": "[Bug] Submitit has optional parameter tasks_per_node set",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 2157,
-          "url": "https://github.com/facebookresearch/hydra/pull/2157"
-        }
-      ],
-      "created": "2021-11-22",
-      "updated": "2026-07-16",
-      "labels": [
-        "bug",
-        "sweep",
-        "submitit"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1898"
-    },
     {
       "number": 385,
       "title": "Experimentation tracking support",
@@ -5563,9 +5541,38 @@
         "submitit"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3309"
+    },
+    {
+      "number": 1898,
+      "title": "[Bug] Submitit has optional parameter tasks_per_node set",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 2157,
+          "url": "https://github.com/facebookresearch/hydra/pull/2157"
+        }
+      ],
+      "created": "2021-11-22",
+      "updated": "2026-07-16",
+      "labels": [
+        "bug",
+        "submitit",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1898"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-24T20:25:05Z",
+      "kind": "closed",
+      "issue": 1898,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1898",
+      "title": "[Bug] Submitit has optional parameter tasks_per_node set"
+    },
     {
       "ts": "2026-07-24T19:49:28Z",
       "kind": "new",
@@ -7132,14 +7139,6 @@
       "issue": 2193,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2193",
       "title": "[Bug] Not failing when required fields are missing when using structured config",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2187,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2187",
-      "title": "[Feature Request] implement `MultiprocessingLauncher`",
       "detail": "added \"triage\""
     }
   ]
