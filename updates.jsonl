@@ -508,3 +508,4 @@
 {"ts": "2026-07-24T20:37:25Z", "kind": "closed", "issue": 3306, "issue_url": "https://github.com/facebookresearch/hydra/issues/3306", "title": "[Bug]"}
 {"ts": "2026-07-24T20:37:25Z", "kind": "closed", "issue": 3307, "issue_url": "https://github.com/facebookresearch/hydra/issues/3307", "title": "[Bug]"}
 {"ts": "2026-07-24T20:37:25Z", "kind": "closed", "issue": 3308, "issue_url": "https://github.com/facebookresearch/hydra/issues/3308", "title": "[Bug]"}
+{"ts": "2026-07-24T23:37:50Z", "kind": "new", "issue": 3314, "issue_url": "https://github.com/facebookresearch/hydra/issues/3314", "title": "Add REFUTE scientific critique + calibration benchmark"}

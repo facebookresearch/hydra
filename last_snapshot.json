@@ -176,7 +176,7 @@
     "3309": "2026-07-24",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-24T20:37:25Z",
+  "generated_at": "2026-07-24T23:37:50Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2090,6 +2090,16 @@
       "status": "not started",
       "title": "Standardize Ax Sweeper parameters and remove the Ax upper bound",
       "updated_at": "2026-07-24T19:47:58Z"
+    },
+    "3314": {
+      "category": "Enhancement",
+      "created_at": "2026-07-24T23:36:24Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Add REFUTE scientific critique + calibration benchmark",
+      "updated_at": "2026-07-24T23:36:24Z"
     },
     "385": {
       "category": "Enhancement",

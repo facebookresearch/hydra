@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-24",
-  "generated_at": "2026-07-24T20:37:25Z",
+  "generated_at": "2026-07-24T23:37:50Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 160,
+    "open_total": 161,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 15,
-        "percentage": 9.4
+        "percentage": 9.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 121,
-        "percentage": 75.6
+        "count": 122,
+        "percentage": 75.8
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 11,
-        "percentage": 6.9
+        "percentage": 6.8
       },
       {
         "category": "Question",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 160
+        "count": 161
       },
       {
         "status": "done",
@@ -2652,6 +2652,19 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3313"
+    },
+    {
+      "number": 3314,
+      "title": "Add REFUTE scientific critique + calibration benchmark",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-24",
+      "updated": "2026-07-24",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3314"
     },
     {
       "number": 692,
@@ -5502,24 +5515,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3296"
     },
     {
-      "number": 3309,
-      "title": "Expose Submitit's custom Python executable in the Submitit launcher",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2026-07-24",
-      "updated": "2026-07-24",
-      "labels": [
-        "enhancement",
-        "launchers",
-        "plugin",
-        "submitit"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3309"
-    },
-    {
       "number": 3306,
       "title": "[Bug]",
       "category": "Bug",
@@ -5563,9 +5558,34 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3308"
+    },
+    {
+      "number": 3309,
+      "title": "Expose Submitit's custom Python executable in the Submitit launcher",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-07-24",
+      "updated": "2026-07-24",
+      "labels": [
+        "enhancement",
+        "launchers",
+        "plugin",
+        "submitit"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3309"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-24T23:37:50Z",
+      "kind": "new",
+      "issue": 3314,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3314",
+      "title": "Add REFUTE scientific critique + calibration benchmark"
+    },
     {
       "ts": "2026-07-24T20:37:25Z",
       "kind": "closed",
@@ -7128,14 +7148,6 @@
       "issue": 2226,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2226",
       "title": "No hydra interpolation is possible in Jupyter",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2208,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2208",
-      "title": "instantiate converts inner structured configs back to Dict/ListConf",
       "detail": "added \"triage\""
     }
   ]
