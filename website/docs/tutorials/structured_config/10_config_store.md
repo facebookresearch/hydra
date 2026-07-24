@@ -3,6 +3,10 @@ id: config_store
 title: Config Store API
 ---
 
+import {ExampleGithubLink} from "@site/src/components/GithubLink"
+
+<ExampleGithubLink to="examples/tutorials/structured_configs/1_minimal"/>
+
 Throughout the rest of tutorials, we will be using `ConfigStore` to register dataclasses as input configs in Hydra. 
 `ConfigStore` is a singleton storing configs in memory. 
 The primary API for interacting with the `ConfigStore` is the store method described below.

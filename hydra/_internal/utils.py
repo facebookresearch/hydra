@@ -619,7 +619,7 @@ def get_args_parser() -> argparse.ArgumentParser:
 
 
 def get_args(args: Optional[Sequence[str]] = None) -> Any:
-    return get_args_parser().parse_args(args=args)
+    return get_args_parser().parse_intermixed_args(args=args)
 
 
 def get_column_widths(matrix: List[List[str]]) -> List[int]:

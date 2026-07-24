@@ -81,7 +81,7 @@ def main(
                 return task_function(cfg_passthrough)
             else:
                 args_parser = get_args_parser()
-                args = args_parser.parse_args()
+                args = args_parser.parse_intermixed_args()
                 if args.experimental_rerun is not None:
                     cfg = _get_rerun_conf(args.experimental_rerun, args.overrides)
                     task_function(cfg)

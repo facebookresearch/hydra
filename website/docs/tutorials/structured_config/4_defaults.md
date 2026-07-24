@@ -14,7 +14,7 @@ The example below extends the previous example by adding a defaults list that wi
 NOTE: You can still place your defaults list in your primary (YAML) config file (Example in next page).
 </div><br/>
 
-```python {11-14,19,25}
+```python {15-18,22-23}
 from dataclasses import dataclass
 
 import hydra

@@ -10,7 +10,7 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 Structured Configs can be used to implement config groups. Special care needs to be taken when specifying a 
 default value for fields populated by a config group. We will look at why below.
 
-```python title="Defining a config group for database" {16-17,22-23}
+```python title="Defining a config group for database" {22}
 from dataclasses import dataclass
 
 import hydra
@@ -58,10 +58,8 @@ $ python my_app.py +db=postgresql
 db:
   driver: postgresql
   host: localhost
-  password: drowssap
   port: 5432
   timeout: 10
-  user: postgres_user
 ```
 
 The `+` above is required because there is no default choice for the config group `db`.

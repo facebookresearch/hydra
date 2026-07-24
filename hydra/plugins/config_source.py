@@ -116,7 +116,13 @@ class ConfigSource(Plugin):
     @staticmethod
     def _normalize_file_name(filename: str) -> str:
         supported_extensions = [".yaml"]
-        if not version.base_at_least("1.2"):
+        if version.base_at_least("1.2"):
+            if filename.endswith(".yml"):
+                raise ConfigLoadError(
+                    "Unsupported config file extension '.yml'. "
+                    "Hydra config files must use the '.yaml' extension."
+                )
+        else:
             supported_extensions.append(".yml")
             if filename.endswith(".yml"):
                 deprecation_warning(

@@ -45,21 +45,11 @@ optim:
   maximize: false
   seed: null
   max_failure_rate: 0.0
-parametrization:
-  db:
-  - mnist
-  - cifar
-  lr:
-    init: 0.02
-    step: 2.0
-    log: true
-  dropout:
-    lower: 0.0
-    upper: 1.0
-  batch_size:
-    lower: 4
-    upper: 16
-    integer: true
+params:
+  db: choice(mnist, cifar)
+  lr: {init: 0.02, step: 2.0, log: true}
+  dropout: interval(0, 1)
+  batch_size: int(interval(4, 16))
 ```
 
 The function decorated with `@hydra.main()` returns a float which we want to minimize, the minimum is 0 and reached for:
@@ -150,19 +140,25 @@ key=tag(ordered, choice(1,2,3))
 key=interval(1,12)             # Intervals are floats by default
 key=int(interval(1,8))         # Scalar bounds are cast to an int
 key=tag(log, interval(1,12))   # call ng.p.Log if tagged with log
+key={init: 0.02, step: 2.0, log: true}  # Unbounded log-scale scalar
 ```
 
 ### Defining through config file
-#### Choices
-Choices are defined with a list in a config file.
+The search space can be defined under `hydra.sweeper.params`.
+The definition is consistent with the equivalent command-line override.
 
-```yaml
-db:
-  - mnist
-  - cifar
-```
+:::warning
+`hydra.sweeper.parametrization` is deprecated in Hydra 1.4 and will be removed
+in Hydra 1.5. Use `hydra.sweeper.params` instead.
+:::
+
+#### Choices
+Choices use the same syntax as command-line overrides. For example, translate
+`key=shuffle(range(1, 8))` to `key: shuffle(range(1, 8))` in the config file.
+
 #### Scalars
-Scalars can be defined in config files, with fields:
+`Scalar` definitions also support the override syntax shown above. The
+following keys can be passed in a dictionary to define unbounded scalars:
   - `init`: optional initial value
   - `lower` : optional lower bound
   - `upper`: optional upper bound
@@ -171,4 +167,3 @@ Scalars can be defined in config files, with fields:
   - `integer`: set to `true` for integers (favor floats over integers whenever possible)
 
 Providing only `lower` and `upper` bound will set the initial value to the middle of the range and the step to a sixth of the range.
-**Note**: unbounded scalars (scalars with no upper and/or lower bounds) can only be defined through a config file.

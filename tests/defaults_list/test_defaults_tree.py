@@ -624,6 +624,19 @@ def test_defaults_tree_with_package_overrides__group_override(
             ),
             id="test_override_wrong_order_in_defaults_list",
         ),
+        param(
+            "override_list",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent("""\
+                        In override_list: Override 'group1 : file2' is defined before 'group1: ['file1', 'file2']'.
+                        Overrides must be at the end of the defaults list""")
+                ),
+            ),
+            id="test_override_before_list_in_defaults_list",
+        ),
     ],
 )
 def test_override_option_from_defaults_list(

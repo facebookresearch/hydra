@@ -59,6 +59,7 @@ The Submitit Plugin implements 2 different launchers: `submitit_slurm` to run on
   account: null
   signal_delay_s: 120
   max_num_timeout: 0
+  python: null
   additional_parameters: {}
   array_parallelism: 256
   setup: null
@@ -88,6 +89,13 @@ You can set all these parameters in your configuration file and/or override them
 ```text
 python foo.py --multirun hydra/launcher=submitit_slurm hydra.launcher.timeout_min=3
 ```
+Set `hydra.launcher.python` to use a Python executable other than the one
+running Hydra:
+
+```text
+python foo.py --multirun hydra/launcher=submitit_slurm hydra.launcher.python=/opt/venv/bin/python
+```
+
 For more details, including descriptions for each parameter, check out the <GithubLink to="plugins/hydra_submitit_launcher/hydra_plugins/hydra_submitit_launcher/config.py">config file</GithubLink>.
 You can also check the [Submitit documentation](https://github.com/facebookincubator/submitit).
 
