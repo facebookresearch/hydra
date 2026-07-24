@@ -1726,6 +1726,25 @@ def test_recursive_override(
     assert obj == expected
 
 
+def test_non_target_node_obeys_recursive_false(instantiate_func: Any) -> None:
+    obj = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "child": {
+                "_recursive_": False,
+                "grandchild": {
+                    "_target_": "tests.instantiate.SimpleClass",
+                    "value": 10,
+                },
+            },
+        }
+    )
+
+    child = obj.kwargs["child"]
+    assert isinstance(child, DictConfig)
+    assert isinstance(child.grandchild, DictConfig)
+
+
 @mark.parametrize(
     ("src", "passthrough", "expected"),
     [
