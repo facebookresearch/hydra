@@ -2,7 +2,7 @@
 import sys
 import warnings
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import nevergrad as ng
 from hydra.core.override_parser.overrides_parser import OverridesParser
@@ -15,9 +15,11 @@ from hydra.test_utils.test_utils import (
     run_python_script,
 )
 from omegaconf import DictConfig, OmegaConf
-from pytest import mark
+from pytest import mark, raises, warns
 
 from hydra_plugins.hydra_nevergrad_sweeper import _impl
+from hydra_plugins.hydra_nevergrad_sweeper._impl import NevergradSweeperImpl
+from hydra_plugins.hydra_nevergrad_sweeper.config import OptimConf
 from hydra_plugins.hydra_nevergrad_sweeper.nevergrad_sweeper import NevergradSweeper
 
 chdir_plugin_root()
@@ -64,6 +66,10 @@ def get_scalar_with_integer_bounds(lower: int, upper: int, type: Any) -> ng.p.Sc
             {"lower": 1, "upper": 12, "log": True, "integer": True},
             get_scalar_with_integer_bounds(1, 12, ng.p.Log),
         ),
+        (
+            {"init": 0.02, "step": 2.0, "log": True},
+            ng.p.Log(init=0.02, lower=None, upper=None, exponent=2.0),
+        ),
     ],
 )
 def test_create_nevergrad_parameter_from_config(
@@ -104,6 +110,10 @@ def test_create_nevergrad_parameter_from_config(
         ("key=0", "0"),
         ("key=true", "True"),
         ("key=null", "null"),
+        (
+            "key={init: 0.02, step: 2.0, log: true}",
+            ng.p.Log(init=0.02, lower=None, upper=None, exponent=2.0),
+        ),
     ],
 )
 def test_create_nevergrad_parameter_from_override(
@@ -198,3 +208,82 @@ def test_failure_rate(max_failure_rate: float, tmpdir: Path) -> None:
         assert error_string in err
     else:
         assert error_string not in err
+
+
+def create_sweeper(
+    *,
+    parametrization: Optional[DictConfig] = None,
+    params: Optional[DictConfig] = None,
+) -> NevergradSweeperImpl:
+    return NevergradSweeperImpl(
+        optim=OptimConf(),
+        parametrization=parametrization,
+        params=params,
+    )
+
+
+def test_empty_parameter_config() -> None:
+    sweeper = create_sweeper()
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        parametrization, overrides = sweeper._process_parameter_config()
+    assert parametrization == {}
+    assert overrides == []
+
+
+def test_parametrization_is_deprecated_but_supported() -> None:
+    sweeper = create_sweeper(
+        parametrization=OmegaConf.create({"key": [1, 2, 3]}),
+    )
+    with warns(
+        UserWarning,
+        match=(
+            r"`hydra\.sweeper\.parametrization` is deprecated in Hydra 1\.4 "
+            r"and will be removed in Hydra 1\.5\."
+        ),
+    ):
+        parametrization, overrides = sweeper._process_parameter_config()
+    assert_ng_param_equals(ng.p.Choice([1, 2, 3]), parametrization["key"])
+    assert overrides == []
+
+
+def test_params_and_parametrization_are_mutually_exclusive() -> None:
+    sweeper = create_sweeper(
+        parametrization=OmegaConf.create({"key": [1, 2, 3]}),
+        params=OmegaConf.create({"key": "choice(1,2,3)"}),
+    )
+    with raises(
+        ValueError,
+        match=(
+            r"hydra\.sweeper\.params and hydra\.sweeper\.parametrization "
+            r"cannot both be configured"
+        ),
+    ):
+        sweeper._process_parameter_config()
+
+
+@mark.parametrize("value", ["'a&c'", "'a,b'"])
+def test_process_parameter_config_preserves_override_quotes(value: str) -> None:
+    sweeper = create_sweeper(params=OmegaConf.create({"key": value}))
+    parametrization, overrides = sweeper._process_parameter_config()
+    assert parametrization == {}
+    assert overrides == [f"key={value}"]
+
+    override = OverridesParser.create().parse_overrides(overrides)[0]
+    assert not override.is_sweep_override()
+    assert_ng_param_equals(
+        _impl.create_nevergrad_parameter_from_override(override),
+        value,
+    )
+
+
+def test_process_parameter_config_supports_scalar_dict() -> None:
+    sweeper = create_sweeper(
+        params=OmegaConf.create({"key": {"init": 0.02, "step": 2.0, "log": True}})
+    )
+    parametrization, overrides = sweeper._process_parameter_config()
+    assert_ng_param_equals(
+        ng.p.Log(init=0.02, lower=None, upper=None, exponent=2.0),
+        parametrization["key"],
+    )
+    assert overrides == []
