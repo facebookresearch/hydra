@@ -94,6 +94,40 @@ def test_slurm_python_parameter(tmp_path: Path, python: Optional[str]) -> None:
     assert "slurm_python" not in executor.update_parameters.call_args.kwargs
 
 
+@mark.parametrize("tasks_per_node", [1, None])
+def test_slurm_tasks_per_node_is_optional_with_compatible_default(
+    tmp_path: Path, tasks_per_node: Optional[int]
+) -> None:
+    assert SlurmQueueConf().tasks_per_node == 1
+
+    executor = MagicMock()
+    executor.map_array.return_value = []
+    config = OmegaConf.create(
+        {
+            "hydra": {
+                "job": {"name": "test"},
+                "sweep": {"dir": str(tmp_path / "sweep")},
+                "launcher": OmegaConf.structured(SlurmQueueConf),
+            }
+        }
+    )
+    config.hydra.launcher.tasks_per_node = tasks_per_node
+    launcher = instantiate(
+        config.hydra.launcher,
+        _target_whitelist_=(
+            "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher"
+        ),
+    )
+    launcher.config = config
+
+    with patch.object(submitit, "AutoExecutor", return_value=executor):
+        assert launcher.launch([[]], initial_job_idx=0) == []
+
+    assert (
+        executor.update_parameters.call_args.kwargs["tasks_per_node"] == tasks_per_node
+    )
+
+
 def test_example(tmpdir: Path) -> None:
     run_python_script(
         [
