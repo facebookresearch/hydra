@@ -18,8 +18,8 @@ from hydra.errors import (
     ConfigCompositionException,
     HydraException,
     MissingConfigException,
-    UnsupportedExtensionException,
 )
+from hydra.plugins.config_source import ConfigLoadError
 from hydra.test_utils.test_utils import chdir_hydra_root
 from hydra.types import RunMode
 from tests.instantiate import UserGroup
@@ -192,8 +192,15 @@ class TestConfigLoader:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
-        with raises(UnsupportedExtensionException):
-            cfg = config_loader.load_configuration(
+        version.setbase("1.2")
+        with raises(
+            ConfigLoadError,
+            match=re.escape(
+                "Unsupported config file extension '.yml'. "
+                "Hydra config files must use the '.yaml' extension."
+            ),
+        ):
+            config_loader.load_configuration(
                 config_name="config.yml",
                 overrides=[],
                 run_mode=RunMode.RUN,

@@ -10,7 +10,7 @@ from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.default_element import InputDefault
 from hydra.core.object_type import ObjectType
-from hydra.errors import HydraException, UnsupportedExtensionException
+from hydra.errors import HydraException
 from hydra.plugins.plugin import Plugin
 
 
@@ -118,8 +118,9 @@ class ConfigSource(Plugin):
         supported_extensions = [".yaml"]
         if version.base_at_least("1.2"):
             if filename.endswith(".yml"):
-                raise UnsupportedExtensionException(
-                    ".yml files are not supported. Use .yaml extension for Hydra config files."
+                raise ConfigLoadError(
+                    "Unsupported config file extension '.yml'. "
+                    "Hydra config files must use the '.yaml' extension."
                 )
         else:
             supported_extensions.append(".yml")
