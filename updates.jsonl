@@ -503,3 +503,4 @@
 {"ts": "2026-07-24T17:19:03Z", "kind": "pr", "issue": 1890, "issue_url": "https://github.com/facebookresearch/hydra/issues/1890", "title": "HPO config standardization", "detail": "unlinked #2034"}
 {"ts": "2026-07-24T19:00:52Z", "kind": "status", "issue": 1890, "issue_url": "https://github.com/facebookresearch/hydra/issues/1890", "title": "HPO config standardization", "detail": "in progress → not started"}
 {"ts": "2026-07-24T19:00:52Z", "kind": "pr", "issue": 1890, "issue_url": "https://github.com/facebookresearch/hydra/issues/1890", "title": "HPO config standardization", "detail": "unlinked #3311"}
+{"ts": "2026-07-24T19:49:28Z", "kind": "new", "issue": 3313, "issue_url": "https://github.com/facebookresearch/hydra/issues/3313", "title": "Standardize Ax Sweeper parameters and remove the Ax upper bound"}

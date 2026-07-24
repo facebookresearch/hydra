@@ -172,7 +172,7 @@
     "3309": "2026-07-24",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-24T19:00:52Z",
+  "generated_at": "2026-07-24T19:49:28Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -507,7 +507,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "HPO config standardization",
-      "updated_at": "2026-07-24T19:00:01Z"
+      "updated_at": "2026-07-24T19:48:11Z"
     },
     "1896": {
       "category": "Enhancement",
@@ -2123,6 +2123,21 @@
       "status": "not started",
       "title": "[Bug]",
       "updated_at": "2026-07-24T05:43:01Z"
+    },
+    "3313": {
+      "category": "Enhancement",
+      "created_at": "2026-07-24T19:47:58Z",
+      "labels": [
+        "ax",
+        "enhancement",
+        "plugin",
+        "sweep"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Standardize Ax Sweeper parameters and remove the Ax upper bound",
+      "updated_at": "2026-07-24T19:47:58Z"
     },
     "385": {
       "category": "Enhancement",

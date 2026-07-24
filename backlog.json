@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-24",
-  "generated_at": "2026-07-24T19:00:52Z",
+  "generated_at": "2026-07-24T19:49:28Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 163,
+    "open_total": 164,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 19,
-        "percentage": 11.7
+        "percentage": 11.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 120,
-        "percentage": 73.6
+        "count": 121,
+        "percentage": 73.8
       },
       {
         "category": "Documentation",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 162
+        "count": 163
       },
       {
         "status": "done",
@@ -717,6 +717,22 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1888"
+    },
+    {
+      "number": 1890,
+      "title": "HPO config standardization",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2021-11-15",
+      "updated": "2026-07-24",
+      "labels": [
+        "triage",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1890"
     },
     {
       "number": 1896,
@@ -2687,20 +2703,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3308"
     },
     {
-      "number": 1890,
-      "title": "HPO config standardization",
+      "number": 3313,
+      "title": "Standardize Ax Sweeper parameters and remove the Ax upper bound",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
-      "created": "2021-11-15",
+      "created": "2026-07-24",
       "updated": "2026-07-24",
       "labels": [
-        "triage",
-        "priority_low"
+        "enhancement",
+        "plugin",
+        "ax",
+        "sweep"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1890"
+      "url": "https://github.com/facebookresearch/hydra/issues/3313"
     },
     {
       "number": 692,
@@ -5549,6 +5567,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-24T19:49:28Z",
+      "kind": "new",
+      "issue": 3313,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3313",
+      "title": "Standardize Ax Sweeper parameters and remove the Ax upper bound"
+    },
+    {
       "ts": "2026-07-24T19:00:52Z",
       "kind": "pr",
       "issue": 1890,
@@ -7115,14 +7140,6 @@
       "issue": 2187,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2187",
       "title": "[Feature Request] implement `MultiprocessingLauncher`",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2170,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2170",
-      "title": "[Bug] `???` defaults cannot display `--help`",
       "detail": "added \"triage\""
     }
   ]
