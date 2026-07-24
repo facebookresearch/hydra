@@ -98,6 +98,7 @@
     "2875": "2026-06-24",
     "2878": "2026-06-23",
     "2888": "2026-06-23",
+    "2889": "2026-07-24",
     "2894": "2026-06-23",
     "2908": "2026-06-23",
     "2913": "2026-06-23",
@@ -169,7 +170,7 @@
     "3296": "2026-07-19",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-24T05:44:30Z",
+  "generated_at": "2026-07-24T05:55:45Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -1521,20 +1522,6 @@
       "status": "not started",
       "title": "[Feature Request] Support relative paths in defaults keys.",
       "updated_at": "2026-07-15T13:16:13Z"
-    },
-    "2889": {
-      "category": "Bug",
-      "created_at": "2024-04-10T16:38:07Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [
-        "2890"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "[Bug] Misleading error message when opening .yml file",
-      "updated_at": "2026-06-08T18:11:11Z"
     },
     "2892": {
       "category": "Question",
@@ -3644,6 +3631,20 @@
       "status": "done",
       "title": "[Bug] Failed to override configuration nodes in `--multirun`",
       "updated_at": "2024-04-10T14:55:03Z"
+    },
+    "2889": {
+      "category": "Bug",
+      "created_at": "2024-04-10T16:38:07Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "2890"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Misleading error message when opening .yml file",
+      "updated_at": "2026-06-08T18:11:11Z"
     },
     "2894": {
       "category": "Bug",

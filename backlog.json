@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-24",
-  "generated_at": "2026-07-24T05:44:30Z",
+  "generated_at": "2026-07-24T05:55:45Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 165,
+    "open_total": 164,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 20,
-        "percentage": 12.1
+        "count": 19,
+        "percentage": 11.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 121,
-        "percentage": 73.3
+        "percentage": 73.8
       },
       {
         "category": "Documentation",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 3
+        "count": 2
       },
       {
         "status": "blocked",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 168
+        "count": 169
       }
     ]
   },
@@ -134,26 +134,6 @@
         "submitit"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1898"
-    },
-    {
-      "number": 2889,
-      "title": "[Bug] Misleading error message when opening .yml file",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 2890,
-          "url": "https://github.com/facebookresearch/hydra/pull/2890"
-        }
-      ],
-      "created": "2024-04-10",
-      "updated": "2026-06-08",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2889"
     },
     {
       "number": 385,
@@ -5532,9 +5512,36 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3296"
+    },
+    {
+      "number": 2889,
+      "title": "[Bug] Misleading error message when opening .yml file",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 2890,
+          "url": "https://github.com/facebookresearch/hydra/pull/2890"
+        }
+      ],
+      "created": "2024-04-10",
+      "updated": "2026-06-08",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2889"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-24T05:55:45Z",
+      "kind": "closed",
+      "issue": 2889,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2889",
+      "title": "[Bug] Misleading error message when opening .yml file"
+    },
     {
       "ts": "2026-07-24T05:44:30Z",
       "kind": "new",
@@ -7102,14 +7109,6 @@
       "issue": 2086,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2086",
       "title": "[Feature Request] Support Ray launcher on windows. ",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2039,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2039",
-      "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config",
       "detail": "added \"triage\""
     }
   ]
