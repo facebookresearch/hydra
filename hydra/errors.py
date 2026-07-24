@@ -37,3 +37,6 @@ class MissingConfigException(IOError, ConfigCompositionException):
 
 
 class HydraDeprecationError(HydraException): ...
+
+
+class UnsupportedExtensionException(HydraException): ...
