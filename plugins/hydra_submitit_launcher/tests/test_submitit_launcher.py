@@ -1,7 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 from pathlib import Path
-from typing import Type
+from typing import Optional, Type
+from unittest.mock import MagicMock, patch
 
+import submitit
 from hydra.core.plugins import Plugins
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
@@ -9,9 +11,12 @@ from hydra.test_utils.launcher_common_tests import (
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import chdir_plugin_root, run_python_script
+from hydra.utils import instantiate
+from omegaconf import OmegaConf
 from pytest import mark
 
 from hydra_plugins.hydra_submitit_launcher import submitit_launcher
+from hydra_plugins.hydra_submitit_launcher.config import SlurmQueueConf
 
 chdir_plugin_root()
 
@@ -51,6 +56,42 @@ class TestSubmititLauncher(LauncherTestSuite):
 )
 class TestSubmititLauncherIntegration(IntegrationTestSuite):
     pass
+
+
+@mark.parametrize("python", [None, "/opt/venv/bin/python"])
+def test_slurm_python_parameter(tmp_path: Path, python: Optional[str]) -> None:
+    executor = MagicMock()
+    executor.map_array.return_value = []
+    auto_executor = MagicMock(return_value=executor)
+
+    config = OmegaConf.create(
+        {
+            "hydra": {
+                "job": {"name": "test"},
+                "sweep": {"dir": str(tmp_path / "sweep")},
+                "launcher": OmegaConf.structured(SlurmQueueConf),
+            }
+        }
+    )
+    config.hydra.launcher.python = python
+    launcher = instantiate(
+        config.hydra.launcher,
+        _target_whitelist_=(
+            "hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher"
+        ),
+    )
+    launcher.config = config
+
+    with patch.object(submitit, "AutoExecutor", auto_executor):
+        assert launcher.launch([[]], initial_job_idx=0) == []
+
+    auto_executor.assert_called_once_with(
+        cluster="slurm",
+        folder=str(tmp_path / "sweep" / ".submitit" / "%j"),
+        slurm_max_num_timeout=0,
+        slurm_python=python,
+    )
+    assert "slurm_python" not in executor.update_parameters.call_args.kwargs
 
 
 def test_example(tmpdir: Path) -> None:
