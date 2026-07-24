@@ -75,12 +75,11 @@ class NevergradSweeperConf:
     # configuration of the optimizer
     optim: OptimConf = field(default_factory=OptimConf)
 
-    # default parametrization of the search space
-    # can be specified:
-    # - as a string, like commandline arguments
-    # - as a list, for categorical variables
-    # - as a full scalar specification
-    parametrization: Dict[str, Any] = field(default_factory=dict)
+    # Deprecated search-space configuration.
+    parametrization: Optional[Dict[str, Any]] = None
+
+    # Search-space configuration using Hydra's override grammar.
+    params: Optional[Dict[str, Any]] = None
 
 
 ConfigStore.instance().store(

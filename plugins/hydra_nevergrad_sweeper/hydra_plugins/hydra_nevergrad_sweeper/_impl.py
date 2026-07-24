@@ -13,6 +13,7 @@ from typing import (
 )
 
 import nevergrad as ng
+from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core import utils
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import (
@@ -60,6 +61,8 @@ def create_nevergrad_param_from_config(
 def create_nevergrad_parameter_from_override(override: Override) -> Any:
     val = override.value()
     if not override.is_sweep_override():
+        if isinstance(val, dict):
+            return create_nevergrad_param_from_config(val)
         return override.get_value_element_as_str()
     if override.is_choice_sweep():
         assert isinstance(val, ChoiceSweep)
@@ -86,21 +89,51 @@ class NevergradSweeperImpl(Sweeper):
     def __init__(
         self,
         optim: OptimConf,
-        parametrization: Optional[DictConfig],
+        parametrization: Optional[DictConfig] = None,
+        params: Optional[DictConfig] = None,
     ):
         self.opt_config = optim
         self.config: Optional[DictConfig] = None
         self.launcher: Optional[Launcher] = None
         self.hydra_context: Optional[HydraContext] = None
         self.job_results = None
-        self.parametrization: Dict[str, Any] = {}
-        if parametrization is not None:
-            assert isinstance(parametrization, DictConfig)
-            self.parametrization = {
-                str(x): create_nevergrad_param_from_config(y)
-                for x, y in parametrization.items()
-            }
+        self.parametrization = parametrization
+        self.params = params
         self.job_idx: Optional[int] = None
+
+    def _process_parameter_config(self) -> Tuple[Dict[str, Any], List[str]]:
+        if self.params is not None and self.parametrization is not None:
+            raise ValueError(
+                "hydra.sweeper.params and hydra.sweeper.parametrization "
+                "cannot both be configured"
+            )
+        if self.parametrization is not None:
+            deprecation_warning(
+                message=(
+                    "`hydra.sweeper.parametrization` is deprecated in Hydra 1.4 "
+                    "and will be removed in Hydra 1.5. "
+                    "Use `hydra.sweeper.params` instead. "
+                    "See https://hydra.cc/docs/next/upgrades/1.3_to_1.4/"
+                    "nevergrad_sweeper/"
+                ),
+            )
+            return (
+                {
+                    str(key): create_nevergrad_param_from_config(value)
+                    for key, value in self.parametrization.items()
+                },
+                [],
+            )
+
+        params: Dict[str, Any] = {}
+        overrides = []
+        if self.params is not None:
+            for key, value in self.params.items():
+                if isinstance(value, MutableMapping):
+                    params[str(key)] = create_nevergrad_param_from_config(value)
+                else:
+                    overrides.append(f"{key}={value}")
+        return params, overrides
 
     def setup(
         self,
@@ -120,13 +153,15 @@ class NevergradSweeperImpl(Sweeper):
         assert self.config is not None
         assert self.launcher is not None
         assert self.job_idx is not None
+
+        params, params_conf = self._process_parameter_config()
+        params_conf.extend(arguments)
+
         direction = -1 if self.opt_config.maximize else 1
         name = "maximization" if self.opt_config.maximize else "minimization"
-        # Override the parametrization from commandline
-        params = dict(self.parametrization)
 
         parser = OverridesParser.create()
-        parsed = parser.parse_overrides(arguments)
+        parsed = parser.parse_overrides(params_conf)
 
         for override in parsed:
             params[override.get_key_element()] = (

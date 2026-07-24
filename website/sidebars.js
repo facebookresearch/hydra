@@ -166,6 +166,7 @@ module.exports = AddFBInternalOnly({
                     'upgrades/1.3_to_1.4/hydra_job_override_dirname',
                     'upgrades/1.3_to_1.4/instantiate_resolution',
                     'upgrades/1.3_to_1.4/instantiate_target_whitelist',
+                    'upgrades/1.3_to_1.4/nevergrad_sweeper',
                 ],
             },
             {
