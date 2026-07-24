@@ -170,7 +170,7 @@
     "3296": "2026-07-19",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-24T05:55:45Z",
+  "generated_at": "2026-07-24T06:38:27Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2138,6 +2138,21 @@
       "status": "not started",
       "title": "[Bug]",
       "updated_at": "2026-07-24T05:43:01Z"
+    },
+    "3309": {
+      "category": "Enhancement",
+      "created_at": "2026-07-24T06:37:00Z",
+      "labels": [
+        "enhancement",
+        "launchers",
+        "plugin",
+        "submitit"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Expose Submitit's custom Python executable in the Submitit launcher",
+      "updated_at": "2026-07-24T06:37:00Z"
     },
     "385": {
       "category": "Enhancement",

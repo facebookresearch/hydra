@@ -495,3 +495,4 @@
 {"ts": "2026-07-24T05:44:30Z", "kind": "new", "issue": 3307, "issue_url": "https://github.com/facebookresearch/hydra/issues/3307", "title": "[Bug]"}
 {"ts": "2026-07-24T05:44:30Z", "kind": "new", "issue": 3308, "issue_url": "https://github.com/facebookresearch/hydra/issues/3308", "title": "[Bug]"}
 {"ts": "2026-07-24T05:55:45Z", "kind": "closed", "issue": 2889, "issue_url": "https://github.com/facebookresearch/hydra/issues/2889", "title": "[Bug] Misleading error message when opening .yml file"}
+{"ts": "2026-07-24T06:38:27Z", "kind": "new", "issue": 3309, "issue_url": "https://github.com/facebookresearch/hydra/issues/3309", "title": "Expose Submitit's custom Python executable in the Submitit launcher"}
