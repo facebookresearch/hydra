@@ -89,6 +89,9 @@ You can set all these parameters in your configuration file and/or override them
 ```text
 python foo.py --multirun hydra/launcher=submitit_slurm hydra.launcher.timeout_min=3
 ```
+Set `hydra.launcher.tasks_per_node=null` to omit `--ntasks-per-node` from the
+generated Slurm submission.
+
 Set `hydra.launcher.python` to use a Python executable other than the one
 running Hydra:
 
