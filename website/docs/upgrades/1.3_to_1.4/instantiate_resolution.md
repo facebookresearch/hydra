@@ -6,6 +6,11 @@ title: Instantiate resolution and call-site overrides
 Hydra 1.4 changes when `hydra.utils.instantiate()` resolves configuration
 values and how call-site arguments interact with the input configuration.
 
+The examples on this page pass `_target_whitelist_` because trusted call-site
+code is responsible for authorizing configured targets in Hydra 1.4. See the
+[target whitelist migration guide](/docs/upgrades/1.3_to_1.4/instantiate_target_whitelist)
+for the associated security and migration context.
+
 ## Benefits
 
 `instantiate()` no longer deep-copies and eagerly resolves the full input
@@ -30,8 +35,51 @@ arguments passed to the target, but they do not modify the input configuration
 or affect how its interpolations resolve.
 
 They are also no longer coerced or validated against the corresponding field
-in an input Structured Config. They remain runtime inputs, subject to Hydra's
-normal recursive instantiation and conversion of the supplied value.
+in an input Structured Config. Primitive values, native `list`, `tuple`, and
+`dict` containers, and OmegaConf containers remain supported configuration
+inputs. They retain Hydra's normal recursive merging, instantiation, and
+conversion where applicable.
+
+Hydra 1.4 intentionally changes the treatment of already-constructed dataclass
+and attrs instances passed as call-site arguments. They are now regular runtime
+objects and remain unchanged, even if they define `_target_`. Hydra no longer
+implicitly converts them to Structured Configs, merges them with the input
+configuration, or recursively instantiates them.
+
+To use a dataclass or attrs instance as configuration, explicitly convert it
+with `OmegaConf.structured(instance)`:
+
+```python
+from dataclasses import dataclass
+
+from omegaconf import OmegaConf
+
+from hydra.utils import instantiate
+
+
+@dataclass
+class ChildConfig:
+    _target_: str = "builtins.dict"
+    value: int = 10
+
+
+child = ChildConfig()
+cfg = {"_target_": "builtins.dict"}
+
+runtime_result = instantiate(
+    cfg,
+    child=child,
+    _target_whitelist_="builtins.dict",
+)
+assert runtime_result["child"] is child
+
+config_result = instantiate(
+    cfg,
+    child=OmegaConf.structured(child),
+    _target_whitelist_="builtins.dict",
+)
+assert config_result["child"] == {"value": 10}
+```
 
 For example:
 

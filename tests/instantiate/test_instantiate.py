@@ -4,11 +4,12 @@ import inspect
 import os
 import pickle
 import re
-from dataclasses import dataclass
+from dataclasses import InitVar, dataclass, field
 from functools import partial
 from textwrap import dedent
 from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 
+import attr
 from omegaconf import (
     MISSING,
     AnyNode,
@@ -868,20 +869,11 @@ def test_nested_runtime_object_override_replaces_unresolvable_config_value(
     assert result.left.value is runtime_value
 
 
-@mark.parametrize(
-    ("convert", "expected_type"),
-    [
-        param(ConvertMode.NONE, DictConfig, id="none"),
-        param(ConvertMode.PARTIAL, DictConfig, id="partial"),
-        param(ConvertMode.OBJECT, User, id="object"),
-        param(ConvertMode.ALL, dict, id="all"),
-    ],
-)
+@mark.parametrize("convert", list(ConvertMode))
 @mark.parametrize("recursive", [False, True])
-def test_structured_runtime_override_preserves_conversion_behavior(
+def test_structured_runtime_override_is_passed_through(
     instantiate_func: Any,
     convert: ConvertMode,
-    expected_type: Any,
     recursive: bool,
 ) -> None:
     user = User(name="Bond", age=7)
@@ -893,14 +885,92 @@ def test_structured_runtime_override_preserves_conversion_behavior(
         _recursive_=recursive,
     )
 
-    converted_user = result.kwargs["user"]
-    assert isinstance(converted_user, expected_type)
-    if OmegaConf.is_config(converted_user):
-        assert OmegaConf.get_type(converted_user) is User
-    if isinstance(converted_user, User):
-        assert converted_user == user
-    else:
-        assert converted_user == {"name": "Bond", "age": 7}
+    assert result.kwargs["user"] is user
+
+
+def test_structured_runtime_override_with_target_is_passed_through(
+    instantiate_func: Any,
+) -> None:
+    @dataclass
+    class RuntimeValue:
+        _target_: str
+        value: int
+        token: InitVar[str]
+        runtime_token: str = field(init=False)
+
+        def __post_init__(self, token: str) -> None:
+            self.runtime_token = token
+
+    runtime_value = RuntimeValue(
+        _target_="tests.instantiate.AnotherClass",
+        value=10,
+        token="secret",
+    )
+
+    result = instantiate_func(
+        {"_target_": "tests.instantiate.ArgsClass"},
+        value=runtime_value,
+        _convert_=ConvertMode.OBJECT,
+    )
+
+    assert result.kwargs["value"] is runtime_value
+    assert result.kwargs["value"].runtime_token == "secret"
+
+
+def test_attrs_runtime_override_is_passed_through(instantiate_func: Any) -> None:
+    @attr.define
+    class RuntimeValue:
+        value: int
+
+    runtime_value = RuntimeValue(value=10)
+
+    result = instantiate_func(
+        {"_target_": "tests.instantiate.ArgsClass"},
+        value=runtime_value,
+        _convert_=ConvertMode.OBJECT,
+    )
+
+    assert result.kwargs["value"] is runtime_value
+
+
+def test_omegaconf_structured_runtime_override_is_instantiated(
+    instantiate_func: Any,
+) -> None:
+    runtime_config = OmegaConf.structured(TreeConf(value=10))
+
+    result = instantiate_func(
+        {"_target_": "tests.instantiate.ArgsClass"},
+        value=runtime_config,
+    )
+
+    assert result.kwargs["value"] == Tree(value=10)
+
+
+def test_omegaconf_structured_runtime_override_merges_with_configured_value(
+    instantiate_func: Any,
+) -> None:
+    @dataclass
+    class TreeValueOverride:
+        value: int
+
+    runtime_config = OmegaConf.structured(TreeValueOverride(value=20))
+
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "value": {
+                "_target_": "tests.instantiate.Tree",
+                "value": 10,
+                "left": {
+                    "_target_": "tests.instantiate.Tree",
+                    "value": 30,
+                },
+            },
+        },
+        value=runtime_config,
+    )
+
+    assert result.kwargs["value"] == Tree(value=20, left=Tree(value=30))
 
 
 def test_runtime_override_is_not_coerced_by_structured_config(
@@ -1253,26 +1323,6 @@ def test_instantiate_with_callable_target_keyword(
             ),
             {"right": {"value": 22}},
             Tree(value=1, left=Tree(value=21), right=Tree(value=22)),
-            id="recursive:direct:dataclass:passthrough",
-        ),
-        param(
-            TreeConf(
-                value=1,
-                left=TreeConf(value=21),
-            ),
-            {"right": TreeConf(value=22)},
-            Tree(value=1, left=Tree(value=21), right=Tree(value=22)),
-            id="recursive:direct:dataclass:passthrough",
-        ),
-        param(
-            TreeConf(
-                value=1,
-                left=TreeConf(value=21),
-            ),
-            {
-                "right": TreeConf(value=IllegalType()),
-            },
-            Tree(value=1, left=Tree(value=21), right=Tree(value=IllegalType())),
             id="recursive:direct:dataclass:passthrough",
         ),
         # list
