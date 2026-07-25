@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-07-24",
-  "generated_at": "2026-07-24T23:37:50Z",
+  "generated_on": "2026-07-25",
+  "generated_at": "2026-07-25T03:12:57Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 161,
@@ -705,9 +705,8 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2021-11-15",
-      "updated": "2026-07-24",
+      "updated": "2026-07-25",
       "labels": [
-        "triage",
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1890"
@@ -5580,6 +5579,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-25T03:12:57Z",
+      "kind": "label",
+      "issue": 1890,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1890",
+      "title": "HPO config standardization",
+      "detail": "removed \"triage\""
+    },
+    {
       "ts": "2026-07-24T23:37:50Z",
       "kind": "new",
       "issue": 3314,
@@ -7140,14 +7147,6 @@
       "issue": 2227,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2227",
       "title": "[Feature Request] Easier **replacement** of subconfigs",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2226,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2226",
-      "title": "No hydra interpolation is possible in Jupyter",
       "detail": "added \"triage\""
     }
   ]
