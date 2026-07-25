@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-25",
-  "generated_at": "2026-07-25T03:12:57Z",
+  "generated_at": "2026-07-25T03:20:24Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 161,
+    "open_total": 160,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 15,
-        "percentage": 9.3
+        "percentage": 9.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 122,
-        "percentage": 75.8
+        "count": 121,
+        "percentage": 75.6
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 11,
-        "percentage": 6.8
+        "percentage": 6.9
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 161
+        "count": 160
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 175
+        "count": 176
       }
     ]
   },
@@ -112,7 +112,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-05-31",
-      "updated": "2026-07-15",
+      "updated": "2026-07-25",
       "labels": [
         "enhancement",
         "wishlist",
@@ -247,7 +247,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-08-07",
-      "updated": "2025-02-20",
+      "updated": "2026-07-25",
       "labels": [
         "enhancement",
         "priority_medium"
@@ -362,7 +362,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-11-06",
-      "updated": "2022-05-18",
+      "updated": "2026-07-25",
       "labels": [
         "documentation",
         "priority_low"
@@ -543,7 +543,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2021-04-09",
-      "updated": "2026-02-22",
+      "updated": "2026-07-25",
       "labels": [
         "enhancement",
         "wishlist",
@@ -673,7 +673,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2021-11-11",
-      "updated": "2026-07-15",
+      "updated": "2026-07-25",
       "labels": [
         "triage",
         "tests",
@@ -807,7 +807,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2021-12-14",
-      "updated": "2026-07-15",
+      "updated": "2026-07-25",
       "labels": [
         "documentation",
         "enhancement",
@@ -1289,7 +1289,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2022-09-05",
-      "updated": "2026-07-15",
+      "updated": "2026-07-25",
       "labels": [
         "enhancement",
         "triage"
@@ -1337,7 +1337,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2022-11-07",
-      "updated": "2026-07-15",
+      "updated": "2026-07-25",
       "labels": [
         "enhancement",
         "triage"
@@ -2093,21 +2093,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2977"
     },
     {
-      "number": 2980,
-      "title": "Can hydra be used for programming languages other than Python?",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-11-09",
-      "updated": "2026-07-15",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2980"
-    },
-    {
       "number": 2981,
       "title": "[Feature Request] Allow partial instantiation with factories",
       "category": "Enhancement",
@@ -2307,9 +2292,12 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-05-10",
-      "updated": "2026-06-24",
+      "updated": "2026-07-25",
       "labels": [
-        "triage"
+        "maintenance",
+        "plugin",
+        "ray-launcher",
+        "tests"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3158"
     },
@@ -5575,9 +5563,39 @@
         "submitit"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3309"
+    },
+    {
+      "number": 2980,
+      "title": "Can hydra be used for programming languages other than Python?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-11-09",
+      "updated": "2026-07-15",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2980"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-25T03:20:24Z",
+      "kind": "closed",
+      "issue": 2980,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2980",
+      "title": "Can hydra be used for programming languages other than Python?"
+    },
+    {
+      "ts": "2026-07-25T03:20:24Z",
+      "kind": "label",
+      "issue": 3158,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3158",
+      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
+      "detail": "added \"maintenance\", \"plugin\", \"ray-launcher\", \"tests\"; removed \"triage\""
+    },
     {
       "ts": "2026-07-25T03:12:57Z",
       "kind": "label",
@@ -7131,22 +7149,6 @@
       "issue": 2236,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2236",
       "title": "`AssertionError` with unusual defaults list",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2235,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2235",
-      "title": "Error message during `instantiate` missing some information",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2227,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2227",
-      "title": "[Feature Request] Easier **replacement** of subconfigs",
       "detail": "added \"triage\""
     }
   ]

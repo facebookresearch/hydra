@@ -116,6 +116,7 @@
     "2959": "2026-06-22",
     "2961": "2026-06-22",
     "2963": "2026-06-22",
+    "2980": "2026-07-25",
     "2989": "2026-06-22",
     "2999": "2026-06-22",
     "3003": "2026-06-24",
@@ -176,7 +177,7 @@
     "3309": "2026-07-24",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-25T03:12:57Z",
+  "generated_at": "2026-07-25T03:20:24Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -231,7 +232,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Document recommendations for frameworks using Hydra",
-      "updated_at": "2022-05-18T14:38:45Z"
+      "updated_at": "2026-07-25T03:19:41Z"
     },
     "1164": {
       "category": "Enhancement",
@@ -381,7 +382,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] Append to a list from command line",
-      "updated_at": "2026-02-22T04:43:15Z"
+      "updated_at": "2026-07-25T03:19:41Z"
     },
     "1602": {
       "category": "Bug",
@@ -486,7 +487,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "follow up with shell testing for #1842",
-      "updated_at": "2026-07-15T13:17:17Z"
+      "updated_at": "2026-07-25T03:19:42Z"
     },
     "1888": {
       "category": "Bug",
@@ -598,7 +599,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] Document how configs typing validation works",
-      "updated_at": "2026-07-15T13:17:12Z"
+      "updated_at": "2026-07-25T03:19:42Z"
     },
     "1944": {
       "category": "Enhancement",
@@ -990,7 +991,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
-      "updated_at": "2026-07-15T13:16:38Z"
+      "updated_at": "2026-07-25T03:20:06Z"
     },
     "2387": {
       "category": "Documentation",
@@ -1029,7 +1030,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] ConfigStore to warn or raise on name/group collision",
-      "updated_at": "2026-07-15T13:16:35Z"
+      "updated_at": "2026-07-25T03:19:43Z"
     },
     "2455": {
       "category": "Enhancement",
@@ -1638,18 +1639,6 @@
       "title": "[Feature Request] Add a generation strategy config to ax-sweeper plugin",
       "updated_at": "2026-07-15T13:16:08Z"
     },
-    "2980": {
-      "category": "Enhancement",
-      "created_at": "2024-11-09T06:50:04Z",
-      "labels": [
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Can hydra be used for programming languages other than Python?",
-      "updated_at": "2026-07-15T13:16:08Z"
-    },
     "2981": {
       "category": "Enhancement",
       "created_at": "2024-11-13T13:48:11Z",
@@ -1809,13 +1798,16 @@
       "category": "Build",
       "created_at": "2026-05-10T16:52:50Z",
       "labels": [
-        "triage"
+        "maintenance",
+        "plugin",
+        "ray-launcher",
+        "tests"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
-      "updated_at": "2026-06-24T18:13:23Z"
+      "updated_at": "2026-07-25T03:18:49Z"
     },
     "3162": {
       "category": "Documentation",
@@ -2139,7 +2131,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Allow adding help messages to command line arguments",
-      "updated_at": "2026-07-15T13:17:43Z"
+      "updated_at": "2026-07-25T03:19:40Z"
     },
     "700": {
       "category": "Enhancement",
@@ -2248,7 +2240,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Evaluate using the configured launcher in regular runs",
-      "updated_at": "2025-02-20T17:03:16Z"
+      "updated_at": "2026-07-25T03:19:41Z"
     },
     "902": {
       "category": "Enhancement",
@@ -3815,6 +3807,18 @@
       "status": "done",
       "title": "[Bug] Missing resolve in ImportlibResourcesConfigSource",
       "updated_at": "2024-10-03T12:54:31Z"
+    },
+    "2980": {
+      "category": "Enhancement",
+      "created_at": "2024-11-09T06:50:04Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Can hydra be used for programming languages other than Python?",
+      "updated_at": "2026-07-15T13:16:08Z"
     },
     "2989": {
       "category": "Bug",
