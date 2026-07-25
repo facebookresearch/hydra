@@ -179,7 +179,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-25T18:23:54Z",
+  "generated_at": "2026-07-25T18:32:15Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -358,7 +358,7 @@
       "state": "OPEN",
       "status": "in progress",
       "title": "PrettyErrors doesn't work with Hydra",
-      "updated_at": "2026-07-15T13:17:32Z"
+      "updated_at": "2026-07-25T18:24:22Z"
     },
     "1512": {
       "category": "Enhancement",
@@ -444,14 +444,13 @@
       "category": "Enhancement",
       "created_at": "2021-10-28T09:37:38Z",
       "labels": [
-        "enhancement",
-        "triage"
+        "enhancement"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "Add more examples to the submitit plugin",
-      "updated_at": "2026-07-15T13:17:19Z"
+      "updated_at": "2026-07-25T18:30:57Z"
     },
     "1872": {
       "category": "Enhancement",

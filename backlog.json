@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-25",
-  "generated_at": "2026-07-25T18:23:54Z",
+  "generated_at": "2026-07-25T18:32:15Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 158,
@@ -85,7 +85,7 @@
         }
       ],
       "created": "2021-02-26",
-      "updated": "2026-07-15",
+      "updated": "2026-07-25",
       "labels": [
         "enhancement",
         "wishlist",
@@ -650,10 +650,9 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2021-10-28",
-      "updated": "2026-07-15",
+      "updated": "2026-07-25",
       "labels": [
-        "enhancement",
-        "triage"
+        "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1869"
     },
@@ -5597,6 +5596,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-25T18:32:15Z",
+      "kind": "label",
+      "issue": 1869,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1869",
+      "title": "Add more examples to the submitit plugin",
+      "detail": "removed \"triage\""
+    },
+    {
       "ts": "2026-07-25T18:23:54Z",
       "kind": "pr",
       "issue": 1431,
@@ -7166,14 +7173,6 @@
       "issue": 2267,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2267",
       "title": "[Feature Request] allow repeating elements in list",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2265,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2265",
-      "title": "[Feature Request] Better document structured config schema example with attrs",
       "detail": "added \"triage\""
     }
   ]
