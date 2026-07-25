@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-25",
-  "generated_at": "2026-07-25T07:41:48Z",
+  "generated_at": "2026-07-25T11:01:47Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 159,
@@ -46,12 +46,12 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 0
+        "count": 1
       },
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 0
+        "count": 1
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 159
+        "count": 157
       },
       {
         "status": "done",
@@ -71,6 +71,47 @@
     ]
   },
   "issues": [
+    {
+      "number": 2364,
+      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3316,
+          "url": "https://github.com/facebookresearch/hydra/pull/3316"
+        }
+      ],
+      "created": "2022-09-05",
+      "updated": "2026-07-25",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2364"
+    },
+    {
+      "number": 3229,
+      "title": "Defaults-list overrides in appended configs do not override earlier overrides",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3315,
+          "url": "https://github.com/facebookresearch/hydra/pull/3315"
+        }
+      ],
+      "created": "2026-06-21",
+      "updated": "2026-06-21",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3229"
+    },
     {
       "number": 385,
       "title": "Experimentation tracking support",
@@ -1281,22 +1322,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2351"
     },
     {
-      "number": 2364,
-      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-09-05",
-      "updated": "2026-07-25",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2364"
-    },
-    {
       "number": 2387,
       "title": "Docs unclear on how to use multiple entries in defaults list",
       "category": "Documentation",
@@ -2473,21 +2498,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3224"
-    },
-    {
-      "number": 3229,
-      "title": "Defaults-list overrides in appended configs do not override earlier overrides",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-21",
-      "updated": "2026-06-21",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3229"
     },
     {
       "number": 3230,
@@ -5582,6 +5592,46 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-25T11:01:47Z",
+      "kind": "pr",
+      "issue": 3229,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3229",
+      "title": "Defaults-list overrides in appended configs do not override earlier overrides",
+      "detail": "linked #3315"
+    },
+    {
+      "ts": "2026-07-25T11:01:47Z",
+      "kind": "pr",
+      "issue": 2364,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2364",
+      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
+      "detail": "linked #3316"
+    },
+    {
+      "ts": "2026-07-25T11:01:47Z",
+      "kind": "status",
+      "issue": 3229,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3229",
+      "title": "Defaults-list overrides in appended configs do not override earlier overrides",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3315,
+        "url": "https://github.com/facebookresearch/hydra/pull/3315"
+      }
+    },
+    {
+      "ts": "2026-07-25T11:01:47Z",
+      "kind": "status",
+      "issue": 2364,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2364",
+      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3316,
+        "url": "https://github.com/facebookresearch/hydra/pull/3316"
+      }
+    },
+    {
       "ts": "2026-07-25T03:24:12Z",
       "kind": "closed",
       "issue": 3314,
@@ -7116,38 +7166,6 @@
       "issue": 2254,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2254",
       "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default.",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2252,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2252",
-      "title": "[Feature Request] Support having '\"' in dict keys in command line override",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2249,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2249",
-      "title": "[Question/Feature Request] prevent logging of secrets",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2241,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2241",
-      "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2237,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2237",
-      "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
       "detail": "added \"triage\""
     }
   ]

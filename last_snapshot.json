@@ -178,7 +178,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-25T07:41:48Z",
+  "generated_at": "2026-07-25T11:01:47Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -988,9 +988,11 @@
         "enhancement",
         "triage"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3316"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
       "updated_at": "2026-07-25T03:20:06Z"
     },
@@ -1956,9 +1958,11 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3315"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "Defaults-list overrides in appended configs do not override earlier overrides",
       "updated_at": "2026-06-21T20:17:17Z"
     },
