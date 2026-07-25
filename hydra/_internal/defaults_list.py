@@ -117,13 +117,20 @@ class Overrides:
     def add_override(self, parent_config_path: str, default: GroupDefault) -> None:
         assert default.override
         key = default.get_override_key()
-        if key not in self.override_choices:
-            self.override_choices[key] = default.value
-            self.override_metadata[key] = OverrideMetadata(
-                external_override=False,
-                containing_config_path=parent_config_path,
-                relative_key=default.get_relative_override_key(),
-            )
+        prev = self.override_metadata.get(key)
+        # A later override in the defaults list replaces an earlier one, so that the
+        # last override in depth first order wins. Two earlier overrides are kept:
+        # an external (command line) override always wins over one coming from a
+        # config, and an override that was already applied to a default can no longer
+        # be replaced because the group it targets is already resolved.
+        if prev is not None and (prev.external_override or prev.used):
+            return
+        self.override_choices[key] = default.value
+        self.override_metadata[key] = OverrideMetadata(
+            external_override=False,
+            containing_config_path=parent_config_path,
+            relative_key=default.get_relative_override_key(),
+        )
 
     def is_overridden(self, default: InputDefault) -> bool:
         if isinstance(default, GroupDefault):

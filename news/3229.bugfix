@@ -1,0 +1,1 @@
+Make a Defaults List override replace an earlier override of the same config group, so that the last override in depth first order wins.

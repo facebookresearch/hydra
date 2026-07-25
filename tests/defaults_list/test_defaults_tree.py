@@ -1040,6 +1040,19 @@ def test_legacy_hydra_overrides_from_primary_config_2(
             ),
             id="group_default_with_explicit_experiment:with_external_override",
         ),
+        param(
+            "group_default_after_explicit_experiment",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_after_explicit_experiment"),
+                children=[
+                    GroupDefault(group="experiment", value="override_config_group"),
+                    GroupDefault(group="group1", value="file3"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="group_default_after_explicit_experiment",
+        ),
     ],
 )
 def test_group_default_with_explicit_experiment(
@@ -1082,6 +1095,32 @@ def test_group_default_with_explicit_experiment(
                 ],
             ),
             id="group_default_with_appended_experiment:with_external_override",
+        ),
+        param(
+            "group_default_with_override",
+            ["+experiment=override_config_group"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_with_override"),
+                children=[
+                    GroupDefault(group="group1", value="file2"),
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="experiment", value="override_config_group"),
+                ],
+            ),
+            id="group_default_with_override_with_appended_experiment",
+        ),
+        param(
+            "group_default_with_override",
+            ["group1=file1", "+experiment=override_config_group"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_with_override"),
+                children=[
+                    GroupDefault(group="group1", value="file1"),
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="experiment", value="override_config_group"),
+                ],
+            ),
+            id="group_default_with_override_with_appended_experiment:with_external_override",
         ),
     ],
 )
