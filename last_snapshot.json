@@ -179,7 +179,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-25T12:59:39Z",
+  "generated_at": "2026-07-25T18:23:54Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -352,9 +352,11 @@
         "triage",
         "wishlist"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3317"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "PrettyErrors doesn't work with Hydra",
       "updated_at": "2026-07-15T13:17:32Z"
     },

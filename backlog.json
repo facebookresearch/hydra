@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-25",
-  "generated_at": "2026-07-25T12:59:39Z",
+  "generated_at": "2026-07-25T18:23:54Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 158,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 0
+        "count": 1
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 157
+        "count": 156
       },
       {
         "status": "done",
@@ -71,6 +71,28 @@
     ]
   },
   "issues": [
+    {
+      "number": 1431,
+      "title": "PrettyErrors doesn't work with Hydra",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3317,
+          "url": "https://github.com/facebookresearch/hydra/pull/3317"
+        }
+      ],
+      "created": "2021-02-26",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "wishlist",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1431"
+    },
     {
       "number": 3229,
       "title": "Defaults-list overrides in appended configs do not override earlier overrides",
@@ -520,23 +542,6 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1393"
-    },
-    {
-      "number": 1431,
-      "title": "PrettyErrors doesn't work with Hydra",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-02-26",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "wishlist",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1431"
     },
     {
       "number": 1512,
@@ -3523,6 +3528,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2359"
     },
     {
+      "number": 2364,
+      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3316,
+          "url": "https://github.com/facebookresearch/hydra/pull/3316"
+        }
+      ],
+      "created": "2022-09-05",
+      "updated": "2026-07-25",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2364"
+    },
+    {
       "number": 2381,
       "title": "Error out on attempt to sweep on the Hydra configuration",
       "category": "Bug",
@@ -5567,30 +5593,29 @@
       "updated": "2026-07-24",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3314"
-    },
-    {
-      "number": 2364,
-      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3316,
-          "url": "https://github.com/facebookresearch/hydra/pull/3316"
-        }
-      ],
-      "created": "2022-09-05",
-      "updated": "2026-07-25",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2364"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-25T18:23:54Z",
+      "kind": "pr",
+      "issue": 1431,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1431",
+      "title": "PrettyErrors doesn't work with Hydra",
+      "detail": "linked #3317"
+    },
+    {
+      "ts": "2026-07-25T18:23:54Z",
+      "kind": "status",
+      "issue": 1431,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1431",
+      "title": "PrettyErrors doesn't work with Hydra",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3317,
+        "url": "https://github.com/facebookresearch/hydra/pull/3317"
+      }
+    },
     {
       "ts": "2026-07-25T12:59:39Z",
       "kind": "closed",
@@ -7149,22 +7174,6 @@
       "issue": 2265,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2265",
       "title": "[Feature Request] Better document structured config schema example with attrs",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2263,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2263",
-      "title": "[Feature Request] Non-strict instantiation",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2262,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2262",
-      "title": "[Bug] hydra conf in structured config is not well handled",
       "detail": "added \"triage\""
     }
   ]
