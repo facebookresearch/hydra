@@ -212,6 +212,15 @@ def test_simple_defaults_tree_cases(
             ),
             id="include_nested_group:append",
         ),
+        param(
+            "group_override_only",
+            ["+group1=file1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_override_only"),
+                children=[GroupDefault(group="group1", value="file2")],
+            ),
+            id="group_override_only:append_overridden_group",
+        ),
     ],
 )
 def test_tree_with_append_override(
@@ -1040,6 +1049,49 @@ def test_legacy_hydra_overrides_from_primary_config_2(
             ),
             id="group_default_with_explicit_experiment:with_external_override",
         ),
+        param(
+            "group_default_after_explicit_experiment",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_after_explicit_experiment"),
+                children=[
+                    GroupDefault(group="experiment", value="override_config_group"),
+                    GroupDefault(group="group1", value="file3"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="group_default_after_explicit_experiment",
+        ),
+        param(
+            "group_default_with_explicit_experiment_and_override",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(
+                    path="group_default_with_explicit_experiment_and_override"
+                ),
+                children=[
+                    GroupDefault(group="group1", value="file3"),
+                    GroupDefault(group="experiment", value="override_config_group"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="group_default_with_explicit_experiment_and_override",
+        ),
+        param(
+            "group_default_with_explicit_experiment_and_override",
+            ["group1=file1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(
+                    path="group_default_with_explicit_experiment_and_override"
+                ),
+                children=[
+                    GroupDefault(group="group1", value="file1"),
+                    GroupDefault(group="experiment", value="override_config_group"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="group_default_with_explicit_experiment_and_override:with_external_override",
+        ),
     ],
 )
 def test_group_default_with_explicit_experiment(
@@ -1082,6 +1134,32 @@ def test_group_default_with_explicit_experiment(
                 ],
             ),
             id="group_default_with_appended_experiment:with_external_override",
+        ),
+        param(
+            "group_default_with_override",
+            ["+experiment=override_config_group"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_with_override"),
+                children=[
+                    GroupDefault(group="group1", value="file2"),
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="experiment", value="override_config_group"),
+                ],
+            ),
+            id="group_default_with_override_with_appended_experiment",
+        ),
+        param(
+            "group_default_with_override",
+            ["group1=file1", "+experiment=override_config_group"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_with_override"),
+                children=[
+                    GroupDefault(group="group1", value="file1"),
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="experiment", value="override_config_group"),
+                ],
+            ),
+            id="group_default_with_override_with_appended_experiment:with_external_override",
         ),
     ],
 )
