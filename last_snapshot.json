@@ -50,6 +50,7 @@
     "2338": "2026-07-04",
     "2348": "2026-07-03",
     "2359": "2026-06-30",
+    "2364": "2026-07-25",
     "2381": "2026-06-30",
     "2407": "2026-06-30",
     "2416": "2026-06-30",
@@ -178,7 +179,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-25T11:01:47Z",
+  "generated_at": "2026-07-25T12:59:39Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -980,21 +981,6 @@
       "status": "not started",
       "title": "[Feature Request] Possibility to save full start command in separate file",
       "updated_at": "2026-07-15T13:16:38Z"
-    },
-    "2364": {
-      "category": "Enhancement",
-      "created_at": "2022-09-05T08:09:55Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [
-        "3316"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
-      "updated_at": "2026-07-25T03:20:06Z"
     },
     "2387": {
       "category": "Documentation",
@@ -2975,6 +2961,21 @@
       "status": "done",
       "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`",
       "updated_at": "2022-08-29T16:04:25Z"
+    },
+    "2364": {
+      "category": "Enhancement",
+      "created_at": "2022-09-05T08:09:55Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [
+        "3316"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
+      "updated_at": "2026-07-25T03:20:06Z"
     },
     "2381": {
       "category": "Bug",

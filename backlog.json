@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-25",
-  "generated_at": "2026-07-25T11:01:47Z",
+  "generated_at": "2026-07-25T12:59:39Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 159,
+    "open_total": 158,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 15,
-        "percentage": 9.4
+        "percentage": 9.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 120,
-        "percentage": 75.5
+        "count": 119,
+        "percentage": 75.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 11,
-        "percentage": 6.9
+        "percentage": 7.0
       },
       {
         "category": "Question",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -66,32 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 177
+        "count": 178
       }
     ]
   },
   "issues": [
-    {
-      "number": 2364,
-      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3316,
-          "url": "https://github.com/facebookresearch/hydra/pull/3316"
-        }
-      ],
-      "created": "2022-09-05",
-      "updated": "2026-07-25",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2364"
-    },
     {
       "number": 3229,
       "title": "Defaults-list overrides in appended configs do not override earlier overrides",
@@ -5588,9 +5567,37 @@
       "updated": "2026-07-24",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3314"
+    },
+    {
+      "number": 2364,
+      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3316,
+          "url": "https://github.com/facebookresearch/hydra/pull/3316"
+        }
+      ],
+      "created": "2022-09-05",
+      "updated": "2026-07-25",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2364"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-25T12:59:39Z",
+      "kind": "closed",
+      "issue": 2364,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2364",
+      "title": "[Feature Request] Preserve dataclasses as instantiate-arguments"
+    },
     {
       "ts": "2026-07-25T11:01:47Z",
       "kind": "pr",
@@ -7158,14 +7165,6 @@
       "issue": 2262,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2262",
       "title": "[Bug] hydra conf in structured config is not well handled",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2254,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2254",
-      "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default.",
       "detail": "added \"triage\""
     }
   ]
