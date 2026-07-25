@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-25",
-  "generated_at": "2026-07-25T18:32:15Z",
+  "generated_at": "2026-07-25T18:45:16Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 158,
+    "open_total": 157,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 15,
-        "percentage": 9.5
+        "percentage": 9.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 119,
-        "percentage": 75.3
+        "count": 118,
+        "percentage": 75.2
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 156
+        "count": 155
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 178
+        "count": 179
       }
     ]
   },
@@ -655,22 +655,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1869"
-    },
-    {
-      "number": 1872,
-      "title": "[Feature Request] Interpolate cmd options before passing to override_dirname for sweep",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-10-30",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1872"
     },
     {
       "number": 1873,
@@ -5592,9 +5576,32 @@
       "updated": "2026-07-24",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3314"
+    },
+    {
+      "number": 1872,
+      "title": "[Feature Request] Interpolate cmd options before passing to override_dirname for sweep",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-10-30",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1872"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-25T18:45:16Z",
+      "kind": "closed",
+      "issue": 1872,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1872",
+      "title": "[Feature Request] Interpolate cmd options before passing to override_dirname for sweep"
+    },
     {
       "ts": "2026-07-25T18:32:15Z",
       "kind": "label",
@@ -7165,14 +7172,6 @@
       "issue": 2268,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2268",
       "title": "Enable instantiations without resolution",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2267,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2267",
-      "title": "[Feature Request] allow repeating elements in list",
       "detail": "added \"triage\""
     }
   ]

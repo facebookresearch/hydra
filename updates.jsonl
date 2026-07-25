@@ -521,3 +521,4 @@
 {"ts": "2026-07-25T18:23:54Z", "kind": "status", "issue": 1431, "issue_url": "https://github.com/facebookresearch/hydra/issues/1431", "title": "PrettyErrors doesn't work with Hydra", "detail": "not started → in progress", "pr": {"number": 3317, "url": "https://github.com/facebookresearch/hydra/pull/3317"}}
 {"ts": "2026-07-25T18:23:54Z", "kind": "pr", "issue": 1431, "issue_url": "https://github.com/facebookresearch/hydra/issues/1431", "title": "PrettyErrors doesn't work with Hydra", "detail": "linked #3317"}
 {"ts": "2026-07-25T18:32:15Z", "kind": "label", "issue": 1869, "issue_url": "https://github.com/facebookresearch/hydra/issues/1869", "title": "Add more examples to the submitit plugin", "detail": "removed \"triage\""}
+{"ts": "2026-07-25T18:45:16Z", "kind": "closed", "issue": 1872, "issue_url": "https://github.com/facebookresearch/hydra/issues/1872", "title": "[Feature Request] Interpolate cmd options before passing to override_dirname for sweep"}

@@ -14,6 +14,7 @@
     "1855": "2026-07-18",
     "1859": "2026-07-17",
     "1866": "2026-07-16",
+    "1872": "2026-07-25",
     "1892": "2026-06-07",
     "1898": "2026-07-24",
     "1928": "2026-07-16",
@@ -179,7 +180,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-25T18:32:15Z",
+  "generated_at": "2026-07-25T18:45:16Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -451,19 +452,6 @@
       "status": "not started",
       "title": "Add more examples to the submitit plugin",
       "updated_at": "2026-07-25T18:30:57Z"
-    },
-    "1872": {
-      "category": "Enhancement",
-      "created_at": "2021-10-30T21:54:42Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] Interpolate cmd options before passing to override_dirname for sweep",
-      "updated_at": "2026-07-15T13:17:19Z"
     },
     "1873": {
       "category": "Enhancement",
@@ -2463,6 +2451,19 @@
       "state": "CLOSED",
       "status": "done",
       "title": "[Bug] recursive instantiation mutates original config object's interpolations",
+      "updated_at": "2026-07-15T13:17:19Z"
+    },
+    "1872": {
+      "category": "Enhancement",
+      "created_at": "2021-10-30T21:54:42Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Interpolate cmd options before passing to override_dirname for sweep",
       "updated_at": "2026-07-15T13:17:19Z"
     },
     "1892": {
