@@ -1,5 +1,6 @@
 {
   "closed_at": {
+    "1367": "2026-07-25",
     "1431": "2026-07-25",
     "1463": "2026-07-16",
     "1636": "2026-07-19",
@@ -163,6 +164,7 @@
     "3216": "2026-07-21",
     "3223": "2026-06-20",
     "3228": "2026-06-22",
+    "3229": "2026-07-25",
     "3231": "2026-06-23",
     "3242": "2026-06-29",
     "3259": "2026-07-05",
@@ -181,7 +183,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-25T19:50:56Z",
+  "generated_at": "2026-07-25T20:28:29Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -315,21 +317,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "ray launcher improvements",
-      "updated_at": "2026-07-15T13:17:33Z"
-    },
-    "1367": {
-      "category": "Enhancement",
-      "created_at": "2021-02-01T16:31:01Z",
-      "labels": [
-        "configen",
-        "enhancement",
-        "triage",
-        "wishlist"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] [Configen] Multiple path patterns",
       "updated_at": "2026-07-15T13:17:33Z"
     },
     "1393": {
@@ -1912,20 +1899,6 @@
       "title": "Add hydra.override.aliases for explicit CLI override aliases",
       "updated_at": "2026-06-20T20:42:36Z"
     },
-    "3229": {
-      "category": "Bug",
-      "created_at": "2026-06-21T20:16:59Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [
-        "3315"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "Defaults-list overrides in appended configs do not override earlier overrides",
-      "updated_at": "2026-06-21T20:17:17Z"
-    },
     "3230": {
       "category": "Enhancement",
       "created_at": "2026-06-21T20:45:03Z",
@@ -2057,7 +2030,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Dangling Defaults List override can override a command-line append",
-      "updated_at": "2026-07-25T19:49:31Z"
+      "updated_at": "2026-07-25T19:56:31Z"
     },
     "385": {
       "category": "Enhancement",
@@ -2250,6 +2223,21 @@
     }
   },
   "recent_done": {
+    "1367": {
+      "category": "Enhancement",
+      "created_at": "2021-02-01T16:31:01Z",
+      "labels": [
+        "configen",
+        "enhancement",
+        "triage",
+        "wishlist"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] [Configen] Multiple path patterns",
+      "updated_at": "2026-07-15T13:17:33Z"
+    },
     "1431": {
       "category": "Enhancement",
       "created_at": "2021-02-26T12:50:26Z",
@@ -4361,6 +4349,20 @@
       "status": "done",
       "title": "sort() of a range() that does not land exactly on stop returns wrong values",
       "updated_at": "2026-06-21T13:35:36Z"
+    },
+    "3229": {
+      "category": "Bug",
+      "created_at": "2026-06-21T20:16:59Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "3315"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Defaults-list overrides in appended configs do not override earlier overrides",
+      "updated_at": "2026-06-21T20:17:17Z"
     },
     "3231": {
       "category": "Bug",
