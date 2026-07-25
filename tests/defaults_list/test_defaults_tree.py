@@ -215,11 +215,15 @@ def test_simple_defaults_tree_cases(
         param(
             "group_override_only",
             ["+group1=file1"],
-            DefaultsTreeNode(
-                node=ConfigDefault(path="group_override_only"),
-                children=[GroupDefault(group="group1", value="file2")],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    dedent("""\
+                        In 'group_override_only': Could not override 'group1'.
+                        Did you mean to override group1?""")
+                ),
             ),
-            id="group_override_only:append_overridden_group",
+            id="group_override_only:append_does_not_rescue_dangling_override",
         ),
     ],
 )
@@ -2624,6 +2628,15 @@ def test_missing_config_errors(
                 match="Could not override 'group1'. No match in the defaults list.",
             ),
             id="error_invalid_override",
+        ),
+        param(
+            "group_override_only",
+            [],
+            raises(
+                ConfigCompositionException,
+                match="Could not override 'group1'. No match in the defaults list.",
+            ),
+            id="dangling_override_without_append",
         ),
         param(
             "group_default",
