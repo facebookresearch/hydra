@@ -580,7 +580,7 @@ def _get_standalone_apps_dirs() -> List[Union[str, Path]]:
 def test_core(session: Session) -> None:
     _upgrade_basic(session)
     install_hydra(session, INSTALL_COMMAND)
-    session.install("pytest")
+    session.install("attrs", "pytest")
 
     if not SKIP_CORE_TESTS:
         run_pytest(
@@ -614,7 +614,7 @@ def test_core(session: Session) -> None:
 @nox.session(python=PYTHON_VERSIONS)  # type: ignore
 def test_plugins_vs_core(session: Session) -> None:
     _upgrade_basic(session)
-    session.install("pytest")
+    session.install("attrs", "pytest")
     install_hydra(session, INSTALL_COMMAND)
 
     # install all plugins compatible with the current Python version
@@ -670,7 +670,7 @@ def coverage(session: Session) -> None:
         "COVERAGE_RCFILE": f"{BASE}/.coveragerc",
     }
 
-    session.install("coverage", "pytest")
+    session.install("attrs", "coverage", "pytest")
     install_hydra(session, ["pip", "install", "-e"])
     session.run("coverage", "erase", env=coverage_env)
 

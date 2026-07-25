@@ -386,7 +386,9 @@ def _prepare_input_container(
 def _prepare_input_value(
     value: Any,
 ) -> Any:
-    if isinstance(value, (dict, list)) or type(value) is tuple:
+    if not is_structured_config(value) and (
+        isinstance(value, (dict, list)) or type(value) is tuple
+    ):
         return _prepare_input_container(value)
     return value
 
@@ -491,8 +493,8 @@ def instantiate(
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
                    in the config objects are being passed as is to the target.
-                   IMPORTANT: dataclasses instances in kwargs are interpreted as config
-                              and cannot be used as passthrough
+                   Dataclass and attrs instances are passed through without
+                   conversion or recursive instantiation.
     :return: if _target_ is a class name: the instantiated object
              if _target_ is a callable: the return value of the call
     """
@@ -613,14 +615,12 @@ def _create_sequence_result(
 
 
 def _get_dict_override(value: Any) -> Optional[ConfigOverlay]:
+    if is_structured_config(value):
+        return None
     if isinstance(value, dict):
         return value
     if OmegaConf.is_dict(value):
         return cast(DictConfig, value)
-    if is_structured_config(value) and not isinstance(value, type):
-        config = OmegaConf.structured(value, flags={"allow_objects": True})
-        assert OmegaConf.is_dict(config)
-        return cast(DictConfig, config)
     return None
 
 
@@ -657,6 +657,9 @@ def _instantiate_override(
     recursive: bool,
     target_whitelist: NormalizedTargetWhitelist,
 ) -> Any:
+    if is_structured_config(value):
+        return value
+
     dict_override = _get_dict_override(value)
     if not recursive:
         if isinstance(dict_override, DictConfig) and (
