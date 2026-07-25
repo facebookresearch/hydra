@@ -1,5 +1,6 @@
 {
   "closed_at": {
+    "1291": "2026-07-25",
     "1367": "2026-07-25",
     "1431": "2026-07-25",
     "1463": "2026-07-16",
@@ -183,7 +184,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-25T20:28:29Z",
+  "generated_at": "2026-07-25T20:42:37Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -305,18 +306,6 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] Tuple Sweeper OR Top-level dictionary overrides",
-      "updated_at": "2026-07-15T13:17:33Z"
-    },
-    "1291": {
-      "category": "Enhancement",
-      "created_at": "2021-01-11T23:00:42Z",
-      "labels": [
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "ray launcher improvements",
       "updated_at": "2026-07-15T13:17:33Z"
     },
     "1393": {
@@ -2223,6 +2212,18 @@
     }
   },
   "recent_done": {
+    "1291": {
+      "category": "Enhancement",
+      "created_at": "2021-01-11T23:00:42Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "ray launcher improvements",
+      "updated_at": "2026-07-15T13:17:33Z"
+    },
     "1367": {
       "category": "Enhancement",
       "created_at": "2021-02-01T16:31:01Z",

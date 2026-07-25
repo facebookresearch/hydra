@@ -526,3 +526,4 @@
 {"ts": "2026-07-25T19:50:56Z", "kind": "new", "issue": 3318, "issue_url": "https://github.com/facebookresearch/hydra/issues/3318", "title": "Dangling Defaults List override can override a command-line append"}
 {"ts": "2026-07-25T20:28:29Z", "kind": "closed", "issue": 1367, "issue_url": "https://github.com/facebookresearch/hydra/issues/1367", "title": "[Feature Request] [Configen] Multiple path patterns"}
 {"ts": "2026-07-25T20:28:29Z", "kind": "closed", "issue": 3229, "issue_url": "https://github.com/facebookresearch/hydra/issues/3229", "title": "Defaults-list overrides in appended configs do not override earlier overrides"}
+{"ts": "2026-07-25T20:42:37Z", "kind": "closed", "issue": 1291, "issue_url": "https://github.com/facebookresearch/hydra/issues/1291", "title": "ray launcher improvements"}
