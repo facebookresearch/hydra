@@ -1,5 +1,6 @@
 {
   "closed_at": {
+    "1431": "2026-07-25",
     "1463": "2026-07-16",
     "1636": "2026-07-19",
     "1679": "2026-07-23",
@@ -180,7 +181,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-25T18:45:16Z",
+  "generated_at": "2026-07-25T19:19:05Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -344,22 +345,6 @@
       "status": "not started",
       "title": "[Feature Request] Consider supporting singleton pattern in recursive instantiation",
       "updated_at": "2026-06-08T13:51:30Z"
-    },
-    "1431": {
-      "category": "Enhancement",
-      "created_at": "2021-02-26T12:50:26Z",
-      "labels": [
-        "enhancement",
-        "triage",
-        "wishlist"
-      ],
-      "pr_numbers": [
-        "3317"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "PrettyErrors doesn't work with Hydra",
-      "updated_at": "2026-07-25T18:24:22Z"
     },
     "1512": {
       "category": "Enhancement",
@@ -2253,6 +2238,22 @@
     }
   },
   "recent_done": {
+    "1431": {
+      "category": "Enhancement",
+      "created_at": "2021-02-26T12:50:26Z",
+      "labels": [
+        "enhancement",
+        "triage",
+        "wishlist"
+      ],
+      "pr_numbers": [
+        "3317"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "PrettyErrors doesn't work with Hydra",
+      "updated_at": "2026-07-25T18:24:22Z"
+    },
     "1463": {
       "category": "Enhancement",
       "created_at": "2021-03-09T14:28:49Z",

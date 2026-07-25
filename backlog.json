@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-25",
-  "generated_at": "2026-07-25T18:45:16Z",
+  "generated_at": "2026-07-25T19:19:05Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 157,
+    "open_total": 156,
     "by_category": [
       {
         "category": "Bug",
@@ -14,20 +14,20 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 118,
-        "percentage": 75.2
+        "count": 117,
+        "percentage": 75.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 11,
-        "percentage": 7.0
+        "percentage": 7.1
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.7
+        "percentage": 5.8
       },
       {
         "category": "Refactor",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -66,33 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 179
+        "count": 180
       }
     ]
   },
   "issues": [
-    {
-      "number": 1431,
-      "title": "PrettyErrors doesn't work with Hydra",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3317,
-          "url": "https://github.com/facebookresearch/hydra/pull/3317"
-        }
-      ],
-      "created": "2021-02-26",
-      "updated": "2026-07-25",
-      "labels": [
-        "enhancement",
-        "wishlist",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1431"
-    },
     {
       "number": 3229,
       "title": "Defaults-list overrides in appended configs do not override earlier overrides",
@@ -2890,6 +2868,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1866"
     },
     {
+      "number": 1872,
+      "title": "[Feature Request] Interpolate cmd options before passing to override_dirname for sweep",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-10-30",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1872"
+    },
+    {
       "number": 1892,
       "title": "Parallel Job Submission with sbatch instead of sequential submission with srun",
       "category": "Enhancement",
@@ -5578,23 +5572,36 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3314"
     },
     {
-      "number": 1872,
-      "title": "[Feature Request] Interpolate cmd options before passing to override_dirname for sweep",
+      "number": 1431,
+      "title": "PrettyErrors doesn't work with Hydra",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [],
-      "created": "2021-10-30",
-      "updated": "2026-07-15",
+      "prs": [
+        {
+          "number": 3317,
+          "url": "https://github.com/facebookresearch/hydra/pull/3317"
+        }
+      ],
+      "created": "2021-02-26",
+      "updated": "2026-07-25",
       "labels": [
         "enhancement",
-        "triage"
+        "triage",
+        "wishlist"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1872"
+      "url": "https://github.com/facebookresearch/hydra/issues/1431"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-25T19:19:05Z",
+      "kind": "closed",
+      "issue": 1431,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1431",
+      "title": "PrettyErrors doesn't work with Hydra"
+    },
     {
       "ts": "2026-07-25T18:45:16Z",
       "kind": "closed",
@@ -7164,14 +7171,6 @@
       "issue": 2274,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2274",
       "title": "[Bug/Question] `config_path` resolution is misleading",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2268,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2268",
-      "title": "Enable instantiations without resolution",
       "detail": "added \"triage\""
     }
   ]
