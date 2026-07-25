@@ -3,8 +3,10 @@ import io
 import json
 import os
 import re
+import sys
 from pathlib import Path
 from textwrap import dedent
+from types import TracebackType
 from typing import Any, NoReturn, Optional
 from unittest.mock import patch
 
@@ -246,11 +248,73 @@ class TestRunAndReport:
     )
     def test_failure(self, demo_func: Any, expected_traceback_regex: str) -> None:
         mock_stderr = io.StringIO()
-        with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr):
+        with (
+            raises(SystemExit, match="1"),
+            patch("sys.excepthook", new=sys.__excepthook__),
+            patch("sys.stderr", new=mock_stderr),
+        ):
             run_and_report(demo_func)
         mock_stderr.seek(0)
         stderr_output = mock_stderr.read()
         assert_multiline_regex_search(expected_traceback_regex, stderr_output)
+
+    @mark.parametrize(
+        "demo_func,expected_frames",
+        [
+            param(
+                DemoFunctions.run_job_wrapper,
+                ["nested_error"],
+                id="strip_run_job_from_top_of_stack",
+            ),
+            param(
+                DemoFunctions.omegaconf_job_wrapper,
+                ["job_calling_omconf"],
+                id="strip_omegaconf_from_bottom_of_stack",
+            ),
+        ],
+    )
+    def test_custom_excepthook_receives_sanitized_traceback(
+        self, demo_func: Any, expected_frames: list[str]
+    ) -> None:
+        captured: list[tuple[type[BaseException], BaseException, TracebackType]] = []
+
+        def custom_excepthook(
+            exception_type: type[BaseException],
+            exception: BaseException,
+            tb: TracebackType,
+        ) -> None:
+            captured.append((exception_type, exception, tb))
+
+        with (
+            raises(SystemExit, match="1"),
+            patch("sys.excepthook", new=custom_excepthook),
+        ):
+            run_and_report(demo_func)
+
+        assert len(captured) == 1
+        exception_type, exception, tb = captured[0]
+        assert exception_type is type(exception)
+
+        frames = []
+        current_tb: Optional[TracebackType] = tb
+        while current_tb is not None:
+            frames.append(current_tb.tb_frame.f_code.co_name)
+            current_tb = current_tb.tb_next
+        assert frames == expected_frames
+
+    def test_custom_excepthook_failure_uses_default_renderer(self) -> None:
+        def broken_excepthook(*args: Any) -> NoReturn:
+            raise RuntimeError("hook failed")
+
+        mock_stderr = io.StringIO()
+        with (
+            raises(SystemExit, match="1"),
+            patch("sys.excepthook", new=broken_excepthook),
+            patch("sys.stderr", new=mock_stderr),
+        ):
+            run_and_report(self.DemoFunctions.run_job_wrapper)
+
+        assert "AssertionError: nested_err" in mock_stderr.getvalue()
 
     def test_simplified_traceback_with_no_module(self) -> None:
         """
@@ -268,7 +332,11 @@ class TestRunAndReport:
             Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
             """)
         mock_stderr = io.StringIO()
-        with raises(SystemExit, match="1"), patch("sys.stderr", new=mock_stderr):
+        with (
+            raises(SystemExit, match="1"),
+            patch("sys.excepthook", new=sys.__excepthook__),
+            patch("sys.stderr", new=mock_stderr),
+        ):
             # Patch `inspect.getmodule` so that it will return None. This simulates a
             # situation where a python module cannot be identified from a traceback
             # stack frame. This can occur when python extension modules or
@@ -296,6 +364,7 @@ class TestRunAndReport:
         mock_stderr = io.StringIO()
         with (
             raises(AssertionError, match="nested_err"),
+            patch("sys.excepthook", new=sys.__excepthook__),
             patch("sys.stderr", new=mock_stderr),
         ):
             # patch `traceback.print_exception` so that an exception will occur
