@@ -1,0 +1,1 @@
+Honor custom ``sys.excepthook`` handlers when rendering sanitized task exceptions.
