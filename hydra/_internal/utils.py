@@ -6,9 +6,8 @@ import os
 import sys
 import traceback
 import warnings
-from dataclasses import dataclass
 from os.path import dirname, join, normpath, realpath
-from types import FrameType, TracebackType
+from types import TracebackType
 from typing import Any, List, Optional, Sequence, Tuple
 
 from omegaconf.errors import OmegaConfBaseException
@@ -253,42 +252,37 @@ def run_and_report(func: Any) -> Any:
                         sys.exit(1)
 
                     # strip OmegaConf frames from bottom of stack
-                    end: Optional[TracebackType] = tb
-                    num_frames = 0
-                    while end is not None:
-                        frame = end.tb_frame
+                    filtered_traceback: List[TracebackType] = []
+                    current_tb: Optional[TracebackType] = tb
+                    while current_tb is not None:
+                        frame = current_tb.tb_frame
                         mdl = inspect.getmodule(frame)
                         name = mdl.__name__ if mdl is not None else ""
                         if name.startswith("omegaconf."):
                             break
-                        end = end.tb_next
-                        num_frames = num_frames + 1
+                        filtered_traceback.append(current_tb)
+                        current_tb = current_tb.tb_next
 
-                    @dataclass
-                    class FakeTracebackType:
-                        tb_next: Any = None  # Optional["FakeTracebackType"]
-                        tb_frame: Optional[FrameType] = None
-                        tb_lasti: Optional[int] = None
-                        tb_lineno: Optional[int] = None
+                    final_tb: Optional[TracebackType] = None
+                    for traceback_frame in reversed(filtered_traceback):
+                        final_tb = TracebackType(
+                            final_tb,
+                            traceback_frame.tb_frame,
+                            traceback_frame.tb_lasti,
+                            traceback_frame.tb_lineno,
+                        )
+                    assert final_tb is not None
 
-                    iter_tb = tb
-                    final_tb = FakeTracebackType()
-                    cur = final_tb
-                    added = 0
-                    while True:
-                        cur.tb_lasti = iter_tb.tb_lasti
-                        cur.tb_lineno = iter_tb.tb_lineno
-                        cur.tb_frame = iter_tb.tb_frame
-
-                        if added == num_frames - 1:
-                            break
-                        added = added + 1
-                        cur.tb_next = FakeTracebackType()
-                        cur = cur.tb_next
-                        assert iter_tb.tb_next is not None
-                        iter_tb = iter_tb.tb_next
-
-                    traceback.print_exception(None, value=ex, tb=final_tb)  # type: ignore
+                    exception_hook = sys.excepthook
+                    if exception_hook is sys.__excepthook__ or not callable(
+                        exception_hook
+                    ):
+                        traceback.print_exception(None, value=ex, tb=final_tb)
+                    else:
+                        try:
+                            exception_hook(type(ex), ex, final_tb)
+                        except Exception:
+                            traceback.print_exception(None, value=ex, tb=final_tb)
                 sys.stderr.write(
                     "\nSet the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.\n"
                 )
