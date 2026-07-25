@@ -512,3 +512,4 @@
 {"ts": "2026-07-25T03:12:57Z", "kind": "label", "issue": 1890, "issue_url": "https://github.com/facebookresearch/hydra/issues/1890", "title": "HPO config standardization", "detail": "removed \"triage\""}
 {"ts": "2026-07-25T03:20:24Z", "kind": "label", "issue": 3158, "issue_url": "https://github.com/facebookresearch/hydra/issues/3158", "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin", "detail": "added \"maintenance\", \"plugin\", \"ray-launcher\", \"tests\"; removed \"triage\""}
 {"ts": "2026-07-25T03:20:24Z", "kind": "closed", "issue": 2980, "issue_url": "https://github.com/facebookresearch/hydra/issues/2980", "title": "Can hydra be used for programming languages other than Python?"}
+{"ts": "2026-07-25T03:24:12Z", "kind": "closed", "issue": 3314, "issue_url": "https://github.com/facebookresearch/hydra/issues/3314", "title": "Add REFUTE scientific critique + calibration benchmark"}

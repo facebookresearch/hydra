@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-25",
-  "generated_at": "2026-07-25T03:20:24Z",
+  "generated_at": "2026-07-25T03:24:12Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 160,
+    "open_total": 159,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 121,
-        "percentage": 75.6
+        "count": 120,
+        "percentage": 75.5
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.6
+        "percentage": 5.7
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 160
+        "count": 159
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 176
+        "count": 177
       }
     ]
   },
@@ -2641,19 +2641,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3313"
     },
     {
-      "number": 3314,
-      "title": "Add REFUTE scientific critique + calibration benchmark",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-24",
-      "updated": "2026-07-24",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3314"
-    },
-    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -4608,6 +4595,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2963"
     },
     {
+      "number": 2980,
+      "title": "Can hydra be used for programming languages other than Python?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2024-11-09",
+      "updated": "2026-07-15",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2980"
+    },
+    {
       "number": 2989,
       "title": "[Bug]",
       "category": "Bug",
@@ -5565,22 +5567,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3309"
     },
     {
-      "number": 2980,
-      "title": "Can hydra be used for programming languages other than Python?",
+      "number": 3314,
+      "title": "Add REFUTE scientific critique + calibration benchmark",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2024-11-09",
-      "updated": "2026-07-15",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2980"
+      "created": "2026-07-24",
+      "updated": "2026-07-24",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3314"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-25T03:24:12Z",
+      "kind": "closed",
+      "issue": 3314,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3314",
+      "title": "Add REFUTE scientific critique + calibration benchmark"
+    },
     {
       "ts": "2026-07-25T03:20:24Z",
       "kind": "closed",
@@ -7141,14 +7148,6 @@
       "issue": 2237,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2237",
       "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2236,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2236",
-      "title": "`AssertionError` with unusual defaults list",
       "detail": "added \"triage\""
     }
   ]

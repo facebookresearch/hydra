@@ -175,9 +175,10 @@
     "3307": "2026-07-24",
     "3308": "2026-07-24",
     "3309": "2026-07-24",
+    "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-25T03:20:24Z",
+  "generated_at": "2026-07-25T03:24:12Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2081,16 +2082,6 @@
       "status": "not started",
       "title": "Standardize Ax Sweeper parameters and remove the Ax upper bound",
       "updated_at": "2026-07-24T19:47:58Z"
-    },
-    "3314": {
-      "category": "Enhancement",
-      "created_at": "2026-07-24T23:36:24Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Add REFUTE scientific critique + calibration benchmark",
-      "updated_at": "2026-07-24T23:36:24Z"
     },
     "385": {
       "category": "Enhancement",
@@ -4539,6 +4530,16 @@
       "status": "done",
       "title": "Expose Submitit's custom Python executable in the Submitit launcher",
       "updated_at": "2026-07-24T06:37:00Z"
+    },
+    "3314": {
+      "category": "Enhancement",
+      "created_at": "2026-07-24T23:36:24Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Add REFUTE scientific critique + calibration benchmark",
+      "updated_at": "2026-07-24T23:36:24Z"
     },
     "692": {
       "category": "Enhancement",
