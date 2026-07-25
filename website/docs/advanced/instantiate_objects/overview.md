@@ -60,8 +60,8 @@ instantiation is not supported for these sequence inputs.
         :param kwargs: Optional named parameters to override
                        parameters in the config object. Parameters not present
                        in the config objects are being passed as is to the target.
-                       IMPORTANT: dataclasses instances in kwargs are interpreted as config
-                                  and cannot be used as passthrough
+                       Dataclass and attrs instances are passed through without
+                       conversion or recursive instantiation.
         :return: if _target_ is a class name: the instantiated object
                  if _target_ is a callable: the return value of the call
         """
@@ -165,6 +165,15 @@ resolved lazily as instantiation proceeds instead of resolving and copying the
 full configuration tree up front. This avoids processing unrelated configuration
 values and allows runtime state established by an earlier target to be used
 while resolving a later argument.
+
+Primitive values, native `list`, `tuple`, and `dict` containers, and OmegaConf
+containers passed at the call-site retain Hydra's normal configuration
+semantics, including recursive merging, instantiation, and conversion where
+applicable.
+
+Already-constructed dataclass and attrs instances are regular runtime objects.
+They remain unchanged, even if they define `_target_`. To use such an instance
+as configuration, explicitly convert it with `OmegaConf.structured(instance)`.
 
 See the [Hydra 1.4 upgrade guide](/docs/upgrades/1.3_to_1.4/instantiate_resolution)
 for the compatibility impact and an example.
