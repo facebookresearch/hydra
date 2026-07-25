@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-25",
-  "generated_at": "2026-07-25T19:19:05Z",
+  "generated_at": "2026-07-25T19:50:56Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 156,
+    "open_total": 157,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 15,
-        "percentage": 9.6
+        "count": 16,
+        "percentage": 10.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 117,
-        "percentage": 75.0
+        "percentage": 74.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 11,
-        "percentage": 7.1
+        "percentage": 7.0
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.8
+        "percentage": 5.7
       },
       {
         "category": "Refactor",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 155
+        "count": 156
       },
       {
         "status": "done",
@@ -2596,6 +2596,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3313"
     },
     {
+      "number": 3318,
+      "title": "Dangling Defaults List override can override a command-line append",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-25",
+      "updated": "2026-07-25",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3318"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -2615,6 +2630,28 @@
         "plugin"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/692"
+    },
+    {
+      "number": 1431,
+      "title": "PrettyErrors doesn't work with Hydra",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3317,
+          "url": "https://github.com/facebookresearch/hydra/pull/3317"
+        }
+      ],
+      "created": "2021-02-26",
+      "updated": "2026-07-25",
+      "labels": [
+        "enhancement",
+        "triage",
+        "wishlist"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1431"
     },
     {
       "number": 1463,
@@ -5570,31 +5607,16 @@
       "updated": "2026-07-24",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3314"
-    },
-    {
-      "number": 1431,
-      "title": "PrettyErrors doesn't work with Hydra",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3317,
-          "url": "https://github.com/facebookresearch/hydra/pull/3317"
-        }
-      ],
-      "created": "2021-02-26",
-      "updated": "2026-07-25",
-      "labels": [
-        "enhancement",
-        "triage",
-        "wishlist"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1431"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-25T19:50:56Z",
+      "kind": "new",
+      "issue": 3318,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3318",
+      "title": "Dangling Defaults List override can override a command-line append"
+    },
     {
       "ts": "2026-07-25T19:19:05Z",
       "kind": "closed",
@@ -7163,14 +7185,6 @@
       "issue": 2281,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2281",
       "title": "[Feature Request] RQ Launcher plugin the ability to send tasks to different types of workers",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2274,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2274",
-      "title": "[Bug/Question] `config_path` resolution is misleading",
       "detail": "added \"triage\""
     }
   ]

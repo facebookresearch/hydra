@@ -523,3 +523,4 @@
 {"ts": "2026-07-25T18:32:15Z", "kind": "label", "issue": 1869, "issue_url": "https://github.com/facebookresearch/hydra/issues/1869", "title": "Add more examples to the submitit plugin", "detail": "removed \"triage\""}
 {"ts": "2026-07-25T18:45:16Z", "kind": "closed", "issue": 1872, "issue_url": "https://github.com/facebookresearch/hydra/issues/1872", "title": "[Feature Request] Interpolate cmd options before passing to override_dirname for sweep"}
 {"ts": "2026-07-25T19:19:05Z", "kind": "closed", "issue": 1431, "issue_url": "https://github.com/facebookresearch/hydra/issues/1431", "title": "PrettyErrors doesn't work with Hydra"}
+{"ts": "2026-07-25T19:50:56Z", "kind": "new", "issue": 3318, "issue_url": "https://github.com/facebookresearch/hydra/issues/3318", "title": "Dangling Defaults List override can override a command-line append"}

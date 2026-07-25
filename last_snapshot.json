@@ -181,7 +181,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-25T19:19:05Z",
+  "generated_at": "2026-07-25T19:50:56Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2046,6 +2046,18 @@
       "status": "not started",
       "title": "Standardize Ax Sweeper parameters and remove the Ax upper bound",
       "updated_at": "2026-07-24T19:47:58Z"
+    },
+    "3318": {
+      "category": "Bug",
+      "created_at": "2026-07-25T19:49:31Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "Dangling Defaults List override can override a command-line append",
+      "updated_at": "2026-07-25T19:49:31Z"
     },
     "385": {
       "category": "Enhancement",
