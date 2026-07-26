@@ -16,6 +16,7 @@ from hydra._internal.core_plugins.importlib_resources_config_source import (
 from hydra._internal.core_plugins.structured_config_source import StructuredConfigSource
 from hydra.core.config_store import ConfigStore
 from hydra.core.default_element import GroupDefault, InputDefault
+from hydra.core.object_type import ObjectType
 from hydra.core.plugins import Plugins
 from hydra.core.singleton import Singleton
 from hydra.plugins.config_source import ConfigLoadError, ConfigSource
@@ -76,6 +77,32 @@ def test_caching_repository_uses_current_config_store(
     result = repository.load_config("registered_after_repository_copy.yaml")
     assert result is not None
     assert result.config == {"value": 10}
+
+
+def test_config_store_empty_group_is_stored_at_root(
+    hydra_restore_singletons: Any,
+) -> None:
+    """An empty group path represents a config outside any config group and must
+    behave exactly like group=None. Storing it under a literal empty-string child
+    group instead makes help generation traverse that child as the root group
+    without terminating."""
+    Plugins.instance()
+    cs = ConfigStore.instance()
+    cs.store(group="", name="empty_group_cfg", node={"age": 18})
+
+    assert "" not in cs.repo
+    stored = cs.repo["empty_group_cfg.yaml"]
+    assert stored.group is None
+    assert stored.node == {"age": 18}
+
+    repository = ConfigRepository(
+        config_search_path=create_config_search_path("structured://")
+    )
+    assert repository.config_exists("empty_group_cfg.yaml")
+    loaded = repository.load_config("empty_group_cfg.yaml")
+    assert loaded is not None
+    assert loaded.config == {"age": 18}
+    assert "" not in repository.get_group_options("", ObjectType.GROUP)
 
 
 @mark.parametrize(

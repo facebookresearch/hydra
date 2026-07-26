@@ -70,6 +70,12 @@ class ConfigStore(metaclass=Singleton):
         :param provider: the name of the module/app providing this config.
             Helps debugging.
         """
+        # An empty group path represents a config outside any config group and is
+        # stored at the repository root, exactly like group=None. Splitting ""
+        # would instead create a literal empty-string child group, which help
+        # generation then traverses as the root group without terminating.
+        if group == "":
+            group = None
 
         cur = self.repo
         if group is not None:

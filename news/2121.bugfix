@@ -1,0 +1,1 @@
+ConfigStore.store with an empty string group now stores the config at the repository root, exactly like group=None, instead of creating an empty-named config group that makes --help generation recurse without terminating.
