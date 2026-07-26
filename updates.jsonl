@@ -531,3 +531,4 @@
 {"ts": "2026-07-26T07:51:18Z", "kind": "pr", "issue": 3318, "issue_url": "https://github.com/facebookresearch/hydra/issues/3318", "title": "Dangling Defaults List override can override a command-line append", "detail": "linked #3319"}
 {"ts": "2026-07-26T17:33:09Z", "kind": "closed", "issue": 1228, "issue_url": "https://github.com/facebookresearch/hydra/issues/1228", "title": "[Hydra doc] Improvement to doc search."}
 {"ts": "2026-07-26T17:33:09Z", "kind": "closed", "issue": 1241, "issue_url": "https://github.com/facebookresearch/hydra/issues/1241", "title": "[Configen][Bug] Configs for abstract classes with Generic Type"}
+{"ts": "2026-07-26T18:27:03Z", "kind": "closed", "issue": 1174, "issue_url": "https://github.com/facebookresearch/hydra/issues/1174", "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]"}

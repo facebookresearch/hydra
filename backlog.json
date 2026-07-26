@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-26",
-  "generated_at": "2026-07-26T17:33:09Z",
+  "generated_at": "2026-07-26T18:27:03Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 152,
+    "open_total": 151,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 14,
-        "percentage": 9.2
+        "count": 13,
+        "percentage": 8.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 115,
-        "percentage": 75.7
+        "percentage": 76.2
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.9
+        "percentage": 6.0
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 151
+        "count": 150
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 185
+        "count": 186
       }
     ]
   },
@@ -404,24 +404,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1164"
-    },
-    {
-      "number": 1174,
-      "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2020-11-30",
-      "updated": "2026-07-17",
-      "labels": [
-        "bug",
-        "help wanted",
-        "configen",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1174"
     },
     {
       "number": 1258,
@@ -2551,6 +2533,37 @@
         "plugin"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/692"
+    },
+    {
+      "number": 1228,
+      "title": "[Hydra doc] Improvement to doc search.",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2020-12-22",
+      "updated": "2026-07-15",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1228"
+    },
+    {
+      "number": 1241,
+      "title": "[Configen][Bug] Configs for abstract classes with Generic Type",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2020-12-25",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1241"
     },
     {
       "number": 1291,
@@ -5583,38 +5596,32 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3314"
     },
     {
-      "number": 1228,
-      "title": "[Hydra doc] Improvement to doc search.",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2020-12-22",
-      "updated": "2026-07-15",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1228"
-    },
-    {
-      "number": 1241,
-      "title": "[Configen][Bug] Configs for abstract classes with Generic Type",
+      "number": 1174,
+      "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]",
       "category": "Bug",
       "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2020-12-25",
-      "updated": "2026-07-15",
+      "created": "2020-11-30",
+      "updated": "2026-07-17",
       "labels": [
         "bug",
+        "configen",
+        "help wanted",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1241"
+      "url": "https://github.com/facebookresearch/hydra/issues/1174"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-26T18:27:03Z",
+      "kind": "closed",
+      "issue": 1174,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1174",
+      "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]"
+    },
     {
       "ts": "2026-07-26T17:33:09Z",
       "kind": "closed",
@@ -7181,14 +7188,6 @@
       "issue": 2453,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2453",
       "title": "[Feature Request] ConfigStore to warn or raise on name/group collision",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2435,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2435",
-      "title": "[Feature Request] Optuna experiment stream processing",
       "detail": "added \"triage\""
     }
   ]
