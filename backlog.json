@@ -1,45 +1,45 @@
 {
   "generated_on": "2026-07-26",
-  "generated_at": "2026-07-26T07:51:18Z",
+  "generated_at": "2026-07-26T17:33:09Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 154,
+    "open_total": 152,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 15,
-        "percentage": 9.7
+        "count": 14,
+        "percentage": 9.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 115,
-        "percentage": 74.7
+        "percentage": 75.7
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 11,
-        "percentage": 7.1
+        "count": 10,
+        "percentage": 6.6
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 5.8
+        "percentage": 5.9
       },
       {
         "category": "Refactor",
         "emoji": "🔧",
         "count": 1,
-        "percentage": 0.6
+        "percentage": 0.7
       },
       {
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 1.9
+        "percentage": 2.0
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 153
+        "count": 151
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 183
+        "count": 185
       }
     ]
   },
@@ -424,37 +424,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1174"
     },
     {
-      "number": 1228,
-      "title": "[Hydra doc] Improvement to doc search.",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2020-12-22",
-      "updated": "2026-07-15",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1228"
-    },
-    {
-      "number": 1241,
-      "title": "[Configen][Bug] Configs for abstract classes with Generic Type",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2020-12-25",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1241"
-    },
-    {
       "number": 1258,
       "title": "[Feature Request] Tuple Sweeper OR Top-level dictionary overrides",
       "category": "Enhancement",
@@ -463,7 +432,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2021-01-03",
-      "updated": "2026-07-15",
+      "updated": "2026-07-26",
       "labels": [
         "enhancement",
         "wishlist",
@@ -5612,9 +5581,54 @@
       "updated": "2026-07-24",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3314"
+    },
+    {
+      "number": 1228,
+      "title": "[Hydra doc] Improvement to doc search.",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2020-12-22",
+      "updated": "2026-07-15",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1228"
+    },
+    {
+      "number": 1241,
+      "title": "[Configen][Bug] Configs for abstract classes with Generic Type",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2020-12-25",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1241"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-26T17:33:09Z",
+      "kind": "closed",
+      "issue": 1241,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1241",
+      "title": "[Configen][Bug] Configs for abstract classes with Generic Type"
+    },
+    {
+      "ts": "2026-07-26T17:33:09Z",
+      "kind": "closed",
+      "issue": 1228,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1228",
+      "title": "[Hydra doc] Improvement to doc search."
+    },
     {
       "ts": "2026-07-26T07:51:18Z",
       "kind": "pr",
@@ -7175,22 +7189,6 @@
       "issue": 2435,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2435",
       "title": "[Feature Request] Optuna experiment stream processing",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2412,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2412",
-      "title": "[Feature Request] allow to use hydra without an __init__.py",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2387,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2387",
-      "title": "Docs unclear on how to use multiple entries in defaults list",
       "detail": "added \"triage\""
     }
   ]

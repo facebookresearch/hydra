@@ -1,5 +1,7 @@
 {
   "closed_at": {
+    "1228": "2026-07-26",
+    "1241": "2026-07-26",
     "1291": "2026-07-25",
     "1367": "2026-07-25",
     "1431": "2026-07-25",
@@ -184,7 +186,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-26T07:51:18Z",
+  "generated_at": "2026-07-26T17:33:09Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -269,31 +271,6 @@
       "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]",
       "updated_at": "2026-07-17T11:14:36Z"
     },
-    "1228": {
-      "category": "Documentation",
-      "created_at": "2020-12-22T19:07:11Z",
-      "labels": [
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Hydra doc] Improvement to doc search.",
-      "updated_at": "2026-07-15T13:17:35Z"
-    },
-    "1241": {
-      "category": "Bug",
-      "created_at": "2020-12-25T02:52:40Z",
-      "labels": [
-        "bug",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Configen][Bug] Configs for abstract classes with Generic Type",
-      "updated_at": "2026-07-15T13:17:35Z"
-    },
     "1258": {
       "category": "Enhancement",
       "created_at": "2021-01-03T11:23:53Z",
@@ -306,7 +283,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] Tuple Sweeper OR Top-level dictionary overrides",
-      "updated_at": "2026-07-15T13:17:33Z"
+      "updated_at": "2026-07-26T16:09:56Z"
     },
     "1393": {
       "category": "Enhancement",
@@ -2214,6 +2191,31 @@
     }
   },
   "recent_done": {
+    "1228": {
+      "category": "Documentation",
+      "created_at": "2020-12-22T19:07:11Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Hydra doc] Improvement to doc search.",
+      "updated_at": "2026-07-15T13:17:35Z"
+    },
+    "1241": {
+      "category": "Bug",
+      "created_at": "2020-12-25T02:52:40Z",
+      "labels": [
+        "bug",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Configen][Bug] Configs for abstract classes with Generic Type",
+      "updated_at": "2026-07-15T13:17:35Z"
+    },
     "1291": {
       "category": "Enhancement",
       "created_at": "2021-01-11T23:00:42Z",
