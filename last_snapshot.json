@@ -1,5 +1,6 @@
 {
   "closed_at": {
+    "1164": "2026-07-26",
     "1174": "2026-07-26",
     "1228": "2026-07-26",
     "1241": "2026-07-26",
@@ -187,7 +188,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-26T18:27:03Z",
+  "generated_at": "2026-07-26T18:48:13Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -243,19 +244,6 @@
       "status": "not started",
       "title": "Document recommendations for frameworks using Hydra",
       "updated_at": "2026-07-25T03:19:41Z"
-    },
-    "1164": {
-      "category": "Enhancement",
-      "created_at": "2020-11-19T18:56:00Z",
-      "labels": [
-        "maintenance",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Move non-user facing tools out of `hydra/tools`",
-      "updated_at": "2026-07-15T13:17:36Z"
     },
     "1258": {
       "category": "Enhancement",
@@ -2177,6 +2165,19 @@
     }
   },
   "recent_done": {
+    "1164": {
+      "category": "Enhancement",
+      "created_at": "2020-11-19T18:56:00Z",
+      "labels": [
+        "maintenance",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Move non-user facing tools out of `hydra/tools`",
+      "updated_at": "2026-07-15T13:17:36Z"
+    },
     "1174": {
       "category": "Bug",
       "created_at": "2020-11-30T17:20:08Z",

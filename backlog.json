@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-26",
-  "generated_at": "2026-07-26T18:27:03Z",
+  "generated_at": "2026-07-26T18:48:13Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 151,
+    "open_total": 150,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 13,
-        "percentage": 8.6
+        "percentage": 8.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 115,
-        "percentage": 76.2
+        "count": 114,
+        "percentage": 76.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 10,
-        "percentage": 6.6
+        "percentage": 6.7
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 150
+        "count": 149
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 186
+        "count": 187
       }
     ]
   },
@@ -388,22 +388,6 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1128"
-    },
-    {
-      "number": 1164,
-      "title": "Move non-user facing tools out of `hydra/tools`",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2020-11-19",
-      "updated": "2026-07-15",
-      "labels": [
-        "maintenance",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1164"
     },
     {
       "number": 1258,
@@ -2533,6 +2517,24 @@
         "plugin"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/692"
+    },
+    {
+      "number": 1174,
+      "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2020-11-30",
+      "updated": "2026-07-17",
+      "labels": [
+        "bug",
+        "configen",
+        "help wanted",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1174"
     },
     {
       "number": 1228,
@@ -5596,25 +5598,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3314"
     },
     {
-      "number": 1174,
-      "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "number": 1164,
+      "title": "Move non-user facing tools out of `hydra/tools`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2020-11-30",
-      "updated": "2026-07-17",
+      "created": "2020-11-19",
+      "updated": "2026-07-15",
       "labels": [
-        "bug",
-        "configen",
-        "help wanted",
+        "maintenance",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1174"
+      "url": "https://github.com/facebookresearch/hydra/issues/1164"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-26T18:48:13Z",
+      "kind": "closed",
+      "issue": 1164,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1164",
+      "title": "Move non-user facing tools out of `hydra/tools`"
+    },
     {
       "ts": "2026-07-26T18:27:03Z",
       "kind": "closed",
@@ -7180,14 +7187,6 @@
       "issue": 2455,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2455",
       "title": "[Feature Request] Support loading YAML from user-specified URI",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2453,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2453",
-      "title": "[Feature Request] ConfigStore to warn or raise on name/group collision",
       "detail": "added \"triage\""
     }
   ]

@@ -532,3 +532,4 @@
 {"ts": "2026-07-26T17:33:09Z", "kind": "closed", "issue": 1228, "issue_url": "https://github.com/facebookresearch/hydra/issues/1228", "title": "[Hydra doc] Improvement to doc search."}
 {"ts": "2026-07-26T17:33:09Z", "kind": "closed", "issue": 1241, "issue_url": "https://github.com/facebookresearch/hydra/issues/1241", "title": "[Configen][Bug] Configs for abstract classes with Generic Type"}
 {"ts": "2026-07-26T18:27:03Z", "kind": "closed", "issue": 1174, "issue_url": "https://github.com/facebookresearch/hydra/issues/1174", "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]"}
+{"ts": "2026-07-26T18:48:13Z", "kind": "closed", "issue": 1164, "issue_url": "https://github.com/facebookresearch/hydra/issues/1164", "title": "Move non-user facing tools out of `hydra/tools`"}
