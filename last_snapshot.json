@@ -1,5 +1,6 @@
 {
   "closed_at": {
+    "1081": "2026-07-26",
     "1112": "2026-07-26",
     "1164": "2026-07-26",
     "1174": "2026-07-26",
@@ -187,24 +188,11 @@
     "3308": "2026-07-24",
     "3309": "2026-07-24",
     "3314": "2026-07-25",
+    "3318": "2026-07-26",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-26T18:57:49Z",
+  "generated_at": "2026-07-26T20:12:46Z",
   "issues": {
-    "1081": {
-      "category": "Enhancement",
-      "created_at": "2020-10-20T20:51:17Z",
-      "labels": [
-        "configen",
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] Configen adds url to original module documentation",
-      "updated_at": "2026-07-15T13:17:38Z"
-    },
     "1085": {
       "category": "Enhancement",
       "created_at": "2020-10-21T15:42:11Z",
@@ -614,9 +602,11 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3320"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "[Bug] Recursion overflow from `--help` if `group=''`",
       "updated_at": "2026-07-16T03:51:52Z"
     },
@@ -1949,20 +1939,6 @@
       "title": "Standardize Ax Sweeper parameters and remove the Ax upper bound",
       "updated_at": "2026-07-24T19:47:58Z"
     },
-    "3318": {
-      "category": "Bug",
-      "created_at": "2026-07-25T19:49:31Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [
-        "3319"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "Dangling Defaults List override can override a command-line append",
-      "updated_at": "2026-07-25T19:56:31Z"
-    },
     "385": {
       "category": "Enhancement",
       "created_at": "2020-01-19T10:23:55Z",
@@ -2154,6 +2130,20 @@
     }
   },
   "recent_done": {
+    "1081": {
+      "category": "Enhancement",
+      "created_at": "2020-10-20T20:51:17Z",
+      "labels": [
+        "configen",
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Configen adds url to original module documentation",
+      "updated_at": "2026-07-15T13:17:38Z"
+    },
     "1112": {
       "category": "Enhancement",
       "created_at": "2020-11-03T08:53:31Z",
@@ -4570,6 +4560,20 @@
       "status": "done",
       "title": "Add REFUTE scientific critique + calibration benchmark",
       "updated_at": "2026-07-24T23:36:24Z"
+    },
+    "3318": {
+      "category": "Bug",
+      "created_at": "2026-07-25T19:49:31Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "3319"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Dangling Defaults List override can override a command-line append",
+      "updated_at": "2026-07-25T19:56:31Z"
     },
     "692": {
       "category": "Enhancement",

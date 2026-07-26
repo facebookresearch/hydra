@@ -534,3 +534,7 @@
 {"ts": "2026-07-26T18:27:03Z", "kind": "closed", "issue": 1174, "issue_url": "https://github.com/facebookresearch/hydra/issues/1174", "title": "[Bug][configen] Generates unquoted str defaults when type hints include Optional[  ]"}
 {"ts": "2026-07-26T18:48:13Z", "kind": "closed", "issue": 1164, "issue_url": "https://github.com/facebookresearch/hydra/issues/1164", "title": "Move non-user facing tools out of `hydra/tools`"}
 {"ts": "2026-07-26T18:57:49Z", "kind": "closed", "issue": 1112, "issue_url": "https://github.com/facebookresearch/hydra/issues/1112", "title": "Nightly builds"}
+{"ts": "2026-07-26T20:12:46Z", "kind": "status", "issue": 2121, "issue_url": "https://github.com/facebookresearch/hydra/issues/2121", "title": "[Bug] Recursion overflow from `--help` if `group=''`", "detail": "not started → community PR", "pr": {"number": 3320, "url": "https://github.com/facebookresearch/hydra/pull/3320"}}
+{"ts": "2026-07-26T20:12:46Z", "kind": "closed", "issue": 1081, "issue_url": "https://github.com/facebookresearch/hydra/issues/1081", "title": "[Feature Request] Configen adds url to original module documentation"}
+{"ts": "2026-07-26T20:12:46Z", "kind": "closed", "issue": 3318, "issue_url": "https://github.com/facebookresearch/hydra/issues/3318", "title": "Dangling Defaults List override can override a command-line append"}
+{"ts": "2026-07-26T20:12:46Z", "kind": "pr", "issue": 2121, "issue_url": "https://github.com/facebookresearch/hydra/issues/2121", "title": "[Bug] Recursion overflow from `--help` if `group=''`", "detail": "linked #3320"}
