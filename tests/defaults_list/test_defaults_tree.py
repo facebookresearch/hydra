@@ -218,12 +218,84 @@ def test_simple_defaults_tree_cases(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    dedent("""\
-                        In 'group_override_only': Could not override 'group1'.
-                        Did you mean to override group1?""")
+                    "In 'group_override_only': Invalid Defaults List override 'group1: file2'."
+                    "\nNo earlier Group Default for 'group1' exists to override."
                 ),
             ),
             id="group_override_only:append_does_not_rescue_dangling_override",
+        ),
+        param(
+            "dangling_nested_override",
+            ["group1=group_item1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="dangling_nested_override"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="group_item1"),
+                        children=[
+                            GroupDefault(group="group2", value="file2"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="dangling_nested_override:selection_introduces_target",
+        ),
+        param(
+            "dangling_nested_override",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In 'dangling_nested_override': "
+                    "Invalid Defaults List override 'group1/group2: file2'."
+                    "\nNo earlier Group Default for 'group1/group2' exists to override."
+                ),
+            ),
+            id="dangling_nested_override:selection_does_not_introduce_target",
+        ),
+        param(
+            "dangling_nested_override",
+            ["group1/group2=file3"],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "Could not override 'group1/group2'. No match in the defaults list."
+                ),
+            ),
+            id="dangling_nested_override:cli_override_does_not_recover",
+        ),
+        param(
+            "dangling_nested_override",
+            ["+group1/group2=file3"],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In 'dangling_nested_override': "
+                    "Invalid Defaults List override 'group1/group2: file2'."
+                    "\nNo earlier Group Default for 'group1/group2' exists to override."
+                ),
+            ),
+            id="dangling_nested_override:cli_append_does_not_recover",
+        ),
+        param(
+            "dangling_nested_override",
+            ["group1=group_item1", "group1/group2=file3"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="dangling_nested_override"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="group_item1"),
+                        children=[
+                            GroupDefault(group="group2", value="file3"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="dangling_nested_override:cli_override_wins_when_target_introduced",
         ),
     ],
 )
@@ -347,7 +419,8 @@ def test_simple_group_override(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    "In 'invalid_override_in_defaults': Could not override 'foo'. No match in the defaults list."
+                    "In 'invalid_override_in_defaults': Invalid Defaults List override 'foo: bar'."
+                    "\nNo earlier Group Default for 'foo' exists to override."
                 )
                 + "$",
             ),
@@ -2625,7 +2698,10 @@ def test_missing_config_errors(
             [],
             raises(
                 ConfigCompositionException,
-                match="Could not override 'group1'. No match in the defaults list.",
+                match=re.escape(
+                    "In 'error_invalid_override': Invalid Defaults List override 'group1: file'."
+                    "\nNo earlier Group Default for 'group1' exists to override."
+                ),
             ),
             id="error_invalid_override",
         ),
@@ -2634,7 +2710,10 @@ def test_missing_config_errors(
             [],
             raises(
                 ConfigCompositionException,
-                match="Could not override 'group1'. No match in the defaults list.",
+                match=re.escape(
+                    "In 'group_override_only': Invalid Defaults List override 'group1: file2'."
+                    "\nNo earlier Group Default for 'group1' exists to override."
+                ),
             ),
             id="dangling_override_without_append",
         ),
@@ -2672,8 +2751,8 @@ def test_missing_config_errors(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    "In 'group1/override_invalid': Could not override 'group1/group2@group1.foo'."
-                    "\nDid you mean to override group1/group2?"
+                    "In 'group1/override_invalid': Invalid Defaults List override 'group2@foo: file1'."
+                    "\nNo earlier Group Default for 'group1/group2@group1.foo' exists to override."
                 ),
             ),
             id="nested_override_invalid_group",
@@ -2684,8 +2763,8 @@ def test_missing_config_errors(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    "In 'group1/override_invalid2': Could not override 'group1/group2'."
-                    "\nDid you mean to override group1/group2@group1.foo?"
+                    "In 'group1/override_invalid2': Invalid Defaults List override 'group2: file1'."
+                    "\nNo earlier Group Default for 'group1/group2' exists to override."
                 ),
             ),
             id="nested_override_invalid_group",
@@ -3495,7 +3574,8 @@ def test_select_multi_pkg(
                 ConfigCompositionException,
                 match=re.escape(
                     "In 'experiment/error_override_without_abs_and_header': "
-                    "Could not override 'experiment/group1'. No match in the defaults list"
+                    "Invalid Defaults List override 'group1: file1'."
+                    "\nNo earlier Group Default for 'experiment/group1' exists to override."
                 ),
             ),
             id="experiment/error_override_without_abs_and_header",
@@ -3507,7 +3587,8 @@ def test_select_multi_pkg(
                 ConfigCompositionException,
                 match=re.escape(
                     "In 'experiment/error_override_without_global': "
-                    "Could not override 'group1@experiment.group1'. No match in the defaults list"
+                    "Invalid Defaults List override '/group1: file1'."
+                    "\nNo earlier Group Default for 'group1@experiment.group1' exists to override."
                 ),
             ),
             id="experiment/error_override_without_global",
