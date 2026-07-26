@@ -184,7 +184,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-25T20:42:37Z",
+  "generated_at": "2026-07-26T07:51:18Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -2015,9 +2015,11 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3319"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "Dangling Defaults List override can override a command-line append",
       "updated_at": "2026-07-25T19:56:31Z"
     },
