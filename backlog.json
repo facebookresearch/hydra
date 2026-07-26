@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-26",
-  "generated_at": "2026-07-26T18:48:13Z",
+  "generated_at": "2026-07-26T18:57:49Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 150,
+    "open_total": 149,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 114,
-        "percentage": 76.0
+        "count": 113,
+        "percentage": 75.8
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 149
+        "count": 148
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 187
+        "count": 188
       }
     ]
   },
@@ -357,21 +357,6 @@
         "tab_completion"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1085"
-    },
-    {
-      "number": 1112,
-      "title": "Nightly builds",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2020-11-03",
-      "updated": "2021-12-27",
-      "labels": [
-        "maintenance"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1112"
     },
     {
       "number": 1128,
@@ -2517,6 +2502,22 @@
         "plugin"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/692"
+    },
+    {
+      "number": 1164,
+      "title": "Move non-user facing tools out of `hydra/tools`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2020-11-19",
+      "updated": "2026-07-15",
+      "labels": [
+        "maintenance",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1164"
     },
     {
       "number": 1174,
@@ -5598,23 +5599,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3314"
     },
     {
-      "number": 1164,
-      "title": "Move non-user facing tools out of `hydra/tools`",
+      "number": 1112,
+      "title": "Nightly builds",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2020-11-19",
-      "updated": "2026-07-15",
+      "created": "2020-11-03",
+      "updated": "2021-12-27",
       "labels": [
-        "maintenance",
-        "triage"
+        "maintenance"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1164"
+      "url": "https://github.com/facebookresearch/hydra/issues/1112"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-26T18:57:49Z",
+      "kind": "closed",
+      "issue": 1112,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1112",
+      "title": "Nightly builds"
+    },
     {
       "ts": "2026-07-26T18:48:13Z",
       "kind": "closed",
@@ -7179,14 +7186,6 @@
       "issue": 2459,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2459",
       "title": "[Feature Request] Add `overrides` parameter to `@hydra.main()`",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2455,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2455",
-      "title": "[Feature Request] Support loading YAML from user-specified URI",
       "detail": "added \"triage\""
     }
   ]

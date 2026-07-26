@@ -1,5 +1,6 @@
 {
   "closed_at": {
+    "1112": "2026-07-26",
     "1164": "2026-07-26",
     "1174": "2026-07-26",
     "1228": "2026-07-26",
@@ -188,7 +189,7 @@
     "3314": "2026-07-25",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-26T18:48:13Z",
+  "generated_at": "2026-07-26T18:57:49Z",
   "issues": {
     "1081": {
       "category": "Enhancement",
@@ -219,18 +220,6 @@
       "status": "not started",
       "title": "[Feature Request] shell completion for Enum type",
       "updated_at": "2026-07-15T13:17:37Z"
-    },
-    "1112": {
-      "category": "Enhancement",
-      "created_at": "2020-11-03T08:53:31Z",
-      "labels": [
-        "maintenance"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Nightly builds",
-      "updated_at": "2021-12-27T21:29:49Z"
     },
     "1128": {
       "category": "Documentation",
@@ -2165,6 +2154,18 @@
     }
   },
   "recent_done": {
+    "1112": {
+      "category": "Enhancement",
+      "created_at": "2020-11-03T08:53:31Z",
+      "labels": [
+        "maintenance"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Nightly builds",
+      "updated_at": "2021-12-27T21:29:49Z"
+    },
     "1164": {
       "category": "Enhancement",
       "created_at": "2020-11-19T18:56:00Z",
