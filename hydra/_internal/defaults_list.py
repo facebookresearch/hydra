@@ -146,6 +146,20 @@ class Overrides:
     def ensure_overrides_used(self) -> None:
         for key, meta in self.override_metadata.items():
             if not meta.used:
+                if not meta.external_override:
+                    # A Defaults List override must target a Group Default that
+                    # precedes it in the effective depth-first Defaults List.
+                    # Later entries, such as command line appends, are not
+                    # eligible targets and are not suggested as candidates.
+                    value = self.override_choices[key]
+                    msg = (
+                        f"Invalid Defaults List override '{meta.relative_key}: {value}'."
+                        f"\nNo earlier Group Default for '{key}' exists to override."
+                    )
+                    if meta.containing_config_path is not None:
+                        msg = f"In '{meta.containing_config_path}': {msg}"
+                    raise ConfigCompositionException(msg)
+
                 group = key.split("@")[0]
                 choices = (
                     self.known_choices_per_group[group]
@@ -574,16 +588,6 @@ def _create_defaults_tree_impl(
 
     _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
 
-    # An externally appended group default is the one case where a group default
-    # may legally follow an override of the same group in a single defaults list.
-    # The reverse traversal below visits the appended entry before that override,
-    # so map each key to the list's last override for it, allowing the appended
-    # entry to register its override before resolving.
-    list_overrides: Dict[str, GroupDefault] = {}
-    for d in defaults_list:
-        if isinstance(d, GroupDefault) and d.is_override():
-            list_overrides[d.get_override_key()] = d
-
     def add_child(
         child_list: List[Union[InputDefault, DefaultsTreeNode]],
         new_root_: DefaultsTreeNode,
@@ -612,11 +616,6 @@ def _create_defaults_tree_impl(
                 continue
 
             d.update_parent(parent.get_group_path(), parent.get_final_package())
-
-            if isinstance(d, GroupDefault) and d.is_external_append():
-                pending = list_overrides.get(d.get_override_key())
-                if pending is not None:
-                    overrides.add_override(parent.get_config_path(), pending)
 
             if overrides.is_overridden(d):
                 assert isinstance(d, GroupDefault)
