@@ -1,21 +1,21 @@
 {
-  "generated_on": "2026-07-26",
-  "generated_at": "2026-07-26T20:12:46Z",
+  "generated_on": "2026-07-27",
+  "generated_at": "2026-07-27T06:18:00Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 147,
+    "open_total": 146,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 12,
-        "percentage": 8.2
+        "count": 11,
+        "percentage": 7.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 112,
-        "percentage": 76.2
+        "percentage": 76.7
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 6.1
+        "percentage": 6.2
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.0
+        "percentage": 2.1
       }
     ],
     "by_status": [
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 1
+        "count": 0
       },
       {
         "status": "blocked",
@@ -66,31 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 190
+        "count": 191
       }
     ]
   },
   "issues": [
-    {
-      "number": 2121,
-      "title": "[Bug] Recursion overflow from `--help` if `group=''`",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3320,
-          "url": "https://github.com/facebookresearch/hydra/pull/3320"
-        }
-      ],
-      "created": "2022-04-01",
-      "updated": "2026-07-16",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2121"
-    },
     {
       "number": 385,
       "title": "Experimentation tracking support",
@@ -300,10 +280,9 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-09-01",
-      "updated": "2026-07-15",
+      "updated": "2026-07-27",
       "labels": [
-        "question",
-        "triage"
+        "question"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/934"
     },
@@ -2470,6 +2449,23 @@
         "plugin"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/692"
+    },
+    {
+      "number": 1081,
+      "title": "[Feature Request] Configen adds url to original module documentation",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2020-10-20",
+      "updated": "2026-07-15",
+      "labels": [
+        "configen",
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1081"
     },
     {
       "number": 1112,
@@ -5582,23 +5578,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3314"
     },
     {
-      "number": 1081,
-      "title": "[Feature Request] Configen adds url to original module documentation",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2020-10-20",
-      "updated": "2026-07-15",
-      "labels": [
-        "configen",
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1081"
-    },
-    {
       "number": 3318,
       "title": "Dangling Defaults List override can override a command-line append",
       "category": "Bug",
@@ -5617,9 +5596,44 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
+    },
+    {
+      "number": 2121,
+      "title": "[Bug] Recursion overflow from `--help` if `group=''`",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3320,
+          "url": "https://github.com/facebookresearch/hydra/pull/3320"
+        }
+      ],
+      "created": "2022-04-01",
+      "updated": "2026-07-16",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2121"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T06:18:00Z",
+      "kind": "closed",
+      "issue": 2121,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2121",
+      "title": "[Bug] Recursion overflow from `--help` if `group=''`"
+    },
+    {
+      "ts": "2026-07-27T06:18:00Z",
+      "kind": "label",
+      "issue": 934,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/934",
+      "title": "[Bug] tab completion slow with slow imports",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-07-26T20:12:46Z",
       "kind": "pr",
@@ -7177,22 +7191,6 @@
       "issue": 2632,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2632",
       "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2590,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2590",
-      "title": "Is there a way to disable Hydra exceptions/errors override?",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2587,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2587",
-      "title": "How to instantiate a child class which inherited from super class?",
       "detail": "added \"triage\""
     }
   ]

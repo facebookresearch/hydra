@@ -538,3 +538,5 @@
 {"ts": "2026-07-26T20:12:46Z", "kind": "closed", "issue": 1081, "issue_url": "https://github.com/facebookresearch/hydra/issues/1081", "title": "[Feature Request] Configen adds url to original module documentation"}
 {"ts": "2026-07-26T20:12:46Z", "kind": "closed", "issue": 3318, "issue_url": "https://github.com/facebookresearch/hydra/issues/3318", "title": "Dangling Defaults List override can override a command-line append"}
 {"ts": "2026-07-26T20:12:46Z", "kind": "pr", "issue": 2121, "issue_url": "https://github.com/facebookresearch/hydra/issues/2121", "title": "[Bug] Recursion overflow from `--help` if `group=''`", "detail": "linked #3320"}
+{"ts": "2026-07-27T06:18:00Z", "kind": "label", "issue": 934, "issue_url": "https://github.com/facebookresearch/hydra/issues/934", "title": "[Bug] tab completion slow with slow imports", "detail": "removed \"triage\""}
+{"ts": "2026-07-27T06:18:00Z", "kind": "closed", "issue": 2121, "issue_url": "https://github.com/facebookresearch/hydra/issues/2121", "title": "[Bug] Recursion overflow from `--help` if `group=''`"}
