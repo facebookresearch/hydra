@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T07:13:25Z",
+  "generated_at": "2026-07-27T07:39:34Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 147,
@@ -230,11 +230,9 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-08-05",
-      "updated": "2026-07-15",
+      "updated": "2026-07-27",
       "labels": [
-        "documentation",
-        "good first issue",
-        "triage"
+        "documentation"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/845"
     },
@@ -5633,6 +5631,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-27T07:39:34Z",
+      "kind": "label",
+      "issue": 845,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/845",
+      "title": "Add a standalone page describing @hydra.main() in details.",
+      "detail": "removed \"good first issue\", \"triage\""
+    },
+    {
       "ts": "2026-07-27T07:13:25Z",
       "kind": "label",
       "issue": 902,
@@ -7195,14 +7201,6 @@
       "issue": 2704,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2704",
       "title": "Outdated tutorial on job.chdir",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2673,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2673",
-      "title": "[Feature Request] Support multirun in compose API",
       "detail": "added \"triage\""
     }
   ]
