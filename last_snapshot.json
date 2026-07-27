@@ -192,7 +192,7 @@
     "3318": "2026-07-26",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-27T07:11:19Z",
+  "generated_at": "2026-07-27T07:13:25Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -2092,14 +2092,13 @@
       "created_at": "2020-08-21T19:55:39Z",
       "labels": [
         "enhancement",
-        "triage",
         "wishlist"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] Replace lexer token names by their symbols in ANTLR error messages",
-      "updated_at": "2026-07-15T13:17:39Z"
+      "updated_at": "2026-07-27T07:11:52Z"
     },
     "934": {
       "category": "Question",

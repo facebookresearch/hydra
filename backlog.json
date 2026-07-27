@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T07:11:19Z",
+  "generated_at": "2026-07-27T07:13:25Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 147,
@@ -263,11 +263,10 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-08-21",
-      "updated": "2026-07-15",
+      "updated": "2026-07-27",
       "labels": [
         "enhancement",
-        "wishlist",
-        "triage"
+        "wishlist"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/902"
     },
@@ -5634,6 +5633,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-27T07:13:25Z",
+      "kind": "label",
+      "issue": 902,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/902",
+      "title": "[Feature Request] Replace lexer token names by their symbols in ANTLR error messages",
+      "detail": "removed \"triage\""
+    },
+    {
       "ts": "2026-07-27T07:11:19Z",
       "kind": "new",
       "issue": 3321,
@@ -7196,14 +7203,6 @@
       "issue": 2673,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2673",
       "title": "[Feature Request] Support multirun in compose API",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2660,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2660",
-      "title": "[Feature Request] Make hydra-submitit-launcher available via Conda",
       "detail": "added \"triage\""
     }
   ]
