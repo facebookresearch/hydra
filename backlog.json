@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T13:36:20Z",
+  "generated_at": "2026-07-27T14:41:19Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 138,
+    "open_total": 137,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 6.5
+        "percentage": 6.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 106,
-        "percentage": 76.8
+        "percentage": 77.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 10,
-        "percentage": 7.2
+        "count": 9,
+        "percentage": 6.6
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 6.5
+        "percentage": 6.6
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 138
+        "count": 137
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 200
+        "count": 201
       }
     ]
   },
@@ -474,25 +474,6 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1890"
-    },
-    {
-      "number": 1923,
-      "title": "[Feature Request] Document how configs typing validation works",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-12-14",
-      "updated": "2026-07-25",
-      "labels": [
-        "documentation",
-        "enhancement",
-        "triage",
-        "internal",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1923"
     },
     {
       "number": 1944,
@@ -2897,6 +2878,24 @@
         "wishlist"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1913"
+    },
+    {
+      "number": 1918,
+      "title": "sweep parameters in a paired manner",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-12-09",
+      "updated": "2026-07-15",
+      "labels": [
+        "defaults list",
+        "enhancement",
+        "triage",
+        "wishlist"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1918"
     },
     {
       "number": 1928,
@@ -5612,25 +5611,33 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 1918,
-      "title": "sweep parameters in a paired manner",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 1923,
+      "title": "[Feature Request] Document how configs typing validation works",
+      "category": "Documentation",
+      "category_emoji": "📄",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2021-12-09",
-      "updated": "2026-07-15",
+      "created": "2021-12-14",
+      "updated": "2026-07-25",
       "labels": [
-        "defaults list",
+        "documentation",
         "enhancement",
-        "triage",
-        "wishlist"
+        "internal",
+        "priority_low",
+        "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1918"
+      "url": "https://github.com/facebookresearch/hydra/issues/1923"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T14:41:19Z",
+      "kind": "closed",
+      "issue": 1923,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1923",
+      "title": "[Feature Request] Document how configs typing validation works"
+    },
     {
       "ts": "2026-07-27T13:36:20Z",
       "kind": "closed",
@@ -7189,14 +7196,6 @@
       "issue": 2848,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2848",
       "title": "[Feature Request] Add more meaningful information on hydra resolving interpolation error",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2846,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2846",
-      "title": "[Feature Request] Conditionally disable the creation of output folders via callback",
       "detail": "added \"triage\""
     }
   ]

@@ -563,3 +563,4 @@
 {"ts": "2026-07-27T13:29:36Z", "kind": "closed", "issue": 1913, "issue_url": "https://github.com/facebookresearch/hydra/issues/1913", "title": "[Feature Request] Mixing `_global_` / `_here_` / `_package_`"}
 {"ts": "2026-07-27T13:36:20Z", "kind": "label", "issue": 1258, "issue_url": "https://github.com/facebookresearch/hydra/issues/1258", "title": "[Feature Request] Tuple Sweeper OR Top-level dictionary overrides", "detail": "added \"sweep\"; removed \"triage\", \"wishlist\""}
 {"ts": "2026-07-27T13:36:20Z", "kind": "closed", "issue": 1918, "issue_url": "https://github.com/facebookresearch/hydra/issues/1918", "title": "sweep parameters in a paired manner"}
+{"ts": "2026-07-27T14:41:19Z", "kind": "closed", "issue": 1923, "issue_url": "https://github.com/facebookresearch/hydra/issues/1923", "title": "[Feature Request] Document how configs typing validation works"}
