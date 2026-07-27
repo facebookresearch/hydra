@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T09:45:53Z",
+  "generated_at": "2026-07-27T10:07:57Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 145,
+    "open_total": 144,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 111,
-        "percentage": 76.6
+        "count": 110,
+        "percentage": 76.4
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 145
+        "count": 144
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 193
+        "count": 194
       }
     ]
   },
@@ -445,22 +445,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1869"
-    },
-    {
-      "number": 1873,
-      "title": "[Feature Request] `exclude_keys` in `override_dirname` should have regex/wildcard/glob(*) option",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-10-30",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1873"
     },
     {
       "number": 1885,
@@ -5626,9 +5610,32 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
+    },
+    {
+      "number": 1873,
+      "title": "[Feature Request] `exclude_keys` in `override_dirname` should have regex/wildcard/glob(*) option",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-10-30",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1873"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T10:07:57Z",
+      "kind": "closed",
+      "issue": 1873,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1873",
+      "title": "[Feature Request] `exclude_keys` in `override_dirname` should have regex/wildcard/glob(*) option"
+    },
     {
       "ts": "2026-07-27T09:45:53Z",
       "kind": "label",
@@ -7190,14 +7197,6 @@
       "issue": 2775,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2775",
       "title": "[Feature Request] Problem with Overwriting dict config of existing configuration",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2770,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2770",
-      "title": "Experiment Tracker with Hydra",
       "detail": "added \"triage\""
     }
   ]
