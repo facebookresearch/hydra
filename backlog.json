@@ -1,45 +1,45 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T16:00:24Z",
+  "generated_at": "2026-07-27T16:18:15Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 134,
+    "open_total": 133,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 6.7
+        "percentage": 6.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 103,
-        "percentage": 76.9
+        "count": 102,
+        "percentage": 76.7
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 9,
-        "percentage": 6.7
+        "percentage": 6.8
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 6.7
+        "percentage": 6.8
       },
       {
         "category": "Refactor",
         "emoji": "🔧",
         "count": 1,
-        "percentage": 0.7
+        "percentage": 0.8
       },
       {
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.2
+        "percentage": 2.3
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 134
+        "count": 133
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 204
+        "count": 205
       }
     ]
   },
@@ -490,23 +490,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1944"
-    },
-    {
-      "number": 2027,
-      "title": "[Feature Request] Concatenate Multiple Config List elements",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-02-11",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage",
-        "list composition"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2027"
     },
     {
       "number": 2039,
@@ -3082,6 +3065,25 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1983"
     },
     {
+      "number": 1989,
+      "title": "Feature Request: allow limited use of \"override\" keyword in interpolated config",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-01-23",
+      "updated": "2026-07-15",
+      "labels": [
+        "defaults list",
+        "difficult",
+        "enhancement",
+        "triage",
+        "wishlist"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1989"
+    },
+    {
       "number": 2000,
       "title": "[Feature Request] Minimal Version of Hydra With Bare-Bones Config Support",
       "category": "Enhancement",
@@ -5611,26 +5613,31 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 1989,
-      "title": "Feature Request: allow limited use of \"override\" keyword in interpolated config",
+      "number": 2027,
+      "title": "[Feature Request] Concatenate Multiple Config List elements",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-01-23",
+      "created": "2022-02-11",
       "updated": "2026-07-15",
       "labels": [
-        "defaults list",
-        "difficult",
         "enhancement",
-        "triage",
-        "wishlist"
+        "list composition",
+        "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1989"
+      "url": "https://github.com/facebookresearch/hydra/issues/2027"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T16:18:15Z",
+      "kind": "closed",
+      "issue": 2027,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2027",
+      "title": "[Feature Request] Concatenate Multiple Config List elements"
+    },
     {
       "ts": "2026-07-27T16:00:24Z",
       "kind": "closed",
@@ -7185,14 +7192,6 @@
       "issue": 2887,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2887",
       "title": "[Feature Request] Support relative paths in defaults keys.",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2874,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2874",
-      "title": "[Help requested] Dynamic hydra launcher configuration",
       "detail": "added \"triage\""
     }
   ]
