@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T08:17:22Z",
+  "generated_at": "2026-07-27T08:27:44Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 145,
@@ -130,11 +130,10 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-06-21",
-      "updated": "2026-07-15",
+      "updated": "2026-07-27",
       "labels": [
         "enhancement",
-        "wishlist",
-        "triage"
+        "wishlist"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/700"
     },
@@ -2428,6 +2427,22 @@
         "plugin"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/692"
+    },
+    {
+      "number": 714,
+      "title": "Make sure Hydra logging config override all loggers from 3rd party libs",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2020-06-25",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/714"
     },
     {
       "number": 841,
@@ -5611,25 +5626,17 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 714,
-      "title": "Make sure Hydra logging config override all loggers from 3rd party libs",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2020-06-25",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/714"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T08:27:44Z",
+      "kind": "label",
+      "issue": 700,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/700",
+      "title": "[Feature Request] Purging older output/working directories ",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-07-27T08:17:22Z",
       "kind": "closed",
@@ -7191,14 +7198,6 @@
       "issue": 2765,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2765",
       "title": "[Feature Request] Loguru and Hydra ",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2762,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2762",
-      "title": "New Release Version?",
       "detail": "added \"triage\""
     }
   ]

@@ -548,3 +548,4 @@
 {"ts": "2026-07-27T08:07:57Z", "kind": "label", "issue": 733, "issue_url": "https://github.com/facebookresearch/hydra/issues/733", "title": "[Feature Request] Support for s3fs", "detail": "removed \"triage\""}
 {"ts": "2026-07-27T08:07:57Z", "kind": "label", "issue": 993, "issue_url": "https://github.com/facebookresearch/hydra/issues/993", "title": "Create a working directory abstraction", "detail": "added \"blocked\""}
 {"ts": "2026-07-27T08:17:22Z", "kind": "closed", "issue": 714, "issue_url": "https://github.com/facebookresearch/hydra/issues/714", "title": "Make sure Hydra logging config override all loggers from 3rd party libs"}
+{"ts": "2026-07-27T08:27:44Z", "kind": "label", "issue": 700, "issue_url": "https://github.com/facebookresearch/hydra/issues/700", "title": "[Feature Request] Purging older output/working directories ", "detail": "removed \"triage\""}
