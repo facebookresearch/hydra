@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T15:41:43Z",
+  "generated_at": "2026-07-27T16:00:24Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 135,
+    "open_total": 134,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 104,
-        "percentage": 77.0
+        "count": 103,
+        "percentage": 76.9
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 135
+        "count": 134
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 203
+        "count": 204
       }
     ]
   },
@@ -490,25 +490,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1944"
-    },
-    {
-      "number": 1989,
-      "title": "Feature Request: allow limited use of \"override\" keyword in interpolated config",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-01-23",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "wishlist",
-        "triage",
-        "defaults list",
-        "difficult"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1989"
     },
     {
       "number": 2027,
@@ -3083,6 +3064,24 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1982"
     },
     {
+      "number": 1983,
+      "title": "[Feature Request] Copying a config field between different branches in one config",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-01-21",
+      "updated": "2026-07-15",
+      "labels": [
+        "defaults list",
+        "enhancement",
+        "exploratory",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1983"
+    },
+    {
       "number": 2000,
       "title": "[Feature Request] Minimal Version of Hydra With Bare-Bones Config Support",
       "category": "Enhancement",
@@ -5612,25 +5611,33 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 1983,
-      "title": "[Feature Request] Copying a config field between different branches in one config",
+      "number": 1989,
+      "title": "Feature Request: allow limited use of \"override\" keyword in interpolated config",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-01-21",
+      "created": "2022-01-23",
       "updated": "2026-07-15",
       "labels": [
         "defaults list",
+        "difficult",
         "enhancement",
-        "exploratory",
-        "triage"
+        "triage",
+        "wishlist"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1983"
+      "url": "https://github.com/facebookresearch/hydra/issues/1989"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T16:00:24Z",
+      "kind": "closed",
+      "issue": 1989,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1989",
+      "title": "Feature Request: allow limited use of \"override\" keyword in interpolated config"
+    },
     {
       "ts": "2026-07-27T15:41:43Z",
       "kind": "closed",
@@ -7186,14 +7193,6 @@
       "issue": 2874,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2874",
       "title": "[Help requested] Dynamic hydra launcher configuration",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2864,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2864",
-      "title": "[Feature Request] Generalize PickleJobInfoCallback to support YAML and/or JSON serialization ",
       "detail": "added \"triage\""
     }
   ]

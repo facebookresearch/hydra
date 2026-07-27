@@ -566,3 +566,4 @@
 {"ts": "2026-07-27T14:41:19Z", "kind": "closed", "issue": 1923, "issue_url": "https://github.com/facebookresearch/hydra/issues/1923", "title": "[Feature Request] Document how configs typing validation works"}
 {"ts": "2026-07-27T15:02:22Z", "kind": "closed", "issue": 1982, "issue_url": "https://github.com/facebookresearch/hydra/issues/1982", "title": "[Feature Request] ConfigStore.store to act as decorator"}
 {"ts": "2026-07-27T15:41:43Z", "kind": "closed", "issue": 1983, "issue_url": "https://github.com/facebookresearch/hydra/issues/1983", "title": "[Feature Request] Copying a config field between different branches in one config"}
+{"ts": "2026-07-27T16:00:24Z", "kind": "closed", "issue": 1989, "issue_url": "https://github.com/facebookresearch/hydra/issues/1989", "title": "Feature Request: allow limited use of \"override\" keyword in interpolated config"}
