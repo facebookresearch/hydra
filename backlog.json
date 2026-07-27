@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T07:51:01Z",
+  "generated_at": "2026-07-27T08:07:57Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 146,
@@ -163,11 +163,10 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-06-30",
-      "updated": "2026-07-15",
+      "updated": "2026-07-27",
       "labels": [
         "enhancement",
-        "blocked",
-        "triage"
+        "blocked"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/733"
     },
@@ -276,9 +275,10 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-09-20",
-      "updated": "2023-03-02",
+      "updated": "2026-07-27",
       "labels": [
-        "enhancement"
+        "enhancement",
+        "blocked"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/993"
     },
@@ -2444,6 +2444,22 @@
         "plugin"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/692"
+    },
+    {
+      "number": 841,
+      "title": "Add docker example for Ray launcher.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2020-07-31",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/841"
     },
     {
       "number": 1081,
@@ -5611,25 +5627,25 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 841,
-      "title": "Add docker example for Ray launcher.",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2020-07-31",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/841"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T08:07:57Z",
+      "kind": "label",
+      "issue": 993,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/993",
+      "title": "Create a working directory abstraction",
+      "detail": "added \"blocked\""
+    },
+    {
+      "ts": "2026-07-27T08:07:57Z",
+      "kind": "label",
+      "issue": 733,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/733",
+      "title": "[Feature Request] Support for s3fs",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-07-27T07:51:01Z",
       "kind": "closed",
@@ -7184,22 +7200,6 @@
       "issue": 2759,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2759",
       "title": "[Feature Request] Dry run option for sweeper / launcher",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2758,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2758",
-      "title": "[Feature Request] How to specify orders in `hydra.searchpath`?",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2711,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2711",
-      "title": "[Feature Request] API Docs?",
       "detail": "added \"triage\""
     }
   ]

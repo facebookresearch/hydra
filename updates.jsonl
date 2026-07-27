@@ -545,3 +545,5 @@
 {"ts": "2026-07-27T07:13:25Z", "kind": "label", "issue": 902, "issue_url": "https://github.com/facebookresearch/hydra/issues/902", "title": "[Feature Request] Replace lexer token names by their symbols in ANTLR error messages", "detail": "removed \"triage\""}
 {"ts": "2026-07-27T07:39:34Z", "kind": "label", "issue": 845, "issue_url": "https://github.com/facebookresearch/hydra/issues/845", "title": "Add a standalone page describing @hydra.main() in details.", "detail": "removed \"good first issue\", \"triage\""}
 {"ts": "2026-07-27T07:51:01Z", "kind": "closed", "issue": 841, "issue_url": "https://github.com/facebookresearch/hydra/issues/841", "title": "Add docker example for Ray launcher."}
+{"ts": "2026-07-27T08:07:57Z", "kind": "label", "issue": 733, "issue_url": "https://github.com/facebookresearch/hydra/issues/733", "title": "[Feature Request] Support for s3fs", "detail": "removed \"triage\""}
+{"ts": "2026-07-27T08:07:57Z", "kind": "label", "issue": 993, "issue_url": "https://github.com/facebookresearch/hydra/issues/993", "title": "Create a working directory abstraction", "detail": "added \"blocked\""}
