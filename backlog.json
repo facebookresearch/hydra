@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T08:27:44Z",
+  "generated_at": "2026-07-27T08:33:27Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 145,
@@ -112,11 +112,10 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-05-31",
-      "updated": "2026-07-25",
+      "updated": "2026-07-27",
       "labels": [
         "enhancement",
-        "wishlist",
-        "triage",
+        "blocked",
         "priority_medium"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/633"
@@ -5630,6 +5629,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-27T08:33:27Z",
+      "kind": "label",
+      "issue": 633,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/633",
+      "title": "Allow adding help messages to command line arguments",
+      "detail": "added \"blocked\"; removed \"triage\", \"wishlist\""
+    },
+    {
       "ts": "2026-07-27T08:27:44Z",
       "kind": "label",
       "issue": 700,
@@ -7190,14 +7197,6 @@
       "issue": 2767,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2767",
       "title": "[Feature Request] Allow optional and override keywords to work together.",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2765,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2765",
-      "title": "[Feature Request] Loguru and Hydra ",
       "detail": "added \"triage\""
     }
   ]
