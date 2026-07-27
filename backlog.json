@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T10:28:03Z",
+  "generated_at": "2026-07-27T10:36:14Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 143,
+    "open_total": 142,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 110,
-        "percentage": 76.9
+        "count": 109,
+        "percentage": 76.8
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 143
+        "count": 142
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 195
+        "count": 196
       }
     ]
   },
@@ -475,22 +475,6 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1890"
-    },
-    {
-      "number": 1896,
-      "title": "[Feature Request] Override dictionary syntax",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-11-19",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1896"
     },
     {
       "number": 1899,
@@ -2861,6 +2845,21 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1873"
+    },
+    {
+      "number": 1888,
+      "title": "interpolation fail in compose API",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-11-12",
+      "updated": "2026-07-15",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1888"
     },
     {
       "number": 1892,
@@ -5611,22 +5610,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 1888,
-      "title": "interpolation fail in compose API",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "number": 1896,
+      "title": "[Feature Request] Override dictionary syntax",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2021-11-12",
+      "created": "2021-11-19",
       "updated": "2026-07-15",
       "labels": [
+        "enhancement",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1888"
+      "url": "https://github.com/facebookresearch/hydra/issues/1896"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T10:36:14Z",
+      "kind": "closed",
+      "issue": 1896,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1896",
+      "title": "[Feature Request] Override dictionary syntax"
+    },
     {
       "ts": "2026-07-27T10:28:03Z",
       "kind": "closed",
@@ -7186,14 +7193,6 @@
       "issue": 2791,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2791",
       "title": "Permission issues with the outputs folder when script is run by multiple users",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2786,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2786",
-      "title": "Hydra + Submitit Help",
       "detail": "added \"triage\""
     }
   ]
