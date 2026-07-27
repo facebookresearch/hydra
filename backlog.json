@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T17:26:38Z",
+  "generated_at": "2026-07-27T17:35:17Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 129,
@@ -500,10 +500,9 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2022-04-22",
-      "updated": "2026-07-15",
+      "updated": "2026-07-27",
       "labels": [
-        "bug",
-        "triage"
+        "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2170"
     },
@@ -3225,6 +3224,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2125"
     },
     {
+      "number": 2140,
+      "title": "[Feature Request] hydra.utils.instantiate support for lookup (without calling)",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-04-09",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2140"
+    },
+    {
       "number": 2149,
       "title": "[Bug] Documentation Binder link is broken.",
       "category": "Bug",
@@ -5612,25 +5627,17 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 2140,
-      "title": "[Feature Request] hydra.utils.instantiate support for lookup (without calling)",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-04-09",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2140"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T17:35:17Z",
+      "kind": "label",
+      "issue": 2170,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2170",
+      "title": "[Bug] `???` defaults cannot display `--help`",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-07-27T17:26:38Z",
       "kind": "closed",
@@ -7180,14 +7187,6 @@
       "issue": 2943,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2943",
       "title": "[Feature Request] It'd be nice to have a custom resolver for accessing data files for a given python package.",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2942,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2942",
-      "title": "[Feature Request] I'd like to be able to do multirun over files matching a glob (ideally a glob that depends on other, non-sweeped params in the config file)",
       "detail": "added \"triage\""
     }
   ]
