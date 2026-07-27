@@ -192,7 +192,7 @@
     "3318": "2026-07-26",
     "692": "2026-06-07"
   },
-  "generated_at": "2026-07-27T06:18:00Z",
+  "generated_at": "2026-07-27T06:24:00Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -201,14 +201,13 @@
         "enhancement",
         "help wanted",
         "tab_completion",
-        "triage",
         "wishlist"
       ],
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
       "title": "[Feature Request] shell completion for Enum type",
-      "updated_at": "2026-07-15T13:17:37Z"
+      "updated_at": "2026-07-27T06:22:37Z"
     },
     "1128": {
       "category": "Documentation",
