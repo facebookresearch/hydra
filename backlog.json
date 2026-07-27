@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T10:45:00Z",
+  "generated_at": "2026-07-27T12:08:05Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 142,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 0
+        "count": 1
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 142
+        "count": 141
       },
       {
         "status": "done",
@@ -71,6 +71,28 @@
     ]
   },
   "issues": [
+    {
+      "number": 1899,
+      "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3322,
+          "url": "https://github.com/facebookresearch/hydra/pull/3322"
+        }
+      ],
+      "created": "2021-11-22",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "wishlist",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1899"
+    },
     {
       "number": 385,
       "title": "Experimentation tracking support",
@@ -475,23 +497,6 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1890"
-    },
-    {
-      "number": 1899,
-      "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-11-22",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "wishlist",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1899"
     },
     {
       "number": 1901,
@@ -5628,6 +5633,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-27T12:08:05Z",
+      "kind": "pr",
+      "issue": 1899,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1899",
+      "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config",
+      "detail": "linked #3322"
+    },
+    {
+      "ts": "2026-07-27T12:08:05Z",
+      "kind": "status",
+      "issue": 1899,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1899",
+      "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3322,
+        "url": "https://github.com/facebookresearch/hydra/pull/3322"
+      }
+    },
+    {
       "ts": "2026-07-27T10:45:00Z",
       "kind": "label",
       "issue": 2227,
@@ -7177,22 +7202,6 @@
       "issue": 2797,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2797",
       "title": "Use output_subdir on multirun",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2794,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2794",
-      "title": "Merge compose API and `@hydra.main`",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2793,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2793",
-      "title": "[Optuna Sweeper Plugin] - Store Optuna study object for automatic plotting!",
       "detail": "added \"triage\""
     }
   ]

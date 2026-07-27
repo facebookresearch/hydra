@@ -197,7 +197,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-07-27T10:45:00Z",
+  "generated_at": "2026-07-27T12:08:05Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -379,9 +379,11 @@
         "triage",
         "wishlist"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3322"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config",
       "updated_at": "2026-07-15T13:17:13Z"
     },
