@@ -220,6 +220,13 @@ class InputDefault:
     def is_interpolation(self) -> bool:
         raise NotImplementedError()
 
+    def is_legacy_interpolation(self) -> bool:
+        name = self.get_name()
+        return (
+            isinstance(name, str)
+            and re.search(_legacy_interpolation_pattern, name) is not None
+        )
+
     def is_missing(self) -> bool:
         """
         True if the name of the config is '???'
@@ -442,6 +449,10 @@ class ConfigDefault(InputDefault):
         node = AnyNode(path)
         return node._is_interpolation()
 
+    def is_legacy_interpolation(self) -> bool:
+        assert self.path is not None
+        return re.search(_legacy_interpolation_pattern, self.path) is not None
+
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         assert self.path is not None
         absolute = self.path.startswith("/")
@@ -562,7 +573,7 @@ class GroupDefault(InputDefault):
     def resolve_interpolation(self, known_choices: DictConfig) -> None:
         name = self.get_name()
         if name is not None:
-            if re.search(_legacy_interpolation_pattern, name) is not None:
+            if self.is_legacy_interpolation():
                 msg = dedent(
                     f"""
 Defaults list element '{self.get_override_key()}={name}' is using a deprecated interpolation form.

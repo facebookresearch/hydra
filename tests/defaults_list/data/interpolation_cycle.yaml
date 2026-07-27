@@ -1,0 +1,3 @@
+defaults:
+  - group1: ${group2}
+  - group2: ${group1}
