@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T16:18:15Z",
+  "generated_at": "2026-07-27T16:37:58Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 133,
+    "open_total": 132,
     "by_category": [
       {
         "category": "Bug",
@@ -15,7 +15,7 @@
         "category": "Enhancement",
         "emoji": "✨",
         "count": 102,
-        "percentage": 76.7
+        "percentage": 77.3
       },
       {
         "category": "Documentation",
@@ -26,8 +26,8 @@
       {
         "category": "Question",
         "emoji": "❓",
-        "count": 9,
-        "percentage": 6.8
+        "count": 8,
+        "percentage": 6.1
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 133
+        "count": 132
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 205
+        "count": 206
       }
     ]
   },
@@ -490,22 +490,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1944"
-    },
-    {
-      "number": 2039,
-      "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config",
-      "category": "Question",
-      "category_emoji": "❓",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-02-17",
-      "updated": "2026-07-15",
-      "labels": [
-        "question",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2039"
     },
     {
       "number": 2086,
@@ -3118,6 +3102,23 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2017"
     },
     {
+      "number": 2027,
+      "title": "[Feature Request] Concatenate Multiple Config List elements",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-02-11",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "list composition",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2027"
+    },
+    {
       "number": 2032,
       "title": "[Feature Request]Config aliases",
       "category": "Enhancement",
@@ -5613,24 +5614,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2027,
-      "title": "[Feature Request] Concatenate Multiple Config List elements",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 2039,
+      "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config",
+      "category": "Question",
+      "category_emoji": "❓",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-02-11",
+      "created": "2022-02-17",
       "updated": "2026-07-15",
       "labels": [
-        "enhancement",
-        "list composition",
+        "question",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2027"
+      "url": "https://github.com/facebookresearch/hydra/issues/2039"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T16:37:58Z",
+      "kind": "closed",
+      "issue": 2039,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2039",
+      "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config"
+    },
     {
       "ts": "2026-07-27T16:18:15Z",
       "kind": "closed",
@@ -7184,14 +7191,6 @@
       "issue": 2892,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2892",
       "title": "[Help requested] Optuna Sweeper Multiple GPU Parallelism",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2887,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2887",
-      "title": "[Feature Request] Support relative paths in defaults keys.",
       "detail": "added \"triage\""
     }
   ]

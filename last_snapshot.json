@@ -51,6 +51,7 @@
     "2017": "2026-07-16",
     "2027": "2026-07-27",
     "2032": "2026-06-20",
+    "2039": "2026-07-27",
     "2070": "2026-06-29",
     "2102": "2026-07-16",
     "2107": "2026-07-16",
@@ -206,7 +207,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-07-27T16:18:15Z",
+  "generated_at": "2026-07-27T16:37:58Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -391,19 +392,6 @@
       "status": "not started",
       "title": "[Feature Request] logrange sweep",
       "updated_at": "2026-07-16T09:55:21Z"
-    },
-    "2039": {
-      "category": "Question",
-      "created_at": "2022-02-17T17:56:49Z",
-      "labels": [
-        "question",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config",
-      "updated_at": "2026-07-15T13:17:00Z"
     },
     "2086": {
       "category": "Enhancement",
@@ -2658,6 +2646,19 @@
       "status": "done",
       "title": "[Feature Request]Config aliases",
       "updated_at": "2024-08-25T14:04:43Z"
+    },
+    "2039": {
+      "category": "Question",
+      "created_at": "2022-02-17T17:56:49Z",
+      "labels": [
+        "question",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config",
+      "updated_at": "2026-07-15T13:17:00Z"
     },
     "2070": {
       "category": "Enhancement",
