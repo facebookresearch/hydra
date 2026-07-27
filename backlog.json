@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T08:33:27Z",
+  "generated_at": "2026-07-27T09:45:53Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 145,
@@ -96,10 +96,11 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2020-03-04",
-      "updated": "2026-07-23",
+      "updated": "2026-07-27",
       "labels": [
+        "enhancement",
         "plugin",
-        "triage"
+        "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/468"
     },
@@ -5629,6 +5630,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-27T09:45:53Z",
+      "kind": "label",
+      "issue": 468,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/468",
+      "title": "Specify the schema for returning the result of optimization.",
+      "detail": "added \"enhancement\", \"sweep\"; removed \"triage\""
+    },
+    {
       "ts": "2026-07-27T08:33:27Z",
       "kind": "label",
       "issue": 633,
@@ -7189,14 +7198,6 @@
       "issue": 2770,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2770",
       "title": "Experiment Tracker with Hydra",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2767,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2767",
-      "title": "[Feature Request] Allow optional and override keywords to work together.",
       "detail": "added \"triage\""
     }
   ]
