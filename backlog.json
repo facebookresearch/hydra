@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T12:33:50Z",
+  "generated_at": "2026-07-27T13:24:48Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 141,
+    "open_total": 140,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 10,
-        "percentage": 7.1
+        "count": 9,
+        "percentage": 6.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 108,
-        "percentage": 76.6
+        "percentage": 77.1
       },
       {
         "category": "Documentation",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -66,33 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 197
+        "count": 198
       }
     ]
   },
   "issues": [
-    {
-      "number": 1899,
-      "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3322,
-          "url": "https://github.com/facebookresearch/hydra/pull/3322"
-        }
-      ],
-      "created": "2021-11-22",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "wishlist",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1899"
-    },
     {
       "number": 385,
       "title": "Experimentation tracking support",
@@ -2900,6 +2878,24 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1898"
     },
     {
+      "number": 1901,
+      "title": "[Feature Request] Derive structured configuration from class constructor ",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-11-23",
+      "updated": "2026-07-15",
+      "labels": [
+        "config store",
+        "enhancement",
+        "structured config",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1901"
+    },
+    {
       "number": 1928,
       "title": "[Bug] Failed Submitit Jobs are still reported as \"completed\"",
       "category": "Bug",
@@ -5613,25 +5609,36 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 1901,
-      "title": "[Feature Request] Derive structured configuration from class constructor ",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 1899,
+      "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config",
+      "category": "Bug",
+      "category_emoji": "🐛",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [],
-      "created": "2021-11-23",
+      "prs": [
+        {
+          "number": 3322,
+          "url": "https://github.com/facebookresearch/hydra/pull/3322"
+        }
+      ],
+      "created": "2021-11-22",
       "updated": "2026-07-15",
       "labels": [
-        "config store",
-        "enhancement",
-        "structured config",
-        "triage"
+        "bug",
+        "triage",
+        "wishlist"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1901"
+      "url": "https://github.com/facebookresearch/hydra/issues/1899"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T13:24:48Z",
+      "kind": "closed",
+      "issue": 1899,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1899",
+      "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config"
+    },
     {
       "ts": "2026-07-27T12:33:50Z",
       "kind": "closed",
@@ -7193,14 +7200,6 @@
       "issue": 2814,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2814",
       "title": "[Feature Request] Allow setting use_srun from submitit launcher",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2810,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2810",
-      "title": "hydra.errors.MissingConfigException: In 'hydra/config': Could not find 'hydra/sweeper/hgemm'",
       "detail": "added \"triage\""
     }
   ]
