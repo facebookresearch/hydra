@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T06:24:00Z",
+  "generated_at": "2026-07-27T07:11:19Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 146,
+    "open_total": 147,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 112,
-        "percentage": 76.7
+        "count": 113,
+        "percentage": 76.9
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 6.2
+        "percentage": 6.1
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.1
+        "percentage": 2.0
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 146
+        "count": 147
       },
       {
         "status": "done",
@@ -2427,6 +2427,21 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3313"
+    },
+    {
+      "number": 3321,
+      "title": "Evaluate replacing ANTLR in the override parser",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-27",
+      "updated": "2026-07-27",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3321"
     },
     {
       "number": 692,
@@ -5619,6 +5634,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-27T07:11:19Z",
+      "kind": "new",
+      "issue": 3321,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3321",
+      "title": "Evaluate replacing ANTLR in the override parser"
+    },
+    {
       "ts": "2026-07-27T06:24:00Z",
       "kind": "label",
       "issue": 1085,
@@ -7182,14 +7204,6 @@
       "issue": 2660,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2660",
       "title": "[Feature Request] Make hydra-submitit-launcher available via Conda",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2657,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2657",
-      "title": "[Feature Request] Support commas in key names (override grammar)",
       "detail": "added \"triage\""
     }
   ]
