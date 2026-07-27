@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T10:17:32Z",
+  "generated_at": "2026-07-27T10:28:03Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 144,
+    "open_total": 143,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 11,
-        "percentage": 7.6
+        "count": 10,
+        "percentage": 7.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 110,
-        "percentage": 76.4
+        "percentage": 76.9
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 10,
-        "percentage": 6.9
+        "percentage": 7.0
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 6.2
+        "percentage": 6.3
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 144
+        "count": 143
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 194
+        "count": 195
       }
     ]
   },
@@ -460,21 +460,6 @@
         "tests"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1885"
-    },
-    {
-      "number": 1888,
-      "title": "interpolation fail in compose API",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-11-12",
-      "updated": "2026-07-15",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1888"
     },
     {
       "number": 1890,
@@ -5624,9 +5609,31 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
+    },
+    {
+      "number": 1888,
+      "title": "interpolation fail in compose API",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-11-12",
+      "updated": "2026-07-15",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1888"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T10:28:03Z",
+      "kind": "closed",
+      "issue": 1888,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1888",
+      "title": "interpolation fail in compose API"
+    },
     {
       "ts": "2026-07-27T10:17:32Z",
       "kind": "label",
@@ -7187,14 +7194,6 @@
       "issue": 2786,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2786",
       "title": "Hydra + Submitit Help",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2782,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2782",
-      "title": "[Feature Request] Add an additional node to the defaults tree",
       "detail": "added \"triage\""
     }
   ]
