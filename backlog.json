@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T10:07:57Z",
+  "generated_at": "2026-07-27T10:17:32Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 144,
@@ -455,11 +455,9 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2021-11-11",
-      "updated": "2026-07-25",
+      "updated": "2026-07-27",
       "labels": [
-        "triage",
-        "tests",
-        "priority_low"
+        "tests"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1885"
     },
@@ -2862,6 +2860,22 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1872"
+    },
+    {
+      "number": 1873,
+      "title": "[Feature Request] `exclude_keys` in `override_dirname` should have regex/wildcard/glob(*) option",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-10-30",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1873"
     },
     {
       "number": 1892,
@@ -5610,25 +5624,17 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 1873,
-      "title": "[Feature Request] `exclude_keys` in `override_dirname` should have regex/wildcard/glob(*) option",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2021-10-30",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1873"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T10:17:32Z",
+      "kind": "label",
+      "issue": 1885,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1885",
+      "title": "follow up with shell testing for #1842",
+      "detail": "removed \"priority_low\", \"triage\""
+    },
     {
       "ts": "2026-07-27T10:07:57Z",
       "kind": "closed",
@@ -7189,14 +7195,6 @@
       "issue": 2782,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2782",
       "title": "[Feature Request] Add an additional node to the defaults tree",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2775,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2775",
-      "title": "[Feature Request] Problem with Overwriting dict config of existing configuration",
       "detail": "added \"triage\""
     }
   ]
