@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T13:24:48Z",
+  "generated_at": "2026-07-27T13:29:36Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 140,
+    "open_total": 139,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 6.4
+        "percentage": 6.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 108,
-        "percentage": 77.1
+        "count": 107,
+        "percentage": 77.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 10,
-        "percentage": 7.1
+        "percentage": 7.2
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 6.4
+        "percentage": 6.5
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.1
+        "percentage": 2.2
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 140
+        "count": 139
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 198
+        "count": 199
       }
     ]
   },
@@ -475,24 +475,6 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1890"
-    },
-    {
-      "number": 1913,
-      "title": "[Feature Request] Mixing `_global_` / `_here_` / `_package_`",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-12-03",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "wishlist",
-        "exploratory",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1913"
     },
     {
       "number": 1918,
@@ -2876,6 +2858,28 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1898"
+    },
+    {
+      "number": 1899,
+      "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3322,
+          "url": "https://github.com/facebookresearch/hydra/pull/3322"
+        }
+      ],
+      "created": "2021-11-22",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "triage",
+        "wishlist"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1899"
     },
     {
       "number": 1901,
@@ -5609,29 +5613,32 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 1899,
-      "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config",
-      "category": "Bug",
-      "category_emoji": "🐛",
+      "number": 1913,
+      "title": "[Feature Request] Mixing `_global_` / `_here_` / `_package_`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3322,
-          "url": "https://github.com/facebookresearch/hydra/pull/3322"
-        }
-      ],
-      "created": "2021-11-22",
+      "prs": [],
+      "created": "2021-12-03",
       "updated": "2026-07-15",
       "labels": [
-        "bug",
+        "enhancement",
+        "exploratory",
         "triage",
         "wishlist"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1899"
+      "url": "https://github.com/facebookresearch/hydra/issues/1913"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T13:29:36Z",
+      "kind": "closed",
+      "issue": 1913,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1913",
+      "title": "[Feature Request] Mixing `_global_` / `_here_` / `_package_`"
+    },
     {
       "ts": "2026-07-27T13:24:48Z",
       "kind": "closed",
@@ -7192,14 +7199,6 @@
       "issue": 2824,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2824",
       "title": "Option to raise exception upon first failure in multirun",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2814,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2814",
-      "title": "[Feature Request] Allow setting use_srun from submitit launcher",
       "detail": "added \"triage\""
     }
   ]
