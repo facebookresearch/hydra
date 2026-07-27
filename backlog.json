@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T15:02:22Z",
+  "generated_at": "2026-07-27T15:41:43Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 136,
+    "open_total": 135,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 6.6
+        "percentage": 6.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 105,
-        "percentage": 77.2
+        "count": 104,
+        "percentage": 77.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 9,
-        "percentage": 6.6
+        "percentage": 6.7
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 9,
-        "percentage": 6.6
+        "percentage": 6.7
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 136
+        "count": 135
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 202
+        "count": 203
       }
     ]
   },
@@ -490,24 +490,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1944"
-    },
-    {
-      "number": 1983,
-      "title": "[Feature Request] Copying a config field between different branches in one config",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-01-21",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "exploratory",
-        "triage",
-        "defaults list"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1983"
     },
     {
       "number": 1989,
@@ -3082,6 +3064,25 @@
       "url": "https://github.com/facebookresearch/hydra/issues/1957"
     },
     {
+      "number": 1982,
+      "title": "[Feature Request] ConfigStore.store to act as decorator",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-01-21",
+      "updated": "2026-07-15",
+      "labels": [
+        "config store",
+        "enhancement",
+        "exploratory",
+        "structured config",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1982"
+    },
+    {
       "number": 2000,
       "title": "[Feature Request] Minimal Version of Hydra With Bare-Bones Config Support",
       "category": "Enhancement",
@@ -5611,8 +5612,8 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 1982,
-      "title": "[Feature Request] ConfigStore.store to act as decorator",
+      "number": 1983,
+      "title": "[Feature Request] Copying a config field between different branches in one config",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
@@ -5621,16 +5622,22 @@
       "created": "2022-01-21",
       "updated": "2026-07-15",
       "labels": [
-        "config store",
+        "defaults list",
         "enhancement",
         "exploratory",
-        "structured config",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1982"
+      "url": "https://github.com/facebookresearch/hydra/issues/1983"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T15:41:43Z",
+      "kind": "closed",
+      "issue": 1983,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1983",
+      "title": "[Feature Request] Copying a config field between different branches in one config"
+    },
     {
       "ts": "2026-07-27T15:02:22Z",
       "kind": "closed",
@@ -7187,14 +7194,6 @@
       "issue": 2864,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2864",
       "title": "[Feature Request] Generalize PickleJobInfoCallback to support YAML and/or JSON serialization ",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2851,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2851",
-      "title": "[Feature Request] Concatenating parameter sweeps",
       "detail": "added \"triage\""
     }
   ]
