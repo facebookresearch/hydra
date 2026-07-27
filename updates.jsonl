@@ -547,3 +547,4 @@
 {"ts": "2026-07-27T07:51:01Z", "kind": "closed", "issue": 841, "issue_url": "https://github.com/facebookresearch/hydra/issues/841", "title": "Add docker example for Ray launcher."}
 {"ts": "2026-07-27T08:07:57Z", "kind": "label", "issue": 733, "issue_url": "https://github.com/facebookresearch/hydra/issues/733", "title": "[Feature Request] Support for s3fs", "detail": "removed \"triage\""}
 {"ts": "2026-07-27T08:07:57Z", "kind": "label", "issue": 993, "issue_url": "https://github.com/facebookresearch/hydra/issues/993", "title": "Create a working directory abstraction", "detail": "added \"blocked\""}
+{"ts": "2026-07-27T08:17:22Z", "kind": "closed", "issue": 714, "issue_url": "https://github.com/facebookresearch/hydra/issues/714", "title": "Make sure Hydra logging config override all loggers from 3rd party libs"}

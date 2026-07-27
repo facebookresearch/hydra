@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T08:12:56Z",
+  "generated_at": "2026-07-27T08:17:22Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 146,
+    "open_total": 145,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 11,
-        "percentage": 7.5
+        "percentage": 7.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 112,
-        "percentage": 76.7
+        "count": 111,
+        "percentage": 76.6
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 10,
-        "percentage": 6.8
+        "percentage": 6.9
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 146
+        "count": 145
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 192
+        "count": 193
       }
     ]
   },
@@ -137,22 +137,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/700"
-    },
-    {
-      "number": 714,
-      "title": "Make sure Hydra logging config override all loggers from 3rd party libs",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2020-06-25",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/714"
     },
     {
       "number": 733,
@@ -5627,9 +5611,32 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
+    },
+    {
+      "number": 714,
+      "title": "Make sure Hydra logging config override all loggers from 3rd party libs",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2020-06-25",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/714"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T08:17:22Z",
+      "kind": "closed",
+      "issue": 714,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/714",
+      "title": "Make sure Hydra logging config override all loggers from 3rd party libs"
+    },
     {
       "ts": "2026-07-27T08:07:57Z",
       "kind": "label",
@@ -7192,14 +7199,6 @@
       "issue": 2762,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2762",
       "title": "New Release Version?",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2759,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2759",
-      "title": "[Feature Request] Dry run option for sweeper / launcher",
       "detail": "added \"triage\""
     }
   ]
