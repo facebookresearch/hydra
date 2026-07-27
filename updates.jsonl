@@ -544,3 +544,4 @@
 {"ts": "2026-07-27T07:11:19Z", "kind": "new", "issue": 3321, "issue_url": "https://github.com/facebookresearch/hydra/issues/3321", "title": "Evaluate replacing ANTLR in the override parser"}
 {"ts": "2026-07-27T07:13:25Z", "kind": "label", "issue": 902, "issue_url": "https://github.com/facebookresearch/hydra/issues/902", "title": "[Feature Request] Replace lexer token names by their symbols in ANTLR error messages", "detail": "removed \"triage\""}
 {"ts": "2026-07-27T07:39:34Z", "kind": "label", "issue": 845, "issue_url": "https://github.com/facebookresearch/hydra/issues/845", "title": "Add a standalone page describing @hydra.main() in details.", "detail": "removed \"good first issue\", \"triage\""}
+{"ts": "2026-07-27T07:51:01Z", "kind": "closed", "issue": 841, "issue_url": "https://github.com/facebookresearch/hydra/issues/841", "title": "Add docker example for Ray launcher."}
