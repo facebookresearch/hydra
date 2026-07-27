@@ -129,9 +129,16 @@ class Overrides:
                 relative_key=default.get_relative_override_key(),
             )
 
-    def is_overridden(self, default: InputDefault) -> bool:
+    def is_overridden(
+        self,
+        default: InputDefault,
+        eligible_override_keys: Optional[Set[str]] = None,
+    ) -> bool:
         if isinstance(default, GroupDefault):
-            return default.get_override_key() in self.override_choices
+            key = default.get_override_key()
+            return key in self.override_choices and (
+                eligible_override_keys is None or key in eligible_override_keys
+            )
 
         return False
 
@@ -298,6 +305,7 @@ def _expand_virtual_root(
     root: DefaultsTreeNode,
     overrides: Overrides,
     skip_missing: bool,
+    deferred_interpolation_override_keys: Dict[int, Set[str]],
 ) -> DefaultsTreeNode:
     children: List[Union[DefaultsTreeNode, InputDefault]] = []
     assert root.children is not None
@@ -313,6 +321,7 @@ def _expand_virtual_root(
             skip_missing=skip_missing,
             interpolated_subtree=False,
             overrides=overrides,
+            deferred_interpolation_override_keys=deferred_interpolation_override_keys,
         )
         if subtree.children is None:
             children.append(d)
@@ -380,6 +389,7 @@ def _create_defaults_tree(
     interpolated_subtree: bool,
     overrides: Overrides,
 ) -> DefaultsTreeNode:
+    deferred_interpolation_override_keys: Dict[int, Set[str]] = {}
     ret = _create_defaults_tree_impl(
         repo=repo,
         root=root,
@@ -387,9 +397,91 @@ def _create_defaults_tree(
         skip_missing=skip_missing,
         interpolated_subtree=interpolated_subtree,
         overrides=overrides,
+        deferred_interpolation_override_keys=deferred_interpolation_override_keys,
     )
 
+    if is_root_config:
+        _resolve_deferred_interpolations(
+            repo=repo,
+            root=ret,
+            skip_missing=skip_missing,
+            overrides=overrides,
+            deferred_interpolation_override_keys=deferred_interpolation_override_keys,
+        )
+
     return ret
+
+
+def _resolve_deferred_interpolations(
+    repo: IConfigRepository,
+    root: DefaultsTreeNode,
+    skip_missing: bool,
+    overrides: Overrides,
+    deferred_interpolation_override_keys: Dict[int, Set[str]],
+) -> None:
+    """Expand interpolated defaults after the non-interpolated tree is known."""
+
+    def resolve_one(tree: DefaultsTreeNode) -> bool:
+        if tree.children is None:
+            return False
+
+        for index, child in enumerate(tree.children):
+            if isinstance(child, DefaultsTreeNode):
+                if resolve_one(child):
+                    return True
+                continue
+
+            if not child.is_interpolation():
+                continue
+
+            candidate = copy.deepcopy(child)
+            try:
+                candidate.resolve_interpolation(
+                    OmegaConf.create(overrides.known_choices)
+                )
+            except ConfigCompositionException:
+                # Another deferred subtree may provide the missing choice.
+                continue
+
+            _check_parent_traversal(candidate, tree.node)
+            candidate.update_parent(
+                tree.node.get_group_path(),
+                tree.node.get_final_package(),
+            )
+            eligible_override_keys = deferred_interpolation_override_keys.pop(id(child))
+            subtree = DefaultsTreeNode(node=candidate, parent=tree)
+            subtree = _create_defaults_tree_impl(
+                repo=repo,
+                root=subtree,
+                is_root_config=False,
+                skip_missing=skip_missing,
+                interpolated_subtree=True,
+                overrides=overrides,
+                deferred_interpolation_override_keys=deferred_interpolation_override_keys,
+                eligible_override_keys=eligible_override_keys,
+            )
+            tree.children[index] = (
+                subtree if subtree.children is not None else subtree.node
+            )
+            return True
+
+        return False
+
+    while resolve_one(root):
+        pass
+
+    def fail_on_unresolved(tree: DefaultsTreeNode) -> None:
+        if tree.children is None:
+            return
+
+        for child in tree.children:
+            if isinstance(child, DefaultsTreeNode):
+                fail_on_unresolved(child)
+            elif child.is_interpolation():
+                child.resolve_interpolation(OmegaConf.create(overrides.known_choices))
+                raise AssertionError("Deferred interpolation unexpectedly resolved")
+
+    fail_on_unresolved(root)
 
 
 def _check_parent_traversal(default: InputDefault, parent: InputDefault) -> None:
@@ -521,12 +613,20 @@ def _create_defaults_tree_impl(
     skip_missing: bool,
     interpolated_subtree: bool,
     overrides: Overrides,
+    deferred_interpolation_override_keys: Dict[int, Set[str]],
+    eligible_override_keys: Optional[Set[str]] = None,
 ) -> DefaultsTreeNode:
     parent = root.node
     children: List[Union[InputDefault, DefaultsTreeNode]] = []
     if parent.is_virtual():
         if is_root_config:
-            return _expand_virtual_root(repo, root, overrides, skip_missing)
+            return _expand_virtual_root(
+                repo,
+                root,
+                overrides,
+                skip_missing,
+                deferred_interpolation_override_keys,
+            )
         else:
             return root
 
@@ -599,6 +699,8 @@ def _create_defaults_tree_impl(
             interpolated_subtree=interpolated_subtree,
             skip_missing=skip_missing,
             overrides=overrides,
+            deferred_interpolation_override_keys=deferred_interpolation_override_keys,
+            eligible_override_keys=eligible_override_keys,
         )
         if subtree_.children is None:
             child_list.append(new_root_.node)
@@ -617,7 +719,7 @@ def _create_defaults_tree_impl(
 
             d.update_parent(parent.get_group_path(), parent.get_final_package())
 
-            if overrides.is_overridden(d):
+            if overrides.is_overridden(d, eligible_override_keys):
                 assert isinstance(d, GroupDefault)
                 overrides.override_default_option(d)
 
@@ -654,37 +756,49 @@ def _create_defaults_tree_impl(
 
             else:
                 if d.is_interpolation():
+                    if version.base_at_least("1.2") or not d.is_legacy_interpolation():
+                        # Preserve which overrides are eligible at this point in
+                        # the reverse depth-first traversal.
+                        keys = (
+                            overrides.override_choices.keys()
+                            if eligible_override_keys is None
+                            else eligible_override_keys
+                        )
+                        deferred_interpolation_override_keys[id(d)] = set(keys)
                     children.append(d)
                     continue
 
                 new_root = DefaultsTreeNode(node=d, parent=root)
                 add_child(children, new_root)
 
-    # processed deferred interpolations
-    known_choices = OmegaConf.create(overrides.known_choices)
     # TODO: Remove Hydra 1.1 compatibility in
     # https://github.com/facebookresearch/hydra/issues/3221.
     if not version.base_at_least("1.2"):
         known_choices = _create_legacy_interpolation_map(
             overrides, defaults_list, self_added
         )
-
-    for idx, dd in enumerate(children):
-        if isinstance(dd, InputDefault) and dd.is_interpolation():
-            dd.resolve_interpolation(known_choices)
-            _check_parent_traversal(dd, parent)
-            new_root = DefaultsTreeNode(node=dd, parent=root)
-            dd.update_parent(parent.get_group_path(), parent.get_final_package())
-            subtree = _create_defaults_tree_impl(
-                repo=repo,
-                root=new_root,
-                is_root_config=False,
-                skip_missing=skip_missing,
-                interpolated_subtree=True,
-                overrides=overrides,
-            )
-            if subtree.children is not None:
-                children[idx] = subtree
+        for idx, dd in enumerate(children):
+            if (
+                isinstance(dd, InputDefault)
+                and dd.is_interpolation()
+                and dd.is_legacy_interpolation()
+            ):
+                dd.resolve_interpolation(known_choices)
+                _check_parent_traversal(dd, parent)
+                new_root = DefaultsTreeNode(node=dd, parent=root)
+                dd.update_parent(parent.get_group_path(), parent.get_final_package())
+                subtree = _create_defaults_tree_impl(
+                    repo=repo,
+                    root=new_root,
+                    is_root_config=False,
+                    skip_missing=skip_missing,
+                    interpolated_subtree=True,
+                    overrides=overrides,
+                    deferred_interpolation_override_keys=deferred_interpolation_override_keys,
+                    eligible_override_keys=eligible_override_keys,
+                )
+                if subtree.children is not None:
+                    children[idx] = subtree
 
     if len(children) > 0:
         root.children = list(reversed(children))

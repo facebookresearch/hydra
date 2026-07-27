@@ -2297,6 +2297,161 @@ def test_interpolation(
     "config_name,overrides,expected",
     [
         param(
+            "interpolation_nested_sibling",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_nested_sibling"),
+                children=[
+                    GroupDefault(group="group1", value="file1"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="experiment",
+                            value="interpolation_from_sibling",
+                        ),
+                        children=[
+                            GroupDefault(group="/group2", value="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="nested_sibling",
+        ),
+        param(
+            "empty",
+            ["+group1=file1", "+experiment=interpolation_from_sibling"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="empty"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", value="file1"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="experiment",
+                            value="interpolation_from_sibling",
+                        ),
+                        children=[
+                            GroupDefault(group="/group2", value="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                ],
+            ),
+            id="external_appends_dependency_first",
+        ),
+        param(
+            "empty",
+            ["+experiment=interpolation_from_sibling", "+group1=file1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="empty"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="experiment",
+                            value="interpolation_from_sibling",
+                        ),
+                        children=[
+                            GroupDefault(group="/group2", value="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="group1", value="file1"),
+                ],
+            ),
+            id="external_appends_interpolation_first",
+        ),
+        param(
+            "interpolation_dependency_chain",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_dependency_chain"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="source", value="file1"),
+                        children=[
+                            GroupDefault(group="/group2", value="file2"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="target", value="file2"),
+                    GroupDefault(group="group1", value="file1"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="dependency_chain",
+        ),
+    ],
+)
+def test_interpolation_after_tree_traversal(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+def test_interpolation_dependency_cycle() -> None:
+    _test_defaults_tree_impl(
+        config_name="interpolation_cycle",
+        input_overrides=[],
+        expected=raises(
+            ConfigCompositionException,
+            match=r"Error resolving interpolation '\$\{group[12]\}'",
+        ),
+    )
+
+
+def test_deferred_interpolation_preserves_override_order() -> None:
+    _test_defaults_tree_impl(
+        config_name="interpolation_override_before_deferred_target",
+        input_overrides=[],
+        expected=raises(
+            ConfigCompositionException,
+            match=re.escape(
+                "In 'override_group2_global': "
+                "Invalid Defaults List override '/group2@_global_: file2'."
+                "\nNo earlier Group Default for 'group2@_global_' exists to override."
+            ),
+        ),
+    )
+
+
+def test_deferred_interpolation_applies_later_override() -> None:
+    _test_defaults_tree_impl(
+        config_name="interpolation_override_after_deferred_target",
+        input_overrides=[],
+        expected=DefaultsTreeNode(
+            node=ConfigDefault(path="interpolation_override_after_deferred_target"),
+            children=[
+                DefaultsTreeNode(
+                    node=GroupDefault(group="deferred_target", value="file1"),
+                    children=[
+                        GroupDefault(
+                            group="/group2",
+                            value="file2",
+                            package="_global_",
+                        ),
+                        ConfigDefault(path="_self_"),
+                    ],
+                ),
+                ConfigDefault(path="override_group2_global"),
+                GroupDefault(group="group1", value="file1"),
+                ConfigDefault(path="_self_"),
+            ],
+        ),
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
             "interpolation_legacy_with_self",
             [],
             DefaultsTreeNode(
@@ -2378,6 +2533,24 @@ def test_legacy_interpolation_multi_digit_index(
     default.update_parent("", "")
     with raises(ConfigCompositionException, match=msg):
         default.resolve_interpolation(known_choices)
+
+
+def test_legacy_interpolation_in_config_path(
+    hydra_restore_singletons: Any,
+) -> None:
+    version.setbase("1.1")
+    _test_defaults_tree_impl(
+        config_name="interpolation_legacy_config_path",
+        input_overrides=[],
+        expected=DefaultsTreeNode(
+            node=ConfigDefault(path="interpolation_legacy_config_path"),
+            children=[
+                GroupDefault(group="group1", value="file1"),
+                ConfigDefault(path="file1/file"),
+                ConfigDefault(path="_self_"),
+            ],
+        ),
+    )
 
 
 @mark.parametrize(

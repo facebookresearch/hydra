@@ -1,0 +1,4 @@
+defaults:
+  - deferred_target: ${group1}
+  - override_group2_global
+  - group1: file1

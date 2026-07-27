@@ -1,0 +1,3 @@
+defaults:
+  - group1: file1
+  - experiment: interpolation_from_sibling
