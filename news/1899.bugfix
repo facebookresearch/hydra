@@ -1,0 +1,1 @@
+Allow nested Defaults List interpolations to use outer config-group choices.

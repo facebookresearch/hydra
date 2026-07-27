@@ -1,0 +1,1 @@
+A Defaults List override that does not target an earlier Group Default now fails to compose even when a command line append introduces a matching group, instead of silently discarding the appended value.

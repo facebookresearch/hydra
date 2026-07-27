@@ -1,0 +1,4 @@
+defaults:
+  - experiment: override_config_group
+  - group1: file1
+  - override group1: file3

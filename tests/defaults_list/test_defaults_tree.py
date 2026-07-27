@@ -212,6 +212,91 @@ def test_simple_defaults_tree_cases(
             ),
             id="include_nested_group:append",
         ),
+        param(
+            "group_override_only",
+            ["+group1=file1"],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In 'group_override_only': Invalid Defaults List override 'group1: file2'."
+                    "\nNo earlier Group Default for 'group1' exists to override."
+                ),
+            ),
+            id="group_override_only:append_does_not_rescue_dangling_override",
+        ),
+        param(
+            "dangling_nested_override",
+            ["group1=group_item1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="dangling_nested_override"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="group_item1"),
+                        children=[
+                            GroupDefault(group="group2", value="file2"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="dangling_nested_override:selection_introduces_target",
+        ),
+        param(
+            "dangling_nested_override",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In 'dangling_nested_override': "
+                    "Invalid Defaults List override 'group1/group2: file2'."
+                    "\nNo earlier Group Default for 'group1/group2' exists to override."
+                ),
+            ),
+            id="dangling_nested_override:selection_does_not_introduce_target",
+        ),
+        param(
+            "dangling_nested_override",
+            ["group1/group2=file3"],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "Could not override 'group1/group2'. No match in the defaults list."
+                ),
+            ),
+            id="dangling_nested_override:cli_override_does_not_recover",
+        ),
+        param(
+            "dangling_nested_override",
+            ["+group1/group2=file3"],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In 'dangling_nested_override': "
+                    "Invalid Defaults List override 'group1/group2: file2'."
+                    "\nNo earlier Group Default for 'group1/group2' exists to override."
+                ),
+            ),
+            id="dangling_nested_override:cli_append_does_not_recover",
+        ),
+        param(
+            "dangling_nested_override",
+            ["group1=group_item1", "group1/group2=file3"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="dangling_nested_override"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="group1", value="group_item1"),
+                        children=[
+                            GroupDefault(group="group2", value="file3"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="dangling_nested_override:cli_override_wins_when_target_introduced",
+        ),
     ],
 )
 def test_tree_with_append_override(
@@ -334,7 +419,8 @@ def test_simple_group_override(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    "In 'invalid_override_in_defaults': Could not override 'foo'. No match in the defaults list."
+                    "In 'invalid_override_in_defaults': Invalid Defaults List override 'foo: bar'."
+                    "\nNo earlier Group Default for 'foo' exists to override."
                 )
                 + "$",
             ),
@@ -1040,6 +1126,49 @@ def test_legacy_hydra_overrides_from_primary_config_2(
             ),
             id="group_default_with_explicit_experiment:with_external_override",
         ),
+        param(
+            "group_default_after_explicit_experiment",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_after_explicit_experiment"),
+                children=[
+                    GroupDefault(group="experiment", value="override_config_group"),
+                    GroupDefault(group="group1", value="file3"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="group_default_after_explicit_experiment",
+        ),
+        param(
+            "group_default_with_explicit_experiment_and_override",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(
+                    path="group_default_with_explicit_experiment_and_override"
+                ),
+                children=[
+                    GroupDefault(group="group1", value="file3"),
+                    GroupDefault(group="experiment", value="override_config_group"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="group_default_with_explicit_experiment_and_override",
+        ),
+        param(
+            "group_default_with_explicit_experiment_and_override",
+            ["group1=file1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(
+                    path="group_default_with_explicit_experiment_and_override"
+                ),
+                children=[
+                    GroupDefault(group="group1", value="file1"),
+                    GroupDefault(group="experiment", value="override_config_group"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="group_default_with_explicit_experiment_and_override:with_external_override",
+        ),
     ],
 )
 def test_group_default_with_explicit_experiment(
@@ -1082,6 +1211,32 @@ def test_group_default_with_explicit_experiment(
                 ],
             ),
             id="group_default_with_appended_experiment:with_external_override",
+        ),
+        param(
+            "group_default_with_override",
+            ["+experiment=override_config_group"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_with_override"),
+                children=[
+                    GroupDefault(group="group1", value="file2"),
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="experiment", value="override_config_group"),
+                ],
+            ),
+            id="group_default_with_override_with_appended_experiment",
+        ),
+        param(
+            "group_default_with_override",
+            ["group1=file1", "+experiment=override_config_group"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="group_default_with_override"),
+                children=[
+                    GroupDefault(group="group1", value="file1"),
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="experiment", value="override_config_group"),
+                ],
+            ),
+            id="group_default_with_override_with_appended_experiment:with_external_override",
         ),
     ],
 )
@@ -2142,6 +2297,120 @@ def test_interpolation(
     "config_name,overrides,expected",
     [
         param(
+            "interpolation_nested_sibling",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_nested_sibling"),
+                children=[
+                    GroupDefault(group="group1", value="file1"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="experiment",
+                            value="interpolation_from_sibling",
+                        ),
+                        children=[
+                            GroupDefault(group="/group2", value="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="nested_sibling",
+        ),
+        param(
+            "empty",
+            ["+group1=file1", "+experiment=interpolation_from_sibling"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="empty"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    GroupDefault(group="group1", value="file1"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="experiment",
+                            value="interpolation_from_sibling",
+                        ),
+                        children=[
+                            GroupDefault(group="/group2", value="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                ],
+            ),
+            id="external_appends_dependency_first",
+        ),
+        param(
+            "empty",
+            ["+experiment=interpolation_from_sibling", "+group1=file1"],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="empty"),
+                children=[
+                    ConfigDefault(path="_self_"),
+                    DefaultsTreeNode(
+                        node=GroupDefault(
+                            group="experiment",
+                            value="interpolation_from_sibling",
+                        ),
+                        children=[
+                            GroupDefault(group="/group2", value="file1"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="group1", value="file1"),
+                ],
+            ),
+            id="external_appends_interpolation_first",
+        ),
+        param(
+            "interpolation_dependency_chain",
+            [],
+            DefaultsTreeNode(
+                node=ConfigDefault(path="interpolation_dependency_chain"),
+                children=[
+                    DefaultsTreeNode(
+                        node=GroupDefault(group="source", value="file1"),
+                        children=[
+                            GroupDefault(group="/group2", value="file2"),
+                            ConfigDefault(path="_self_"),
+                        ],
+                    ),
+                    GroupDefault(group="target", value="file2"),
+                    GroupDefault(group="group1", value="file1"),
+                    ConfigDefault(path="_self_"),
+                ],
+            ),
+            id="dependency_chain",
+        ),
+    ],
+)
+def test_interpolation_after_tree_traversal(
+    config_name: str,
+    overrides: List[str],
+    expected: DefaultsTreeNode,
+) -> None:
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
+    )
+
+
+def test_interpolation_dependency_cycle() -> None:
+    _test_defaults_tree_impl(
+        config_name="interpolation_cycle",
+        input_overrides=[],
+        expected=raises(
+            ConfigCompositionException,
+            match=r"Error resolving interpolation '\$\{group[12]\}'",
+        ),
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,expected",
+    [
+        param(
             "interpolation_legacy_with_self",
             [],
             DefaultsTreeNode(
@@ -2223,6 +2492,24 @@ def test_legacy_interpolation_multi_digit_index(
     default.update_parent("", "")
     with raises(ConfigCompositionException, match=msg):
         default.resolve_interpolation(known_choices)
+
+
+def test_legacy_interpolation_in_config_path(
+    hydra_restore_singletons: Any,
+) -> None:
+    version.setbase("1.1")
+    _test_defaults_tree_impl(
+        config_name="interpolation_legacy_config_path",
+        input_overrides=[],
+        expected=DefaultsTreeNode(
+            node=ConfigDefault(path="interpolation_legacy_config_path"),
+            children=[
+                GroupDefault(group="group1", value="file1"),
+                ConfigDefault(path="file1/file"),
+                ConfigDefault(path="_self_"),
+            ],
+        ),
+    )
 
 
 @mark.parametrize(
@@ -2543,9 +2830,24 @@ def test_missing_config_errors(
             [],
             raises(
                 ConfigCompositionException,
-                match="Could not override 'group1'. No match in the defaults list.",
+                match=re.escape(
+                    "In 'error_invalid_override': Invalid Defaults List override 'group1: file'."
+                    "\nNo earlier Group Default for 'group1' exists to override."
+                ),
             ),
             id="error_invalid_override",
+        ),
+        param(
+            "group_override_only",
+            [],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "In 'group_override_only': Invalid Defaults List override 'group1: file2'."
+                    "\nNo earlier Group Default for 'group1' exists to override."
+                ),
+            ),
+            id="dangling_override_without_append",
         ),
         param(
             "group_default",
@@ -2581,8 +2883,8 @@ def test_missing_config_errors(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    "In 'group1/override_invalid': Could not override 'group1/group2@group1.foo'."
-                    "\nDid you mean to override group1/group2?"
+                    "In 'group1/override_invalid': Invalid Defaults List override 'group2@foo: file1'."
+                    "\nNo earlier Group Default for 'group1/group2@group1.foo' exists to override."
                 ),
             ),
             id="nested_override_invalid_group",
@@ -2593,8 +2895,8 @@ def test_missing_config_errors(
             raises(
                 ConfigCompositionException,
                 match=re.escape(
-                    "In 'group1/override_invalid2': Could not override 'group1/group2'."
-                    "\nDid you mean to override group1/group2@group1.foo?"
+                    "In 'group1/override_invalid2': Invalid Defaults List override 'group2: file1'."
+                    "\nNo earlier Group Default for 'group1/group2' exists to override."
                 ),
             ),
             id="nested_override_invalid_group",
@@ -3404,7 +3706,8 @@ def test_select_multi_pkg(
                 ConfigCompositionException,
                 match=re.escape(
                     "In 'experiment/error_override_without_abs_and_header': "
-                    "Could not override 'experiment/group1'. No match in the defaults list"
+                    "Invalid Defaults List override 'group1: file1'."
+                    "\nNo earlier Group Default for 'experiment/group1' exists to override."
                 ),
             ),
             id="experiment/error_override_without_abs_and_header",
@@ -3416,7 +3719,8 @@ def test_select_multi_pkg(
                 ConfigCompositionException,
                 match=re.escape(
                     "In 'experiment/error_override_without_global': "
-                    "Could not override 'group1@experiment.group1'. No match in the defaults list"
+                    "Invalid Defaults List override '/group1: file1'."
+                    "\nNo earlier Group Default for 'group1@experiment.group1' exists to override."
                 ),
             ),
             id="experiment/error_override_without_global",

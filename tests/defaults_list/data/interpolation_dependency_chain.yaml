@@ -1,0 +1,4 @@
+defaults:
+  - source: ${group1}
+  - target: ${group2}
+  - group1: file1
