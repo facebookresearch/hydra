@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T10:36:14Z",
+  "generated_at": "2026-07-27T10:45:00Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 142,
@@ -810,10 +810,10 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2022-05-24",
-      "updated": "2026-07-15",
+      "updated": "2026-07-27",
       "labels": [
         "enhancement",
-        "triage"
+        "blocked"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2227"
     },
@@ -2873,6 +2873,22 @@
       "updated": "2021-11-22",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/1892"
+    },
+    {
+      "number": 1896,
+      "title": "[Feature Request] Override dictionary syntax",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-11-19",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1896"
     },
     {
       "number": 1898,
@@ -5608,25 +5624,17 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 1896,
-      "title": "[Feature Request] Override dictionary syntax",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2021-11-19",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1896"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T10:45:00Z",
+      "kind": "label",
+      "issue": 2227,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2227",
+      "title": "[Feature Request] Easier **replacement** of subconfigs",
+      "detail": "added \"blocked\"; removed \"triage\""
+    },
     {
       "ts": "2026-07-27T10:36:14Z",
       "kind": "closed",
@@ -7185,14 +7193,6 @@
       "issue": 2793,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2793",
       "title": "[Optuna Sweeper Plugin] - Store Optuna study object for automatic plotting!",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2791,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2791",
-      "title": "Permission issues with the outputs folder when script is run by multiple users",
       "detail": "added \"triage\""
     }
   ]
