@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T17:00:01Z",
+  "generated_at": "2026-07-27T17:26:38Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 130,
+    "open_total": 129,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 6.9
+        "percentage": 7.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 101,
-        "percentage": 77.7
+        "count": 100,
+        "percentage": 77.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 9,
-        "percentage": 6.9
+        "percentage": 7.0
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 130
+        "count": 129
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 208
+        "count": 209
       }
     ]
   },
@@ -490,22 +490,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1944"
-    },
-    {
-      "number": 2140,
-      "title": "[Feature Request] hydra.utils.instantiate support for lookup (without calling)",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-04-09",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2140"
     },
     {
       "number": 2170,
@@ -3150,6 +3134,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2086"
     },
     {
+      "number": 2091,
+      "title": "Replace dictionary (instead of merging) from command line",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-03-14",
+      "updated": "2026-07-15",
+      "labels": [
+        "question",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2091"
+    },
+    {
       "number": 2102,
       "title": "[Bug] Structured config in config store is not found with SearchPathPlugin",
       "category": "Bug",
@@ -5614,23 +5614,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2091,
-      "title": "Replace dictionary (instead of merging) from command line",
-      "category": "Question",
-      "category_emoji": "❓",
+      "number": 2140,
+      "title": "[Feature Request] hydra.utils.instantiate support for lookup (without calling)",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-03-14",
+      "created": "2022-04-09",
       "updated": "2026-07-15",
       "labels": [
-        "question",
+        "enhancement",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2091"
+      "url": "https://github.com/facebookresearch/hydra/issues/2140"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T17:26:38Z",
+      "kind": "closed",
+      "issue": 2140,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2140",
+      "title": "[Feature Request] hydra.utils.instantiate support for lookup (without calling)"
+    },
     {
       "ts": "2026-07-27T17:00:01Z",
       "kind": "closed",
@@ -7181,14 +7188,6 @@
       "issue": 2942,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2942",
       "title": "[Feature Request] I'd like to be able to do multirun over files matching a glob (ideally a glob that depends on other, non-sweeped params in the config file)",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2938,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2938",
-      "title": "How to override the default model in main.yaml in code when testing different models",
       "detail": "added \"triage\""
     }
   ]

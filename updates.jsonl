@@ -571,3 +571,4 @@
 {"ts": "2026-07-27T16:37:58Z", "kind": "closed", "issue": 2039, "issue_url": "https://github.com/facebookresearch/hydra/issues/2039", "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config"}
 {"ts": "2026-07-27T16:43:46Z", "kind": "closed", "issue": 2086, "issue_url": "https://github.com/facebookresearch/hydra/issues/2086", "title": "[Feature Request] Support Ray launcher on windows. "}
 {"ts": "2026-07-27T17:00:01Z", "kind": "closed", "issue": 2091, "issue_url": "https://github.com/facebookresearch/hydra/issues/2091", "title": "Replace dictionary (instead of merging) from command line"}
+{"ts": "2026-07-27T17:26:38Z", "kind": "closed", "issue": 2140, "issue_url": "https://github.com/facebookresearch/hydra/issues/2140", "title": "[Feature Request] hydra.utils.instantiate support for lookup (without calling)"}
