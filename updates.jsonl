@@ -561,3 +561,5 @@
 {"ts": "2026-07-27T12:33:50Z", "kind": "closed", "issue": 1901, "issue_url": "https://github.com/facebookresearch/hydra/issues/1901", "title": "[Feature Request] Derive structured configuration from class constructor "}
 {"ts": "2026-07-27T13:24:48Z", "kind": "closed", "issue": 1899, "issue_url": "https://github.com/facebookresearch/hydra/issues/1899", "title": "[Bug] Defaults list interpolation in an inner config failing to find keys from outer config"}
 {"ts": "2026-07-27T13:29:36Z", "kind": "closed", "issue": 1913, "issue_url": "https://github.com/facebookresearch/hydra/issues/1913", "title": "[Feature Request] Mixing `_global_` / `_here_` / `_package_`"}
+{"ts": "2026-07-27T13:36:20Z", "kind": "label", "issue": 1258, "issue_url": "https://github.com/facebookresearch/hydra/issues/1258", "title": "[Feature Request] Tuple Sweeper OR Top-level dictionary overrides", "detail": "added \"sweep\"; removed \"triage\", \"wishlist\""}
+{"ts": "2026-07-27T13:36:20Z", "kind": "closed", "issue": 1918, "issue_url": "https://github.com/facebookresearch/hydra/issues/1918", "title": "sweep parameters in a paired manner"}

@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T13:29:36Z",
+  "generated_at": "2026-07-27T13:36:20Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 139,
+    "open_total": 138,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 107,
-        "percentage": 77.0
+        "count": 106,
+        "percentage": 76.8
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 139
+        "count": 138
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 199
+        "count": 200
       }
     ]
   },
@@ -308,11 +308,10 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2021-01-03",
-      "updated": "2026-07-26",
+      "updated": "2026-07-27",
       "labels": [
         "enhancement",
-        "wishlist",
-        "triage"
+        "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1258"
     },
@@ -475,24 +474,6 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1890"
-    },
-    {
-      "number": 1918,
-      "title": "sweep parameters in a paired manner",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-12-09",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "wishlist",
-        "triage",
-        "defaults list"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1918"
     },
     {
       "number": 1923,
@@ -2898,6 +2879,24 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1901"
+    },
+    {
+      "number": 1913,
+      "title": "[Feature Request] Mixing `_global_` / `_here_` / `_package_`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-12-03",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "exploratory",
+        "triage",
+        "wishlist"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1913"
     },
     {
       "number": 1928,
@@ -5613,25 +5612,40 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 1913,
-      "title": "[Feature Request] Mixing `_global_` / `_here_` / `_package_`",
+      "number": 1918,
+      "title": "sweep parameters in a paired manner",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2021-12-03",
+      "created": "2021-12-09",
       "updated": "2026-07-15",
       "labels": [
+        "defaults list",
         "enhancement",
-        "exploratory",
         "triage",
         "wishlist"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1913"
+      "url": "https://github.com/facebookresearch/hydra/issues/1918"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T13:36:20Z",
+      "kind": "closed",
+      "issue": 1918,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1918",
+      "title": "sweep parameters in a paired manner"
+    },
+    {
+      "ts": "2026-07-27T13:36:20Z",
+      "kind": "label",
+      "issue": 1258,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1258",
+      "title": "[Feature Request] Tuple Sweeper OR Top-level dictionary overrides",
+      "detail": "added \"sweep\"; removed \"triage\", \"wishlist\""
+    },
     {
       "ts": "2026-07-27T13:29:36Z",
       "kind": "closed",
@@ -7183,22 +7197,6 @@
       "issue": 2846,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2846",
       "title": "[Feature Request] Conditionally disable the creation of output folders via callback",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2828,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2828",
-      "title": "[Feature Request] Adding the best trial number in the `optimization_results.yaml` file",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2824,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2824",
-      "title": "Option to raise exception upon first failure in multirun",
       "detail": "added \"triage\""
     }
   ]
