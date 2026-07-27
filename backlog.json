@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T14:41:19Z",
+  "generated_at": "2026-07-27T15:02:22Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 137,
+    "open_total": 136,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 106,
-        "percentage": 77.4
+        "count": 105,
+        "percentage": 77.2
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 137
+        "count": 136
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 201
+        "count": 202
       }
     ]
   },
@@ -490,25 +490,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1944"
-    },
-    {
-      "number": 1982,
-      "title": "[Feature Request] ConfigStore.store to act as decorator",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-01-21",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "exploratory",
-        "triage",
-        "structured config",
-        "config store"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1982"
     },
     {
       "number": 1983,
@@ -2896,6 +2877,25 @@
         "wishlist"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1918"
+    },
+    {
+      "number": 1923,
+      "title": "[Feature Request] Document how configs typing validation works",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-12-14",
+      "updated": "2026-07-25",
+      "labels": [
+        "documentation",
+        "enhancement",
+        "internal",
+        "priority_low",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1923"
     },
     {
       "number": 1928,
@@ -5611,26 +5611,33 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 1923,
-      "title": "[Feature Request] Document how configs typing validation works",
-      "category": "Documentation",
-      "category_emoji": "📄",
+      "number": 1982,
+      "title": "[Feature Request] ConfigStore.store to act as decorator",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2021-12-14",
-      "updated": "2026-07-25",
+      "created": "2022-01-21",
+      "updated": "2026-07-15",
       "labels": [
-        "documentation",
+        "config store",
         "enhancement",
-        "internal",
-        "priority_low",
+        "exploratory",
+        "structured config",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1923"
+      "url": "https://github.com/facebookresearch/hydra/issues/1982"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T15:02:22Z",
+      "kind": "closed",
+      "issue": 1982,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1982",
+      "title": "[Feature Request] ConfigStore.store to act as decorator"
+    },
     {
       "ts": "2026-07-27T14:41:19Z",
       "kind": "closed",
@@ -7188,14 +7195,6 @@
       "issue": 2851,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2851",
       "title": "[Feature Request] Concatenating parameter sweeps",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2848,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2848",
-      "title": "[Feature Request] Add more meaningful information on hydra resolving interpolation error",
       "detail": "added \"triage\""
     }
   ]

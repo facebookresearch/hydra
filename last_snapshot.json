@@ -44,6 +44,7 @@
     "1951": "2026-07-16",
     "1954": "2026-07-16",
     "1957": "2026-07-16",
+    "1982": "2026-07-27",
     "2000": "2026-07-16",
     "2017": "2026-07-16",
     "2032": "2026-06-20",
@@ -202,7 +203,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-07-27T14:41:19Z",
+  "generated_at": "2026-07-27T15:02:22Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -387,22 +388,6 @@
       "status": "not started",
       "title": "[Feature Request] logrange sweep",
       "updated_at": "2026-07-16T09:55:21Z"
-    },
-    "1982": {
-      "category": "Enhancement",
-      "created_at": "2022-01-21T04:39:16Z",
-      "labels": [
-        "config store",
-        "enhancement",
-        "exploratory",
-        "structured config",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] ConfigStore.store to act as decorator",
-      "updated_at": "2026-07-15T13:17:03Z"
     },
     "1983": {
       "category": "Enhancement",
@@ -2614,6 +2599,22 @@
       "status": "done",
       "title": "[Bug] Shell completion doesn't work with `python -m module_name ...`",
       "updated_at": "2026-07-15T13:17:04Z"
+    },
+    "1982": {
+      "category": "Enhancement",
+      "created_at": "2022-01-21T04:39:16Z",
+      "labels": [
+        "config store",
+        "enhancement",
+        "exploratory",
+        "structured config",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] ConfigStore.store to act as decorator",
+      "updated_at": "2026-07-15T13:17:03Z"
     },
     "2000": {
       "category": "Enhancement",
