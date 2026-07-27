@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-27",
-  "generated_at": "2026-07-27T16:37:58Z",
+  "generated_at": "2026-07-27T16:43:46Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 132,
+    "open_total": 131,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 6.8
+        "percentage": 6.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 102,
-        "percentage": 77.3
+        "count": 101,
+        "percentage": 77.1
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 9,
-        "percentage": 6.8
+        "percentage": 6.9
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 132
+        "count": 131
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 206
+        "count": 207
       }
     ]
   },
@@ -490,24 +490,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1944"
-    },
-    {
-      "number": 2086,
-      "title": "[Feature Request] Support Ray launcher on windows. ",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-03-11",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "plugin",
-        "triage",
-        "ray-launcher"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2086"
     },
     {
       "number": 2091,
@@ -3134,6 +3116,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2032"
     },
     {
+      "number": 2039,
+      "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-02-17",
+      "updated": "2026-07-15",
+      "labels": [
+        "question",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2039"
+    },
+    {
       "number": 2070,
       "title": "Improving Hydra + PL +  DDP experience",
       "category": "Enhancement",
@@ -5614,23 +5612,32 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2039,
-      "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config",
-      "category": "Question",
-      "category_emoji": "❓",
+      "number": 2086,
+      "title": "[Feature Request] Support Ray launcher on windows. ",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-02-17",
+      "created": "2022-03-11",
       "updated": "2026-07-15",
       "labels": [
-        "question",
+        "enhancement",
+        "plugin",
+        "ray-launcher",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2039"
+      "url": "https://github.com/facebookresearch/hydra/issues/2086"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-27T16:43:46Z",
+      "kind": "closed",
+      "issue": 2086,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2086",
+      "title": "[Feature Request] Support Ray launcher on windows. "
+    },
     {
       "ts": "2026-07-27T16:37:58Z",
       "kind": "closed",
@@ -7183,14 +7190,6 @@
       "issue": 2898,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2898",
       "title": "[Feature Request & Solution] Troublehooting guide to prevent duplicated log messages",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2892,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2892",
-      "title": "[Help requested] Optuna Sweeper Multiple GPU Parallelism",
       "detail": "added \"triage\""
     }
   ]

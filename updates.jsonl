@@ -569,3 +569,4 @@
 {"ts": "2026-07-27T16:00:24Z", "kind": "closed", "issue": 1989, "issue_url": "https://github.com/facebookresearch/hydra/issues/1989", "title": "Feature Request: allow limited use of \"override\" keyword in interpolated config"}
 {"ts": "2026-07-27T16:18:15Z", "kind": "closed", "issue": 2027, "issue_url": "https://github.com/facebookresearch/hydra/issues/2027", "title": "[Feature Request] Concatenate Multiple Config List elements"}
 {"ts": "2026-07-27T16:37:58Z", "kind": "closed", "issue": 2039, "issue_url": "https://github.com/facebookresearch/hydra/issues/2039", "title": "[Bug] Cannot override a default config group that has been set up in a Structured Config"}
+{"ts": "2026-07-27T16:43:46Z", "kind": "closed", "issue": 2086, "issue_url": "https://github.com/facebookresearch/hydra/issues/2086", "title": "[Feature Request] Support Ray launcher on windows. "}
