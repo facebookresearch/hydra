@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-28",
-  "generated_at": "2026-07-28T17:16:11Z",
+  "generated_at": "2026-07-28T17:29:39Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 124,
+    "open_total": 123,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 95,
-        "percentage": 76.6
+        "count": 94,
+        "percentage": 76.4
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 5.6
+        "percentage": 5.7
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 123
+        "count": 122
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 215
+        "count": 216
       }
     ]
   },
@@ -561,22 +561,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2237"
-    },
-    {
-      "number": 2263,
-      "title": "[Feature Request] Non-strict instantiation",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-06-11",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2263"
     },
     {
       "number": 2265,
@@ -3332,6 +3316,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2241"
     },
     {
+      "number": 2249,
+      "title": "[Question/Feature Request] prevent logging of secrets",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-05-30",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2249"
+    },
+    {
       "number": 2252,
       "title": "[Feature Request] Support having '\"' in dict keys in command line override",
       "category": "Enhancement",
@@ -3347,6 +3347,22 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2252"
+    },
+    {
+      "number": 2254,
+      "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-06-02",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2254"
     },
     {
       "number": 2262,
@@ -5619,39 +5635,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2249,
-      "title": "[Question/Feature Request] prevent logging of secrets",
+      "number": 2263,
+      "title": "[Feature Request] Non-strict instantiation",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-05-30",
+      "created": "2022-06-11",
       "updated": "2026-07-15",
       "labels": [
         "enhancement",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2249"
-    },
-    {
-      "number": 2254,
-      "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default.",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-06-02",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2254"
+      "url": "https://github.com/facebookresearch/hydra/issues/2263"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-28T17:29:39Z",
+      "kind": "closed",
+      "issue": 2263,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2263",
+      "title": "[Feature Request] Non-strict instantiation"
+    },
     {
       "ts": "2026-07-28T17:16:11Z",
       "kind": "closed",
@@ -7198,14 +7205,6 @@
       "issue": 3011,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3011",
       "title": "New release of hydra-colorlog?",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 3002,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3002",
-      "title": "Implement parallel startup with startup intervals between multiple tasks in multirun mode",
       "detail": "added \"triage\""
     }
   ]

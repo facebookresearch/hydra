@@ -74,6 +74,7 @@
     "2252": "2026-07-28",
     "2254": "2026-07-28",
     "2262": "2026-07-15",
+    "2263": "2026-07-28",
     "2274": "2026-07-15",
     "2284": "2026-07-15",
     "2293": "2026-07-16",
@@ -216,7 +217,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-07-28T17:16:11Z",
+  "generated_at": "2026-07-28T17:29:39Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -457,19 +458,6 @@
       "status": "not started",
       "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
       "updated_at": "2026-07-15T18:04:14Z"
-    },
-    "2263": {
-      "category": "Enhancement",
-      "created_at": "2022-06-11T07:08:14Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] Non-strict instantiation",
-      "updated_at": "2026-07-15T13:16:43Z"
     },
     "2265": {
       "category": "Documentation",
@@ -2866,6 +2854,19 @@
       "status": "done",
       "title": "[Bug] hydra conf in structured config is not well handled",
       "updated_at": "2026-07-15T13:16:44Z"
+    },
+    "2263": {
+      "category": "Enhancement",
+      "created_at": "2022-06-11T07:08:14Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Non-strict instantiation",
+      "updated_at": "2026-07-15T13:16:43Z"
     },
     "2274": {
       "category": "Bug",
