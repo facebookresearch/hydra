@@ -17,11 +17,17 @@ from hydra.test_utils.test_utils import (
     run_python_script,
 )
 from omegaconf import OmegaConf
-from pytest import mark
+from pytest import mark, raises
 
+from hydra_plugins.hydra_joblib_launcher import _core
 from hydra_plugins.hydra_joblib_launcher.joblib_launcher import JoblibLauncher
 
 chdir_plugin_root()
+
+
+class CallableTask:
+    def __call__(self, cfg: Any) -> None:
+        pass
 
 
 def test_discovery() -> None:
@@ -95,11 +101,141 @@ def test_example_app_loads_its_config(tmp_path: Path) -> None:
     assert (tmp_path / "1" / "my_app.log").exists()
 
 
+@mark.parametrize("n_jobs", [1, 2])
+def test_multiprocessing_backend_isolates_jobs_and_preserves_state(
+    tmp_path: Path, n_jobs: int
+) -> None:
+    run_python_script(
+        [
+            "tests/apps/multiprocessing_app.py",
+            "--multirun",
+            "hydra/launcher=joblib",
+            "hydra.launcher.backend=multiprocessing",
+            f"hydra.launcher.n_jobs={n_jobs}",
+            "+job=0,1,2,3",
+            "+runtime_value=${runtime_test:ok}",
+            f'hydra.sweep.dir="{tmp_path}"',
+        ],
+    )
+
+    results = [
+        (tmp_path / str(job_num) / "result.txt").read_text(encoding="utf-8")
+        for job_num in range(4)
+    ]
+    pids = {result.split()[0] for result in results}
+
+    assert len(pids) == 4
+    assert {result.split()[1] for result in results} == {"resolved-ok"}
+
+
+def test_multiprocessing_backend_runs_callable_task(tmp_path: Path) -> None:
+    run_python_script(
+        [
+            "tests/apps/multiprocessing_callable_app.py",
+            "--multirun",
+            "hydra/launcher=joblib",
+            "hydra.launcher.backend=multiprocessing",
+            "hydra.launcher.n_jobs=2",
+            "+job=0,1",
+            f'hydra.sweep.dir="{tmp_path}"',
+        ],
+    )
+
+    assert {
+        (tmp_path / str(job_num) / "result.txt").read_text(encoding="utf-8")
+        for job_num in range(2)
+    } == {"callable-0", "callable-1"}
+
+
+def test_multiprocessing_backend_transports_non_picklable_return_value(
+    tmp_path: Path,
+) -> None:
+    run_python_script(
+        [
+            "tests/apps/multiprocessing_app.py",
+            "--multirun",
+            "hydra/launcher=joblib",
+            "hydra.launcher.backend=multiprocessing",
+            "hydra.launcher.n_jobs=2",
+            "+job=0",
+            "+runtime_value=${runtime_test:ok}",
+            "+return_lambda=true",
+            f'hydra.sweep.dir="{tmp_path}"',
+        ],
+    )
+
+    assert (tmp_path / "0" / "result.txt").exists()
+
+
+@mark.parametrize("backend", ["threading", "sequential", "dask"])
+def test_rejects_unsupported_backend(backend: str) -> None:
+    with raises(ValueError, match="Unsupported Joblib backend"):
+        _core.process_joblib_cfg({"backend": backend})
+
+
+def test_null_backend_defaults_to_loky() -> None:
+    config = {"backend": None}
+
+    _core.process_joblib_cfg(config)
+
+    assert config["backend"] == "loky"
+
+
+def test_multiprocessing_enforces_process_isolation() -> None:
+    config = {"backend": "multiprocessing", "batch_size": "auto"}
+
+    _core.process_joblib_cfg(config)
+
+    assert config["batch_size"] == 1
+    assert config["maxtasksperchild"] == 1
+
+
+def test_multiprocessing_accepts_callable_task() -> None:
+    task = CallableTask()
+
+    resolved_task, unwrap_depth = _core._get_multiprocessing_task_function(task)
+
+    assert resolved_task is task
+    assert unwrap_depth == 0
+
+
+def test_multiprocessing_rejects_undiscoverable_function() -> None:
+    def task(cfg: Any) -> None:
+        pass
+
+    with raises(TypeError, match="requires function tasks to be defined"):
+        _core._get_multiprocessing_task_function(task)
+
+
+@mark.parametrize(
+    "config, message",
+    [
+        (
+            {"backend": "multiprocessing", "inner_max_num_threads": 1},
+            "inner_max_num_threads is supported only by the loky backend",
+        ),
+        (
+            {"backend": "loky", "maxtasksperchild": 1},
+            "maxtasksperchild is supported only by the multiprocessing backend",
+        ),
+        (
+            {"backend": "multiprocessing", "batch_size": 2},
+            "requires batch_size=1",
+        ),
+        (
+            {"backend": "multiprocessing", "maxtasksperchild": 2},
+            "fixes maxtasksperchild at 1",
+        ),
+    ],
+)
+def test_rejects_backend_specific_option(config: dict[str, Any], message: str) -> None:
+    with raises(ValueError, match=message):
+        _core.process_joblib_cfg(config)
+
+
 def test_inner_max_num_threads_configures_loky_backend(
     hydra_sweep_runner: TSweepRunner, monkeypatch: Any
 ) -> None:
-    from hydra_plugins.hydra_joblib_launcher import _core
-
     calls: list[tuple[tuple[Any, ...], dict[str, Any]]] = []
     real_parallel_backend = _core.parallel_backend
 
@@ -130,8 +266,6 @@ def test_inner_max_num_threads_configures_loky_backend(
 def test_inner_max_num_threads_does_not_require_n_jobs(
     monkeypatch: Any, tmp_path: Path
 ) -> None:
-    from hydra_plugins.hydra_joblib_launcher import _core
-
     backend_calls: list[tuple[tuple[Any, ...], dict[str, Any]]] = []
     parallel_calls: list[dict[str, Any]] = []
 
