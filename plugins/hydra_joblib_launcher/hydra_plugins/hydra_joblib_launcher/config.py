@@ -15,8 +15,8 @@ class JobLibLauncherConf:
     # limit the number of threads used by third-party libraries in each worker process
     inner_max_num_threads: Optional[int] = None
 
-    # allows to hard-code backend, otherwise inferred based on prefer and require
-    backend: Optional[str] = None
+    # process backend: loky (default) or multiprocessing
+    backend: Optional[str] = "loky"
 
     # processes or threads, soft hint to choose backend
     prefer: str = "processes"
