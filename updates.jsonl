@@ -580,3 +580,5 @@
 {"ts": "2026-07-28T16:40:39Z", "kind": "closed", "issue": 2196, "issue_url": "https://github.com/facebookresearch/hydra/issues/2196", "title": "CI: Testing Hydra against OmegaConf's master branch"}
 {"ts": "2026-07-28T16:49:18Z", "kind": "closed", "issue": 2226, "issue_url": "https://github.com/facebookresearch/hydra/issues/2226", "title": "No hydra interpolation is possible in Jupyter"}
 {"ts": "2026-07-28T17:03:01Z", "kind": "closed", "issue": 2252, "issue_url": "https://github.com/facebookresearch/hydra/issues/2252", "title": "[Feature Request] Support having '\"' in dict keys in command line override"}
+{"ts": "2026-07-28T17:16:11Z", "kind": "closed", "issue": 2249, "issue_url": "https://github.com/facebookresearch/hydra/issues/2249", "title": "[Question/Feature Request] prevent logging of secrets"}
+{"ts": "2026-07-28T17:16:11Z", "kind": "closed", "issue": 2254, "issue_url": "https://github.com/facebookresearch/hydra/issues/2254", "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default."}

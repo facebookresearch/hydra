@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-28",
-  "generated_at": "2026-07-28T17:03:01Z",
+  "generated_at": "2026-07-28T17:16:11Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 126,
+    "open_total": 124,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 7.1
+        "percentage": 7.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 97,
-        "percentage": 77.0
+        "count": 95,
+        "percentage": 76.6
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 9,
-        "percentage": 7.1
+        "percentage": 7.3
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 125
+        "count": 123
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 213
+        "count": 215
       }
     ]
   },
@@ -561,38 +561,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2237"
-    },
-    {
-      "number": 2249,
-      "title": "[Question/Feature Request] prevent logging of secrets",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-05-30",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2249"
-    },
-    {
-      "number": 2254,
-      "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default.",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-06-02",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2254"
     },
     {
       "number": 2263,
@@ -3364,6 +3332,23 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2241"
     },
     {
+      "number": 2252,
+      "title": "[Feature Request] Support having '\"' in dict keys in command line override",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-05-31",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "internal",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2252"
+    },
+    {
       "number": 2262,
       "title": "[Bug] hydra conf in structured config is not well handled",
       "category": "Bug",
@@ -5634,24 +5619,53 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2252,
-      "title": "[Feature Request] Support having '\"' in dict keys in command line override",
+      "number": 2249,
+      "title": "[Question/Feature Request] prevent logging of secrets",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-05-31",
+      "created": "2022-05-30",
       "updated": "2026-07-15",
       "labels": [
         "enhancement",
-        "internal",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2252"
+      "url": "https://github.com/facebookresearch/hydra/issues/2249"
+    },
+    {
+      "number": 2254,
+      "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default.",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-06-02",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2254"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-28T17:16:11Z",
+      "kind": "closed",
+      "issue": 2254,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2254",
+      "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default."
+    },
+    {
+      "ts": "2026-07-28T17:16:11Z",
+      "kind": "closed",
+      "issue": 2249,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2249",
+      "title": "[Question/Feature Request] prevent logging of secrets"
+    },
     {
       "ts": "2026-07-28T17:03:01Z",
       "kind": "closed",
@@ -7192,22 +7206,6 @@
       "issue": 3002,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3002",
       "title": "Implement parallel startup with startup intervals between multiple tasks in multirun mode",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2993,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2993",
-      "title": "[Feature Request] Allow complete group override while Inheriting other Configs",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2991,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2991",
-      "title": "[Feature Request] VS Code Hydra Config File Navigation",
       "detail": "added \"triage\""
     }
   ]

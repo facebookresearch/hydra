@@ -70,7 +70,9 @@
     "2235": "2026-07-15",
     "2236": "2026-07-23",
     "2241": "2026-07-15",
+    "2249": "2026-07-28",
     "2252": "2026-07-28",
+    "2254": "2026-07-28",
     "2262": "2026-07-15",
     "2274": "2026-07-15",
     "2284": "2026-07-15",
@@ -214,7 +216,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-07-28T17:03:01Z",
+  "generated_at": "2026-07-28T17:16:11Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -455,32 +457,6 @@
       "status": "not started",
       "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
       "updated_at": "2026-07-15T18:04:14Z"
-    },
-    "2249": {
-      "category": "Enhancement",
-      "created_at": "2022-05-30T07:45:35Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Question/Feature Request] prevent logging of secrets",
-      "updated_at": "2026-07-15T13:16:46Z"
-    },
-    "2254": {
-      "category": "Enhancement",
-      "created_at": "2022-06-02T13:16:43Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default.",
-      "updated_at": "2026-07-15T13:16:44Z"
     },
     "2263": {
       "category": "Enhancement",
@@ -2836,6 +2812,19 @@
       "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir",
       "updated_at": "2026-07-15T13:16:46Z"
     },
+    "2249": {
+      "category": "Enhancement",
+      "created_at": "2022-05-30T07:45:35Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Question/Feature Request] prevent logging of secrets",
+      "updated_at": "2026-07-15T13:16:46Z"
+    },
     "2252": {
       "category": "Enhancement",
       "created_at": "2022-05-31T16:43:43Z",
@@ -2849,6 +2838,19 @@
       "status": "done",
       "title": "[Feature Request] Support having '\"' in dict keys in command line override",
       "updated_at": "2026-07-15T13:16:45Z"
+    },
+    "2254": {
+      "category": "Enhancement",
+      "created_at": "2022-06-02T13:16:43Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default.",
+      "updated_at": "2026-07-15T13:16:44Z"
     },
     "2262": {
       "category": "Bug",
