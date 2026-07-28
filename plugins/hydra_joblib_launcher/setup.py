@@ -28,8 +28,8 @@ setup(
     ],
     python_requires=">=3.10",
     install_requires=[
-        "hydra-core>=1.1.0.dev7",
-        "joblib>=0.14.0",
+        "hydra-core>=1.4.0.dev1,<1.5.0.dev0",
+        "joblib>=1.5.3",
     ],
     include_package_data=True,
 )
