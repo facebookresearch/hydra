@@ -1,4 +1,8 @@
 `hydra.utils.instantiate()` no longer eagerly resolves the entire configuration
-tree before instantiation. Interpolations are now resolved lazily. Applications
-that rely on eager resolution must call `OmegaConf.resolve(config)` before
-`instantiate(config)`.
+tree. Interpolations are now resolved as recursive traversal needs them.
+OmegaConf containers passed through with `_recursive_=False` are copied and
+detached without eager resolution. Applications that rely on eager resolution
+must call `OmegaConf.resolve(config)` before `instantiate(config)`.
+Interpolations that refer to ancestors outside a passed container must also be
+resolved before the container is copied and detached. Copied containers retain
+flags such as `readonly`.

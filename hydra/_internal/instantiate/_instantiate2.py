@@ -442,12 +442,17 @@ def _resolve_target(
 
 def _prepare_call_argument(value: Any) -> Any:
     if OmegaConf.is_config(value):
-        parent = value._get_parent()
+        flag_names = set()
+        parent = value
+        while parent is not None:
+            flag_names.update(parent._metadata.flags)
+            parent = parent._get_parent()
+        flags = {name: value._get_flag(name) for name in flag_names}
+
         value = copy.deepcopy(value)
-        value._set_parent(parent)
-        value._set_flag("readonly", False)
-        OmegaConf.resolve(value)
         value._set_parent(None)
+        for name, flag in flags.items():
+            value._set_flag(name, flag)
     return value
 
 
