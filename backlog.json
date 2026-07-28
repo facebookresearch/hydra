@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-28",
-  "generated_at": "2026-07-28T19:38:43Z",
+  "generated_at": "2026-07-28T20:14:42Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 120,
+    "open_total": 119,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 7.5
+        "percentage": 7.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 92,
-        "percentage": 76.7
+        "count": 91,
+        "percentage": 76.5
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 5.8
+        "percentage": 5.9
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 119
+        "count": 118
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 219
+        "count": 220
       }
     ]
   },
@@ -560,24 +560,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2237"
-    },
-    {
-      "number": 2281,
-      "title": "[Feature Request] RQ Launcher plugin the ability to send tasks to different types of workers",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-07-04",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "plugin",
-        "triage",
-        "launchers"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2281"
     },
     {
       "number": 2323,
@@ -3139,6 +3121,28 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2162"
     },
     {
+      "number": 2187,
+      "title": "[Feature Request] implement `MultiprocessingLauncher`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3323,
+          "url": "https://github.com/facebookresearch/hydra/pull/3323"
+        }
+      ],
+      "created": "2022-05-02",
+      "updated": "2026-07-28",
+      "labels": [
+        "enhancement",
+        "launchers",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2187"
+    },
+    {
       "number": 2193,
       "title": "[Bug] Not failing when required fields are missing when using structured config",
       "category": "Documentation",
@@ -5634,29 +5638,32 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2187,
-      "title": "[Feature Request] implement `MultiprocessingLauncher`",
+      "number": 2281,
+      "title": "[Feature Request] RQ Launcher plugin the ability to send tasks to different types of workers",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3323,
-          "url": "https://github.com/facebookresearch/hydra/pull/3323"
-        }
-      ],
-      "created": "2022-05-02",
-      "updated": "2026-07-28",
+      "prs": [],
+      "created": "2022-07-04",
+      "updated": "2026-07-15",
       "labels": [
         "enhancement",
         "launchers",
+        "plugin",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2187"
+      "url": "https://github.com/facebookresearch/hydra/issues/2281"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-28T20:14:42Z",
+      "kind": "closed",
+      "issue": 2281,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2281",
+      "title": "[Feature Request] RQ Launcher plugin the ability to send tasks to different types of workers"
+    },
     {
       "ts": "2026-07-28T19:38:43Z",
       "kind": "pr",
@@ -7206,13 +7213,6 @@
       "issue": 2241,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2241",
       "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir"
-    },
-    {
-      "ts": "2026-07-15T14:16:41Z",
-      "kind": "closed",
-      "issue": 2262,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2262",
-      "title": "[Bug] hydra conf in structured config is not well handled"
     }
   ]
 }

@@ -588,3 +588,4 @@
 {"ts": "2026-07-28T19:38:43Z", "kind": "status", "issue": 2268, "issue_url": "https://github.com/facebookresearch/hydra/issues/2268", "title": "Enable instantiations without resolution", "detail": "not started → in progress", "pr": {"number": 3325, "url": "https://github.com/facebookresearch/hydra/pull/3325"}}
 {"ts": "2026-07-28T19:38:43Z", "kind": "closed", "issue": 2187, "issue_url": "https://github.com/facebookresearch/hydra/issues/2187", "title": "[Feature Request] implement `MultiprocessingLauncher`"}
 {"ts": "2026-07-28T19:38:43Z", "kind": "pr", "issue": 2268, "issue_url": "https://github.com/facebookresearch/hydra/issues/2268", "title": "Enable instantiations without resolution", "detail": "linked #3325"}
+{"ts": "2026-07-28T20:14:42Z", "kind": "closed", "issue": 2281, "issue_url": "https://github.com/facebookresearch/hydra/issues/2281", "title": "[Feature Request] RQ Launcher plugin the ability to send tasks to different types of workers"}
