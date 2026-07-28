@@ -75,6 +75,7 @@
     "2254": "2026-07-28",
     "2262": "2026-07-15",
     "2263": "2026-07-28",
+    "2265": "2026-07-28",
     "2274": "2026-07-15",
     "2284": "2026-07-15",
     "2293": "2026-07-16",
@@ -217,7 +218,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-07-28T17:29:39Z",
+  "generated_at": "2026-07-28T18:18:08Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -458,20 +459,6 @@
       "status": "not started",
       "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
       "updated_at": "2026-07-15T18:04:14Z"
-    },
-    "2265": {
-      "category": "Documentation",
-      "created_at": "2022-06-13T13:47:59Z",
-      "labels": [
-        "documentation",
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] Better document structured config schema example with attrs",
-      "updated_at": "2026-07-15T13:16:43Z"
     },
     "2267": {
       "category": "Enhancement",
@@ -2866,6 +2853,20 @@
       "state": "CLOSED",
       "status": "done",
       "title": "[Feature Request] Non-strict instantiation",
+      "updated_at": "2026-07-15T13:16:43Z"
+    },
+    "2265": {
+      "category": "Documentation",
+      "created_at": "2022-06-13T13:47:59Z",
+      "labels": [
+        "documentation",
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Better document structured config schema example with attrs",
       "updated_at": "2026-07-15T13:16:43Z"
     },
     "2274": {

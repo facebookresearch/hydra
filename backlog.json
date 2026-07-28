@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-28",
-  "generated_at": "2026-07-28T17:29:39Z",
+  "generated_at": "2026-07-28T18:18:08Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 123,
+    "open_total": 122,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 7.3
+        "percentage": 7.4
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 94,
-        "percentage": 76.4
+        "percentage": 77.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 9,
-        "percentage": 7.3
+        "count": 8,
+        "percentage": 6.6
       },
       {
         "category": "Question",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.4
+        "percentage": 2.5
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 122
+        "count": 121
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 216
+        "count": 217
       }
     ]
   },
@@ -561,23 +561,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2237"
-    },
-    {
-      "number": 2265,
-      "title": "[Feature Request] Better document structured config schema example with attrs",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-06-13",
-      "updated": "2026-07-15",
-      "labels": [
-        "documentation",
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2265"
     },
     {
       "number": 2267,
@@ -3383,6 +3366,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2262"
     },
     {
+      "number": 2263,
+      "title": "[Feature Request] Non-strict instantiation",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-06-11",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2263"
+    },
+    {
       "number": 2274,
       "title": "[Bug/Question] `config_path` resolution is misleading",
       "category": "Bug",
@@ -5635,23 +5634,31 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2263,
-      "title": "[Feature Request] Non-strict instantiation",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 2265,
+      "title": "[Feature Request] Better document structured config schema example with attrs",
+      "category": "Documentation",
+      "category_emoji": "📄",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-06-11",
+      "created": "2022-06-13",
       "updated": "2026-07-15",
       "labels": [
+        "documentation",
         "enhancement",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2263"
+      "url": "https://github.com/facebookresearch/hydra/issues/2265"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-28T18:18:08Z",
+      "kind": "closed",
+      "issue": 2265,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2265",
+      "title": "[Feature Request] Better document structured config schema example with attrs"
+    },
     {
       "ts": "2026-07-28T17:29:39Z",
       "kind": "closed",
@@ -7197,14 +7204,6 @@
       "issue": 3012,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3012",
       "title": "[Feature Request] It might be useful to have a utility function for integration testing pipelines built with Hydra that expose command line interfaces through config files.",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 3011,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3011",
-      "title": "New release of hydra-colorlog?",
       "detail": "added \"triage\""
     }
   ]
