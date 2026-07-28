@@ -584,3 +584,4 @@
 {"ts": "2026-07-28T17:16:11Z", "kind": "closed", "issue": 2254, "issue_url": "https://github.com/facebookresearch/hydra/issues/2254", "title": "[Feature Request] Add resolve config under `.hydra/config_resolve.yaml` by default."}
 {"ts": "2026-07-28T17:29:39Z", "kind": "closed", "issue": 2263, "issue_url": "https://github.com/facebookresearch/hydra/issues/2263", "title": "[Feature Request] Non-strict instantiation"}
 {"ts": "2026-07-28T18:18:08Z", "kind": "closed", "issue": 2265, "issue_url": "https://github.com/facebookresearch/hydra/issues/2265", "title": "[Feature Request] Better document structured config schema example with attrs"}
+{"ts": "2026-07-28T18:29:09Z", "kind": "closed", "issue": 2267, "issue_url": "https://github.com/facebookresearch/hydra/issues/2267", "title": "[Feature Request] allow repeating elements in list"}
