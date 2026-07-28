@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-28",
-  "generated_at": "2026-07-28T16:40:39Z",
+  "generated_at": "2026-07-28T16:49:18Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 128,
+    "open_total": 127,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 7.0
+        "percentage": 7.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 99,
-        "percentage": 77.3
+        "count": 98,
+        "percentage": 77.2
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 9,
-        "percentage": 7.0
+        "percentage": 7.1
       },
       {
         "category": "Question",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.3
+        "percentage": 2.4
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 127
+        "count": 126
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 211
+        "count": 212
       }
     ]
   },
@@ -527,21 +527,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2170"
-    },
-    {
-      "number": 2226,
-      "title": "No hydra interpolation is possible in Jupyter",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-05-23",
-      "updated": "2026-07-15",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2226"
     },
     {
       "number": 2227,
@@ -3301,6 +3286,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2194"
     },
     {
+      "number": 2196,
+      "title": "CI: Testing Hydra against OmegaConf's master branch",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-05-06",
+      "updated": "2026-07-15",
+      "labels": [
+        "tests",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2196"
+    },
+    {
       "number": 2208,
       "title": "instantiate converts inner structured configs back to Dict/ListConf",
       "category": "Bug",
@@ -5635,23 +5636,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2196,
-      "title": "CI: Testing Hydra against OmegaConf's master branch",
-      "category": "Build",
-      "category_emoji": "🏗️",
+      "number": 2226,
+      "title": "No hydra interpolation is possible in Jupyter",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-05-06",
+      "created": "2022-05-23",
       "updated": "2026-07-15",
       "labels": [
-        "tests",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2196"
+      "url": "https://github.com/facebookresearch/hydra/issues/2226"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-28T16:49:18Z",
+      "kind": "closed",
+      "issue": 2226,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2226",
+      "title": "No hydra interpolation is possible in Jupyter"
+    },
     {
       "ts": "2026-07-28T16:40:39Z",
       "kind": "closed",
@@ -7202,14 +7209,6 @@
       "issue": 2981,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2981",
       "title": "[Feature Request] Allow partial instantiation with factories",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2980,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2980",
-      "title": "Can hydra be used for programming languages other than Python?",
       "detail": "added \"triage\""
     }
   ]
