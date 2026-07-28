@@ -650,8 +650,12 @@ def test_interpolation_accessing_parent(
 
 
 def test_instantiate_does_not_copy_unrelated_root_siblings(
-    instantiate_func: Any, monkeypatch: Any
+    instantiate_func: Any,
 ) -> None:
+    class Uncopyable:
+        def __deepcopy__(self, memo: Any) -> Any:
+            raise AssertionError("instantiate() copied an unrelated root sibling")
+
     cfg = OmegaConf.create(
         {
             "node": {
@@ -661,47 +665,144 @@ def test_instantiate_does_not_copy_unrelated_root_siblings(
                 "c": 30,
             },
             "value": 10,
-            "unrelated": {"data": [1, 2, 3]},
+            "unrelated": Uncopyable(),
         },
+        flags={"allow_objects": True},
     )
-    original_deepcopy = copy.deepcopy
-
-    def deepcopy_except_root(value: Any, memo: Any = None) -> Any:
-        assert value is not cfg, "instantiate() copied the full configuration root"
-        if memo is None:
-            return original_deepcopy(value)
-        return original_deepcopy(value, memo)
-
-    monkeypatch.setattr(_instantiate2.copy, "deepcopy", deepcopy_except_root)
 
     assert instantiate_func(cfg.node) == AClass(a=10, b=20, c=30)
 
 
-def test_non_recursive_config_argument_is_copied_before_resolve_and_detach(
+def test_non_recursive_config_argument_is_passed_directly_without_resolving(
     instantiate_func: Any,
 ) -> None:
     cfg = OmegaConf.create(
         {
-            "value": 10,
             "node": {
                 "_target_": "tests.instantiate.ArgsClass",
                 "_recursive_": False,
-                "payload": {"value": "${value}"},
+                "payload": {
+                    "value": 10,
+                    "alias": "${.value}",
+                },
             },
-        }
+        },
+        flags={"allow_objects": True},
     )
     OmegaConf.set_readonly(cfg, True)
+    OmegaConf.set_struct(cfg, True)
     original_config = str(cfg)
     source_payload = cfg.node.payload
 
     result = instantiate_func(cfg.node)
     payload = result.kwargs["payload"]
 
-    assert payload == {"value": 10}
-    assert payload is not source_payload
-    assert payload._get_parent() is None
+    assert OmegaConf.to_container(payload, resolve=False) == {
+        "value": 10,
+        "alias": "${.value}",
+    }
+    assert payload is source_payload
+    assert payload._get_parent() is cfg.node
     assert source_payload._get_parent() is cfg.node
+    assert OmegaConf.is_readonly(payload)
+    assert OmegaConf.is_struct(payload)
+    assert payload._get_flag("allow_objects")
+    assert payload.alias == 10
     assert str(cfg) == original_config
+
+
+def test_non_recursive_config_argument_uses_source_resolver_cache(
+    instantiate_func: Any,
+) -> None:
+    resolver_name = "hydra_instantiate_cached_config_argument"
+    calls = 0
+
+    def resolver() -> int:
+        nonlocal calls
+        calls += 1
+        return calls
+
+    OmegaConf.register_resolver(
+        resolver_name,
+        resolver,
+        replace=True,
+        use_cache=True,
+    )
+    cfg = OmegaConf.create(
+        {
+            "first": f"${{{resolver_name}:}}",
+            "node": {
+                "_target_": "tests.instantiate.ArgsClass",
+                "_recursive_": False,
+                "payload": {"value": f"${{{resolver_name}:}}"},
+            },
+        }
+    )
+
+    try:
+        assert cfg.first == 1
+        result = instantiate_func(cfg.node)
+        payload = result.kwargs["payload"]
+
+        assert payload is cfg.node.payload
+        assert payload.value == 1
+        assert calls == 1
+    finally:
+        OmegaConf.clear_resolver(resolver_name)
+
+
+def test_non_recursive_runtime_config_argument_is_passed_directly_and_remains_lazy(
+    instantiate_func: Any,
+) -> None:
+    runtime_config = OmegaConf.create(
+        {
+            "num_classes": -1,
+            "model": {"num_class": "${num_classes}"},
+        }
+    )
+
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "_recursive_": False,
+        },
+        cfg=runtime_config,
+    )
+    cfg = result.kwargs["cfg"]
+    cfg.num_classes = 10
+
+    assert cfg is runtime_config
+    assert cfg._get_parent() is None
+    assert cfg.model.num_class == 10
+    assert runtime_config.num_classes == 10
+    assert runtime_config.model.num_class == 10
+
+
+def test_non_recursive_runtime_config_supports_late_resolver_registration(
+    instantiate_func: Any,
+) -> None:
+    resolver_name = "hydra_instantiate_late_runtime_config"
+    OmegaConf.clear_resolver(resolver_name)
+    runtime_config = OmegaConf.create({"value": f"${{{resolver_name}:}}"})
+
+    try:
+        result = instantiate_func(
+            {
+                "_target_": "tests.instantiate.ArgsClass",
+                "_recursive_": False,
+            },
+            cfg=runtime_config,
+        )
+        cfg = result.kwargs["cfg"]
+        assert cfg is runtime_config
+        OmegaConf.register_resolver(resolver_name, lambda: 42)
+
+        assert OmegaConf.to_container(cfg, resolve=False) == {
+            "value": f"${{{resolver_name}:}}"
+        }
+        assert cfg.value == 42
+    finally:
+        OmegaConf.clear_resolver(resolver_name)
 
 
 def test_top_level_instantiation_control_keys_are_not_in_result(
@@ -781,10 +882,10 @@ def test_instantiate_adam(instantiate_func: Any, config: Any) -> None:
 @mark.parametrize("is_partial", [True, False])
 def test_regression_1483(instantiate_func: Any, is_partial: bool) -> None:
     """
-    In 1483, pickle is failing because the parent node of lst node contains
-    a generator, which is not picklable.
-    The solution is to resolve and retach from the parent before calling the function.
-    This tests verifies the expected behavior.
+    In 1483, call-site arguments were merged into one OmegaConf tree, so the
+    ListConfig argument retained an unpicklable generator through its parent.
+    Keeping call-site arguments separate leaves the ListConfig independently
+    picklable without eager resolution or detachment.
     """
 
     def gen() -> Any:
@@ -798,9 +899,11 @@ def test_regression_1483(instantiate_func: Any, is_partial: bool) -> None:
     )
     if is_partial:
         # res is of type functools.partial
-        pickle.dumps(res.keywords["lst"])  # type: ignore
+        lst = res.keywords["lst"]  # type: ignore
     else:
-        pickle.dumps(res.kwargs["lst"])
+        lst = res.kwargs["lst"]
+    assert lst._get_parent() is None
+    pickle.dumps(lst)
 
 
 def test_runtime_object_override_replaces_unresolvable_config_value(

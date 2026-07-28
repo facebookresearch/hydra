@@ -1,4 +1,14 @@
 `hydra.utils.instantiate()` no longer eagerly resolves the entire configuration
-tree before instantiation. Interpolations are now resolved lazily. Applications
-that rely on eager resolution must call `OmegaConf.resolve(config)` before
-`instantiate(config)`.
+tree. Interpolations are now resolved as recursive traversal needs them.
+With `_recursive_=False` and the default `_convert_="none"`, Hydra no longer
+makes a final copy of OmegaConf containers before the target call. Containers
+passed through from the input tree retain their identity, lazy interpolations,
+ancestor context, resolver cache, and inherited flags.
+Applications that rely on eager resolution must call `OmegaConf.resolve(config)`
+before `instantiate(config)`. Mutations made by a target to such a Config
+container now affect the original configuration. Constructors or other called
+code that mutate inherited `readonly` or `struct` containers may also raise
+`ReadonlyConfigError` or `ConfigKeyError`; use OmegaConf's `read_write()` or
+`open_dict()` context managers around intentional mutations. See the
+[Hydra 1.4 instantiate migration guide](https://hydra.cc/docs/upgrades/1.3_to_1.4/instantiate_resolution/)
+for creating an independent Config copy.

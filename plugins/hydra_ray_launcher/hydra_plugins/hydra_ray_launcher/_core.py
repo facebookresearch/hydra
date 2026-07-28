@@ -1,12 +1,12 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import logging
 from pathlib import Path
-from typing import Sequence
+from typing import Sequence, cast
 
 import ray
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
-from omegaconf import open_dict
+from omegaconf import DictConfig, OmegaConf, open_dict
 
 from ._launcher_util import launch_job_on_ray, start_ray
 from .ray_launcher import RayLauncher
@@ -33,8 +33,12 @@ def launch(
     )
 
     # Avoid allocating too little memory in CI https://github.com/ray-project/ray/issues/11966#issuecomment-1318100747
-    launcher.ray_cfg.init.setdefault("object_store_memory", 78643200)
-    start_ray(launcher.ray_cfg.init)
+    ray_init = cast(
+        DictConfig,
+        OmegaConf.create(OmegaConf.to_container(launcher.ray_cfg.init, resolve=True)),
+    )
+    ray_init.setdefault("object_store_memory", 78643200)
+    start_ray(ray_init)
 
     runs = []
     for idx, overrides in enumerate(job_overrides):

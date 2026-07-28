@@ -24,9 +24,10 @@ This has several benefits:
   forcing Hydra to resolve the replaced value first.
 - An earlier target can establish runtime state, such as registering a custom
   resolver, before a later argument is resolved.
-- OmegaConf containers passed to a target are still copied, resolved while
-  attached to their original parent, and then detached. This preserves the
-  serialization safety of previous Hydra versions.
+- With `_recursive_=False` and the default `_convert_="none"`, Hydra no longer
+  makes a final copy of OmegaConf containers before the target call. Containers
+  passed through from the input tree retain their identity, lazy
+  interpolations, ancestor context, resolver cache, and inherited flags.
 
 ## Compatibility impact
 
@@ -104,6 +105,43 @@ Hydra 1.3 merged `b=99` into a copied configuration before resolving `${b}`,
 so `c` also became `99`. Hydra 1.4 leaves `cfg` unchanged, resolves `${b}`
 against the original configuration, and independently passes the call-site
 value `b=99` to the target.
+
+With `_recursive_=False` and `_convert_="none"`, OmegaConf containers are also
+no longer copied and detached before the target call. The target receives the
+same `DictConfig`, `ListConfig`, or `TupleConfig` object from the input tree.
+Mutations made by the target are therefore visible through the original
+configuration, and an attached subtree retains its ancestor configuration when
+stored or serialized. Other conversion modes retain their documented
+conversion behavior.
+
+To pass an independent Config object instead, create one explicitly:
+
+```python
+cfg = OmegaConf.create(
+    {
+        "_target_": "builtins.dict",
+        "_recursive_": False,
+        "payload": {"value": 10, "alias": "${.value}"},
+    }
+)
+independent = OmegaConf.create(cfg.payload)
+result = instantiate(
+    cfg,
+    payload=independent,
+    _target_whitelist_="builtins.dict",
+)
+assert result["payload"] is independent
+```
+
+`OmegaConf.create()` preserves lazy interpolations within the copied container.
+If an interpolation depends on an ancestor outside that container, resolve it
+while copying:
+
+```python
+independent = OmegaConf.create(
+    OmegaConf.to_container(cfg.payload, resolve=True)
+)
+```
 
 If another argument should use the call-site value, pass that argument
 explicitly as well:
