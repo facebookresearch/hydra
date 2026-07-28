@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-28",
-  "generated_at": "2026-07-28T16:49:18Z",
+  "generated_at": "2026-07-28T17:03:01Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 127,
+    "open_total": 126,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 98,
-        "percentage": 77.2
+        "count": 97,
+        "percentage": 77.0
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 5.5
+        "percentage": 5.6
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 126
+        "count": 125
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 212
+        "count": 213
       }
     ]
   },
@@ -577,23 +577,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2249"
-    },
-    {
-      "number": 2252,
-      "title": "[Feature Request] Support having '\"' in dict keys in command line override",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-05-31",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage",
-        "internal"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2252"
     },
     {
       "number": 2254,
@@ -3319,6 +3302,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2208"
     },
     {
+      "number": 2226,
+      "title": "No hydra interpolation is possible in Jupyter",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-05-23",
+      "updated": "2026-07-15",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2226"
+    },
+    {
       "number": 2235,
       "title": "Error message during `instantiate` missing some information",
       "category": "Bug",
@@ -5636,22 +5634,31 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2226,
-      "title": "No hydra interpolation is possible in Jupyter",
+      "number": 2252,
+      "title": "[Feature Request] Support having '\"' in dict keys in command line override",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-05-23",
+      "created": "2022-05-31",
       "updated": "2026-07-15",
       "labels": [
+        "enhancement",
+        "internal",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2226"
+      "url": "https://github.com/facebookresearch/hydra/issues/2252"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-28T17:03:01Z",
+      "kind": "closed",
+      "issue": 2252,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2252",
+      "title": "[Feature Request] Support having '\"' in dict keys in command line override"
+    },
     {
       "ts": "2026-07-28T16:49:18Z",
       "kind": "closed",
@@ -7201,14 +7208,6 @@
       "issue": 2991,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2991",
       "title": "[Feature Request] VS Code Hydra Config File Navigation",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2981,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2981",
-      "title": "[Feature Request] Allow partial instantiation with factories",
       "detail": "added \"triage\""
     }
   ]

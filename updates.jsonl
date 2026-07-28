@@ -579,3 +579,4 @@
 {"ts": "2026-07-28T16:30:48Z", "kind": "closed", "issue": 2194, "issue_url": "https://github.com/facebookresearch/hydra/issues/2194", "title": "Support for warning handling"}
 {"ts": "2026-07-28T16:40:39Z", "kind": "closed", "issue": 2196, "issue_url": "https://github.com/facebookresearch/hydra/issues/2196", "title": "CI: Testing Hydra against OmegaConf's master branch"}
 {"ts": "2026-07-28T16:49:18Z", "kind": "closed", "issue": 2226, "issue_url": "https://github.com/facebookresearch/hydra/issues/2226", "title": "No hydra interpolation is possible in Jupyter"}
+{"ts": "2026-07-28T17:03:01Z", "kind": "closed", "issue": 2252, "issue_url": "https://github.com/facebookresearch/hydra/issues/2252", "title": "[Feature Request] Support having '\"' in dict keys in command line override"}
