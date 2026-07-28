@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-28",
-  "generated_at": "2026-07-28T14:00:39Z",
+  "generated_at": "2026-07-28T16:30:48Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 130,
+    "open_total": 129,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 6.9
+        "percentage": 7.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 100,
-        "percentage": 76.9
+        "count": 99,
+        "percentage": 76.7
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 9,
-        "percentage": 6.9
+        "percentage": 7.0
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 129
+        "count": 128
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 209
+        "count": 210
       }
     ]
   },
@@ -527,22 +527,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2170"
-    },
-    {
-      "number": 2194,
-      "title": "Support for warning handling",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-05-06",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2194"
     },
     {
       "number": 2196,
@@ -5649,9 +5633,32 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
+    },
+    {
+      "number": 2194,
+      "title": "Support for warning handling",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-05-06",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2194"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-28T16:30:48Z",
+      "kind": "closed",
+      "issue": 2194,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2194",
+      "title": "Support for warning handling"
+    },
     {
       "ts": "2026-07-28T14:00:39Z",
       "kind": "new",
@@ -7204,14 +7211,6 @@
       "issue": 2977,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2977",
       "title": "[Feature Request] Add a generation strategy config to ax-sweeper plugin",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2972,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2972",
-      "title": "How to get the application config file path inside application code?",
       "detail": "added \"triage\""
     }
   ]
