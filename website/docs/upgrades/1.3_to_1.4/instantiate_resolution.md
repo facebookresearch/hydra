@@ -24,9 +24,14 @@ This has several benefits:
   forcing Hydra to resolve the replaced value first.
 - An earlier target can establish runtime state, such as registering a custom
   resolver, before a later argument is resolved.
-- OmegaConf containers passed to a target are still copied, resolved while
-  attached to their original parent, and then detached. This preserves the
-  serialization safety of previous Hydra versions.
+- With recursive instantiation disabled, OmegaConf containers passed to a target
+  are copied and detached without being eagerly resolved. Their interpolations
+  remain lazy while preventing the surrounding configuration tree from leaking
+  into target objects. The copy retains configuration flags such as `readonly`.
+
+After detachment, an interpolation cannot reach an ancestor outside the passed
+container. Resolve such a container before calling `instantiate()`, or pass the
+enclosing configuration that provides the required interpolation context.
 
 ## Compatibility impact
 

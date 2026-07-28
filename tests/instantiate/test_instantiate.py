@@ -598,30 +598,6 @@ def test_none_cases(
             OmegaConf.create({"unique_id": 5}),
             id="interpolation_from_parent_with_interpolation",
         ),
-        param(
-            DictConfig(
-                {
-                    "username": "test_user",
-                    "node": {
-                        "_target_": "tests.instantiate.TargetWithInstantiateInInit",
-                        "_recursive_": False,
-                        "user_config": {
-                            "_target_": "tests.instantiate.User",
-                            "name": "${foo_b.username}",
-                            "age": 40,
-                        },
-                    },
-                    "foo_b": {
-                        "username": "${username}",
-                    },
-                }
-            ),
-            {},
-            TargetWithInstantiateInInit(
-                user_config=None, user=User(name="test_user", age=40)
-            ),
-            id="target_with_instantiate_in_init",
-        ),
     ],
 )
 def test_interpolation_accessing_parent(
@@ -647,6 +623,50 @@ def test_interpolation_accessing_parent(
         assert obj == expected
     assert input_conf == cfg_copy
     assert str(input_conf) == original_config_str
+
+
+@mark.parametrize("convert_to_list", [True, False])
+def test_nested_instantiate_external_interpolation_requires_explicit_resolution(
+    instantiate_func: Any,
+    convert_to_list: bool,
+) -> None:
+    cfg = OmegaConf.create(
+        {
+            "username": "test_user",
+            "node": {
+                "_target_": "tests.instantiate.TargetWithInstantiateInInit",
+                "_recursive_": False,
+                "user_config": {
+                    "_target_": "tests.instantiate.User",
+                    "name": "${foo_b.username}",
+                    "age": 40,
+                },
+            },
+            "foo_b": {
+                "username": "${username}",
+            },
+        }
+    )
+    if convert_to_list:
+        cfg.node = [cfg.node]
+        node = cfg.node[0]
+    else:
+        node = cfg.node
+
+    with raises(
+        InstantiationException,
+        match="Interpolation key 'foo_b.username' not found",
+    ):
+        instantiate_func(node)
+
+    OmegaConf.resolve(cfg)
+    node = cfg.node[0] if convert_to_list else cfg.node
+    result = instantiate_func(node)
+
+    assert result == TargetWithInstantiateInInit(
+        user_config=None,
+        user=User(name="test_user", age=40),
+    )
 
 
 def test_instantiate_does_not_copy_unrelated_root_siblings(
@@ -677,31 +697,95 @@ def test_instantiate_does_not_copy_unrelated_root_siblings(
     assert instantiate_func(cfg.node) == AClass(a=10, b=20, c=30)
 
 
-def test_non_recursive_config_argument_is_copied_before_resolve_and_detach(
+def test_non_recursive_config_argument_is_copied_and_detached_without_resolving(
     instantiate_func: Any,
 ) -> None:
     cfg = OmegaConf.create(
         {
-            "value": 10,
             "node": {
                 "_target_": "tests.instantiate.ArgsClass",
                 "_recursive_": False,
-                "payload": {"value": "${value}"},
+                "payload": {
+                    "value": 10,
+                    "alias": "${.value}",
+                },
             },
-        }
+        },
+        flags={"allow_objects": True},
     )
     OmegaConf.set_readonly(cfg, True)
+    OmegaConf.set_struct(cfg, True)
     original_config = str(cfg)
     source_payload = cfg.node.payload
 
     result = instantiate_func(cfg.node)
     payload = result.kwargs["payload"]
 
-    assert payload == {"value": 10}
+    assert OmegaConf.to_container(payload, resolve=False) == {
+        "value": 10,
+        "alias": "${.value}",
+    }
     assert payload is not source_payload
     assert payload._get_parent() is None
     assert source_payload._get_parent() is cfg.node
+    assert OmegaConf.is_readonly(payload)
+    assert OmegaConf.is_struct(payload)
+    assert payload._get_flag("allow_objects")
+    assert payload.alias == 10
     assert str(cfg) == original_config
+
+
+def test_non_recursive_runtime_config_argument_remains_lazy(
+    instantiate_func: Any,
+) -> None:
+    runtime_config = OmegaConf.create(
+        {
+            "num_classes": -1,
+            "model": {"num_class": "${num_classes}"},
+        }
+    )
+
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "_recursive_": False,
+        },
+        cfg=runtime_config,
+    )
+    cfg = result.kwargs["cfg"]
+    cfg.num_classes = 10
+
+    assert cfg is not runtime_config
+    assert cfg._get_parent() is None
+    assert cfg.model.num_class == 10
+    assert runtime_config.num_classes == -1
+    assert runtime_config.model.num_class == -1
+
+
+def test_non_recursive_runtime_config_supports_late_resolver_registration(
+    instantiate_func: Any,
+) -> None:
+    resolver_name = "hydra_instantiate_late_runtime_config"
+    OmegaConf.clear_resolver(resolver_name)
+    runtime_config = OmegaConf.create({"value": f"${{{resolver_name}:}}"})
+
+    try:
+        result = instantiate_func(
+            {
+                "_target_": "tests.instantiate.ArgsClass",
+                "_recursive_": False,
+            },
+            cfg=runtime_config,
+        )
+        cfg = result.kwargs["cfg"]
+        OmegaConf.register_resolver(resolver_name, lambda: 42)
+
+        assert OmegaConf.to_container(cfg, resolve=False) == {
+            "value": f"${{{resolver_name}:}}"
+        }
+        assert cfg.value == 42
+    finally:
+        OmegaConf.clear_resolver(resolver_name)
 
 
 def test_top_level_instantiation_control_keys_are_not_in_result(
@@ -781,10 +865,9 @@ def test_instantiate_adam(instantiate_func: Any, config: Any) -> None:
 @mark.parametrize("is_partial", [True, False])
 def test_regression_1483(instantiate_func: Any, is_partial: bool) -> None:
     """
-    In 1483, pickle is failing because the parent node of lst node contains
-    a generator, which is not picklable.
-    The solution is to resolve and retach from the parent before calling the function.
-    This tests verifies the expected behavior.
+    In 1483, pickling failed because the parent of the ListConfig argument
+    contained an unpicklable generator. Copying and detaching the argument
+    before the call keeps it independent and picklable without eager resolution.
     """
 
     def gen() -> Any:
