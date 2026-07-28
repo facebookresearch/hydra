@@ -575,3 +575,4 @@
 {"ts": "2026-07-27T17:35:17Z", "kind": "label", "issue": 2170, "issue_url": "https://github.com/facebookresearch/hydra/issues/2170", "title": "[Bug] `???` defaults cannot display `--help`", "detail": "removed \"triage\""}
 {"ts": "2026-07-28T12:56:57Z", "kind": "status", "issue": 2187, "issue_url": "https://github.com/facebookresearch/hydra/issues/2187", "title": "[Feature Request] implement `MultiprocessingLauncher`", "detail": "not started → in progress", "pr": {"number": 3323, "url": "https://github.com/facebookresearch/hydra/pull/3323"}}
 {"ts": "2026-07-28T12:56:57Z", "kind": "pr", "issue": 2187, "issue_url": "https://github.com/facebookresearch/hydra/issues/2187", "title": "[Feature Request] implement `MultiprocessingLauncher`", "detail": "linked #3323"}
+{"ts": "2026-07-28T14:00:39Z", "kind": "new", "issue": 3324, "issue_url": "https://github.com/facebookresearch/hydra/issues/3324", "title": "Align bundled plugin dependencies with Hydra release lines"}

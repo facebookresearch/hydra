@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-28",
-  "generated_at": "2026-07-28T12:56:57Z",
+  "generated_at": "2026-07-28T14:00:39Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 129,
+    "open_total": 130,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 7.0
+        "percentage": 6.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 100,
-        "percentage": 77.5
+        "percentage": 76.9
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 9,
-        "percentage": 7.0
+        "percentage": 6.9
       },
       {
         "category": "Question",
@@ -38,8 +38,8 @@
       {
         "category": "Build",
         "emoji": "🏗️",
-        "count": 3,
-        "percentage": 2.3
+        "count": 4,
+        "percentage": 3.1
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 128
+        "count": 129
       },
       {
         "status": "done",
@@ -85,7 +85,7 @@
         }
       ],
       "created": "2022-05-02",
-      "updated": "2026-07-15",
+      "updated": "2026-07-28",
       "labels": [
         "enhancement",
         "triage",
@@ -2131,6 +2131,23 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3321"
+    },
+    {
+      "number": 3324,
+      "title": "Align bundled plugin dependencies with Hydra release lines",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-28",
+      "updated": "2026-07-28",
+      "labels": [
+        "maintenance",
+        "plugin",
+        "dependencies"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3324"
     },
     {
       "number": 692,
@@ -5636,6 +5653,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-28T14:00:39Z",
+      "kind": "new",
+      "issue": 3324,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3324",
+      "title": "Align bundled plugin dependencies with Hydra release lines"
+    },
+    {
       "ts": "2026-07-28T12:56:57Z",
       "kind": "pr",
       "issue": 2187,
@@ -7188,14 +7212,6 @@
       "issue": 2972,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2972",
       "title": "How to get the application config file path inside application code?",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2949,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2949",
-      "title": "[Feature Request] Use @hydra.main() decorator for multiple python scripts from one bash script",
       "detail": "added \"triage\""
     }
   ]
