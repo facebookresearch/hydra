@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-07-28",
-  "generated_at": "2026-07-28T18:29:09Z",
+  "generated_at": "2026-07-28T19:38:43Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 121,
+    "open_total": 120,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 7.4
+        "percentage": 7.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 93,
-        "percentage": 76.9
+        "count": 92,
+        "percentage": 76.7
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 8,
-        "percentage": 6.6
+        "percentage": 6.7
       },
       {
         "category": "Question",
@@ -61,37 +61,36 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 120
+        "count": 119
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 218
+        "count": 219
       }
     ]
   },
   "issues": [
     {
-      "number": 2187,
-      "title": "[Feature Request] implement `MultiprocessingLauncher`",
+      "number": 2268,
+      "title": "Enable instantiations without resolution",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "in progress",
       "status_emoji": "🔄",
       "prs": [
         {
-          "number": 3323,
-          "url": "https://github.com/facebookresearch/hydra/pull/3323"
+          "number": 3325,
+          "url": "https://github.com/facebookresearch/hydra/pull/3325"
         }
       ],
-      "created": "2022-05-02",
-      "updated": "2026-07-28",
+      "created": "2022-06-20",
+      "updated": "2026-07-15",
       "labels": [
         "enhancement",
-        "triage",
-        "launchers"
+        "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2187"
+      "url": "https://github.com/facebookresearch/hydra/issues/2268"
     },
     {
       "number": 385,
@@ -561,22 +560,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2237"
-    },
-    {
-      "number": 2268,
-      "title": "Enable instantiations without resolution",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-06-20",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2268"
     },
     {
       "number": 2281,
@@ -3383,6 +3366,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2265"
     },
     {
+      "number": 2267,
+      "title": "[Feature Request] allow repeating elements in list",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-06-20",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2267"
+    },
+    {
       "number": 2274,
       "title": "[Bug/Question] `config_path` resolution is misleading",
       "category": "Bug",
@@ -5635,23 +5634,56 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2267,
-      "title": "[Feature Request] allow repeating elements in list",
+      "number": 2187,
+      "title": "[Feature Request] implement `MultiprocessingLauncher`",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-06-20",
-      "updated": "2026-07-15",
+      "prs": [
+        {
+          "number": 3323,
+          "url": "https://github.com/facebookresearch/hydra/pull/3323"
+        }
+      ],
+      "created": "2022-05-02",
+      "updated": "2026-07-28",
       "labels": [
         "enhancement",
+        "launchers",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2267"
+      "url": "https://github.com/facebookresearch/hydra/issues/2187"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-28T19:38:43Z",
+      "kind": "pr",
+      "issue": 2268,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2268",
+      "title": "Enable instantiations without resolution",
+      "detail": "linked #3325"
+    },
+    {
+      "ts": "2026-07-28T19:38:43Z",
+      "kind": "closed",
+      "issue": 2187,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2187",
+      "title": "[Feature Request] implement `MultiprocessingLauncher`"
+    },
+    {
+      "ts": "2026-07-28T19:38:43Z",
+      "kind": "status",
+      "issue": 2268,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2268",
+      "title": "Enable instantiations without resolution",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3325,
+        "url": "https://github.com/facebookresearch/hydra/pull/3325"
+      }
+    },
     {
       "ts": "2026-07-28T18:29:09Z",
       "kind": "closed",
@@ -7181,29 +7213,6 @@
       "issue": 2262,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2262",
       "title": "[Bug] hydra conf in structured config is not well handled"
-    },
-    {
-      "ts": "2026-07-15T13:46:57Z",
-      "kind": "closed",
-      "issue": 2274,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2274",
-      "title": "[Bug/Question] `config_path` resolution is misleading"
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 3026,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3026",
-      "title": "[Feature Request] Allow for defaults list `override` to update the ordering of defaults?",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 3015,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3015",
-      "title": "[Feature Request] Support Instantiation of User Plugins Without Special Module",
-      "detail": "added \"triage\""
     }
   ]
 }

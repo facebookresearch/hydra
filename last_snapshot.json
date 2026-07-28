@@ -62,6 +62,7 @@
     "2140": "2026-07-27",
     "2149": "2026-07-17",
     "2162": "2026-06-11",
+    "2187": "2026-07-28",
     "2193": "2026-07-15",
     "2194": "2026-07-28",
     "2196": "2026-07-28",
@@ -219,7 +220,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-07-28T18:29:09Z",
+  "generated_at": "2026-07-28T19:38:43Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -417,22 +418,6 @@
       "title": "[Bug] `???` defaults cannot display `--help`",
       "updated_at": "2026-07-27T17:33:39Z"
     },
-    "2187": {
-      "category": "Enhancement",
-      "created_at": "2022-05-02T19:25:32Z",
-      "labels": [
-        "enhancement",
-        "launchers",
-        "triage"
-      ],
-      "pr_numbers": [
-        "3323"
-      ],
-      "state": "OPEN",
-      "status": "in progress",
-      "title": "[Feature Request] implement `MultiprocessingLauncher`",
-      "updated_at": "2026-07-28T13:16:42Z"
-    },
     "2227": {
       "category": "Enhancement",
       "created_at": "2022-05-24T04:47:20Z",
@@ -468,9 +453,11 @@
         "enhancement",
         "triage"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3325"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "in progress",
       "title": "Enable instantiations without resolution",
       "updated_at": "2026-07-15T13:16:41Z"
     },
@@ -2671,6 +2658,22 @@
       "status": "done",
       "title": "Upgrading Optuna from v2.x.x to v3.0.0",
       "updated_at": "2025-01-22T23:55:03Z"
+    },
+    "2187": {
+      "category": "Enhancement",
+      "created_at": "2022-05-02T19:25:32Z",
+      "labels": [
+        "enhancement",
+        "launchers",
+        "triage"
+      ],
+      "pr_numbers": [
+        "3323"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] implement `MultiprocessingLauncher`",
+      "updated_at": "2026-07-28T13:16:42Z"
     },
     "2193": {
       "category": "Documentation",
