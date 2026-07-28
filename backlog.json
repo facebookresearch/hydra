@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-28",
-  "generated_at": "2026-07-28T16:30:48Z",
+  "generated_at": "2026-07-28T16:40:39Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 129,
+    "open_total": 128,
     "by_category": [
       {
         "category": "Bug",
@@ -15,7 +15,7 @@
         "category": "Enhancement",
         "emoji": "✨",
         "count": 99,
-        "percentage": 76.7
+        "percentage": 77.3
       },
       {
         "category": "Documentation",
@@ -27,7 +27,7 @@
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 5.4
+        "percentage": 5.5
       },
       {
         "category": "Refactor",
@@ -38,8 +38,8 @@
       {
         "category": "Build",
         "emoji": "🏗️",
-        "count": 4,
-        "percentage": 3.1
+        "count": 3,
+        "percentage": 2.3
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 128
+        "count": 127
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 210
+        "count": 211
       }
     ]
   },
@@ -527,22 +527,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2170"
-    },
-    {
-      "number": 2196,
-      "title": "CI: Testing Hydra against OmegaConf's master branch",
-      "category": "Build",
-      "category_emoji": "🏗️",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-05-06",
-      "updated": "2026-07-15",
-      "labels": [
-        "triage",
-        "tests"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2196"
     },
     {
       "number": 2226,
@@ -3301,6 +3285,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2193"
     },
     {
+      "number": 2194,
+      "title": "Support for warning handling",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-05-06",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2194"
+    },
+    {
       "number": 2208,
       "title": "instantiate converts inner structured configs back to Dict/ListConf",
       "category": "Bug",
@@ -5635,23 +5635,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2194,
-      "title": "Support for warning handling",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 2196,
+      "title": "CI: Testing Hydra against OmegaConf's master branch",
+      "category": "Build",
+      "category_emoji": "🏗️",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
       "created": "2022-05-06",
       "updated": "2026-07-15",
       "labels": [
-        "enhancement",
+        "tests",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2194"
+      "url": "https://github.com/facebookresearch/hydra/issues/2196"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-28T16:40:39Z",
+      "kind": "closed",
+      "issue": 2196,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2196",
+      "title": "CI: Testing Hydra against OmegaConf's master branch"
+    },
     {
       "ts": "2026-07-28T16:30:48Z",
       "kind": "closed",
@@ -7203,14 +7210,6 @@
       "issue": 2980,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2980",
       "title": "Can hydra be used for programming languages other than Python?",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2977,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2977",
-      "title": "[Feature Request] Add a generation strategy config to ax-sweeper plugin",
       "detail": "added \"triage\""
     }
   ]

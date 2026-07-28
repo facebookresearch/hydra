@@ -577,3 +577,4 @@
 {"ts": "2026-07-28T12:56:57Z", "kind": "pr", "issue": 2187, "issue_url": "https://github.com/facebookresearch/hydra/issues/2187", "title": "[Feature Request] implement `MultiprocessingLauncher`", "detail": "linked #3323"}
 {"ts": "2026-07-28T14:00:39Z", "kind": "new", "issue": 3324, "issue_url": "https://github.com/facebookresearch/hydra/issues/3324", "title": "Align bundled plugin dependencies with Hydra release lines"}
 {"ts": "2026-07-28T16:30:48Z", "kind": "closed", "issue": 2194, "issue_url": "https://github.com/facebookresearch/hydra/issues/2194", "title": "Support for warning handling"}
+{"ts": "2026-07-28T16:40:39Z", "kind": "closed", "issue": 2196, "issue_url": "https://github.com/facebookresearch/hydra/issues/2196", "title": "CI: Testing Hydra against OmegaConf's master branch"}
