@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-28",
-  "generated_at": "2026-07-28T07:54:34Z",
+  "generated_at": "2026-07-28T12:56:57Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 129,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 0
+        "count": 1
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 129
+        "count": 128
       },
       {
         "status": "done",
@@ -71,6 +71,28 @@
     ]
   },
   "issues": [
+    {
+      "number": 2187,
+      "title": "[Feature Request] implement `MultiprocessingLauncher`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3323,
+          "url": "https://github.com/facebookresearch/hydra/pull/3323"
+        }
+      ],
+      "created": "2022-05-02",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage",
+        "launchers"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2187"
+    },
     {
       "number": 385,
       "title": "Experimentation tracking support",
@@ -505,23 +527,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2170"
-    },
-    {
-      "number": 2187,
-      "title": "[Feature Request] implement `MultiprocessingLauncher`",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-05-02",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage",
-        "launchers"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2187"
     },
     {
       "number": 2194,
@@ -5631,6 +5636,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-28T12:56:57Z",
+      "kind": "pr",
+      "issue": 2187,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2187",
+      "title": "[Feature Request] implement `MultiprocessingLauncher`",
+      "detail": "linked #3323"
+    },
+    {
+      "ts": "2026-07-28T12:56:57Z",
+      "kind": "status",
+      "issue": 2187,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2187",
+      "title": "[Feature Request] implement `MultiprocessingLauncher`",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3323,
+        "url": "https://github.com/facebookresearch/hydra/pull/3323"
+      }
+    },
+    {
       "ts": "2026-07-27T17:35:17Z",
       "kind": "label",
       "issue": 2170,
@@ -7171,22 +7196,6 @@
       "issue": 2949,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2949",
       "title": "[Feature Request] Use @hydra.main() decorator for multiple python scripts from one bash script",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2944,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2944",
-      "title": "[Feature Request] I would like resolvers to access the decorated main function's docstring and the name of the running script, as well as some other capabilities.",
-      "detail": "added \"triage\""
-    },
-    {
-      "ts": "2026-07-15T13:19:21Z",
-      "kind": "label",
-      "issue": 2943,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2943",
-      "title": "[Feature Request] It'd be nice to have a custom resolver for accessing data files for a given python package.",
       "detail": "added \"triage\""
     }
   ]
