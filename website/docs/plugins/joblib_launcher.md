@@ -13,6 +13,18 @@ import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
 
 The Joblib Launcher plugin provides a launcher for parallel tasks based on [`Joblib.Parallel`](https://joblib.readthedocs.io/en/latest/parallel.html).
 
+### Process backends
+
+The launcher supports two process backends:
+
+| Backend | Advantages | Tradeoffs |
+| --- | --- | --- |
+| `loky` (default) | Robust process management and Cloudpickle support for dynamically defined Python objects. It remains the default for compatibility. | Workers are reused between Hydra jobs, so arbitrary application caches or process-global state can leak between jobs. Cloudpickling the task can also fail when it reaches some native-library objects. |
+| `multiprocessing` | Runs every Hydra job in a fresh worker process and sends module-level function tasks by reference instead of Cloudpickling them. This provides strict process isolation and avoids serializing module-level native-library objects referenced by the task. | Functions must be defined at module scope. Custom decorators around `@hydra.main` must use `functools.wraps`. |
+
+Loky runs jobs in the parent process when `n_jobs=1`. The multiprocessing
+backend retains per-job worker isolation while executing one job at a time.
+
 ### Installation
 ```commandline
 pip install hydra-joblib-launcher --upgrade
@@ -25,7 +37,9 @@ Once installed, add `hydra/launcher=joblib` to your command line. Alternatively,
 defaults:
   - override hydra/launcher: joblib
 ```
-By default, process-based parallelism using all available CPU cores is used. By overriding the default configuration, it is e.g. possible limit the number of parallel executions.
+By default, the launcher uses process-based parallelism with all available CPU
+cores. Set `hydra.launcher.n_jobs` to limit the number of jobs that can run
+concurrently.
 
 The JobLibLauncherConf backing the config is defined <GithubLink to="plugins/hydra_joblib_launcher/hydra_plugins/hydra_joblib_launcher/config.py">here</GithubLink>:
 
@@ -35,7 +49,7 @@ You can discover the Joblib Launcher parameters with:
 _target_: hydra_plugins.hydra_joblib_launcher.joblib_launcher.JoblibLauncher
 n_jobs: -1
 inner_max_num_threads: null
-backend: null
+backend: loky
 prefer: processes
 require: null
 verbose: 0
@@ -49,6 +63,11 @@ mmap_mode: r
 There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins.md) for more information.
 
 See [`Joblib.Parallel` documentation](https://joblib.readthedocs.io/en/latest/parallel.html) for full details about the parameters above.
+
+`backend` selects the backend used by this launcher. Because a backend is
+always selected explicitly, `prefer` does not change it. `require` must be
+compatible with the selected backend; `require=sharedmem` is unsupported
+because this launcher does not support a thread-based backend.
 
 #### Controlling native library thread pools
 
@@ -64,7 +83,26 @@ hydra:
 This can help avoid oversubscription when multiple Hydra jobs run in parallel and each job calls into a multithreaded native library. For arbitrary environment variables, use [`hydra.job.env_set`](../configure_hydra/job.md#hydrajobenv_set) instead.
 
 <div class="alert alert--info" role="alert">
-NOTE: The only supported JobLib backend is Loky (process-based parallelism).
+Select the `multiprocessing` backend to execute every job in a fresh worker
+process:
+
+```yaml
+hydra:
+  launcher:
+    backend: multiprocessing
+    n_jobs: 4
+```
+
+The launcher automatically sets Joblib's `batch_size=1` so that each pool task
+contains one Hydra job, and `maxtasksperchild=1` so that the worker exits after
+that task. These are internal correctness settings, not user configuration.
+Conflicting values are rejected.
+
+`inner_max_num_threads` is supported only by `loky`. Custom decorators around
+`@hydra.main` must follow the
+[Hydra task-decorator requirements](../advanced/decorating_main.md). Callable
+task objects are copied to each worker, so all state stored on them must support
+Python pickling.
 </div><br/>
 
 An <GithubLink to="plugins/hydra_joblib_launcher/example">example application</GithubLink> using this launcher is provided in the plugin repository.
@@ -73,7 +111,7 @@ Starting the app with `python my_app.py --multirun task=1,2,3,4,5` will launch f
 
 ```text
 $ python my_app.py --multirun task=1,2,3,4,5
-[HYDRA] Joblib.Parallel(n_jobs=-1,verbose=0,timeout=None,pre_dispatch=2*n_jobs,batch_size=auto,temp_folder=None,max_nbytes=None,mmap_mode=r,backend=loky) is launching 5 jobs
+[HYDRA] Joblib.Parallel(n_jobs=10,backend=loky,prefer=processes,require=None,verbose=0,timeout=None,pre_dispatch=2*n_jobs,batch_size=auto,temp_folder=None,max_nbytes=None,mmap_mode=r) is launching 5 jobs
 [HYDRA] Launching jobs, sweep output dir : multirun/2020-02-18/10-00-00
 [__main__][INFO] - Process ID 14336 executing task 2 ...
 [__main__][INFO] - Process ID 14333 executing task 1 ...
