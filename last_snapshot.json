@@ -88,6 +88,7 @@
     "2323": "2026-07-29",
     "2338": "2026-07-04",
     "2348": "2026-07-03",
+    "2351": "2026-07-29",
     "2359": "2026-06-30",
     "2364": "2026-07-25",
     "2381": "2026-06-30",
@@ -222,7 +223,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-07-29T04:40:10Z",
+  "generated_at": "2026-07-29T05:04:50Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -474,19 +475,6 @@
       "status": "not started",
       "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
       "updated_at": "2026-07-03T05:30:51Z"
-    },
-    "2351": {
-      "category": "Enhancement",
-      "created_at": "2022-08-22T12:40:06Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] Possibility to save full start command in separate file",
-      "updated_at": "2026-07-15T13:16:38Z"
     },
     "2387": {
       "category": "Documentation",
@@ -2992,6 +2980,19 @@
       "status": "done",
       "title": "[Bug] AssertionError when configuring hydra from top-level dataclass",
       "updated_at": "2025-04-04T13:48:21Z"
+    },
+    "2351": {
+      "category": "Enhancement",
+      "created_at": "2022-08-22T12:40:06Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Possibility to save full start command in separate file",
+      "updated_at": "2026-07-15T13:16:38Z"
     },
     "2359": {
       "category": "Bug",

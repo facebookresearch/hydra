@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-29",
-  "generated_at": "2026-07-29T04:40:10Z",
+  "generated_at": "2026-07-29T05:04:50Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 119,
+    "open_total": 118,
     "by_category": [
       {
         "category": "Bug",
@@ -14,14 +14,14 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 91,
-        "percentage": 76.5
+        "count": 90,
+        "percentage": 76.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 8,
-        "percentage": 6.7
+        "percentage": 6.8
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 118
+        "count": 117
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 221
+        "count": 222
       }
     ]
   },
@@ -575,22 +575,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2350"
-    },
-    {
-      "number": 2351,
-      "title": "[Feature Request] Possibility to save full start command in separate file",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-08-22",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2351"
     },
     {
       "number": 2387,
@@ -5672,9 +5656,32 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
+    },
+    {
+      "number": 2351,
+      "title": "[Feature Request] Possibility to save full start command in separate file",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-08-22",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2351"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-29T05:04:50Z",
+      "kind": "closed",
+      "issue": 2351,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2351",
+      "title": "[Feature Request] Possibility to save full start command in separate file"
+    },
     {
       "ts": "2026-07-29T04:40:10Z",
       "kind": "new",
@@ -7223,13 +7230,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2237",
       "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
       "detail": "removed \"triage\""
-    },
-    {
-      "ts": "2026-07-15T17:59:35Z",
-      "kind": "closed",
-      "issue": 3078,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3078",
-      "title": "[Bug]"
     }
   ]
 }
