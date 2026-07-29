@@ -1,9 +1,9 @@
 {
-  "generated_on": "2026-07-28",
-  "generated_at": "2026-07-28T20:14:42Z",
+  "generated_on": "2026-07-29",
+  "generated_at": "2026-07-29T03:23:44Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 119,
+    "open_total": 118,
     "by_category": [
       {
         "category": "Bug",
@@ -14,14 +14,14 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 91,
-        "percentage": 76.5
+        "count": 90,
+        "percentage": 76.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 8,
-        "percentage": 6.7
+        "percentage": 6.8
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 118
+        "count": 117
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 220
+        "count": 221
       }
     ]
   },
@@ -560,22 +560,6 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2237"
-    },
-    {
-      "number": 2323,
-      "title": "specify maximum tasks in submitit_local",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-08-03",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2323"
     },
     {
       "number": 2350,
@@ -3402,6 +3386,24 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2274"
     },
     {
+      "number": 2281,
+      "title": "[Feature Request] RQ Launcher plugin the ability to send tasks to different types of workers",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-07-04",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "launchers",
+        "plugin",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2281"
+    },
+    {
       "number": 2284,
       "title": "[Bug] Multirun doesn't notify user about exception",
       "category": "Bug",
@@ -5638,25 +5640,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2281,
-      "title": "[Feature Request] RQ Launcher plugin the ability to send tasks to different types of workers",
+      "number": 2323,
+      "title": "specify maximum tasks in submitit_local",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-07-04",
+      "created": "2022-08-03",
       "updated": "2026-07-15",
       "labels": [
         "enhancement",
-        "launchers",
-        "plugin",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2281"
+      "url": "https://github.com/facebookresearch/hydra/issues/2323"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-29T03:23:44Z",
+      "kind": "closed",
+      "issue": 2323,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2323",
+      "title": "specify maximum tasks in submitit_local"
+    },
     {
       "ts": "2026-07-28T20:14:42Z",
       "kind": "closed",
@@ -7206,13 +7213,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2236",
       "title": "`AssertionError` with unusual defaults list",
       "detail": "removed \"triage\""
-    },
-    {
-      "ts": "2026-07-15T17:30:36Z",
-      "kind": "closed",
-      "issue": 2241,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2241",
-      "title": "[Bug] Colorlog plugin generates `.log` file in cwd instead of output dir"
     }
   ]
 }
