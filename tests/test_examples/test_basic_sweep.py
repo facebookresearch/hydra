@@ -6,7 +6,7 @@ from typing import List
 from pytest import mark
 
 from hydra.test_utils.test_utils import (
-    assert_regex_match,
+    assert_multiline_regex_search,
     chdir_hydra_root,
     run_python_script,
 )
@@ -72,7 +72,7 @@ def test_basic_sweep_example(
     cmd.extend(args)
     result, _err = run_python_script(cmd)
 
-    assert_regex_match(
+    assert_multiline_regex_search(
         from_line=expected,
         to_line=result,
         from_name="Expected output",

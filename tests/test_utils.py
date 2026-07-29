@@ -22,7 +22,6 @@ from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.errors import HydraDeprecationError
 from hydra.test_utils.test_utils import (
     assert_multiline_regex_search,
-    assert_regex_match,
 )
 
 
@@ -345,7 +344,7 @@ class TestRunAndReport:
                 run_and_report(demo_func)
         mock_stderr.seek(0)
         stderr_output = mock_stderr.read()
-        assert_regex_match(expected_traceback_regex, stderr_output)
+        assert_multiline_regex_search(expected_traceback_regex, stderr_output)
 
     def test_simplified_traceback_failure(self) -> None:
         """
@@ -373,4 +372,4 @@ class TestRunAndReport:
                 run_and_report(demo_func)
         mock_stderr.seek(0)
         stderr_output = mock_stderr.read()
-        assert_regex_match(expected_traceback_regex, stderr_output)
+        assert_multiline_regex_search(expected_traceback_regex, stderr_output)

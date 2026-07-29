@@ -17,7 +17,6 @@ from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
     assert_multiline_regex_search,
-    assert_regex_match,
     assert_text_same,
     chdir_hydra_root,
     integration_test,
@@ -1601,7 +1600,7 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
         See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information.
           @hydra.main()
         """)
-    assert_regex_match(
+    assert_multiline_regex_search(
         from_line=expected,
         to_line=err,
         from_name="Expected error",
@@ -1621,7 +1620,7 @@ def test_job_chdir_not_specified(tmpdir: Path) -> None:
         See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information..*
         .*
         """)
-    assert_regex_match(
+    assert_multiline_regex_search(
         from_line=expected,
         to_line=err,
         from_name="Expected error",
@@ -1929,7 +1928,7 @@ def test_hydra_mode(
     if error:
         expected = normalize_newlines(expected_output)
         ret = run_with_error(cmd)
-        assert_regex_match(
+        assert_multiline_regex_search(
             from_line=expected,
             to_line=ret,
             from_name="Expected output",
@@ -1937,14 +1936,14 @@ def test_hydra_mode(
         )
     elif warning:
         out, err = run_python_script(cmd, allow_warnings=True)
-        assert_regex_match(
+        assert_multiline_regex_search(
             from_line=expected_output,
             to_line=out,
             from_name="Expected output",
             to_name="Actual output",
         )
         assert warning_msg is not None
-        assert_regex_match(
+        assert_multiline_regex_search(
             from_line=warning_msg,
             to_line=err,
             from_name="Expected error",
@@ -1952,7 +1951,7 @@ def test_hydra_mode(
         )
     else:
         out, _ = run_python_script(cmd)
-        assert_regex_match(
+        assert_multiline_regex_search(
             from_line=expected_output,
             to_line=out,
             from_name="Expected output",
@@ -1978,7 +1977,7 @@ def test_hydra_runtime_choice_1882(tmpdir: Path) -> None:
                 nesterov""")
 
     out, _ = run_python_script(cmd)
-    assert_regex_match(
+    assert_multiline_regex_search(
         from_line=expected_output,
         to_line=out,
         from_name="Expected output",
