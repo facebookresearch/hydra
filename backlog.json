@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-29",
-  "generated_at": "2026-07-29T05:26:06Z",
+  "generated_at": "2026-07-29T07:07:15Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 117,
@@ -585,10 +585,9 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2022-10-10",
-      "updated": "2026-07-15",
+      "updated": "2026-07-29",
       "labels": [
-        "enhancement",
-        "triage"
+        "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2412"
     },
@@ -3588,6 +3587,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2381"
     },
     {
+      "number": 2387,
+      "title": "Docs unclear on how to use multiple entries in defaults list",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-09-16",
+      "updated": "2026-07-15",
+      "labels": [
+        "documentation",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2387"
+    },
+    {
       "number": 2407,
       "title": "[Bug] Ray Launcher - Py3.9 and 3.10 - Could not find a version that satisfies the requirement ray[default]==1.12.0 ",
       "category": "Bug",
@@ -5656,25 +5671,17 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 2387,
-      "title": "Docs unclear on how to use multiple entries in defaults list",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-09-16",
-      "updated": "2026-07-15",
-      "labels": [
-        "documentation",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2387"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-29T07:07:15Z",
+      "kind": "label",
+      "issue": 2412,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2412",
+      "title": "[Feature Request] allow to use hydra without an __init__.py",
+      "detail": "removed \"triage\""
+    },
     {
       "ts": "2026-07-29T05:26:06Z",
       "kind": "closed",
@@ -7222,13 +7229,6 @@
       "issue": 2208,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2208",
       "title": "instantiate converts inner structured configs back to Dict/ListConf"
-    },
-    {
-      "ts": "2026-07-15T18:14:10Z",
-      "kind": "closed",
-      "issue": 2235,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2235",
-      "title": "Error message during `instantiate` missing some information"
     }
   ]
 }
