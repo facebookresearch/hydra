@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-07-29",
-  "generated_at": "2026-07-29T07:57:15Z",
+  "generated_at": "2026-07-29T09:10:14Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 117,
+    "open_total": 116,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 7.7
+        "percentage": 7.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 90,
-        "percentage": 76.9
+        "count": 89,
+        "percentage": 76.7
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 116
+        "count": 115
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 223
+        "count": 224
       }
     ]
   },
@@ -605,23 +605,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2453"
-    },
-    {
-      "number": 2455,
-      "title": "[Feature Request] Support loading YAML from user-specified URI",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-11-08",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage",
-        "has-workaround"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2455"
     },
     {
       "number": 2459,
@@ -5670,9 +5653,33 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
+    },
+    {
+      "number": 2455,
+      "title": "[Feature Request] Support loading YAML from user-specified URI",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-11-08",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "has-workaround",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2455"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-29T09:10:14Z",
+      "kind": "closed",
+      "issue": 2455,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2455",
+      "title": "[Feature Request] Support loading YAML from user-specified URI"
+    },
     {
       "ts": "2026-07-29T07:41:17Z",
       "kind": "label",
@@ -7222,13 +7229,6 @@
       "issue": 2125,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2125",
       "title": "[Bug] Cannot find conf/ dir when outside of packaged app."
-    },
-    {
-      "ts": "2026-07-15T18:25:44Z",
-      "kind": "closed",
-      "issue": 2193,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2193",
-      "title": "[Bug] Not failing when required fields are missing when using structured config"
     }
   ]
 }
