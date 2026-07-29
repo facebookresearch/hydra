@@ -594,3 +594,4 @@
 {"ts": "2026-07-29T05:04:50Z", "kind": "closed", "issue": 2351, "issue_url": "https://github.com/facebookresearch/hydra/issues/2351", "title": "[Feature Request] Possibility to save full start command in separate file"}
 {"ts": "2026-07-29T05:26:06Z", "kind": "closed", "issue": 2387, "issue_url": "https://github.com/facebookresearch/hydra/issues/2387", "title": "Docs unclear on how to use multiple entries in defaults list"}
 {"ts": "2026-07-29T07:07:15Z", "kind": "label", "issue": 2412, "issue_url": "https://github.com/facebookresearch/hydra/issues/2412", "title": "[Feature Request] allow to use hydra without an __init__.py", "detail": "removed \"triage\""}
+{"ts": "2026-07-29T07:41:17Z", "kind": "label", "issue": 2453, "issue_url": "https://github.com/facebookresearch/hydra/issues/2453", "title": "[Feature Request] ConfigStore to warn or raise on name/group collision", "detail": "removed \"triage\""}

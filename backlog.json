@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-29",
-  "generated_at": "2026-07-29T07:07:15Z",
+  "generated_at": "2026-07-29T07:41:17Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 117,
@@ -600,10 +600,9 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2022-11-07",
-      "updated": "2026-07-25",
+      "updated": "2026-07-29",
       "labels": [
-        "enhancement",
-        "triage"
+        "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2453"
     },
@@ -5675,6 +5674,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-29T07:41:17Z",
+      "kind": "label",
+      "issue": 2453,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2453",
+      "title": "[Feature Request] ConfigStore to warn or raise on name/group collision",
+      "detail": "removed \"triage\""
+    },
+    {
       "ts": "2026-07-29T07:07:15Z",
       "kind": "label",
       "issue": 2412,
@@ -7222,13 +7229,6 @@
       "issue": 2193,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2193",
       "title": "[Bug] Not failing when required fields are missing when using structured config"
-    },
-    {
-      "ts": "2026-07-15T18:18:24Z",
-      "kind": "closed",
-      "issue": 2208,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2208",
-      "title": "instantiate converts inner structured configs back to Dict/ListConf"
     }
   ]
 }
