@@ -592,3 +592,4 @@
 {"ts": "2026-07-29T03:23:44Z", "kind": "closed", "issue": 2323, "issue_url": "https://github.com/facebookresearch/hydra/issues/2323", "title": "specify maximum tasks in submitit_local"}
 {"ts": "2026-07-29T04:40:10Z", "kind": "new", "issue": 3326, "issue_url": "https://github.com/facebookresearch/hydra/issues/3326", "title": "Add a Reploy launcher for immutable, reproducible job execution"}
 {"ts": "2026-07-29T05:04:50Z", "kind": "closed", "issue": 2351, "issue_url": "https://github.com/facebookresearch/hydra/issues/2351", "title": "[Feature Request] Possibility to save full start command in separate file"}
+{"ts": "2026-07-29T05:26:06Z", "kind": "closed", "issue": 2387, "issue_url": "https://github.com/facebookresearch/hydra/issues/2387", "title": "Docs unclear on how to use multiple entries in defaults list"}

@@ -1,45 +1,45 @@
 {
   "generated_on": "2026-07-29",
-  "generated_at": "2026-07-29T05:04:50Z",
+  "generated_at": "2026-07-29T05:26:06Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 118,
+    "open_total": 117,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 7.6
+        "percentage": 7.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 90,
-        "percentage": 76.3
+        "percentage": 76.9
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 8,
-        "percentage": 6.8
+        "count": 7,
+        "percentage": 6.0
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 5.9
+        "percentage": 6.0
       },
       {
         "category": "Refactor",
         "emoji": "🔧",
         "count": 1,
-        "percentage": 0.8
+        "percentage": 0.9
       },
       {
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.5
+        "percentage": 2.6
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 117
+        "count": 116
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 222
+        "count": 223
       }
     ]
   },
@@ -575,22 +575,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2350"
-    },
-    {
-      "number": 2387,
-      "title": "Docs unclear on how to use multiple entries in defaults list",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-09-16",
-      "updated": "2026-07-15",
-      "labels": [
-        "documentation",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2387"
     },
     {
       "number": 2412,
@@ -3536,6 +3520,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2348"
     },
     {
+      "number": 2351,
+      "title": "[Feature Request] Possibility to save full start command in separate file",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-08-22",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2351"
+    },
+    {
       "number": 2359,
       "title": "[Bug] `SearchPath` plugin no longer installs/behaves correctly with `setuptools>=64`",
       "category": "Bug",
@@ -5658,23 +5658,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2351,
-      "title": "[Feature Request] Possibility to save full start command in separate file",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 2387,
+      "title": "Docs unclear on how to use multiple entries in defaults list",
+      "category": "Documentation",
+      "category_emoji": "📄",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-08-22",
+      "created": "2022-09-16",
       "updated": "2026-07-15",
       "labels": [
-        "enhancement",
+        "documentation",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2351"
+      "url": "https://github.com/facebookresearch/hydra/issues/2387"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-29T05:26:06Z",
+      "kind": "closed",
+      "issue": 2387,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2387",
+      "title": "Docs unclear on how to use multiple entries in defaults list"
+    },
     {
       "ts": "2026-07-29T05:04:50Z",
       "kind": "closed",
@@ -7222,14 +7229,6 @@
       "issue": 2235,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2235",
       "title": "Error message during `instantiate` missing some information"
-    },
-    {
-      "ts": "2026-07-15T18:05:42Z",
-      "kind": "label",
-      "issue": 2237,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2237",
-      "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
-      "detail": "removed \"triage\""
     }
   ]
 }

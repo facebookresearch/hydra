@@ -92,6 +92,7 @@
     "2359": "2026-06-30",
     "2364": "2026-07-25",
     "2381": "2026-06-30",
+    "2387": "2026-07-29",
     "2407": "2026-06-30",
     "2416": "2026-06-30",
     "2435": "2026-07-23",
@@ -223,7 +224,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-07-29T05:04:50Z",
+  "generated_at": "2026-07-29T05:26:06Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -475,19 +476,6 @@
       "status": "not started",
       "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
       "updated_at": "2026-07-03T05:30:51Z"
-    },
-    "2387": {
-      "category": "Documentation",
-      "created_at": "2022-09-16T18:16:56Z",
-      "labels": [
-        "documentation",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Docs unclear on how to use multiple entries in defaults list",
-      "updated_at": "2026-07-15T13:16:37Z"
     },
     "2412": {
       "category": "Enhancement",
@@ -3033,6 +3021,19 @@
       "status": "done",
       "title": "Error out on attempt to sweep on the Hydra configuration",
       "updated_at": "2022-10-20T17:38:42Z"
+    },
+    "2387": {
+      "category": "Documentation",
+      "created_at": "2022-09-16T18:16:56Z",
+      "labels": [
+        "documentation",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Docs unclear on how to use multiple entries in defaults list",
+      "updated_at": "2026-07-15T13:16:37Z"
     },
     "2407": {
       "category": "Bug",
