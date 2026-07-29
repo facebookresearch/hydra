@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-29",
-  "generated_at": "2026-07-29T03:23:44Z",
+  "generated_at": "2026-07-29T04:40:10Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 118,
+    "open_total": 119,
     "by_category": [
       {
         "category": "Bug",
@@ -14,14 +14,14 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 90,
-        "percentage": 76.3
+        "count": 91,
+        "percentage": 76.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 8,
-        "percentage": 6.8
+        "percentage": 6.7
       },
       {
         "category": "Question",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 117
+        "count": 118
       },
       {
         "status": "done",
@@ -1954,6 +1954,24 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3324"
     },
     {
+      "number": 3326,
+      "title": "Add a Reploy launcher for immutable, reproducible job execution",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-29",
+      "updated": "2026-07-29",
+      "labels": [
+        "enhancement",
+        "plugin",
+        "launchers",
+        "reproducibility"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3326"
+    },
+    {
       "number": 692,
       "title": "[Feature Request] Support non blocking launching",
       "category": "Enhancement",
@@ -3480,6 +3498,22 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2322"
+    },
+    {
+      "number": 2323,
+      "title": "specify maximum tasks in submitit_local",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-08-03",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2323"
     },
     {
       "number": 2338,
@@ -5638,25 +5672,16 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 2323,
-      "title": "specify maximum tasks in submitit_local",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-08-03",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2323"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-29T04:40:10Z",
+      "kind": "new",
+      "issue": 3326,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3326",
+      "title": "Add a Reploy launcher for immutable, reproducible job execution"
+    },
     {
       "ts": "2026-07-29T03:23:44Z",
       "kind": "closed",
@@ -7205,14 +7230,6 @@
       "issue": 3078,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3078",
       "title": "[Bug]"
-    },
-    {
-      "ts": "2026-07-15T17:39:25Z",
-      "kind": "label",
-      "issue": 2236,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2236",
-      "title": "`AssertionError` with unusual defaults list",
-      "detail": "removed \"triage\""
     }
   ]
 }

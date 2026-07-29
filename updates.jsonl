@@ -590,3 +590,4 @@
 {"ts": "2026-07-28T19:38:43Z", "kind": "pr", "issue": 2268, "issue_url": "https://github.com/facebookresearch/hydra/issues/2268", "title": "Enable instantiations without resolution", "detail": "linked #3325"}
 {"ts": "2026-07-28T20:14:42Z", "kind": "closed", "issue": 2281, "issue_url": "https://github.com/facebookresearch/hydra/issues/2281", "title": "[Feature Request] RQ Launcher plugin the ability to send tasks to different types of workers"}
 {"ts": "2026-07-29T03:23:44Z", "kind": "closed", "issue": 2323, "issue_url": "https://github.com/facebookresearch/hydra/issues/2323", "title": "specify maximum tasks in submitit_local"}
+{"ts": "2026-07-29T04:40:10Z", "kind": "new", "issue": 3326, "issue_url": "https://github.com/facebookresearch/hydra/issues/3326", "title": "Add a Reploy launcher for immutable, reproducible job execution"}
