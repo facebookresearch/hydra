@@ -598,3 +598,4 @@
 {"ts": "2026-07-29T09:10:14Z", "kind": "closed", "issue": 2455, "issue_url": "https://github.com/facebookresearch/hydra/issues/2455", "title": "[Feature Request] Support loading YAML from user-specified URI"}
 {"ts": "2026-07-30T07:50:43Z", "kind": "status", "issue": 1749, "issue_url": "https://github.com/facebookresearch/hydra/issues/1749", "title": "tests: Use multiline regex search instead of assert_regex_match", "detail": "not started → community PR", "pr": {"number": 3327, "url": "https://github.com/facebookresearch/hydra/pull/3327"}}
 {"ts": "2026-07-30T07:50:43Z", "kind": "pr", "issue": 1749, "issue_url": "https://github.com/facebookresearch/hydra/issues/1749", "title": "tests: Use multiline regex search instead of assert_regex_match", "detail": "linked #3327"}
+{"ts": "2026-07-30T18:47:08Z", "kind": "closed", "issue": 2268, "issue_url": "https://github.com/facebookresearch/hydra/issues/2268", "title": "Enable instantiations without resolution"}

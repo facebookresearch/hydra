@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-07-30",
-  "generated_at": "2026-07-30T07:50:43Z",
+  "generated_at": "2026-07-30T18:47:08Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 116,
+    "open_total": 115,
     "by_category": [
       {
         "category": "Bug",
@@ -14,20 +14,20 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 89,
-        "percentage": 76.7
+        "count": 88,
+        "percentage": 76.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 7,
-        "percentage": 6.0
+        "percentage": 6.1
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 6.0
+        "percentage": 6.1
       },
       {
         "category": "Refactor",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -66,32 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 224
+        "count": 225
       }
     ]
   },
   "issues": [
-    {
-      "number": 2268,
-      "title": "Enable instantiations without resolution",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3325,
-          "url": "https://github.com/facebookresearch/hydra/pull/3325"
-        }
-      ],
-      "created": "2022-06-20",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2268"
-    },
     {
       "number": 1749,
       "title": "tests: Use multiline regex search instead of assert_regex_match",
@@ -5675,9 +5654,37 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
+    },
+    {
+      "number": 2268,
+      "title": "Enable instantiations without resolution",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3325,
+          "url": "https://github.com/facebookresearch/hydra/pull/3325"
+        }
+      ],
+      "created": "2022-06-20",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2268"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-30T18:47:08Z",
+      "kind": "closed",
+      "issue": 2268,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2268",
+      "title": "Enable instantiations without resolution"
+    },
     {
       "ts": "2026-07-30T07:50:43Z",
       "kind": "pr",
@@ -7232,13 +7239,6 @@
       "issue": 2102,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2102",
       "title": "[Bug] Structured config in config store is not found with SearchPathPlugin"
-    },
-    {
-      "ts": "2026-07-16T04:05:27Z",
-      "kind": "closed",
-      "issue": 2107,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2107",
-      "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`"
     }
   ]
 }
