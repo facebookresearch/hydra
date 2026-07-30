@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Sequence, Union, cast
 import cloudpickle  # type: ignore
 from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, configure_log, filter_overrides, setup_globals
-from omegaconf import Node, OmegaConf, open_dict, read_write
+from omegaconf import DictConfig, OmegaConf, open_dict
 
 from ._launcher_util import JOB_RETURN_PICKLE, JOB_SPEC_PICKLE, ray_tmp_dir, rsync
 from .ray_aws_launcher import RayAWSLauncher
@@ -60,19 +60,21 @@ def launch(
     assert launcher.hydra_context is not None
     assert launcher.task_function is not None
 
-    setup_commands = launcher.env_setup.commands
+    setup_commands = list(launcher.env_setup.commands)
     packages = filter(
         lambda x: x[1] is not None, launcher.env_setup.pip_packages.items()
     )
-    with read_write(setup_commands):
-        setup_commands.extend(
-            [f"pip install {package}=={version}" for package, version in packages]
-        )
-        setup_commands.extend(launcher.ray_cfg.cluster.setup_commands)
-
-    assert isinstance(launcher.ray_cfg.cluster, Node)
-    with read_write(launcher.ray_cfg.cluster):
-        launcher.ray_cfg.cluster.setup_commands = setup_commands
+    setup_commands.extend(
+        [f"pip install {package}=={version}" for package, version in packages]
+    )
+    setup_commands.extend(launcher.ray_cfg.cluster.setup_commands)
+    ray_cluster = cast(
+        DictConfig,
+        OmegaConf.create(
+            OmegaConf.to_container(launcher.ray_cfg.cluster, resolve=True)
+        ),
+    )
+    ray_cluster["setup_commands"] = setup_commands
 
     configure_log(launcher.config.hydra.hydra_logging, launcher.config.hydra.verbose)
     logging_config = cast(
@@ -106,16 +108,20 @@ def launch(
             singleton_state=Singleton.get_state(),
         )
         return launch_jobs(
-            launcher, local_tmp_dir, Path(launcher.config.hydra.sweep.dir)
+            launcher,
+            local_tmp_dir,
+            Path(launcher.config.hydra.sweep.dir),
+            ray_cluster,
         )
 
 
 def launch_jobs(
-    launcher: RayAWSLauncher, local_tmp_dir: str, sweep_dir: Path
+    launcher: RayAWSLauncher,
+    local_tmp_dir: str,
+    sweep_dir: Path,
+    ray_cluster: DictConfig,
 ) -> Sequence[JobReturn]:
-    config = OmegaConf.to_container(
-        launcher.ray_cfg.cluster, resolve=True, enum_to_str=True
-    )
+    config = OmegaConf.to_container(ray_cluster, resolve=True, enum_to_str=True)
     sdk.create_or_update_cluster(
         config,
         **cast(Dict[str, Any], launcher.create_update_cluster),

@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-import copy
 import functools
 import inspect
 import os
@@ -323,8 +322,6 @@ def _call_target(
     """Call target (type) with args and kwargs."""
     try:
         args, kwargs = _extract_pos_args(args, kwargs)
-        args = tuple(_prepare_call_argument(arg) for arg in args)
-        kwargs = {key: _prepare_call_argument(value) for key, value in kwargs.items()}
     except Exception as e:
         msg = (
             f"Error in collecting args and kwargs for '{_convert_target_to_string(_target_)}':"
@@ -438,17 +435,6 @@ def _resolve_target(
         msg = f"Expected a callable target, got '{target}' of type '{type(target).__name__}'"
         raise InstantiationException(_with_full_key(msg, full_key))
     return target
-
-
-def _prepare_call_argument(value: Any) -> Any:
-    if OmegaConf.is_config(value):
-        parent = value._get_parent()
-        value = copy.deepcopy(value)
-        value._set_parent(parent)
-        value._set_flag("readonly", False)
-        OmegaConf.resolve(value)
-        value._set_parent(None)
-    return value
 
 
 def instantiate(
