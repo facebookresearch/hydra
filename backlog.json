@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-07-29",
-  "generated_at": "2026-07-29T09:10:14Z",
+  "generated_on": "2026-07-30",
+  "generated_at": "2026-07-30T07:50:43Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 116,
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 0
+        "count": 1
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 115
+        "count": 114
       },
       {
         "status": "done",
@@ -91,6 +91,28 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2268"
+    },
+    {
+      "number": 1749,
+      "title": "tests: Use multiline regex search instead of assert_regex_match",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3327,
+          "url": "https://github.com/facebookresearch/hydra/pull/3327"
+        }
+      ],
+      "created": "2021-08-02",
+      "updated": "2026-07-19",
+      "labels": [
+        "maintenance",
+        "tests",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1749"
     },
     {
       "number": 385,
@@ -417,23 +439,6 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1622"
-    },
-    {
-      "number": 1749,
-      "title": "tests: Use multiline regex search instead of assert_regex_match",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-08-02",
-      "updated": "2026-07-19",
-      "labels": [
-        "maintenance",
-        "tests",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1749"
     },
     {
       "number": 1865,
@@ -3651,6 +3656,23 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2445"
     },
     {
+      "number": 2455,
+      "title": "[Feature Request] Support loading YAML from user-specified URI",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-11-08",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "has-workaround",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2455"
+    },
+    {
       "number": 2469,
       "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification",
       "category": "Bug",
@@ -5653,26 +5675,29 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 2455,
-      "title": "[Feature Request] Support loading YAML from user-specified URI",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-11-08",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "has-workaround",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2455"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-30T07:50:43Z",
+      "kind": "pr",
+      "issue": 1749,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1749",
+      "title": "tests: Use multiline regex search instead of assert_regex_match",
+      "detail": "linked #3327"
+    },
+    {
+      "ts": "2026-07-30T07:50:43Z",
+      "kind": "status",
+      "issue": 1749,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1749",
+      "title": "tests: Use multiline regex search instead of assert_regex_match",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3327,
+        "url": "https://github.com/facebookresearch/hydra/pull/3327"
+      }
+    },
     {
       "ts": "2026-07-29T09:10:14Z",
       "kind": "closed",
@@ -7214,21 +7239,6 @@
       "issue": 2107,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2107",
       "title": "`Could not find 'hydra/env/default'` using `compose` with `pytest<7` and `python=3.10`"
-    },
-    {
-      "ts": "2026-07-16T03:53:13Z",
-      "kind": "label",
-      "issue": 2121,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2121",
-      "title": "[Bug] Recursion overflow from `--help` if `group=''`",
-      "detail": "removed \"triage\""
-    },
-    {
-      "ts": "2026-07-16T03:35:17Z",
-      "kind": "closed",
-      "issue": 2125,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2125",
-      "title": "[Bug] Cannot find conf/ dir when outside of packaged app."
     }
   ]
 }

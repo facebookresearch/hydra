@@ -225,7 +225,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-07-29T09:10:14Z",
+  "generated_at": "2026-07-30T07:50:43Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -343,9 +343,11 @@
         "priority_low",
         "tests"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3327"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "tests: Use multiline regex search instead of assert_regex_match",
       "updated_at": "2026-07-19T11:33:00Z"
     },
