@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-30",
-  "generated_at": "2026-07-30T18:47:08Z",
+  "generated_at": "2026-07-30T19:45:15Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 115,
@@ -3321,6 +3321,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2267"
     },
     {
+      "number": 2268,
+      "title": "Enable instantiations without resolution",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3325,
+          "url": "https://github.com/facebookresearch/hydra/pull/3325"
+        }
+      ],
+      "created": "2022-06-20",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2268"
+    },
+    {
       "number": 2274,
       "title": "[Bug/Question] `config_path` resolution is misleading",
       "category": "Bug",
@@ -5654,27 +5675,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 2268,
-      "title": "Enable instantiations without resolution",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3325,
-          "url": "https://github.com/facebookresearch/hydra/pull/3325"
-        }
-      ],
-      "created": "2022-06-20",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2268"
     }
   ],
   "updates": [
