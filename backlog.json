@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-31",
-  "generated_at": "2026-07-31T07:03:37Z",
+  "generated_at": "2026-07-31T08:01:52Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 113,
@@ -3750,6 +3750,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2482"
     },
     {
+      "number": 2483,
+      "title": "[Feature Request] Consistent mechanism for defaulting to environment variables",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-11-28",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2483"
+    },
+    {
       "number": 2488,
       "title": "[Bug] instantiate fails targeting class defined in `__main__` when using `joblib` in sweep",
       "category": "Bug",
@@ -5680,22 +5696,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 2483,
-      "title": "[Feature Request] Consistent mechanism for defaulting to environment variables",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-11-28",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2483"
     }
   ],
   "updates": [
