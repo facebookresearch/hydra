@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-31",
-  "generated_at": "2026-07-31T08:01:52Z",
+  "generated_at": "2026-07-31T11:18:29Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 113,
+    "open_total": 114,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 8.0
+        "percentage": 7.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 86,
-        "percentage": 76.1
+        "count": 87,
+        "percentage": 76.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 7,
-        "percentage": 6.2
+        "percentage": 6.1
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 6.2
+        "percentage": 6.1
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.7
+        "percentage": 2.6
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 112
+        "count": 113
       },
       {
         "status": "done",
@@ -1876,6 +1876,19 @@
         "needs decision"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3328"
+    },
+    {
+      "number": 3329,
+      "title": "Only suggest HYDRA_FULL_ERROR when a full traceback is likely useful",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-31",
+      "updated": "2026-07-31",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3329"
     },
     {
       "number": 692,
@@ -5700,6 +5713,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-31T11:18:29Z",
+      "kind": "new",
+      "issue": 3329,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3329",
+      "title": "Only suggest HYDRA_FULL_ERROR when a full traceback is likely useful"
+    },
+    {
       "ts": "2026-07-31T07:03:37Z",
       "kind": "closed",
       "issue": 2483,
@@ -7249,13 +7269,6 @@
         "number": 3277,
         "url": "https://github.com/facebookresearch/hydra/pull/3277"
       }
-    },
-    {
-      "ts": "2026-07-16T07:02:52Z",
-      "kind": "closed",
-      "issue": 3275,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3275",
-      "title": "[Bug] Bash completion executes non-Hydra Python scripts"
     }
   ]
 }

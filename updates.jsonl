@@ -605,3 +605,4 @@
 {"ts": "2026-07-31T06:16:26Z", "kind": "label", "issue": 2793, "issue_url": "https://github.com/facebookresearch/hydra/issues/2793", "title": "[Optuna Sweeper] Support persisted studies for analysis and resume", "detail": "added \"blocked\", \"optuna\", \"plugin\", \"sweep\""}
 {"ts": "2026-07-31T06:44:36Z", "kind": "closed", "issue": 2471, "issue_url": "https://github.com/facebookresearch/hydra/issues/2471", "title": "[Feature Request] Appending to a structured dict from a config file"}
 {"ts": "2026-07-31T07:03:37Z", "kind": "closed", "issue": 2483, "issue_url": "https://github.com/facebookresearch/hydra/issues/2483", "title": "[Feature Request] Consistent mechanism for defaulting to environment variables"}
+{"ts": "2026-07-31T11:18:29Z", "kind": "new", "issue": 3329, "issue_url": "https://github.com/facebookresearch/hydra/issues/3329", "title": "Only suggest HYDRA_FULL_ERROR when a full traceback is likely useful"}
