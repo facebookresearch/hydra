@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-31",
-  "generated_at": "2026-07-31T11:18:29Z",
+  "generated_at": "2026-07-31T18:14:58Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 114,
+    "open_total": 113,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 9,
-        "percentage": 7.9
+        "count": 8,
+        "percentage": 7.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 87,
-        "percentage": 76.3
+        "percentage": 77.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 7,
-        "percentage": 6.1
+        "percentage": 6.2
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 6.1
+        "percentage": 6.2
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.6
+        "percentage": 2.7
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 113
+        "count": 112
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 228
+        "count": 229
       }
     ]
   },
@@ -418,22 +418,6 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1622"
-    },
-    {
-      "number": 1865,
-      "title": "Instantiation fails when _target_ arg interpolates to another node with _target_ key and object arg",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2021-10-22",
-      "updated": "2026-07-16",
-      "labels": [
-        "bug",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1865"
     },
     {
       "number": 1869,
@@ -1879,7 +1863,7 @@
     },
     {
       "number": 3329,
-      "title": "Only suggest HYDRA_FULL_ERROR when a full traceback is likely useful",
+      "title": "Stop advertising HYDRA_FULL_ERROR in user-facing errors",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "not started",
@@ -5709,9 +5693,32 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
+    },
+    {
+      "number": 1865,
+      "title": "Instantiation fails when _target_ arg interpolates to another node with _target_ key and object arg",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-10-22",
+      "updated": "2026-07-16",
+      "labels": [
+        "bug",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1865"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-31T18:14:58Z",
+      "kind": "closed",
+      "issue": 1865,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/1865",
+      "title": "Instantiation fails when _target_ arg interpolates to another node with _target_ key and object arg"
+    },
     {
       "ts": "2026-07-31T11:18:29Z",
       "kind": "new",
@@ -7257,18 +7264,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1951",
       "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
       "detail": "linked #3277"
-    },
-    {
-      "ts": "2026-07-16T07:25:48Z",
-      "kind": "status",
-      "issue": 1951,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1951",
-      "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
-      "detail": "not started → in progress",
-      "pr": {
-        "number": 3277,
-        "url": "https://github.com/facebookresearch/hydra/pull/3277"
-      }
     }
   ]
 }
