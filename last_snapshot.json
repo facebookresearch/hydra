@@ -101,6 +101,7 @@
     "2455": "2026-07-29",
     "2459": "2026-07-30",
     "2469": "2026-06-30",
+    "2471": "2026-07-31",
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2482": "2026-06-30",
@@ -227,7 +228,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-07-31T06:16:26Z",
+  "generated_at": "2026-07-31T06:44:36Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -490,19 +491,6 @@
       "status": "not started",
       "title": "[Feature Request] ConfigStore to warn or raise on name/group collision",
       "updated_at": "2026-07-29T07:39:45Z"
-    },
-    "2471": {
-      "category": "Enhancement",
-      "created_at": "2022-11-18T12:54:02Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] Appending to a structured dict from a config file",
-      "updated_at": "2026-07-15T13:16:33Z"
     },
     "2483": {
       "category": "Enhancement",
@@ -3121,6 +3109,19 @@
       "status": "done",
       "title": "[Bug] Behaviour of requiring fallback value for missing environment variable `${oc.env:VARIABLE,???}` is inconsistent between configuration group specification and value specification",
       "updated_at": "2022-11-29T05:44:02Z"
+    },
+    "2471": {
+      "category": "Enhancement",
+      "created_at": "2022-11-18T12:54:02Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Appending to a structured dict from a config file",
+      "updated_at": "2026-07-15T13:16:33Z"
     },
     "2477": {
       "category": "Bug",

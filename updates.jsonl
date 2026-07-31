@@ -603,3 +603,4 @@
 {"ts": "2026-07-31T06:06:42Z", "kind": "new", "issue": 3328, "issue_url": "https://github.com/facebookresearch/hydra/issues/3328", "title": "[Feature Request] First-class resume support for Hydra sweeps"}
 {"ts": "2026-07-31T06:12:31Z", "kind": "label", "issue": 3328, "issue_url": "https://github.com/facebookresearch/hydra/issues/3328", "title": "[Feature Request] First-class resume support for Hydra sweeps", "detail": "added \"enhancement\", \"needs decision\", \"sweep\""}
 {"ts": "2026-07-31T06:16:26Z", "kind": "label", "issue": 2793, "issue_url": "https://github.com/facebookresearch/hydra/issues/2793", "title": "[Optuna Sweeper] Support persisted studies for analysis and resume", "detail": "added \"blocked\", \"optuna\", \"plugin\", \"sweep\""}
+{"ts": "2026-07-31T06:44:36Z", "kind": "closed", "issue": 2471, "issue_url": "https://github.com/facebookresearch/hydra/issues/2471", "title": "[Feature Request] Appending to a structured dict from a config file"}
