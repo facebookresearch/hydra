@@ -1,21 +1,21 @@
 {
-  "generated_on": "2026-07-30",
-  "generated_at": "2026-07-30T20:15:03Z",
+  "generated_on": "2026-07-31",
+  "generated_at": "2026-07-31T06:06:42Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 114,
+    "open_total": 115,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 7.9
+        "percentage": 7.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 87,
-        "percentage": 76.3
+        "count": 88,
+        "percentage": 76.5
       },
       {
         "category": "Documentation",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 113
+        "count": 114
       },
       {
         "status": "done",
@@ -949,7 +949,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2023-11-15",
-      "updated": "2026-07-23",
+      "updated": "2026-07-31",
       "labels": [
         "enhancement"
       ],
@@ -1887,6 +1887,19 @@
         "reproducibility"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3326"
+    },
+    {
+      "number": 3328,
+      "title": "[Feature Request] First-class resume support for Hydra sweeps",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-07-31",
+      "updated": "2026-07-31",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3328"
     },
     {
       "number": 692,
@@ -3655,6 +3668,22 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2455"
+    },
+    {
+      "number": 2459,
+      "title": "[Feature Request] Add `overrides` parameter to `@hydra.main()`",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-11-08",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2459"
     },
     {
       "number": 2469,
@@ -5659,25 +5688,16 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 2459,
-      "title": "[Feature Request] Add `overrides` parameter to `@hydra.main()`",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2022-11-08",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2459"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-31T06:06:42Z",
+      "kind": "new",
+      "issue": 3328,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3328",
+      "title": "[Feature Request] First-class resume support for Hydra sweeps"
+    },
     {
       "ts": "2026-07-30T20:15:03Z",
       "kind": "closed",
@@ -7232,13 +7252,6 @@
       "issue": 3275,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3275",
       "title": "[Bug] Bash completion executes non-Hydra Python scripts"
-    },
-    {
-      "ts": "2026-07-16T05:05:45Z",
-      "kind": "closed",
-      "issue": 2017,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2017",
-      "title": "[Bug] Hydra resolver does not work in compose_api"
     }
   ]
 }
