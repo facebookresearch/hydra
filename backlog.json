@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-07-31",
-  "generated_at": "2026-07-31T06:44:36Z",
+  "generated_at": "2026-07-31T07:03:37Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 114,
+    "open_total": 113,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 9,
-        "percentage": 7.9
+        "percentage": 8.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 87,
-        "percentage": 76.3
+        "count": 86,
+        "percentage": 76.1
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 7,
-        "percentage": 6.1
+        "percentage": 6.2
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 6.1
+        "percentage": 6.2
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.6
+        "percentage": 2.7
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 113
+        "count": 112
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 227
+        "count": 228
       }
     ]
   },
@@ -589,22 +589,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2453"
-    },
-    {
-      "number": 2483,
-      "title": "[Feature Request] Consistent mechanism for defaulting to environment variables",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-11-28",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2483"
     },
     {
       "number": 2551,
@@ -3693,6 +3677,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2469"
     },
     {
+      "number": 2471,
+      "title": "[Feature Request] Appending to a structured dict from a config file",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2022-11-18",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2471"
+    },
+    {
       "number": 2477,
       "title": "[Bug] Unable to delete an item from ListConfig",
       "category": "Bug",
@@ -5682,23 +5682,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
-      "number": 2471,
-      "title": "[Feature Request] Appending to a structured dict from a config file",
+      "number": 2483,
+      "title": "[Feature Request] Consistent mechanism for defaulting to environment variables",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2022-11-18",
+      "created": "2022-11-28",
       "updated": "2026-07-15",
       "labels": [
         "enhancement",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2471"
+      "url": "https://github.com/facebookresearch/hydra/issues/2483"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-07-31T07:03:37Z",
+      "kind": "closed",
+      "issue": 2483,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2483",
+      "title": "[Feature Request] Consistent mechanism for defaulting to environment variables"
+    },
     {
       "ts": "2026-07-31T06:44:36Z",
       "kind": "closed",
@@ -7249,13 +7256,6 @@
       "issue": 3275,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3275",
       "title": "[Bug] Bash completion executes non-Hydra Python scripts"
-    },
-    {
-      "ts": "2026-07-16T06:04:23Z",
-      "kind": "closed",
-      "issue": 1957,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1957",
-      "title": "[Bug] Shell completion doesn't work with `python -m module_name ...`"
     }
   ]
 }

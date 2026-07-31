@@ -105,6 +105,7 @@
     "2477": "2026-06-07",
     "2479": "2026-06-07",
     "2482": "2026-06-30",
+    "2483": "2026-07-31",
     "2488": "2026-06-30",
     "2502": "2026-06-07",
     "2507": "2026-07-01",
@@ -228,7 +229,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-07-31T06:44:36Z",
+  "generated_at": "2026-07-31T07:03:37Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -491,19 +492,6 @@
       "status": "not started",
       "title": "[Feature Request] ConfigStore to warn or raise on name/group collision",
       "updated_at": "2026-07-29T07:39:45Z"
-    },
-    "2483": {
-      "category": "Enhancement",
-      "created_at": "2022-11-28T16:25:27Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] Consistent mechanism for defaulting to environment variables",
-      "updated_at": "2026-07-15T13:16:33Z"
     },
     "2551": {
       "category": "Enhancement",
@@ -3164,6 +3152,19 @@
       "status": "done",
       "title": "hydra.runtime.cwd, hydra.rutime.config_sources mixed path separators",
       "updated_at": "2022-12-06T01:49:48Z"
+    },
+    "2483": {
+      "category": "Enhancement",
+      "created_at": "2022-11-28T16:25:27Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Consistent mechanism for defaulting to environment variables",
+      "updated_at": "2026-07-15T13:16:33Z"
     },
     "2488": {
       "category": "Bug",
