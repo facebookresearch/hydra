@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-31",
-  "generated_at": "2026-07-31T18:14:58Z",
+  "generated_at": "2026-07-31T19:19:27Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 113,
@@ -2313,6 +2313,22 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1859"
+    },
+    {
+      "number": 1865,
+      "title": "Instantiation fails when _target_ arg interpolates to another node with _target_ key and object arg",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2021-10-22",
+      "updated": "2026-07-16",
+      "labels": [
+        "bug",
+        "priority_low"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/1865"
     },
     {
       "number": 1866,
@@ -5693,22 +5709,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 1865,
-      "title": "Instantiation fails when _target_ arg interpolates to another node with _target_ key and object arg",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2021-10-22",
-      "updated": "2026-07-16",
-      "labels": [
-        "bug",
-        "priority_low"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/1865"
     }
   ],
   "updates": [
