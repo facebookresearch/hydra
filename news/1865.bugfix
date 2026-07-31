@@ -1,0 +1,1 @@
+Fix instantiate to set allow_objects flag on config root when input is already an OmegaConf node

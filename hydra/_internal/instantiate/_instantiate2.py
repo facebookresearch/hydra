@@ -517,6 +517,14 @@ def instantiate(
         or type(config) is tuple
     ):
         config = OmegaConf.structured(config, flags={"allow_objects": True})
+    elif OmegaConf.is_config(config):
+        # If config is already an OmegaConf node, ensure allow_objects is set
+        # on the root to support custom resolvers that return objects
+        root = config
+        while root._get_parent() is not None:
+            root = root._get_parent()
+        if not root._metadata.flags.get("allow_objects", False):
+            root._metadata.flags["allow_objects"] = True
 
     if OmegaConf.is_dict(config):
         return instantiate_node(

@@ -3087,3 +3087,67 @@ def test_dict_as_none(instantiate_func: Any) -> None:
     cfg = OmegaConf.structured(DictValuesConf)
     obj = instantiate_func(config=cfg)
     assert obj.d is None
+
+
+def test_issue_1865_nested_instantiation_with_resolver_objects(
+    instantiate_func: Any,
+) -> None:
+    """
+    Test that instantiation works when _target_ arg interpolates to another
+    node with _target_ key and a custom resolver that returns objects.
+    
+    Regression test for https://github.com/facebookresearch/hydra/issues/1865
+    """
+
+    class MyObject:
+        def __init__(self, arg: str) -> None:
+            self.arg = arg
+
+    OmegaConf.register_new_resolver(
+        "test_1865_as_myobject", lambda arg: MyObject(arg), replace=True
+    )
+
+    class ClassA:
+        def __init__(self, arg_A: Any) -> None:
+            self.arg_A = arg_A
+
+    class ClassB:
+        def __init__(self, arg_B: MyObject) -> None:
+            self.arg_B = arg_B
+
+    config = OmegaConf.create(
+        {
+            "vec": {
+                "_target_": "tests.instantiate.test_instantiate.ClassB",
+                "arg_B": "${test_1865_as_myobject:abc}",
+            },
+            "pipe": {
+                "_target_": "tests.instantiate.test_instantiate.ClassA",
+                "arg_A": "${vec}",
+            },
+        }
+    )
+
+    # Store the classes in the test module so _locate can find them
+    import sys
+    import tests.instantiate.test_instantiate as test_mod
+
+    test_mod.ClassA = ClassA
+    test_mod.ClassB = ClassB
+
+    # Test instantiating the full config
+    result = instantiate_func(config)
+    assert isinstance(result, dict)
+
+    # Test instantiating vec directly - should work
+    result_vec = instantiate_func(config.vec)
+    assert isinstance(result_vec, ClassB)
+    assert isinstance(result_vec.arg_B, MyObject)
+    assert result_vec.arg_B.arg == "abc"
+
+    # Test instantiating pipe directly - this was failing before the fix
+    result_pipe = instantiate_func(config.pipe)
+    assert isinstance(result_pipe, ClassA)
+    assert isinstance(result_pipe.arg_A, ClassB)
+    assert isinstance(result_pipe.arg_A.arg_B, MyObject)
+    assert result_pipe.arg_A.arg_B.arg == "abc"
