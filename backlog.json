@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-31",
-  "generated_at": "2026-07-31T06:06:42Z",
+  "generated_at": "2026-07-31T06:12:31Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 115,
@@ -1898,7 +1898,11 @@
       "prs": [],
       "created": "2026-07-31",
       "updated": "2026-07-31",
-      "labels": [],
+      "labels": [
+        "enhancement",
+        "sweep",
+        "needs decision"
+      ],
       "url": "https://github.com/facebookresearch/hydra/issues/3328"
     },
     {
@@ -5692,6 +5696,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-31T06:12:31Z",
+      "kind": "label",
+      "issue": 3328,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3328",
+      "title": "[Feature Request] First-class resume support for Hydra sweeps",
+      "detail": "added \"enhancement\", \"needs decision\", \"sweep\""
+    },
+    {
       "ts": "2026-07-31T06:06:42Z",
       "kind": "new",
       "issue": 3328,
@@ -7245,13 +7257,6 @@
         "number": 3276,
         "url": "https://github.com/facebookresearch/hydra/pull/3276"
       }
-    },
-    {
-      "ts": "2026-07-16T05:39:34Z",
-      "kind": "new",
-      "issue": 3275,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3275",
-      "title": "[Bug] Bash completion executes non-Hydra Python scripts"
     }
   ]
 }
