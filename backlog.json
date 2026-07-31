@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-07-31",
-  "generated_at": "2026-07-31T06:12:31Z",
+  "generated_at": "2026-07-31T06:16:26Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 115,
@@ -951,7 +951,11 @@
       "created": "2023-11-15",
       "updated": "2026-07-31",
       "labels": [
-        "enhancement"
+        "enhancement",
+        "blocked",
+        "plugin",
+        "optuna",
+        "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2793"
     },
@@ -5696,6 +5700,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-07-31T06:16:26Z",
+      "kind": "label",
+      "issue": 2793,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2793",
+      "title": "[Optuna Sweeper] Support persisted studies for analysis and resume",
+      "detail": "added \"blocked\", \"optuna\", \"plugin\", \"sweep\""
+    },
+    {
       "ts": "2026-07-31T06:12:31Z",
       "kind": "label",
       "issue": 3328,
@@ -7245,18 +7257,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3275",
       "title": "[Bug] Bash completion executes non-Hydra Python scripts",
       "detail": "linked #3276"
-    },
-    {
-      "ts": "2026-07-16T05:45:31Z",
-      "kind": "status",
-      "issue": 3275,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3275",
-      "title": "[Bug] Bash completion executes non-Hydra Python scripts",
-      "detail": "not started → in progress",
-      "pr": {
-        "number": 3276,
-        "url": "https://github.com/facebookresearch/hydra/pull/3276"
-      }
     }
   ]
 }
