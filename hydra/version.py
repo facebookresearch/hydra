@@ -10,11 +10,14 @@ from packaging.version import Version
 from . import __version__
 from ._internal.deprecation_warning import deprecation_warning
 from .core.singleton import Singleton
-from .errors import HydraException
+from .errors import Hydra14MigrationWarning, HydraException
 
 _UNSPECIFIED_: Any = object()
 
 __compat_version__: Version = Version("1.1")
+_HYDRA_1_4_PREPARATION_GUIDE = (
+    "https://hydra.cc/docs/1.3/upgrades/1.3_to_1.4/prepare_for_1_4/"
+)
 
 
 class VersionBase(metaclass=Singleton):
@@ -65,10 +68,13 @@ def setbase(ver: Any) -> None:
             message=dedent(
                 f"""
             The version_base parameter is not specified.
-            Please specify a compatability version level, or None.
-            Will assume defaults for version {__compat_version__}"""
+            Hydra will assume defaults for version {__compat_version__}.
+            Hydra 1.4 will remove this compatibility behavior.
+            Before upgrading to Hydra 1.4, set version_base="1.3" and test your application.
+            See {_HYDRA_1_4_PREPARATION_GUIDE} for preparation instructions."""
             ),
             stacklevel=3,
+            category=Hydra14MigrationWarning,
         )
         _version_base = __compat_version__
     elif ver is None:
@@ -77,4 +83,16 @@ def setbase(ver: Any) -> None:
         _version_base = _get_version(ver)
         if _version_base < __compat_version__:
             raise HydraException(f'version_base must be >= "{__compat_version__}"')
+        if _version_base == __compat_version__:
+            deprecation_warning(
+                message=dedent(
+                    f"""
+                version_base="{_version_base}" selects Hydra 1.1 compatibility behavior.
+                Hydra 1.4 will remove this compatibility behavior.
+                Before upgrading to Hydra 1.4, set version_base="1.3" and test your application.
+                See {_HYDRA_1_4_PREPARATION_GUIDE} for preparation instructions."""
+                ),
+                stacklevel=3,
+                category=Hydra14MigrationWarning,
+            )
     VersionBase.instance().setbase(_version_base)

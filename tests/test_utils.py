@@ -2,6 +2,7 @@
 import io
 import os
 import re
+import warnings
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, NoReturn, Optional
@@ -15,7 +16,7 @@ from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.utils import run_and_report
 from hydra.conf import HydraConf, RuntimeConf
 from hydra.core.hydra_config import HydraConfig
-from hydra.errors import HydraDeprecationError
+from hydra.errors import Hydra14MigrationWarning, HydraDeprecationError
 from hydra.test_utils.test_utils import (
     assert_multiline_regex_search,
     assert_regex_match,
@@ -93,6 +94,24 @@ def test_deprecation_warning(
     else:
         with warns(UserWarning, match=re.escape(msg)):
             deprecation_warning(msg)
+
+
+def test_deprecation_warning_category() -> None:
+    msg = "Prepare for Hydra 1.4"
+    with warns(Hydra14MigrationWarning, match=re.escape(msg)):
+        deprecation_warning(msg, category=Hydra14MigrationWarning)
+
+
+def test_suppress_migration_warning_category() -> None:
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        warnings.filterwarnings("ignore", category=Hydra14MigrationWarning)
+        deprecation_warning("Prepare for Hydra 1.4", category=Hydra14MigrationWarning)
+        deprecation_warning("Unrelated warning")
+
+    assert len(caught) == 1
+    assert type(caught[0].message) is UserWarning
+    assert str(caught[0].message) == "Unrelated warning"
 
 
 class TestRunAndReport:

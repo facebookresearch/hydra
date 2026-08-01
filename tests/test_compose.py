@@ -2,6 +2,7 @@
 import re
 import subprocess
 import sys
+import warnings
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
@@ -23,7 +24,11 @@ from hydra._internal.config_search_path_impl import ConfigSearchPathImpl
 from hydra.core.config_search_path import SearchPathQuery
 from hydra.core.config_store import ConfigStore
 from hydra.core.global_hydra import GlobalHydra
-from hydra.errors import ConfigCompositionException, HydraException
+from hydra.errors import (
+    ConfigCompositionException,
+    Hydra14MigrationWarning,
+    HydraException,
+)
 from hydra.test_utils.test_utils import chdir_hydra_root
 
 chdir_hydra_root()
@@ -73,26 +78,45 @@ def test_initialize_bad_version_base(hydra_restore_singletons: Any) -> None:
         initialize(version_base=1.1)  # type: ignore
 
 
-def test_initialize_dev_version_base(hydra_restore_singletons: Any) -> None:
+def test_initialize_version_base_1_1(hydra_restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
-    # packaging will compare "1.2.0.dev2" < "1.2", so need to ensure handled correctly
-    initialize(version_base="1.2.0.dev2")
-    assert version.base_at_least("1.2")
+    with warns(
+        Hydra14MigrationWarning,
+        match='version_base="1.1" selects Hydra 1.1 compatibility behavior',
+    ):
+        initialize(version_base="1.1", config_path=None)
+    assert version.getbase() == version.__compat_version__
+
+
+@mark.parametrize("version_base", ["1.2", "1.2.0.dev2", "1.3"])
+def test_initialize_supported_version_base_without_migration_warning(
+    hydra_restore_singletons: Any, version_base: str
+) -> None:
+    assert not GlobalHydra().is_initialized()
+    expected_version = version._get_version(version_base)
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        initialize(version_base=version_base, config_path=None)
+    assert not any(isinstance(item.message, Hydra14MigrationWarning) for item in caught)
+    assert version.getbase() == expected_version
 
 
 def test_initialize_cur_version_base(hydra_restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
-    initialize(version_base=None)
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        initialize(version_base=None, config_path=None)
+    assert not any(isinstance(item.message, Hydra14MigrationWarning) for item in caught)
     assert version.base_at_least(__version__)
 
 
 def test_initialize_compat_version_base(hydra_restore_singletons: Any) -> None:
     assert not GlobalHydra().is_initialized()
-    with raises(
-        UserWarning,
-        match=f"Will assume defaults for version {version.__compat_version__}",
+    with warns(
+        Hydra14MigrationWarning,
+        match="Hydra 1.4 will remove this compatibility behavior",
     ):
-        initialize()
+        initialize(config_path=None)
     assert version.base_at_least(str(version.__compat_version__))
 
 
@@ -666,7 +690,7 @@ def test_deprecated_initialize(hydra_restore_singletons: Any) -> None:
 
     version.setbase("1.1")
     with warns(expected_warning=UserWarning, match=re.escape(msg)):
-        with expr_initialize():
+        with expr_initialize(config_path=None):
             assert compose() == {}
 
     version.setbase("1.2")
