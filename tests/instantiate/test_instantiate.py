@@ -2163,7 +2163,7 @@ def test_allowlist_works_for_prefix_blocked_target(monkeypatch: Any) -> None:
 
 def test_target_whitelist_warns_in_legacy_mode() -> None:
     cfg = {"_target_": "tests.instantiate.AClass", "a": 10, "b": 20, "c": 30}
-    with warns(UserWarning, match="_target_whitelist_"):
+    with warns(UserWarning, match=r"This\s+warning will become an error in Hydra 1\.5"):
         assert _instantiate2.instantiate(cfg) == AClass(a=10, b=20, c=30)
 
 
