@@ -150,6 +150,13 @@ module.exports = {
             'upgrades/version_base',
             {
                 type: 'category',
+                label: '1.3 to 1.4',
+                items: [
+                    'upgrades/1.3_to_1.4/prepare_for_1_4',
+                ],
+            },
+            {
+                type: 'category',
                 label: '1.1 to 1.2',
                 items: [
                     'upgrades/1.1_to_1.2/changes_to_hydra_main_config_path',

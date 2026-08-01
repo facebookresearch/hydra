@@ -14,7 +14,7 @@ from pytest import fixture, mark, param, raises, warns
 import hydra
 from hydra import version
 from hydra._internal.instantiate._instantiate2 import _resolve_target
-from hydra.errors import InstantiationException
+from hydra.errors import Hydra14MigrationWarning, InstantiationException
 from hydra.test_utils.test_utils import assert_multiline_regex_search
 from hydra.types import ConvertMode, TargetConf
 from tests.instantiate import (
@@ -656,7 +656,8 @@ def test_instantiate_adam_conf_with_convert(instantiate_func: Any) -> None:
 
 
 def test_targetconf_deprecated(hydra_restore_singletons: Any) -> None:
-    version.setbase("1.1")
+    with warns(Hydra14MigrationWarning):
+        version.setbase("1.1")
     with warns(
         expected_warning=UserWarning,
         match=re.escape(
