@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-07-31",
-  "generated_at": "2026-07-31T19:19:27Z",
+  "generated_on": "2026-08-01",
+  "generated_at": "2026-08-01T07:47:31Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 113,
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 1
+        "count": 2
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 112
+        "count": 111
       },
       {
         "status": "done",
@@ -92,6 +92,29 @@
         "priority_low"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/1749"
+    },
+    {
+      "number": 2237,
+      "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3333,
+          "url": "https://github.com/facebookresearch/hydra/pull/3333"
+        }
+      ],
+      "created": "2022-05-26",
+      "updated": "2026-07-15",
+      "labels": [
+        "bug",
+        "plugin",
+        "optuna",
+        "sweep"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2237"
     },
     {
       "number": 385,
@@ -510,24 +533,6 @@
         "blocked"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2227"
-    },
-    {
-      "number": 2237,
-      "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-05-26",
-      "updated": "2026-07-15",
-      "labels": [
-        "bug",
-        "plugin",
-        "optuna",
-        "sweep"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2237"
     },
     {
       "number": 2350,
@@ -5713,6 +5718,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-01T07:47:31Z",
+      "kind": "pr",
+      "issue": 2237,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2237",
+      "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
+      "detail": "linked #3333"
+    },
+    {
+      "ts": "2026-08-01T07:47:31Z",
+      "kind": "status",
+      "issue": 2237,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2237",
+      "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3333,
+        "url": "https://github.com/facebookresearch/hydra/pull/3333"
+      }
+    },
+    {
       "ts": "2026-07-31T18:14:58Z",
       "kind": "closed",
       "issue": 1865,
@@ -7249,21 +7274,6 @@
       "issue": 1954,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1954",
       "title": "Pruning option for Optuna"
-    },
-    {
-      "ts": "2026-07-16T09:14:38Z",
-      "kind": "closed",
-      "issue": 1951,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1951",
-      "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list"
-    },
-    {
-      "ts": "2026-07-16T07:25:48Z",
-      "kind": "pr",
-      "issue": 1951,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1951",
-      "title": "[Bug] Hydra silently ignores misspelled keywords in defaults list",
-      "detail": "linked #3277"
     }
   ]
 }
