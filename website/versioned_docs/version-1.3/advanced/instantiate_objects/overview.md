@@ -18,6 +18,17 @@ Call/instantiate supports:
 - Constructing an object by calling the `__init__` method
 - Calling functions, static functions, class methods and other callable global objects
 
+:::warning
+`hydra.utils.instantiate()` and `hydra.utils.call()` can execute arbitrary code
+from a config-controlled `_target_` and its arguments. Use them only with trusted
+configs.
+
+Hydra 1.3.4 blocks some dangerous targets by default, but this blocklist is
+defense-in-depth and is not a complete security boundary. See
+[GHSA-2cp2-2r3c-7p7r](https://github.com/facebookresearch/hydra/security/advisories/GHSA-2cp2-2r3c-7p7r)
+for details.
+:::
+
 <details>
   <summary>Instantiate API (Expand for details)</summary>
 
