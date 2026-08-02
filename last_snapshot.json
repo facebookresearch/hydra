@@ -230,7 +230,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-02T05:23:51Z",
+  "generated_at": "2026-08-02T07:48:06Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -1549,7 +1549,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Warn Hydra 1.3 users to prepare for Hydra 1.4",
-      "updated_at": "2026-08-02T05:22:12Z"
+      "updated_at": "2026-08-02T05:30:25Z"
     },
     "385": {
       "category": "Enhancement",
