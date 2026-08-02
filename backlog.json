@@ -1,33 +1,33 @@
 {
-  "generated_on": "2026-08-01",
-  "generated_at": "2026-08-01T07:47:31Z",
+  "generated_on": "2026-08-02",
+  "generated_at": "2026-08-02T05:23:51Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 113,
+    "open_total": 114,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 8,
-        "percentage": 7.1
+        "percentage": 7.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 87,
-        "percentage": 77.0
+        "percentage": 76.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 7,
-        "percentage": 6.2
+        "count": 8,
+        "percentage": 7.0
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 6.2
+        "percentage": 6.1
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.7
+        "percentage": 2.6
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 111
+        "count": 112
       },
       {
         "status": "done",
@@ -1878,6 +1878,23 @@
       "updated": "2026-07-31",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3329"
+    },
+    {
+      "number": 3334,
+      "title": "Warn Hydra 1.3 users to prepare for Hydra 1.4",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-02",
+      "updated": "2026-08-02",
+      "labels": [
+        "documentation",
+        "enhancement",
+        "priority_high"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3334"
     },
     {
       "number": 692,
@@ -5718,6 +5735,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-02T05:23:51Z",
+      "kind": "new",
+      "issue": 3334,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3334",
+      "title": "Warn Hydra 1.3 users to prepare for Hydra 1.4"
+    },
+    {
       "ts": "2026-08-01T07:47:31Z",
       "kind": "pr",
       "issue": 2237,
@@ -7267,13 +7291,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1944",
       "title": "[Feature Request] logrange sweep",
       "detail": "removed \"triage\""
-    },
-    {
-      "ts": "2026-07-16T09:23:20Z",
-      "kind": "closed",
-      "issue": 1954,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1954",
-      "title": "Pruning option for Optuna"
     }
   ]
 }
