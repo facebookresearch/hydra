@@ -44,7 +44,7 @@ def describe(job_return: JobReturn) -> str:
     )
 
 
-@hydra.main(version_base=None, config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     raise KeyboardInterrupt
 

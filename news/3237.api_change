@@ -1,0 +1,2 @@
+Hydra 1.4 removes Hydra 1.1 compatibility and deprecates explicit
+``version_base`` values.

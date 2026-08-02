@@ -112,7 +112,7 @@ The primary Defaults List will come from `config.yaml`.
   cs.store(group="db", name="base_mysql", node=MySQLConfig)
   cs.store(group="db", name="base_postgresql", node=PostGreSQLConfig)
 
-  @hydra.main(version_base=None, config_path="conf", config_name="config")
+  @hydra.main(config_path="conf", config_name="config")
   def my_app(cfg: Config) -> None:
       print(OmegaConf.to_yaml(cfg))
 
@@ -219,7 +219,6 @@ database_lib.register_configs()
 
 
 @hydra.main(
-    version_base=None,
     config_path="conf",
     config_name="config",
 )

@@ -15,7 +15,6 @@ from typing import Any, Dict, List, Optional, Sequence, Union, cast
 
 from omegaconf import DictConfig, OmegaConf, open_dict, read_write
 
-from hydra import version
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.hydra_config import HydraConfig
 from hydra.core.singleton import Singleton
@@ -168,18 +167,7 @@ def run_job(
         _chdir = hydra_cfg.hydra.job.chdir
 
         if _chdir is None:
-            if version.base_at_least("1.2"):
-                _chdir = False
-
-        if _chdir is None:
-            url = "https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/"
-            deprecation_warning(
-                message=dedent(f"""\
-                    Future Hydra versions will no longer change working directory at job runtime by default.
-                    See {url} for more information."""),
-                stacklevel=2,
-            )
-            _chdir = True
+            _chdir = False
 
         if _chdir:
             os.chdir(output_dir)
