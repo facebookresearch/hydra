@@ -8,7 +8,7 @@ runs:
   - name: restore_cache
     uses: actions/cache@v4.2.0
     with:
-      key: "-${{ inputs.cache_key_version }}-macos-sys-{{ .Branch }}-${{ inputs.py_version }}"
+      key: "macos-sys-v1-${{ runner.arch }}-${{ inputs.py_version }}"
       path: |-
         ~/miniconda3
         ~/Library/Caches/Homebrew
@@ -40,10 +40,3 @@ runs:
       conda create -n hydra python=${{ inputs.py_version }} -yqc conda-forge
       conda run -n hydra pip install nox --progress-bar off
     shell: bash
-  - name: save_cache
-    uses: actions/cache@v4.2.0
-    with:
-      path: |-
-        ~/miniconda3
-        ~/Library/Caches/Homebrew
-      key: "-${{ inputs.cache_key_version }}-macos-sys-{{ .Branch }}-${{ inputs.py_version }}"
