@@ -230,7 +230,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-02T07:48:06Z",
+  "generated_at": "2026-08-02T21:37:27Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -1384,11 +1384,13 @@
       "labels": [
         "enhancement"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3335"
+      ],
       "state": "OPEN",
-      "status": "not started",
-      "title": "Rework version_base into an opt-in compatibility lever",
-      "updated_at": "2026-06-23T15:33:25Z"
+      "status": "in progress",
+      "title": "Remove version_base and Hydra 1.1 compatibility",
+      "updated_at": "2026-08-02T20:50:59Z"
     },
     "3248": {
       "category": "Enhancement",
@@ -1548,8 +1550,8 @@
       "pr_numbers": [],
       "state": "OPEN",
       "status": "not started",
-      "title": "Warn Hydra 1.3 users to prepare for Hydra 1.4",
-      "updated_at": "2026-08-02T05:30:25Z"
+      "title": "Warn Hydra 1.3 users relying on Hydra 1.1 compatibility",
+      "updated_at": "2026-08-02T19:58:17Z"
     },
     "385": {
       "category": "Enhancement",
