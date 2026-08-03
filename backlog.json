@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-03",
-  "generated_at": "2026-08-03T12:36:58Z",
+  "generated_at": "2026-08-03T14:40:31Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 116,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 3
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 112
+        "count": 111
       },
       {
         "status": "done",
@@ -116,6 +116,24 @@
       "updated": "2026-08-03",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3345"
+    },
+    {
+      "number": 3346,
+      "title": "Remove remaining Hydra 1.2 behavior and migration artifacts",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3342,
+          "url": "https://github.com/facebookresearch/hydra/pull/3342"
+        }
+      ],
+      "created": "2026-08-03",
+      "updated": "2026-08-03",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3346"
     },
     {
       "number": 1749,
@@ -1926,19 +1944,6 @@
         "priority_high"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3334"
-    },
-    {
-      "number": 3346,
-      "title": "Remove remaining Hydra 1.2 transition leftovers",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-08-03",
-      "updated": "2026-08-03",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3346"
     },
     {
       "number": 692,
@@ -5779,6 +5784,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-03T14:40:31Z",
+      "kind": "pr",
+      "issue": 3346,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3346",
+      "title": "Remove remaining Hydra 1.2 behavior and migration artifacts",
+      "detail": "linked #3342"
+    },
+    {
+      "ts": "2026-08-03T14:40:31Z",
+      "kind": "status",
+      "issue": 3346,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3346",
+      "title": "Remove remaining Hydra 1.2 behavior and migration artifacts",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3342,
+        "url": "https://github.com/facebookresearch/hydra/pull/3342"
+      }
+    },
+    {
       "ts": "2026-08-03T12:36:58Z",
       "kind": "pr",
       "issue": 3345,
@@ -7328,21 +7353,6 @@
       "issue": 1933,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1933",
       "title": "[Bug] Selecting multiple configs from a group should allow selecting none"
-    },
-    {
-      "ts": "2026-07-16T14:22:05Z",
-      "kind": "closed",
-      "issue": 1934,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1934",
-      "title": "hydra.utils.instantiate using a config file"
-    },
-    {
-      "ts": "2026-07-16T14:04:37Z",
-      "kind": "pr",
-      "issue": 2149,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2149",
-      "title": "[Bug] Documentation Binder link is broken.",
-      "detail": "linked #3280"
     }
   ]
 }

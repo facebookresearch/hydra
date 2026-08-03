@@ -230,7 +230,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-03T12:36:58Z",
+  "generated_at": "2026-08-03T14:40:31Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -1565,17 +1565,19 @@
       "state": "OPEN",
       "status": "in progress",
       "title": "Remove remaining Hydra 1.1 behavior and migration artifacts",
-      "updated_at": "2026-08-03T12:19:48Z"
+      "updated_at": "2026-08-03T13:18:19Z"
     },
     "3346": {
       "category": "Refactor",
       "created_at": "2026-08-03T12:19:59Z",
       "labels": [],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3342"
+      ],
       "state": "OPEN",
-      "status": "not started",
-      "title": "Remove remaining Hydra 1.2 transition leftovers",
-      "updated_at": "2026-08-03T12:19:59Z"
+      "status": "in progress",
+      "title": "Remove remaining Hydra 1.2 behavior and migration artifacts",
+      "updated_at": "2026-08-03T13:18:27Z"
     },
     "385": {
       "category": "Enhancement",
