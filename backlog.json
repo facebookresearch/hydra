@@ -1,39 +1,39 @@
 {
   "generated_on": "2026-08-03",
-  "generated_at": "2026-08-03T10:01:46Z",
+  "generated_at": "2026-08-03T12:23:00Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 114,
+    "open_total": 116,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 8,
-        "percentage": 7.0
+        "percentage": 6.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 87,
-        "percentage": 76.3
+        "percentage": 75.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 8,
-        "percentage": 7.0
+        "percentage": 6.9
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 6.1
+        "percentage": 6.0
       },
       {
         "category": "Refactor",
         "emoji": "🔧",
-        "count": 1,
-        "percentage": 0.9
+        "count": 3,
+        "percentage": 2.6
       },
       {
         "category": "Build",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 112
+        "count": 114
       },
       {
         "status": "done",
@@ -1682,6 +1682,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3236"
     },
     {
+      "number": 3237,
+      "title": "Remove version_base",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-23",
+      "updated": "2026-08-03",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3237"
+    },
+    {
       "number": 3248,
       "title": "Upgrade experimental rerun to recompose config and overlay saved values",
       "category": "Enhancement",
@@ -1882,19 +1897,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3334"
     },
     {
-      "number": 3237,
-      "title": "Remove version_base and Hydra 1.1 compatibility",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 3345,
+      "title": "Remove remaining Hydra 1.1 behavior and migration artifacts",
+      "category": "Refactor",
+      "category_emoji": "🔧",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
-      "created": "2026-06-23",
-      "updated": "2026-08-02",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3237"
+      "created": "2026-08-03",
+      "updated": "2026-08-03",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3345"
+    },
+    {
+      "number": 3346,
+      "title": "Remove remaining Hydra 1.2 transition leftovers",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-03",
+      "updated": "2026-08-03",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3346"
     },
     {
       "number": 692,
@@ -5735,6 +5761,20 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-03T12:23:00Z",
+      "kind": "new",
+      "issue": 3346,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3346",
+      "title": "Remove remaining Hydra 1.2 transition leftovers"
+    },
+    {
+      "ts": "2026-08-03T12:23:00Z",
+      "kind": "new",
+      "issue": 3345,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3345",
+      "title": "Remove remaining Hydra 1.1 behavior and migration artifacts"
+    },
+    {
       "ts": "2026-08-03T10:01:46Z",
       "kind": "pr",
       "issue": 3237,
@@ -7278,20 +7318,6 @@
       "issue": 2000,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2000",
       "title": "[Feature Request] Minimal Version of Hydra With Bare-Bones Config Support"
-    },
-    {
-      "ts": "2026-07-16T13:12:04Z",
-      "kind": "new",
-      "issue": 3279,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3279",
-      "title": "hydra.mini(): capability-based application entry point with opt-in behavior"
-    },
-    {
-      "ts": "2026-07-16T12:13:23Z",
-      "kind": "closed",
-      "issue": 1939,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1939",
-      "title": "Implement #1389 or similar functionality"
     }
   ]
 }
