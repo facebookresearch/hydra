@@ -21,7 +21,7 @@ class OnJobStartCallback(Callback):
         log.info(f"on_job_start task_function: {task_function}")
 
 
-@hydra.main(version_base=None, config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> Any:
     return "called my_app"
 

@@ -20,7 +20,6 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Protocol, Tupl
 
 from omegaconf import Container, DictConfig, OmegaConf
 
-from hydra import version
 from hydra._internal.hydra import Hydra
 from hydra._internal.utils import detect_task_name
 from hydra.core.global_hydra import GlobalHydra
@@ -58,8 +57,6 @@ class TaskTestFunction:
 
     def __enter__(self) -> "TaskTestFunction":
         try:
-            if type(version.getbase()) is type(version._UNSPECIFIED_):
-                version.setbase(version._UNSPECIFIED_)
             validate_config_path(self.config_path)
 
             job_name = detect_task_name(self.calling_file, self.calling_module)
@@ -133,8 +130,6 @@ class SweepTaskFunction:
         return 100
 
     def __enter__(self) -> "SweepTaskFunction":
-        if type(version.getbase()) is type(version._UNSPECIFIED_):
-            version.setbase(version._UNSPECIFIED_)
         overrides = copy.deepcopy(self.overrides)
         assert overrides is not None
         if self.temp_dir:
@@ -285,7 +280,7 @@ from hydra.core.hydra_config import HydraConfig
 
 $PROLOG
 
-@hydra.main(version_base=None, config_path='.', config_name='config')
+@hydra.main(config_path='.', config_name='config')
 def experiment(cfg):
     with open("$OUTPUT_FILE", "w") as f:
 $PRINTS

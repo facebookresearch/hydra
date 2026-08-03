@@ -3,15 +3,17 @@
 # Source of truth for Hydra's version
 
 import re
-from typing import Any, Optional, Tuple
+from textwrap import dedent
+from typing import Any, Tuple
 
 from . import __version__
+from ._internal.deprecation_warning import deprecation_warning
 from .core.singleton import Singleton
-from .errors import HydraException
+from .errors import Hydra15MigrationWarning, HydraException
 
 _UNSPECIFIED_: Any = object()
 
-__compat_version__ = "1.3"
+_MIN_SUPPORTED_VERSION_BASE = "1.3"
 
 _VERSION_PATTERN = re.compile(
     r"(?P<major>[0-9]+)\.(?P<minor>[0-9]+)"
@@ -21,23 +23,18 @@ _VERSION_PATTERN = re.compile(
 
 class VersionBase(metaclass=Singleton):
     def __init__(self) -> None:
-        self.version_base: Optional[str] = _UNSPECIFIED_
+        self.version_base = _get_version(__version__)
 
     def setbase(self, version: str) -> None:
         assert isinstance(version, str), f"Unexpected Version type : {type(version)}"
         self.version_base = version
 
-    def getbase(self) -> Optional[str]:
+    def getbase(self) -> str:
         return self.version_base
 
     @staticmethod
     def instance(*args: Any, **kwargs: Any) -> "VersionBase":
         return Singleton.instance(VersionBase, *args, **kwargs)  # type: ignore
-
-    @staticmethod
-    def set_instance(instance: "VersionBase") -> None:
-        assert isinstance(instance, VersionBase)
-        Singleton._instances[VersionBase] = instance  # type: ignore
 
 
 def _parse_version(ver: str) -> Tuple[int, int]:
@@ -56,33 +53,33 @@ def _get_version(ver: str) -> str:
     return f"{major}.{minor}"
 
 
-def base_at_least(ver: str) -> bool:
-    _version_base = VersionBase.instance().getbase()
-    if type(_version_base) is type(_UNSPECIFIED_):
-        VersionBase.instance().setbase(__compat_version__)
-        _version_base = __compat_version__
-    assert isinstance(_version_base, str)
-    return _parse_version(_version_base) >= _parse_version(ver)
-
-
-def getbase() -> Optional[str]:
+def getbase() -> str:
     return VersionBase.instance().getbase()
 
 
 def setbase(ver: Any) -> None:
     """
-    Set the `version_base` parameter, which is used to support backward compatibility
-    with older versions of Hydra.
+    Record the deprecated `version_base` parameter for runtime reporting.
     """
     if type(ver) is type(_UNSPECIFIED_):
         _version_base = _get_version(__version__)
-    elif ver is None:
-        _version_base = _get_version(__version__)
     else:
-        _version_base = _get_version(ver)
-        if _parse_version(_version_base) < _parse_version(__compat_version__):
-            raise HydraException(
-                f"version_base={ver!r} is not supported in Hydra 1.4; "
-                "omit version_base to use the current behavior"
-            )
+        if ver is None:
+            _version_base = _get_version(__version__)
+        else:
+            _version_base = _get_version(ver)
+            if _parse_version(_version_base) < _parse_version(
+                _MIN_SUPPORTED_VERSION_BASE
+            ):
+                raise HydraException(
+                    f"version_base={ver!r} is not supported in Hydra 1.4; "
+                    "omit version_base to use the current behavior"
+                )
+        deprecation_warning(
+            message=dedent("""\
+            The version_base parameter is deprecated and will be removed in Hydra 1.5.
+            Omit the version_base parameter to use the current Hydra defaults."""),
+            stacklevel=3,
+            category=Hydra15MigrationWarning,
+        )
     VersionBase.instance().setbase(_version_base)

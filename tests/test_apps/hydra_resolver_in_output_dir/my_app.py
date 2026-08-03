@@ -5,7 +5,7 @@ import hydra
 from hydra.core.hydra_config import HydraConfig
 
 
-@hydra.main(version_base=None)
+@hydra.main()
 def my_app(_: DictConfig) -> None:
     print(HydraConfig.instance().get().runtime.output_dir)
 
