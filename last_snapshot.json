@@ -230,7 +230,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-02T21:37:27Z",
+  "generated_at": "2026-08-03T10:01:46Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -1384,11 +1384,9 @@
       "labels": [
         "enhancement"
       ],
-      "pr_numbers": [
-        "3335"
-      ],
+      "pr_numbers": [],
       "state": "OPEN",
-      "status": "in progress",
+      "status": "not started",
       "title": "Remove version_base and Hydra 1.1 compatibility",
       "updated_at": "2026-08-02T20:50:59Z"
     },

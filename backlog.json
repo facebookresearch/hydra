@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-08-02",
-  "generated_at": "2026-08-02T21:37:27Z",
+  "generated_on": "2026-08-03",
+  "generated_at": "2026-08-03T10:01:46Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 114,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 111
+        "count": 112
       },
       {
         "status": "done",
@@ -71,26 +71,6 @@
     ]
   },
   "issues": [
-    {
-      "number": 3237,
-      "title": "Remove version_base and Hydra 1.1 compatibility",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3335,
-          "url": "https://github.com/facebookresearch/hydra/pull/3335"
-        }
-      ],
-      "created": "2026-06-23",
-      "updated": "2026-08-02",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3237"
-    },
     {
       "number": 1749,
       "title": "tests: Use multiline regex search instead of assert_regex_match",
@@ -1900,6 +1880,21 @@
         "priority_high"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3334"
+    },
+    {
+      "number": 3237,
+      "title": "Remove version_base and Hydra 1.1 compatibility",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-23",
+      "updated": "2026-08-02",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3237"
     },
     {
       "number": 692,
@@ -5740,6 +5735,22 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-03T10:01:46Z",
+      "kind": "pr",
+      "issue": 3237,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3237",
+      "title": "Remove version_base and Hydra 1.1 compatibility",
+      "detail": "unlinked #3335"
+    },
+    {
+      "ts": "2026-08-03T10:01:46Z",
+      "kind": "status",
+      "issue": 3237,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3237",
+      "title": "Remove version_base and Hydra 1.1 compatibility",
+      "detail": "in progress → not started"
+    },
+    {
       "ts": "2026-08-02T21:37:27Z",
       "kind": "pr",
       "issue": 3237,
@@ -7281,21 +7292,6 @@
       "issue": 1939,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1939",
       "title": "Implement #1389 or similar functionality"
-    },
-    {
-      "ts": "2026-07-16T11:55:16Z",
-      "kind": "closed",
-      "issue": 1942,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1942",
-      "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath"
-    },
-    {
-      "ts": "2026-07-16T11:17:37Z",
-      "kind": "pr",
-      "issue": 1942,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1942",
-      "title": "misbehavior of glob(*) sweep over `pkg://` group on searchpath",
-      "detail": "linked #3278"
     }
   ]
 }
