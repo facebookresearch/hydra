@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-03",
-  "generated_at": "2026-08-03T12:23:00Z",
+  "generated_at": "2026-08-03T12:36:58Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 116,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 0
+        "count": 2
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 114
+        "count": 112
       },
       {
         "status": "done",
@@ -71,6 +71,52 @@
     ]
   },
   "issues": [
+    {
+      "number": 3237,
+      "title": "Remove version_base",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3341,
+          "url": "https://github.com/facebookresearch/hydra/pull/3341"
+        },
+        {
+          "number": 3342,
+          "url": "https://github.com/facebookresearch/hydra/pull/3342"
+        },
+        {
+          "number": 3343,
+          "url": "https://github.com/facebookresearch/hydra/pull/3343"
+        }
+      ],
+      "created": "2026-06-23",
+      "updated": "2026-08-03",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3237"
+    },
+    {
+      "number": 3345,
+      "title": "Remove remaining Hydra 1.1 behavior and migration artifacts",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3341,
+          "url": "https://github.com/facebookresearch/hydra/pull/3341"
+        }
+      ],
+      "created": "2026-08-03",
+      "updated": "2026-08-03",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3345"
+    },
     {
       "number": 1749,
       "title": "tests: Use multiline regex search instead of assert_regex_match",
@@ -1682,21 +1728,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3236"
     },
     {
-      "number": 3237,
-      "title": "Remove version_base",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-23",
-      "updated": "2026-08-03",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3237"
-    },
-    {
       "number": 3248,
       "title": "Upgrade experimental rerun to recompose config and overlay saved values",
       "category": "Enhancement",
@@ -1895,19 +1926,6 @@
         "priority_high"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3334"
-    },
-    {
-      "number": 3345,
-      "title": "Remove remaining Hydra 1.1 behavior and migration artifacts",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-08-03",
-      "updated": "2026-08-03",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3345"
     },
     {
       "number": 3346,
@@ -5761,6 +5779,46 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-03T12:36:58Z",
+      "kind": "pr",
+      "issue": 3345,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3345",
+      "title": "Remove remaining Hydra 1.1 behavior and migration artifacts",
+      "detail": "linked #3341"
+    },
+    {
+      "ts": "2026-08-03T12:36:58Z",
+      "kind": "pr",
+      "issue": 3237,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3237",
+      "title": "Remove version_base",
+      "detail": "linked #3341, #3342, #3343"
+    },
+    {
+      "ts": "2026-08-03T12:36:58Z",
+      "kind": "status",
+      "issue": 3345,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3345",
+      "title": "Remove remaining Hydra 1.1 behavior and migration artifacts",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3341,
+        "url": "https://github.com/facebookresearch/hydra/pull/3341"
+      }
+    },
+    {
+      "ts": "2026-08-03T12:36:58Z",
+      "kind": "status",
+      "issue": 3237,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3237",
+      "title": "Remove version_base",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3341,
+        "url": "https://github.com/facebookresearch/hydra/pull/3341"
+      }
+    },
+    {
       "ts": "2026-08-03T12:23:00Z",
       "kind": "new",
       "issue": 3346,
@@ -7285,39 +7343,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2149",
       "title": "[Bug] Documentation Binder link is broken.",
       "detail": "linked #3280"
-    },
-    {
-      "ts": "2026-07-16T14:04:37Z",
-      "kind": "closed",
-      "issue": 1936,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1936",
-      "title": "instantiate api - having to write a dataclass conf for every _target_ class "
-    },
-    {
-      "ts": "2026-07-16T14:04:37Z",
-      "kind": "status",
-      "issue": 2149,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2149",
-      "title": "[Bug] Documentation Binder link is broken.",
-      "detail": "not started → community PR",
-      "pr": {
-        "number": 3280,
-        "url": "https://github.com/facebookresearch/hydra/pull/3280"
-      }
-    },
-    {
-      "ts": "2026-07-16T13:23:15Z",
-      "kind": "closed",
-      "issue": 1937,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1937",
-      "title": "[Feature Request] Conditionally disable the creation of folders in output/multirun via the CLI"
-    },
-    {
-      "ts": "2026-07-16T13:19:14Z",
-      "kind": "closed",
-      "issue": 2000,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2000",
-      "title": "[Feature Request] Minimal Version of Hydra With Bare-Bones Config Support"
     }
   ]
 }
