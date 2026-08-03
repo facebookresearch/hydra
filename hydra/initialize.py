@@ -1,11 +1,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import copy
 import os
-from textwrap import dedent
 from typing import Any, Optional
 
 from hydra import version
-from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.hydra import Hydra
 from hydra._internal.utils import (
     create_config_search_path,
@@ -62,19 +60,7 @@ class initialize:
         version.setbase(version_base)
 
         if config_path is _UNSPECIFIED_:
-            if version.base_at_least("1.2"):
-                config_path = None
-            elif version_base is _UNSPECIFIED_:
-                url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
-                deprecation_warning(
-                    message=dedent(f"""\
-                    config_path is not specified in hydra.initialize().
-                    See {url} for more information."""),
-                    stacklevel=2,
-                )
-                config_path = "."
-            else:
-                config_path = "."
+            config_path = None
 
         if config_path is not None and os.path.isabs(config_path):
             raise HydraException("config_path in initialize() must be relative")

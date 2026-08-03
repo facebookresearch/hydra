@@ -20,6 +20,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional, Protocol, Tupl
 
 from omegaconf import Container, DictConfig, OmegaConf
 
+from hydra import version
 from hydra._internal.hydra import Hydra
 from hydra._internal.utils import detect_task_name
 from hydra.core.global_hydra import GlobalHydra
@@ -57,6 +58,8 @@ class TaskTestFunction:
 
     def __enter__(self) -> "TaskTestFunction":
         try:
+            if type(version.getbase()) is type(version._UNSPECIFIED_):
+                version.setbase(version._UNSPECIFIED_)
             validate_config_path(self.config_path)
 
             job_name = detect_task_name(self.calling_file, self.calling_module)
@@ -130,6 +133,8 @@ class SweepTaskFunction:
         return 100
 
     def __enter__(self) -> "SweepTaskFunction":
+        if type(version.getbase()) is type(version._UNSPECIFIED_):
+            version.setbase(version._UNSPECIFIED_)
         overrides = copy.deepcopy(self.overrides)
         assert overrides is not None
         if self.temp_dir:
@@ -230,12 +235,9 @@ def verify_dir_outputs(
     assert job_return.task_name is not None
     assert job_return.hydra_cfg is not None
 
-    assert os.path.exists(
-        os.path.join(job_return.working_dir, job_return.task_name + ".log")
-    )
-    hydra_dir = os.path.join(
-        job_return.working_dir, job_return.hydra_cfg.hydra.output_subdir
-    )
+    output_dir = job_return.hydra_cfg.hydra.runtime.output_dir
+    assert os.path.exists(os.path.join(output_dir, job_return.task_name + ".log"))
+    hydra_dir = os.path.join(output_dir, job_return.hydra_cfg.hydra.output_subdir)
     assert os.path.exists(os.path.join(hydra_dir, "config.yaml"))
     assert os.path.exists(os.path.join(hydra_dir, "overrides.yaml"))
     assert OmegaConf.load(

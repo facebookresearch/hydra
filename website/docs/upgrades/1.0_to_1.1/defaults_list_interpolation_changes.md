@@ -37,5 +37,5 @@ Note that:
 The Defaults List is described [here](/advanced/defaults_list.md).
 
 :::warning
-Support for the old style will be removed in Hydra 1.2.
+Hydra 1.4 removes support for the old style.
 :::

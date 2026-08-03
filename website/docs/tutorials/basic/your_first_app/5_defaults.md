@@ -133,12 +133,9 @@ db:
 See [Composition Order](advanced/defaults_list.md#composition-order) for more information.
 
 :::info
-The default composition order changed between Hydra 1.0 and Hydra 1.1.
-- **Hydra 1.0**: Configs from the defaults list are overriding the primary config
-- **Hydra 1.1**: A config is overriding the configs from the defaults list.
-
-To mitigate confusion, Hydra 1.1 issue a warning if the primary config contains both Default List and Config values, and `_self_` is not specified in the Defaults List.  
- The warning will disappear if you add `_self_` to the Defaults List based on the desired behavior.
+If `_self_` is omitted, Hydra appends it to the end of the Defaults List. The
+primary config therefore overrides the configs in its Defaults List. Add
+`_self_` explicitly to choose a different composition order.
 :::
 
 ### Non-config group defaults

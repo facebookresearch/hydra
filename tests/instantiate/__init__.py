@@ -7,7 +7,6 @@ from typing import Any, Dict, List, NoReturn, Optional, Tuple
 
 from omegaconf import MISSING, DictConfig, ListConfig
 
-from hydra.types import TargetConf
 from hydra.utils import UNSAFE_ALLOW_ALL_TARGETS, instantiate
 from tests.instantiate.module_shadowed_by_function import a_function
 
@@ -216,12 +215,6 @@ class AdamConf:
     eps: float = 1e-08
     weight_decay: int = 0
     amsgrad: bool = False
-
-
-@dataclass
-class BadAdamConf(TargetConf):
-    # Missing str annotation
-    _target_ = "tests.instantiate.Adam"
 
 
 @dataclass

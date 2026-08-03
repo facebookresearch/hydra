@@ -5,14 +5,11 @@ from copy import copy
 from dataclasses import dataclass, field
 from enum import Enum
 from random import shuffle
-from textwrap import dedent
 from typing import Any, Callable, Dict, Iterator, List, Optional, Set, Union, cast
 
 from omegaconf import OmegaConf
 from omegaconf._utils import is_structured_config
 
-from hydra import version
-from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.grammar.utils import _ESC_QUOTED_STR, escape_special_characters
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.object_type import ObjectType
@@ -498,13 +495,3 @@ class Override:
         return Override._get_value_element_as_str(
             self._value, space_after_sep=space_after_sep
         )
-
-    def validate(self) -> None:
-        if not version.base_at_least("1.2"):
-            if self.package is not None and "_name_" in self.package:
-                url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
-                deprecation_warning(
-                    message=dedent(f"""\
-                        In override {self.input_line}: _name_ keyword is deprecated in packages, see {url}
-                        """),
-                )
