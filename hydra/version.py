@@ -3,11 +3,13 @@
 # Source of truth for Hydra's version
 
 import re
+from textwrap import dedent
 from typing import Any, Optional, Tuple
 
 from . import __version__
+from ._internal.deprecation_warning import deprecation_warning
 from .core.singleton import Singleton
-from .errors import HydraException
+from .errors import Hydra15MigrationWarning, HydraException
 
 _UNSPECIFIED_: Any = object()
 
@@ -71,18 +73,25 @@ def getbase() -> Optional[str]:
 
 def setbase(ver: Any) -> None:
     """
-    Set the `version_base` parameter, which is used to support backward compatibility
-    with older versions of Hydra.
+    Record the deprecated `version_base` parameter for runtime reporting.
     """
     if type(ver) is type(_UNSPECIFIED_):
         _version_base = _get_version(__version__)
-    elif ver is None:
-        _version_base = _get_version(__version__)
     else:
-        _version_base = _get_version(ver)
-        if _parse_version(_version_base) < _parse_version(__compat_version__):
-            raise HydraException(
-                f"version_base={ver!r} is not supported in Hydra 1.4; "
-                "omit version_base to use the current behavior"
-            )
+        if ver is None:
+            _version_base = _get_version(__version__)
+        else:
+            _version_base = _get_version(ver)
+            if _parse_version(_version_base) < _parse_version(__compat_version__):
+                raise HydraException(
+                    f"version_base={ver!r} is not supported in Hydra 1.4; "
+                    "omit version_base to use the current behavior"
+                )
+        deprecation_warning(
+            message=dedent("""
+            The version_base parameter is deprecated and will be removed in Hydra 1.5.
+            Omit the version_base parameter to use the current Hydra defaults."""),
+            stacklevel=3,
+            category=Hydra15MigrationWarning,
+        )
     VersionBase.instance().setbase(_version_base)
