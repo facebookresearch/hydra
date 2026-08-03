@@ -14,8 +14,6 @@ from .core.hydra_config import HydraConfig
 from .core.utils import _flush_loggers, configure_log
 from .types import TaskFunction
 
-_UNSPECIFIED_: Any = object()
-
 
 def _get_rerun_conf(file_path: str, overrides: List[str]) -> DictConfig:
     msg = "Experimental rerun CLI option, other command line args are ignored."
@@ -41,9 +39,9 @@ def _get_rerun_conf(file_path: str, overrides: List[str]) -> DictConfig:
 
 
 def main(
-    config_path: Optional[str] = _UNSPECIFIED_,
+    config_path: Optional[str] = None,
     config_name: Optional[str] = None,
-    version_base: Optional[str] = _UNSPECIFIED_,
+    version_base: Optional[str] = version._UNSPECIFIED_,
 ) -> Callable[[TaskFunction], Any]:
     """
     :param config_path: The config path, a directory where Hydra will search for
@@ -56,9 +54,6 @@ def main(
     """
 
     version.setbase(version_base)
-
-    if config_path is _UNSPECIFIED_:
-        config_path = None
 
     def main_decorator(task_function: TaskFunction) -> Callable[[], None]:
         @functools.wraps(task_function)

@@ -14,7 +14,7 @@ from omegaconf._utils import is_structured_config
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.utils import _locate
 from hydra.errors import InstantiationException
-from hydra.types import ConvertMode, TargetConf
+from hydra.types import ConvertMode
 
 DEFAULT_BLOCKLISTED_MODULES = {
     "builtins.exec",
@@ -491,20 +491,6 @@ def instantiate(
         return None
 
     target_whitelist = _resolve_target_whitelist(_target_whitelist_)
-
-    # TargetConf edge case
-    if isinstance(config, TargetConf) and config._target_ == "???":
-        # Specific check to give a good warning about failure to annotate _target_ as a string.
-        raise InstantiationException(
-            dedent(
-                f"""\
-                Config has missing value for key `_target_`, cannot instantiate.
-                Config type: {type(config).__name__}
-                Check that the `_target_` key in your dataclass is properly annotated and overridden.
-                A common problem is forgetting to annotate _target_ as a string : '_target_: str = ...'"""
-            )
-        )
-        # TODO: print full key
 
     if isinstance(config, (dict, list)) or type(config) is tuple:
         config = _prepare_input_container(config)

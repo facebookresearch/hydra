@@ -25,7 +25,7 @@ from hydra._internal.instantiate import _instantiate2
 from hydra._internal.instantiate._instantiate2 import _resolve_target
 from hydra.errors import InstantiationException
 from hydra.test_utils.test_utils import assert_multiline_regex_search
-from hydra.types import ConvertMode, TargetConf
+from hydra.types import ConvertMode
 from hydra.utils import UNSAFE_ALLOW_ALL_TARGETS, target_whitelist
 from tests.instantiate import (
     AClass,
@@ -1187,14 +1187,6 @@ def test_instantiate_adam_conf_with_convert(instantiate_func: Any) -> None:
     assert res.eps == expected.eps
     assert res.weight_decay == expected.weight_decay
     assert res.amsgrad == expected.amsgrad
-
-
-def test_targetconf_disabled(hydra_restore_singletons: Any) -> None:
-    with raises(
-        TypeError,
-        match=re.escape("TargetConf is unsupported since Hydra 1.2"),
-    ):
-        TargetConf()
 
 
 def test_instantiate_with_missing_module(instantiate_func: Any) -> None:

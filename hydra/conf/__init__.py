@@ -48,8 +48,7 @@ class JobConf:
     name: str = MISSING
 
     # Change current working dir to the output dir.
-    # Will be non-optional and default to False in Hydra 1.3
-    chdir: Optional[bool] = None
+    chdir: bool = False
 
     # Deprecated. Use the hydra_override_dirname resolver instead.
     override_dirname: str = "${hydra_override_dirname:}"

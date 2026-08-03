@@ -4,14 +4,14 @@ Sweeper plugin interface
 """
 
 from abc import abstractmethod
-from typing import Any, List, Sequence, Optional
+from typing import Any, List, Optional, Sequence
 
-from hydra.types import TaskFunction
 from omegaconf import DictConfig
-from .launcher import Launcher
 
+from hydra.types import HydraContext, TaskFunction
+
+from .launcher import Launcher
 from .plugin import Plugin
-from hydra.types import HydraContext
 
 
 class Sweeper(Plugin):
@@ -52,15 +52,9 @@ class Sweeper(Plugin):
         This repeat work the launcher will do, but as the launcher may be performing this in a different
         process/machine it's important to do it here as well to detect failures early.
         """
-        config_loader = (
-            self.hydra_context.config_loader
-            if hasattr(self, "hydra_context") and self.hydra_context is not None
-            else self.config_loader  # type: ignore
-        )
-        assert config_loader is not None
-
         assert self.config is not None
+        assert self.hydra_context is not None
         for overrides in batch:
-            config_loader.load_sweep_config(
+            self.hydra_context.config_loader.load_sweep_config(
                 master_config=self.config, sweep_overrides=list(overrides)
             )

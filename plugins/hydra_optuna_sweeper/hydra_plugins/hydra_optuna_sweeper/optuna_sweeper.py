@@ -19,7 +19,6 @@ class OptunaSweeper(Sweeper):
         n_trials: int,
         n_jobs: int,
         max_failure_rate: float,
-        search_space: Optional[DictConfig],
         custom_search_space: Optional[str],
         params: Optional[DictConfig],
     ) -> None:
@@ -41,7 +40,6 @@ class OptunaSweeper(Sweeper):
             n_trials,
             n_jobs,
             max_failure_rate,
-            search_space,
             custom_search_space,
             params,
         )

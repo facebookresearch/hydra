@@ -11,7 +11,7 @@ from .errors import HydraException
 
 _UNSPECIFIED_: Any = object()
 
-__compat_version__ = "1.2"
+__compat_version__ = "1.3"
 
 _VERSION_PATTERN = re.compile(
     r"(?P<major>[0-9]+)\.(?P<minor>[0-9]+)"
