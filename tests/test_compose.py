@@ -65,7 +65,9 @@ def test_initialize(hydra_restore_singletons: Any) -> None:
     assert GlobalHydra().is_initialized()
 
 
-@mark.parametrize("version_base", ["1.0", "1.1"])
+@mark.parametrize(
+    "version_base", ["1.0", "1.1", "1.2", "1.2.0", "1.2.0.dev2", "1.2.0rc1"]
+)
 def test_initialize_old_version_base(
     hydra_restore_singletons: Any, version_base: str
 ) -> None:
@@ -86,13 +88,13 @@ def test_initialize_bad_version_base(hydra_restore_singletons: Any) -> None:
         initialize(version_base=1.1)  # type: ignore
 
 
-@mark.parametrize("version_base", ["1.2.0", "1.2.0.dev2", "1.2.0rc1"])
+@mark.parametrize("version_base", ["1.3", "1.3.0", "1.3.0.dev2", "1.3.0rc1", "1.4"])
 def test_initialize_hydra_version_string_base(
     hydra_restore_singletons: Any, version_base: str
 ) -> None:
     assert not GlobalHydra().is_initialized()
     initialize(version_base=version_base)
-    assert version.base_at_least("1.2")
+    assert version.base_at_least("1.3")
 
 
 def test_version_base_numeric_comparison(hydra_restore_singletons: Any) -> None:
@@ -797,7 +799,7 @@ def test_deprecated_compose(hydra_restore_singletons: Any) -> None:
 
     msg = "hydra.experimental.compose() is no longer experimental. Use hydra.compose()"
 
-    with initialize(version_base="1.2"):
+    with initialize(version_base="1.3"):
         with raises(
             ImportError,
             match=re.escape(msg),
@@ -810,7 +812,7 @@ def test_deprecated_initialize(hydra_restore_singletons: Any) -> None:
 
     msg = "hydra.experimental.initialize() is no longer experimental. Use hydra.initialize()"
 
-    version.setbase("1.2")
+    version.setbase("1.3")
     with raises(ImportError, match=re.escape(msg)):
         with expr_initialize():
             assert compose() == {}
@@ -821,7 +823,7 @@ def test_deprecated_initialize_config_dir(hydra_restore_singletons: Any) -> None
 
     msg = "hydra.experimental.initialize_config_dir() is no longer experimental. Use hydra.initialize_config_dir()"
 
-    version.setbase("1.2")
+    version.setbase("1.3")
     with raises(
         ImportError,
         match=re.escape(msg),
@@ -842,7 +844,7 @@ def test_deprecated_initialize_config_module(hydra_restore_singletons: Any) -> N
         " Use hydra.initialize_config_module()"
     )
 
-    version.setbase("1.2")
+    version.setbase("1.3")
     with raises(ImportError, match=re.escape(msg)):
         with expr_initialize_config_module(
             config_module="examples.jupyter_notebooks.cloud_app.conf",

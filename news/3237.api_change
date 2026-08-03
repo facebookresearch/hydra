@@ -1,1 +1,1 @@
-Remove Hydra 1.1 compatibility behavior.
+Remove Hydra 1.1 behavior and the 1.2 `version_base` compatibility level.
