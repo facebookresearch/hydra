@@ -6,8 +6,6 @@ from typing import Dict, List, Optional
 
 from omegaconf import Container
 
-from hydra import version
-from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.default_element import InputDefault
 from hydra.core.object_type import ObjectType
 from hydra.errors import HydraException
@@ -116,18 +114,11 @@ class ConfigSource(Plugin):
     @staticmethod
     def _normalize_file_name(filename: str) -> str:
         supported_extensions = [".yaml"]
-        if version.base_at_least("1.2"):
-            if filename.endswith(".yml"):
-                raise ConfigLoadError(
-                    "Unsupported config file extension '.yml'. "
-                    "Hydra config files must use the '.yaml' extension."
-                )
-        else:
-            supported_extensions.append(".yml")
-            if filename.endswith(".yml"):
-                deprecation_warning(
-                    "Support for .yml files is deprecated. Use .yaml extension for Hydra config files"
-                )
+        if filename.endswith(".yml"):
+            raise ConfigLoadError(
+                "Unsupported config file extension '.yml'. "
+                "Hydra config files must use the '.yaml' extension."
+            )
         if not any(filename.endswith(ext) for ext in supported_extensions):
             filename += ".yaml"
         return filename

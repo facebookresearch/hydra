@@ -11,8 +11,8 @@ from typing import Any, List, Optional, Set
 from omegaconf import DictConfig, OmegaConf
 from pytest import mark, param, raises
 
-from hydra import MissingConfigException, version
-from hydra.errors import ConfigCompositionException
+from hydra import MissingConfigException, main, version
+from hydra.errors import ConfigCompositionException, HydraException
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
@@ -28,6 +28,25 @@ from hydra.test_utils.test_utils import (
 )
 
 chdir_hydra_root()
+
+
+@mark.parametrize("version_base", ["1.0", "1.1"])
+def test_hydra_main_old_version_base(
+    hydra_restore_singletons: Any, version_base: str
+) -> None:
+    with raises(
+        HydraException,
+        match=(
+            f"version_base={version_base!r} is not supported in Hydra 1.4; "
+            "omit version_base to use the current behavior"
+        ),
+    ):
+        main(version_base=version_base)
+
+
+def test_hydra_main_omitted_version_base(hydra_restore_singletons: Any) -> None:
+    main()
+    assert version.getbase() == version._get_version(version.__version__)
 
 
 @mark.parametrize("calling_file, calling_module", [(".", None), (None, ".")])
@@ -1588,45 +1607,8 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
         f'hydra.run.dir="{tmpdir}"',
         "hydra.job.chdir=True",
     ]
-    _, err = run_python_script(cmd, allow_warnings=True)
-
-    expected = dedent(f"""
-        .*my_app.py:7: UserWarning:
-        The version_base parameter is not specified.
-        Please specify a compatibility version level, or None.
-        Will assume defaults for version {version.__compat_version__}
-          @hydra.main()
-        .*my_app.py:7: UserWarning:
-        config_path is not specified in @hydra.main().
-        See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path for more information.
-          @hydra.main()
-        """)
-    assert_regex_match(
-        from_line=expected,
-        to_line=err,
-        from_name="Expected error",
-        to_name="Actual error",
-    )
-
-
-def test_job_chdir_not_specified(tmpdir: Path) -> None:
-    cmd = [
-        "tests/test_apps/app_with_no_chdir_override/my_app.py",
-        f'hydra.run.dir="{tmpdir}"',
-    ]
-    out, err = run_python_script(cmd, allow_warnings=True)
-
-    expected = dedent("""
-        .*UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
-        See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information..*
-        .*
-        """)
-    assert_regex_match(
-        from_line=expected,
-        to_line=err,
-        from_name="Expected error",
-        to_name="Actual error",
-    )
+    _, err = run_python_script(cmd)
+    assert err == ""
 
 
 def test_app_with_unicode_config(tmpdir: Path) -> None:
