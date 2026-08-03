@@ -3,16 +3,22 @@ import os
 import re
 import subprocess
 import sys
+import warnings
 from logging import getLogger
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, List, Optional, Set
 
 from omegaconf import DictConfig, OmegaConf
-from pytest import mark, param, raises
+from pytest import mark, param, raises, warns
 
-from hydra import MissingConfigException, main, version
-from hydra.errors import ConfigCompositionException, HydraException
+from hydra import MissingConfigException, __version__, main, version
+from hydra.errors import (
+    ConfigCompositionException,
+    Hydra14MigrationWarning,
+    Hydra15MigrationWarning,
+    HydraException,
+)
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
@@ -30,6 +36,12 @@ from hydra.test_utils.test_utils import (
 chdir_hydra_root()
 
 
+def test_migration_warning_categories_are_release_specific() -> None:
+    assert issubclass(Hydra14MigrationWarning, UserWarning)
+    assert issubclass(Hydra15MigrationWarning, UserWarning)
+    assert not issubclass(Hydra15MigrationWarning, Hydra14MigrationWarning)
+
+
 @mark.parametrize("version_base", ["1.0", "1.1", "1.2"])
 def test_hydra_main_old_version_base(
     hydra_restore_singletons: Any, version_base: str
@@ -45,8 +57,23 @@ def test_hydra_main_old_version_base(
 
 
 def test_hydra_main_omitted_version_base(hydra_restore_singletons: Any) -> None:
-    main()
-    assert version.getbase() == version._get_version(version.__version__)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        main()
+    assert version.getbase() == version._get_version(__version__)
+
+
+@mark.parametrize("version_base", [None, "1.3", "1.4"])
+def test_hydra_main_explicit_version_base_is_deprecated(
+    hydra_restore_singletons: Any, version_base: Optional[str]
+) -> None:
+    with warns(
+        Hydra15MigrationWarning,
+        match="The version_base parameter is deprecated and will be removed in Hydra 1.5",
+    ):
+        main(version_base=version_base)
+    expected = __version__ if version_base is None else version_base
+    assert version.getbase() == version._get_version(expected)
 
 
 @mark.parametrize("calling_file, calling_module", [(".", None), (None, ".")])
@@ -1040,7 +1067,7 @@ def test_hydra_job_override_dirname_in_run_dir(tmpdir: Path) -> None:
             import hydra
 
 
-            @hydra.main(version_base=None, config_path=".", config_name="config")
+            @hydra.main(config_path=".", config_name="config")
             def experiment(_cfg):
                 print(os.getcwd())
 
@@ -1661,7 +1688,7 @@ def test_frozen_primary_config(
                 Traceback \(most recent call last\):
                   File "\S*[/\\]my_app.py", line 10, in my_app
                     deprecation_warning\("Feature FooBar is deprecated"\)(\n    [~\^]+)?
-                  File "\S*\.py", line 11, in deprecation_warning
+                  File "\S*\.py", line \d+, in deprecation_warning
                     raise HydraDeprecationError\(.*\)
                 hydra\.errors\.HydraDeprecationError: Feature FooBar is deprecated
 

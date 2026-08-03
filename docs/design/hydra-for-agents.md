@@ -180,8 +180,8 @@ Because this is a breaking change, the migration path should be explicit and
 easy:
 
 1. Keep the existing behavior available as the classic mode.
-2. Introduce the minimal behavior behind a major version, `version_base`, app
-   mode, or another clear compatibility switch.
+2. Introduce the minimal behavior in a major release behind an explicit
+   application mode.
 3. In minimal mode, make filesystem-producing features opt in: per-run
    directory creation, `.hydra` config snapshots, override capture, and job log
    files.
