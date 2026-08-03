@@ -13,7 +13,7 @@ from pytest import mark, param
 
 from hydra.core.utils import JobReturn, JobStatus
 from hydra.test_utils.test_utils import (
-    assert_regex_match,
+    assert_multiline_regex_search,
     chdir_hydra_root,
     run_process,
     run_python_script,
@@ -101,7 +101,7 @@ def test_app_with_callbacks(
     cmd.extend(args)
     result, _err = run_python_script(cmd)
 
-    assert_regex_match(
+    assert_multiline_regex_search(
         from_line=expected,
         to_line=result,
         from_name="Expected output",
