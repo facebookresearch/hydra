@@ -299,9 +299,8 @@ password: drowssap
   of the config it's validating.
 
 ### A Note about composition order
- By default, Hydra 1.1 appends `_self_` to the end of the Defaults List.
-This behavior is new in Hydra 1.1 and different from previous Hydra versions. As such Hydra 1.1  issues a warning if `_self_` is not specified **in the primary config**, asking you to add `_self_` and thus indicate the desired composition order.
-To address the warning while maintaining the new behavior, append `_self_` to the end of the Defaults List. Note that in some cases it may instead be desirable to add `_self_` directly after the schema and before other Defaults List elements.
-
+By default, Hydra appends `_self_` to the end of the Defaults List. In some
+cases it may instead be desirable to add `_self_` explicitly after the schema
+and before other Defaults List elements.
 
 See [Composition Order](advanced/defaults_list.md#composition-order) for more information.

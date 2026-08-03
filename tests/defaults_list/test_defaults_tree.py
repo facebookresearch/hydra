@@ -4,9 +4,8 @@ from textwrap import dedent
 from typing import Any, Dict, List, Optional
 
 from omegaconf import OmegaConf
-from pytest import mark, param, raises, warns
+from pytest import mark, param, raises
 
-from hydra import version
 from hydra.core.default_element import (
     ConfigDefault,
     DefaultsTreeNode,
@@ -938,15 +937,12 @@ def test_hydra_overrides_from_primary_config(
         ),
     ],
 )
-@mark.parametrize("version_base", ["1.2", None])
-def test_legacy_override_hydra_version_base_1_2(
+def test_legacy_override_hydra_is_rejected(
     config_name: str,
     overrides: List[str],
     expected: DefaultsTreeNode,
-    version_base: Optional[str],
     hydra_restore_singletons: Any,
 ) -> None:
-    version.setbase(version_base)
     _test_defaults_tree_impl(
         config_name=config_name,
         input_overrides=overrides,
@@ -959,142 +955,28 @@ def test_legacy_override_hydra_version_base_1_2(
     "config_name,overrides,expected",
     [
         param(
-            "legacy_override_hydra",
-            [],
-            DefaultsTreeNode(
-                node=VirtualRoot(),
-                children=[
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="hydra/config"),
-                        children=[
-                            GroupDefault(group="help", value="custom1"),
-                            GroupDefault(group="output", value="default"),
-                            ConfigDefault(path="_self_"),
-                        ],
-                    ),
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="legacy_override_hydra"),
-                        children=[ConfigDefault(path="_self_")],
-                    ),
-                ],
-            ),
-            id="legacy_override_hydra",
-        ),
-        param(
             "legacy_override_hydra2",
             [],
-            DefaultsTreeNode(
-                node=VirtualRoot(),
-                children=[
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="hydra/config"),
-                        children=[
-                            GroupDefault(group="help", value="custom1"),
-                            GroupDefault(group="output", value="disabled"),
-                            ConfigDefault(path="_self_"),
-                        ],
-                    ),
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="legacy_override_hydra2"),
-                        children=[ConfigDefault(path="_self_")],
-                    ),
-                ],
+            raises(
+                ConfigCompositionException,
+                match=re.escape(
+                    "Multiple values for hydra/output. To override a value use "
+                    "'override hydra/output: disabled'"
+                ),
             ),
-            id="legacy_override_hydra2",
-        ),
-        param(
-            "legacy_override_hydra_wrong_order",
-            [],
-            DefaultsTreeNode(
-                node=VirtualRoot(),
-                children=[
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="hydra/config"),
-                        children=[
-                            GroupDefault(group="help", value="custom1"),
-                            GroupDefault(group="output", value="default"),
-                            ConfigDefault(path="_self_"),
-                        ],
-                    ),
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="legacy_override_hydra_wrong_order"),
-                        children=[
-                            GroupDefault(group="group1", value="file1"),
-                            ConfigDefault(path="_self_"),
-                        ],
-                    ),
-                ],
-            ),
-            id="legacy_override_hydra_wrong_order",
+            id="legacy_override_hydra2-error",
         ),
     ],
 )
-def test_legacy_override_hydra_version_base_1_1(
-    config_name: str,
-    overrides: List[str],
-    expected: DefaultsTreeNode,
-    hydra_restore_singletons: Any,
+def test_legacy_hydra_overrides_from_primary_config_are_rejected(
+    config_name: str, overrides: List[str], expected: DefaultsTreeNode
 ) -> None:
-    version.setbase("1.1")
-    msg_regex = r"Invalid overriding of hydra/(help|output):" + re.escape(
-        dedent("""
-            Default list overrides requires 'override' keyword.
-            See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/defaults_list_override for more information.
-            """)
-    )
-    with warns(expected_warning=UserWarning, match=msg_regex):
-        _test_defaults_tree_impl(
-            config_name=config_name,
-            input_overrides=overrides,
-            expected=expected,
-            prepend_hydra=True,
-        )
-
-
-@mark.parametrize(
-    "config_name,overrides,expected",
-    [
-        param(
-            "legacy_override_hydra2",
-            [],
-            DefaultsTreeNode(
-                node=VirtualRoot(),
-                children=[
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="hydra/config"),
-                        children=[
-                            GroupDefault(group="help", value="custom1"),
-                            GroupDefault(group="output", value="disabled"),
-                            ConfigDefault(path="_self_"),
-                        ],
-                    ),
-                    DefaultsTreeNode(
-                        node=ConfigDefault(path="legacy_override_hydra2"),
-                        children=[ConfigDefault(path="_self_")],
-                    ),
-                ],
-            ),
-            id="legacy_override_hydra+external",
-        ),
-    ],
-)
-def test_legacy_hydra_overrides_from_primary_config_2(
-    config_name: str, overrides: List[str], expected: DefaultsTreeNode, recwarn: Any
-) -> None:
-    """
-    Override two Hydra config groups using legacy notation
-    """
-
     _test_defaults_tree_impl(
         config_name=config_name,
         input_overrides=overrides,
         expected=expected,
         prepend_hydra=True,
     )
-
-    assert len(recwarn) == 2
-    assert "Invalid overriding of hydra/help:" in recwarn.list[0].message.args[0]
-    assert "Invalid overriding of hydra/output:" in recwarn.list[1].message.args[0]
 
 
 @mark.parametrize(
@@ -1329,15 +1211,12 @@ def test_experiment_where_primary_config_has_override(
         ),
     ],
 )
-@mark.parametrize("version_base", ["1.2", None])
 def test_use_of_custom_subgroup_of_hydra(
     config_name: str,
     overrides: List[str],
     expected: DefaultsTreeNode,
-    version_base: Optional[str],
     hydra_restore_singletons: Any,
 ) -> None:
-    version.setbase(version_base)
     _test_defaults_tree_impl(
         config_name=config_name,
         input_overrides=overrides,
@@ -2492,15 +2371,6 @@ def test_legacy_interpolation(
     Defaults list element '.*=.*' is using a deprecated interpolation form.
     See http://hydra.cc/docs/1.1/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
     )
-    version.setbase("1.1")
-    with warns(expected_warning=UserWarning, match=msg):
-        _test_defaults_tree_impl(
-            config_name=config_name,
-            input_overrides=overrides,
-            expected=expected,
-        )
-
-    version.setbase("1.2")
     with raises(ConfigCompositionException, match=msg):
         _test_defaults_tree_impl(
             config_name=config_name,
@@ -2521,14 +2391,6 @@ def test_legacy_interpolation_multi_digit_index(
         {"defaults": [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {"group": "file1"}]}
     )
 
-    version.setbase("1.1")
-    default = GroupDefault(group="target", value="${defaults.10.group}")
-    default.update_parent("", "")
-    with warns(expected_warning=UserWarning, match=msg):
-        default.resolve_interpolation(known_choices)
-    assert default.value == "file1"
-
-    version.setbase("1.2")
     default = GroupDefault(group="target", value="${defaults.10.group}")
     default.update_parent("", "")
     with raises(ConfigCompositionException, match=msg):
@@ -2538,19 +2400,16 @@ def test_legacy_interpolation_multi_digit_index(
 def test_legacy_interpolation_in_config_path(
     hydra_restore_singletons: Any,
 ) -> None:
-    version.setbase("1.1")
-    _test_defaults_tree_impl(
-        config_name="interpolation_legacy_config_path",
-        input_overrides=[],
-        expected=DefaultsTreeNode(
-            node=ConfigDefault(path="interpolation_legacy_config_path"),
-            children=[
-                GroupDefault(group="group1", value="file1"),
-                ConfigDefault(path="file1/file"),
-                ConfigDefault(path="_self_"),
-            ],
-        ),
+    msg = re.escape(
+        "Error resolving interpolation '${defaults.0.group1}/file', "
+        "possible interpolation keys: group1"
     )
+    with raises(ConfigCompositionException, match=msg):
+        _test_defaults_tree_impl(
+            config_name="interpolation_legacy_config_path",
+            input_overrides=[],
+            expected=None,
+        )
 
 
 @mark.parametrize(
@@ -3363,27 +3222,18 @@ def test_choices(
         ),
     ],
 )
-def test_deprecated_package_header_keywords(
+def test_package_header_keywords_are_literal(
     config_name: Optional[str],
     overrides: List[str],
     package_header: str,
     expected: DefaultsTreeNode,
     hydra_restore_singletons: Any,
 ) -> None:
-    msg = dedent(
-        f"""\
-        In '{config_name}': Usage of deprecated keyword in package header '# @package {package_header}'.
-        See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header for more information"""
+    _test_defaults_tree_impl(
+        config_name=config_name,
+        input_overrides=overrides,
+        expected=expected,
     )
-
-    version.setbase("1.1")
-
-    with warns(UserWarning, match=re.escape(msg)):
-        _test_defaults_tree_impl(
-            config_name=config_name,
-            input_overrides=overrides,
-            expected=expected,
-        )
 
 
 @mark.parametrize(

@@ -36,10 +36,8 @@ from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import Override, ValueType
 from hydra.core.utils import JobRuntime
 from hydra.errors import ConfigCompositionException, MissingConfigException
-from hydra.plugins.config_source import ConfigLoadError, ConfigResult, ConfigSource
+from hydra.plugins.config_source import ConfigResult, ConfigSource
 from hydra.types import RunMode
-
-from .deprecation_warning import deprecation_warning
 
 
 class ConfigLoaderImpl(ConfigLoader):
@@ -315,7 +313,7 @@ class ConfigLoaderImpl(ConfigLoader):
         # The Hydra node should not be read-only even if the root config is read-only.
         OmegaConf.set_readonly(cfg.hydra, False)
 
-        # Apply command line overrides after enabling strict flag
+        # Apply command line overrides after enabling struct mode
         ConfigLoaderImpl._apply_overrides_to_config(config_overrides, cfg)
         for override in parsed_overrides:
             if override.is_hydra_override():
@@ -527,69 +525,6 @@ class ConfigLoaderImpl(ConfigLoader):
                 f"Config {config_path} must be an OmegaConf config, got"
                 f" {type(ret.config).__name__}"
             )
-
-        if not ret.is_schema_source:
-            schema = None
-            try:
-                schema_source = repo.get_schema_source()
-                cname = ConfigSource._normalize_file_name(filename=config_path)
-                schema = schema_source.load_config(cname)
-            except ConfigLoadError:
-                # schema not found, ignore
-                pass
-
-            if schema is not None:
-                try:
-                    url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/automatic_schema_matching"
-                    if "defaults" in schema.config:
-                        raise ConfigCompositionException(
-                            dedent(f"""\
-                            '{config_path}' is validated against ConfigStore schema with the same name.
-                            This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
-                            In addition, the automatically matched schema contains a defaults list.
-                            This combination is no longer supported.
-                            See {url} for migration instructions.""")
-                        )
-                    else:
-                        deprecation_warning(
-                            dedent(f"""\
-
-                                '{config_path}' is validated against ConfigStore schema with the same name.
-                                This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
-                                See {url} for migration instructions."""),
-                            stacklevel=11,
-                        )
-
-                    # if primary config has a hydra node, remove it during validation and add it back.
-                    # This allows overriding Hydra's configuration without declaring it's node
-                    # in the schema of every primary config
-                    hydra = None
-                    hydra_config_group = (
-                        default.config_path is not None
-                        and default.config_path.startswith("hydra/")
-                    )
-                    config = ret.config
-                    if (
-                        default.primary
-                        and isinstance(config, DictConfig)
-                        and "hydra" in config
-                        and not hydra_config_group
-                    ):
-                        hydra = config.pop("hydra")
-
-                    merged = OmegaConf.merge(schema.config, config)
-                    assert isinstance(merged, DictConfig)
-
-                    if hydra is not None:
-                        with open_dict(merged):
-                            merged.hydra = hydra
-                    ret.config = merged
-                except OmegaConfBaseException as e:
-                    raise ConfigCompositionException(
-                        f"Error merging '{config_path}' with schema"
-                    ) from e
-
-                assert isinstance(merged, DictConfig)
 
         res = self._embed_result_config(ret, default.package)
         if (
