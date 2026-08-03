@@ -3,17 +3,15 @@
 # Source of truth for Hydra's version
 
 import re
-from textwrap import dedent
-from typing import Any, Optional, Tuple
+from typing import Any, Tuple
 
 from . import __version__
-from ._internal.deprecation_warning import deprecation_warning
 from .core.singleton import Singleton
 from .errors import HydraException
 
 _UNSPECIFIED_: Any = object()
 
-__compat_version__ = "1.1"
+__compat_version__ = "1.2"
 
 _VERSION_PATTERN = re.compile(
     r"(?P<major>[0-9]+)\.(?P<minor>[0-9]+)"
@@ -23,13 +21,13 @@ _VERSION_PATTERN = re.compile(
 
 class VersionBase(metaclass=Singleton):
     def __init__(self) -> None:
-        self.version_base: Optional[str] = _UNSPECIFIED_
+        self.version_base = _get_version(__version__)
 
     def setbase(self, version: str) -> None:
         assert isinstance(version, str), f"Unexpected Version type : {type(version)}"
         self.version_base = version
 
-    def getbase(self) -> Optional[str]:
+    def getbase(self) -> str:
         return self.version_base
 
     @staticmethod
@@ -67,7 +65,7 @@ def base_at_least(ver: str) -> bool:
     return _parse_version(_version_base) >= _parse_version(ver)
 
 
-def getbase() -> Optional[str]:
+def getbase() -> str:
     return VersionBase.instance().getbase()
 
 
@@ -77,18 +75,14 @@ def setbase(ver: Any) -> None:
     with older versions of Hydra.
     """
     if type(ver) is type(_UNSPECIFIED_):
-        deprecation_warning(
-            message=dedent(f"""
-            The version_base parameter is not specified.
-            Please specify a compatibility version level, or None.
-            Will assume defaults for version {__compat_version__}"""),
-            stacklevel=3,
-        )
-        _version_base = __compat_version__
+        _version_base = _get_version(__version__)
     elif ver is None:
         _version_base = _get_version(__version__)
     else:
         _version_base = _get_version(ver)
         if _parse_version(_version_base) < _parse_version(__compat_version__):
-            raise HydraException(f'version_base must be >= "{__compat_version__}"')
+            raise HydraException(
+                f"version_base={ver!r} is not supported in Hydra 1.4; "
+                "omit version_base to use the current behavior"
+            )
     VersionBase.instance().setbase(_version_base)

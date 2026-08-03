@@ -4,13 +4,11 @@ import functools
 import pickle
 import warnings
 from pathlib import Path
-from textwrap import dedent
 from typing import Any, Callable, List, Optional
 
 from omegaconf import DictConfig, open_dict, read_write
 
 from . import version
-from ._internal.deprecation_warning import deprecation_warning
 from ._internal.utils import _run_hydra, get_args_parser
 from .core.hydra_config import HydraConfig
 from .core.utils import _flush_loggers, configure_log
@@ -60,19 +58,7 @@ def main(
     version.setbase(version_base)
 
     if config_path is _UNSPECIFIED_:
-        if version.base_at_least("1.2"):
-            config_path = None
-        elif version_base is _UNSPECIFIED_:
-            url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_hydra_main_config_path"
-            deprecation_warning(
-                message=dedent(f"""
-                config_path is not specified in @hydra.main().
-                See {url} for more information."""),
-                stacklevel=2,
-            )
-            config_path = "."
-        else:
-            config_path = "."
+        config_path = None
 
     def main_decorator(task_function: TaskFunction) -> Callable[[], None]:
         @functools.wraps(task_function)

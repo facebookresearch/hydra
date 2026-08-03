@@ -302,7 +302,8 @@ class BatchedSweeperTestSuite:
             for idx, job_ret in enumerate(flat):
                 assert job_ret.overrides == expected_overrides[idx]
                 assert job_ret.cfg == expected_conf[idx]
-                dirs.add(job_ret.working_dir)
+                assert job_ret.hydra_cfg is not None
+                dirs.add(job_ret.hydra_cfg.hydra.runtime.output_dir)
                 verify_dir_outputs(job_ret, job_ret.overrides)
         assert len(dirs) == 6  # and a total of 6 unique output directories
 
