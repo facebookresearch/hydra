@@ -4,7 +4,7 @@ from omegaconf import DictConfig
 import hydra
 
 
-@hydra.main(version_base=None)
+@hydra.main()
 def my_app(_: DictConfig) -> None:
     pass
 

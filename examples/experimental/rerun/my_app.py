@@ -11,7 +11,7 @@ from hydra.utils import target_whitelist
 log = logging.getLogger(__name__)
 
 
-@hydra.main(version_base=None, config_path=".", config_name="config")
+@hydra.main(config_path=".", config_name="config")
 def my_app(cfg: DictConfig) -> None:
     log.info(f"Output_dir={HydraConfig.get().runtime.output_dir}")
     log.info(f"cfg.foo={cfg.foo}")

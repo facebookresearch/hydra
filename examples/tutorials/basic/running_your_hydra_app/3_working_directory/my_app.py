@@ -7,7 +7,7 @@ import hydra
 from hydra.core.hydra_config import HydraConfig
 
 
-@hydra.main(version_base=None)
+@hydra.main()
 def my_app(_cfg: DictConfig) -> None:
     print(f"Working directory : {os.getcwd()}")
     print(f"Output directory  : {HydraConfig.get().runtime.output_dir}")
