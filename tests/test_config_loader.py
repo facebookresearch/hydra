@@ -6,9 +6,8 @@ from typing import Any, List, cast
 
 from omegaconf import MISSING, DictConfig, OmegaConf, ValidationError, open_dict
 from omegaconf.errors import InterpolationResolutionError
-from pytest import mark, param, raises, warns
+from pytest import mark, param, raises
 
-from hydra import version
 from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_store import ConfigStore, ConfigStoreWithProvider
@@ -192,7 +191,6 @@ class TestConfigLoader:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
-        version.setbase("1.2")
         with raises(
             ConfigLoadError,
             match=re.escape(
@@ -205,24 +203,6 @@ class TestConfigLoader:
                 overrides=[],
                 run_mode=RunMode.RUN,
             )
-        version.setbase("1.1")
-        with warns(
-            UserWarning,
-            match=(
-                "Support for .yml files is deprecated. Use .yaml extension for Hydra"
-                " config files"
-            ),
-        ):
-            cfg = config_loader.load_configuration(
-                config_name="config.yml",
-                overrides=[],
-                run_mode=RunMode.RUN,
-            )
-
-        with open_dict(cfg):
-            del cfg["hydra"]
-
-        assert cfg == {"yml_file_here": True}
 
     def test_override_with_equals(self, path: str) -> None:
         config_loader = ConfigLoaderImpl(
@@ -293,7 +273,7 @@ class TestConfigLoader:
                 config_name="db/mysql", overrides=["db.port=fail"], run_mode=RunMode.RUN
             )
 
-    def test_load_config_file_with_schema_validation(
+    def test_config_store_schema_is_not_automatically_matched(
         self, hydra_restore_singletons: Any, path: str
     ) -> None:
         with ConfigStoreWithProvider("this_test") as cs:
@@ -304,22 +284,11 @@ class TestConfigLoader:
             config_search_path=create_config_search_path(path)
         )
 
-        msg = (
-            r"""'(config|db/mysql)' is validated against ConfigStore schema with the same name\."""
-            + re.escape(
-                dedent(
-                    """
-                    This behavior is deprecated in Hydra 1.1 and will be removed in Hydra 1.2.
-                    See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/automatic_schema_matching for migration instructions."""  # noqa: E501 line too long
-                )
-            )
+        cfg = config_loader.load_configuration(
+            config_name="config",
+            overrides=["+db=mysql"],
+            run_mode=RunMode.RUN,
         )
-        with warns(UserWarning, match=msg):
-            cfg = config_loader.load_configuration(
-                config_name="config",
-                overrides=["+db=mysql"],
-                run_mode=RunMode.RUN,
-            )
 
         with open_dict(cfg):
             del cfg["hydra"]
@@ -327,8 +296,6 @@ class TestConfigLoader:
             "normal_yaml_config": True,
             "db": {
                 "driver": "mysql",
-                "host": "???",
-                "port": "???",
                 "user": "omry",
                 "password": "secret",
             },

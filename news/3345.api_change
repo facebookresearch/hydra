@@ -1,0 +1,1 @@
+Remove Hydra 1.1 compatibility behavior and `version_base="1.1"` support.

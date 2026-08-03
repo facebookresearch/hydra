@@ -67,8 +67,10 @@ foo:
 If your application uses `hydra.main`, the best way to verify that updating Hydra versions does not change your job configurations is to compare the output of `python my_app.py --cfg job` on both the new and old Hydra versions. If your application uses the Compose API, please make sure you have comprehensive unit tests on the composed configuration.
 
 ### Primary config is a YAML file
-To ensure this change is not missed by people migrating from Hydra 1.0, Hydra 1.1 issues a warning if the Defaults List in the primary config is missing `_self_`, and there are config values in addition to the Defaults List.  
-To address the warning, add `_self_` to the Defaults List of the primary config.
+Hydra 1.1 through 1.3 warned if the Defaults List in the primary config was
+missing `_self_` and the config contained values in addition to the Defaults
+List. Hydra 1.4 no longer emits this migration warning. If `_self_` is omitted,
+Hydra continues to append it to the end of the Defaults List.
 
 - If the new behavior works for your application, append `_self_` to the end of the Defaults List.
 - If your application requires the previous behavior, insert `_self_` as the first item in your Defaults List.

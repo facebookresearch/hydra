@@ -1,15 +1,13 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
 import copy
-import os
-import warnings
 from dataclasses import dataclass, field
 from textwrap import dedent
 from typing import Callable, Dict, List, Optional, Set, Tuple, Union
 
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import OmegaConf
 
-from hydra import MissingConfigException, version
+from hydra import MissingConfigException
 from hydra._internal.config_repository import IConfigRepository
 from hydra.core.config_store import ConfigStore
 from hydra.core.default_element import (
@@ -23,8 +21,6 @@ from hydra.core.default_element import (
 from hydra.core.object_type import ObjectType
 from hydra.core.override_parser.types import Override
 from hydra.errors import ConfigCompositionException
-
-from .deprecation_warning import deprecation_warning
 
 cs = ConfigStore.instance()
 
@@ -259,7 +255,6 @@ class DefaultsList:
 def _validate_self(
     containing_node: InputDefault,
     defaults: List[InputDefault],
-    has_config_content: bool,
 ) -> bool:
     # check that self is present only once
     has_self = False
@@ -275,16 +270,6 @@ def _validate_self(
             has_self = True
 
     if not has_self and has_non_override or len(defaults) == 0:
-        # This check is here to make the migration from Hydra 1.0 to Hydra 1.1 smoother and should be removed in 1.2
-        # The warning should be removed in 1.2
-        if containing_node.primary and has_config_content and has_non_override:
-            msg = (
-                f"In '{containing_node.get_config_path()}': Defaults list is missing `_self_`. "
-                f"See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/default_composition_order for more information"
-            )
-            if os.environ.get("SELF_WARNING_AS_ERROR") == "1":
-                raise ConfigCompositionException(msg)
-            warnings.warn(msg, UserWarning)
         defaults.append(ConfigDefault(path="_self_"))
 
     return not has_self
@@ -362,23 +347,6 @@ def _check_not_missing(
             assert False
 
     return False
-
-
-def _create_legacy_interpolation_map(
-    overrides: Overrides,
-    defaults_list: List[InputDefault],
-    self_added: bool,
-) -> DictConfig:
-    known_choices = OmegaConf.create(overrides.known_choices)
-    known_choices.defaults = []
-    for d in defaults_list:
-        if self_added and d.is_self():
-            continue
-        if isinstance(d, ConfigDefault):
-            known_choices.defaults.append(d.get_config_path())
-        elif isinstance(d, GroupDefault):
-            known_choices.defaults.append({d.get_override_key(): d.value})
-    return known_choices
 
 
 def _create_defaults_tree(
@@ -541,17 +509,7 @@ def _update_overrides(
             continue
         d.update_parent(parent.get_group_path(), parent.get_final_package())
 
-        legacy_hydra_override = False
-        if isinstance(d, GroupDefault):
-            assert d.group is not None
-            if not version.base_at_least("1.2"):
-                legacy_hydra_override = not d.is_override() and d.group.startswith(
-                    "hydra/"
-                )
-
-        if seen_override and not (
-            d.is_override() or d.is_external_append() or legacy_hydra_override
-        ):
+        if seen_override and not (d.is_override() or d.is_external_append()):
             assert isinstance(last_override_seen, GroupDefault)
             pcp = parent.get_config_path()
             okey = last_override_seen.get_override_key()
@@ -568,19 +526,8 @@ def _update_overrides(
             )
 
         if isinstance(d, GroupDefault):
-            if legacy_hydra_override:
-                d.override = True
-                url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/defaults_list_override"
-                msg = dedent(f"""\
-                    In {parent.get_config_path()}: Invalid overriding of {d.group}:
-                    Default list overrides requires 'override' keyword.
-                    See {url} for more information.
-                    """)
-                deprecation_warning(msg)
-
             if d.override:
-                if not legacy_hydra_override:
-                    seen_override = True
+                seen_override = True
                 last_override_seen = d
                 if interpolated_subtree:
                     # Since interpolations are deferred for until all the config groups are already set,
@@ -594,16 +541,6 @@ def _update_overrides(
                 # Overrides are registered when they are encountered during the
                 # reverse traversal in _create_defaults_tree_impl, not here, so
                 # that the last override in depth first order wins.
-
-
-def _has_config_content(cfg: DictConfig) -> bool:
-    if cfg._is_none() or cfg._is_missing():
-        return False
-
-    for key in cfg.keys():
-        if not OmegaConf.is_missing(cfg, key) and key != "defaults":
-            return True
-    return False
 
 
 def _create_defaults_tree_impl(
@@ -664,21 +601,12 @@ def _create_defaults_tree_impl(
     if defaults_list is None:
         defaults_list = []
 
-    self_added = False
     if (
         len(defaults_list) > 0
         or is_root_config
         and len(overrides.append_group_defaults) > 0
     ):
-        has_config_content = isinstance(
-            loaded.config, DictConfig
-        ) and _has_config_content(loaded.config)
-
-        self_added = _validate_self(
-            containing_node=parent,
-            defaults=defaults_list,
-            has_config_content=has_config_content,
-        )
+        _validate_self(containing_node=parent, defaults=defaults_list)
 
     if is_root_config:
         defaults_list.extend(overrides.append_group_defaults)
@@ -756,49 +684,19 @@ def _create_defaults_tree_impl(
 
             else:
                 if d.is_interpolation():
-                    if version.base_at_least("1.2") or not d.is_legacy_interpolation():
-                        # Preserve which overrides are eligible at this point in
-                        # the reverse depth-first traversal.
-                        keys = (
-                            overrides.override_choices.keys()
-                            if eligible_override_keys is None
-                            else eligible_override_keys
-                        )
-                        deferred_interpolation_override_keys[id(d)] = set(keys)
+                    # Preserve which overrides are eligible at this point in
+                    # the reverse depth-first traversal.
+                    keys = (
+                        overrides.override_choices.keys()
+                        if eligible_override_keys is None
+                        else eligible_override_keys
+                    )
+                    deferred_interpolation_override_keys[id(d)] = set(keys)
                     children.append(d)
                     continue
 
                 new_root = DefaultsTreeNode(node=d, parent=root)
                 add_child(children, new_root)
-
-    # TODO: Remove Hydra 1.1 compatibility in
-    # https://github.com/facebookresearch/hydra/issues/3221.
-    if not version.base_at_least("1.2"):
-        known_choices = _create_legacy_interpolation_map(
-            overrides, defaults_list, self_added
-        )
-        for idx, dd in enumerate(children):
-            if (
-                isinstance(dd, InputDefault)
-                and dd.is_interpolation()
-                and dd.is_legacy_interpolation()
-            ):
-                dd.resolve_interpolation(known_choices)
-                _check_parent_traversal(dd, parent)
-                new_root = DefaultsTreeNode(node=dd, parent=root)
-                dd.update_parent(parent.get_group_path(), parent.get_final_package())
-                subtree = _create_defaults_tree_impl(
-                    repo=repo,
-                    root=new_root,
-                    is_root_config=False,
-                    skip_missing=skip_missing,
-                    interpolated_subtree=True,
-                    overrides=overrides,
-                    deferred_interpolation_override_keys=deferred_interpolation_override_keys,
-                    eligible_override_keys=eligible_override_keys,
-                )
-                if subtree.children is not None:
-                    children[idx] = subtree
 
     if len(children) > 0:
         root.children = list(reversed(children))
