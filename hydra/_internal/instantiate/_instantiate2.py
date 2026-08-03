@@ -284,9 +284,10 @@ def _warn_legacy_target_whitelist(target: str) -> None:
             f"""\
             hydra.utils.instantiate() resolved _target_='{target}' with no
             _target_whitelist_. This preserves legacy behavior but is deprecated
-            because config-controlled targets can execute arbitrary code. Pass a
-            callsite target whitelist, or pass UNSAFE_ALLOW_ALL_TARGETS to
-            explicitly keep legacy behavior.
+            because config-controlled targets can execute arbitrary code. This
+            warning will become an error in Hydra 1.5. Pass a callsite target
+            whitelist, or pass UNSAFE_ALLOW_ALL_TARGETS to explicitly keep legacy
+            behavior.
             See https://hydra.cc/docs/upgrades/1.3_to_1.4/instantiate_target_whitelist/"""
         ),
         stacklevel=stacklevel,

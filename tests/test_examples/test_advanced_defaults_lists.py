@@ -32,7 +32,7 @@ def test_ray_example_config(
 ) -> None:
     monkeypatch.setenv("SELF_WARNING_AS_ERROR", "1")
     config_dir = Path("examples/advanced/ray_example/conf").absolute()
-    with initialize_config_dir(version_base=None, config_dir=str(config_dir)):
+    with initialize_config_dir(config_dir=str(config_dir)):
         cfg = compose(config_name="config")
 
     assert cfg == {

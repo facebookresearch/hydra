@@ -1,0 +1,9 @@
+{
+    "files.watcherExclude": {
+        "**/.nox/**": true,
+        "**/.venv/**": true,
+        "**/node_modules/**": true,
+        "**/multirun/**": true,
+        "**/outputs/**": true
+    }
+}

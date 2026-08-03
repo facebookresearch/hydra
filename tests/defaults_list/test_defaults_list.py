@@ -3,9 +3,8 @@ import re
 from textwrap import dedent
 from typing import Any, List, Optional
 
-from pytest import mark, param, raises, warns
+from pytest import mark, param, raises
 
-from hydra import version
 from hydra._internal.defaults_list import (
     _check_parent_traversal,
     create_defaults_list,
@@ -113,36 +112,13 @@ def test_missing_group_name_in_defaults_list(config_name: str) -> None:
         ),
     ],
 )
-class TestDeprecatedOptional:
-    def test_version_base_1_1(
+class TestRemovedOptionalSyntax:
+    def test_rejected(
         self,
         config_path: str,
         expected_list: List[InputDefault],
         hydra_restore_singletons: Any,
     ) -> None:
-        version.setbase("1.1")
-        repo = create_repo()
-        warning = dedent("""
-                In optional_deprecated: 'optional: true' is deprecated.
-                Use 'optional group1: file1' instead.
-                Support for the old style is removed for Hydra version_base >= 1.2""")
-        with warns(
-            UserWarning,
-            match=re.escape(warning),
-        ):
-            result = repo.load_config(config_path=config_path)
-        assert result is not None
-        assert result.defaults_list == expected_list
-
-    @mark.parametrize("version_base", ["1.2", None])
-    def test_version_base_1_2(
-        self,
-        config_path: str,
-        expected_list: List[InputDefault],
-        version_base: Optional[str],
-        hydra_restore_singletons: Any,
-    ) -> None:
-        version.setbase(version_base)
         repo = create_repo()
         err = "In optional_deprecated: Too many keys in default item {'group1': 'file1', 'optional': True}"
         with raises(
@@ -855,7 +831,7 @@ def test_include_nested_group_global_foo(
 
 
 @mark.parametrize(
-    "config_name, overrides, expected, warning_file",
+    "config_name, overrides, expected",
     [
         param(
             "include_nested_group_name_",
@@ -863,7 +839,7 @@ def test_include_nested_group_global_foo(
             [
                 ResultDefault(
                     config_path="group1/group2/file1",
-                    package="group1.file1",
+                    package="group1._name_",
                     parent="group1/group_item1_name_",
                 ),
                 ResultDefault(
@@ -878,16 +854,15 @@ def test_include_nested_group_global_foo(
                     is_self=True,
                 ),
             ],
-            "group1/group_item1_name_",
             id="include_nested_group_name_",
         ),
         param(
             "include_nested_group_name_",
-            ["group1/group2@group1.file1=file2"],
+            ["group1/group2@group1._name_=file2"],
             [
                 ResultDefault(
                     config_path="group1/group2/file2",
-                    package="group1.file2",
+                    package="group1._name_",
                     parent="group1/group_item1_name_",
                 ),
                 ResultDefault(
@@ -902,7 +877,6 @@ def test_include_nested_group_global_foo(
                     is_self=True,
                 ),
             ],
-            "group1/group_item1_name_",
             id="include_nested_group_name_",
         ),
         param(
@@ -911,7 +885,7 @@ def test_include_nested_group_global_foo(
             [
                 ResultDefault(
                     config_path="group1/group2/file1",
-                    package="group1.file1",
+                    package="group1._name_",
                     parent="group1/config_item_name_",
                 ),
                 ResultDefault(
@@ -927,7 +901,6 @@ def test_include_nested_group_global_foo(
                     primary=True,
                 ),
             ],
-            "group1/config_item_name_",
             id="include_nested_config_item_name_",
         ),
     ],
@@ -936,15 +909,10 @@ def test_include_nested_group_name_(
     config_name: str,
     overrides: List[str],
     expected: List[ResultDefault],
-    warning_file: str,
 ) -> None:
-    url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
-    msg = f"In {warning_file}: Defaults List contains deprecated keyword _name_, see {url}\n"
-
-    with warns(UserWarning, match=re.escape(msg)):
-        _test_defaults_list_impl(
-            config_name=config_name, overrides=overrides, expected=expected
-        )
+    _test_defaults_list_impl(
+        config_name=config_name, overrides=overrides, expected=expected
+    )
 
 
 @mark.parametrize(
@@ -1264,68 +1232,13 @@ def test_overriding_package_header_from_defaults_list(
         ),
     ],
 )
-@mark.parametrize("version_base", ["1.2", None])
-def test_legacy_override_hydra_version_base_1_2(
-    config_name: str,
-    overrides: List[str],
-    expected: List[ResultDefault],
-    recwarn: Any,  # Testing deprecated behavior
-    version_base: Optional[str],
-    hydra_restore_singletons: Any,
-) -> None:
-    version.setbase(version_base)
-    _test_defaults_list_impl(
-        config_name=config_name,
-        overrides=overrides,
-        expected=expected,
-        prepend_hydra=True,
-    )
-
-
-@mark.parametrize(
-    "config_name,overrides,expected",
-    [
-        param(
-            "legacy_override_hydra",
-            [],
-            [
-                ResultDefault(
-                    config_path="hydra/help/custom1",
-                    parent="hydra/config",
-                    package="hydra.help",
-                    is_self=False,
-                ),
-                ResultDefault(
-                    config_path="hydra/output/default",
-                    parent="hydra/config",
-                    package="hydra",
-                    is_self=False,
-                ),
-                ResultDefault(
-                    config_path="hydra/config",
-                    parent="<root>",
-                    package="hydra",
-                    is_self=True,
-                ),
-                ResultDefault(
-                    config_path="legacy_override_hydra",
-                    parent="<root>",
-                    package="",
-                    is_self=True,
-                ),
-            ],
-            id="override_hydra",
-        ),
-    ],
-)
-def test_legacy_override_hydra_version_base_1_1(
+def test_legacy_override_hydra_is_rejected(
     config_name: str,
     overrides: List[str],
     expected: List[ResultDefault],
     recwarn: Any,  # Testing deprecated behavior
     hydra_restore_singletons: Any,
 ) -> None:
-    version.setbase("1.1")
     _test_defaults_list_impl(
         config_name=config_name,
         overrides=overrides,
@@ -1817,15 +1730,12 @@ def test_duplicate_items(
         ),
     ],
 )
-@mark.parametrize("version_base", ["1.2", None])
 def test_name_collision(
     config_name: str,
     overrides: List[str],
     expected: List[ResultDefault],
-    version_base: Optional[str],
     hydra_restore_singletons: Any,
 ) -> None:
-    version.setbase(version_base)
     _test_defaults_list_impl(
         config_name=config_name,
         overrides=overrides,
@@ -1841,7 +1751,7 @@ def test_name_collision(
             [],
             [
                 ResultDefault(
-                    config_path="group1/file_with_group_header", package="group1"
+                    config_path="group1/file_with_group_header", package="_group_"
                 )
             ],
             id="group1/file_with_group_header",
@@ -1853,7 +1763,7 @@ def test_name_collision(
                 ResultDefault(config_path="empty", package="", is_self=True),
                 ResultDefault(
                     config_path="group1/file_with_group_header",
-                    package="group1",
+                    package="_group_",
                     parent="empty",
                 ),
             ],
@@ -1865,7 +1775,7 @@ def test_name_collision(
             [
                 ResultDefault(
                     config_path="group1/group2/file_with_group_header",
-                    package="group1.group2",
+                    package="_group_",
                 )
             ],
             id="group1/group2/file_with_group_header",
@@ -1877,7 +1787,7 @@ def test_name_collision(
                 ResultDefault(config_path="empty", package="", is_self=True),
                 ResultDefault(
                     config_path="group1/group2/file_with_group_header",
-                    package="group1.group2",
+                    package="_group_",
                     parent="empty",
                 ),
             ],
@@ -2108,7 +2018,7 @@ def test_with_missing_config(
         param(
             GroupDefault(group="group1", value="file"),
             "_group_",
-            "group1",
+            "_group_",
             id="gd:_group_",
         ),
         param(
@@ -2132,7 +2042,7 @@ def test_with_missing_config(
         param(
             GroupDefault(group="group1", value="file"),
             "_group_._name_",
-            "group1.file",
+            "_group_._name_",
             id="gd:_group_._name_",
         ),
     ],
@@ -2151,7 +2061,7 @@ def test_set_package_header_no_parent_pkg(
         param(
             GroupDefault(group="group1", value="file"),
             "_group_",
-            "parent_pkg.group1",
+            "_group_",
             id="gd:_group_",
         ),
     ],

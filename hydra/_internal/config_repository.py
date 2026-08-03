@@ -2,7 +2,6 @@
 import copy
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from textwrap import dedent
 from typing import Dict, List, Optional, Tuple
 
 from omegaconf import (
@@ -15,13 +14,11 @@ from omegaconf import (
     read_write,
 )
 
-from hydra import version
 from hydra.core.config_search_path import ConfigSearchPath
 from hydra.core.object_type import ObjectType
 from hydra.plugins.config_source import ConfigResult, ConfigSource
 
 from ..core.default_element import ConfigDefault, GroupDefault, InputDefault
-from .deprecation_warning import deprecation_warning
 from .sources_registry import SourcesRegistry
 
 
@@ -170,24 +167,10 @@ class ConfigRepository(IConfigRepository):
         config_path: str,
         defaults: ListConfig,
     ) -> List[InputDefault]:
-        def issue_deprecated_name_warning() -> None:
-            # DEPRECATED: remove in 1.2
-            url = "https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
-            deprecation_warning(
-                message=dedent(f"""\
-                    In {config_path}: Defaults List contains deprecated keyword _name_, see {url}
-                    """),
-            )
-
         res: List[InputDefault] = []
         for item in defaults._iter_ex(resolve=False):
             default: InputDefault
             if isinstance(item, DictConfig):
-                old_optional = None
-                if not version.base_at_least("1.2"):
-                    if len(item) > 1:
-                        if "optional" in item:
-                            old_optional = item.pop("optional")
                 keys = list(item.keys())
 
                 if len(keys) > 1:
@@ -205,24 +188,9 @@ class ConfigRepository(IConfigRepository):
                     config_path, config_group, keywords
                 )
 
-                if not version.base_at_least("1.2"):
-                    if not keywords.optional and old_optional is not None:
-                        keywords.optional = old_optional
-
                 node = item._get_node(key)
                 assert node is not None and isinstance(node, Node)
                 config_value = node._value()
-
-                if not version.base_at_least("1.2"):
-                    if old_optional is not None:
-                        msg = dedent(
-                            f"""
-                            In {config_path}: 'optional: true' is deprecated.
-                            Use 'optional {key}: {config_value}' instead.
-                            Support for the old style is removed for Hydra version_base >= 1.2"""
-                        )
-
-                        deprecation_warning(msg)
 
                 if config_value is not None and not isinstance(
                     config_value, (str, list)
@@ -244,10 +212,6 @@ class ConfigRepository(IConfigRepository):
                         options.append(vv)
                     config_value = options
 
-                if not version.base_at_least("1.2"):
-                    if package is not None and "_name_" in package:
-                        issue_deprecated_name_warning()
-
                 default = GroupDefault(
                     group=keywords.group,
                     value=config_value,
@@ -258,10 +222,6 @@ class ConfigRepository(IConfigRepository):
 
             elif isinstance(item, str):
                 path, package, _package2 = self._split_group(item)
-                if not version.base_at_least("1.2"):
-                    if package is not None and "_name_" in package:
-                        issue_deprecated_name_warning()
-
                 default = ConfigDefault(path=path, package=package)
             else:
                 raise ValueError(
