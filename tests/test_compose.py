@@ -65,7 +65,9 @@ def test_initialize(hydra_restore_singletons: Any) -> None:
     assert GlobalHydra().is_initialized()
 
 
-@mark.parametrize("version_base", ["1.0", "1.1"])
+@mark.parametrize(
+    "version_base", ["1.0", "1.1", "1.2", "1.2.0", "1.2.0.dev2", "1.2.0rc1"]
+)
 def test_initialize_old_version_base(
     hydra_restore_singletons: Any, version_base: str
 ) -> None:
@@ -86,13 +88,13 @@ def test_initialize_bad_version_base(hydra_restore_singletons: Any) -> None:
         initialize(version_base=1.1)  # type: ignore
 
 
-@mark.parametrize("version_base", ["1.2.0", "1.2.0.dev2", "1.2.0rc1"])
+@mark.parametrize("version_base", ["1.3", "1.3.0", "1.3.0.dev2", "1.3.0rc1", "1.4"])
 def test_initialize_hydra_version_string_base(
     hydra_restore_singletons: Any, version_base: str
 ) -> None:
     assert not GlobalHydra().is_initialized()
     initialize(version_base=version_base)
-    assert version.base_at_least("1.2")
+    assert version.base_at_least("1.3")
 
 
 def test_version_base_numeric_comparison(hydra_restore_singletons: Any) -> None:
@@ -791,60 +793,6 @@ class TestConfigSearchPathOverride:
         ] == sources
 
 
-def test_deprecated_compose(hydra_restore_singletons: Any) -> None:
-    from hydra import initialize
-    from hydra.experimental import compose as expr_compose
-
-    msg = "hydra.experimental.compose() is no longer experimental. Use hydra.compose()"
-
-    with initialize(version_base="1.2"):
-        with raises(
-            ImportError,
-            match=re.escape(msg),
-        ):
-            assert expr_compose() == {}
-
-
-def test_deprecated_initialize(hydra_restore_singletons: Any) -> None:
-    from hydra.experimental import initialize as expr_initialize
-
-    msg = "hydra.experimental.initialize() is no longer experimental. Use hydra.initialize()"
-
-    version.setbase("1.2")
-    with raises(ImportError, match=re.escape(msg)):
-        expr_initialize()
-
-
-def test_deprecated_initialize_config_dir(hydra_restore_singletons: Any) -> None:
-    from hydra.experimental import initialize_config_dir as expr_initialize_config_dir
-
-    msg = "hydra.experimental.initialize_config_dir() is no longer experimental. Use hydra.initialize_config_dir()"
-
-    version.setbase("1.2")
-    with raises(
-        ImportError,
-        match=re.escape(msg),
-    ):
-        expr_initialize_config_dir(config_dir=str(Path(".").absolute()))
-
-
-def test_deprecated_initialize_config_module(hydra_restore_singletons: Any) -> None:
-    from hydra.experimental import (
-        initialize_config_module as expr_initialize_config_module,
-    )
-
-    msg = (
-        "hydra.experimental.initialize_config_module() is no longer experimental."
-        " Use hydra.initialize_config_module()"
-    )
-
-    version.setbase("1.2")
-    with raises(ImportError, match=re.escape(msg)):
-        expr_initialize_config_module(
-            config_module="examples.jupyter_notebooks.cloud_app.conf"
-        )
-
-
 def test_initialize_without_config_path(tmpdir: Path) -> None:
     with warnings.catch_warnings():
         warnings.simplefilter("error")
@@ -872,9 +820,17 @@ def test_initialize_without_config_path(tmpdir: Path) -> None:
             ),
             id="hydra.job_logging=null",
         ),
+        param(
+            ["hydra.job.chdir=null"],
+            raises(
+                ConfigCompositionException,
+                match="Error merging override hydra.job.chdir=null",
+            ),
+            id="hydra.job.chdir=null",
+        ),
     ],
 )
-def test_error_assigning_null_to_logging_config(
+def test_error_assigning_null_to_hydra_config(
     hydra_restore_singletons: Any, overrides: List[str], expected: Any
 ) -> None:
     with expected:
