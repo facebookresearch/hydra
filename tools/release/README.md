@@ -149,11 +149,26 @@ python tools/release/release.py \
 ```
 
 Publishing requires a clean working tree whose current commit matches
-`remote/<workflow_ref>`. The command applies the version bump, commits and
-pushes it when the bump changes files, and dispatches `Publish to PyPI` with the
-selected package set and expected version. It uses `workflow_ref=main` by
+`remote/<workflow_ref>`. In the normal release flow, the selected packages
+already have the target version because it was set immediately after the
+previous release. The command dispatches `Publish to PyPI` with the selected
+package set and expected version. If the versions differ, it can set, commit,
+and push the target version as a recovery path. It uses `workflow_ref=main` by
 default; use `workflow_ref=<branch-or-tag>` for unusual cases such as publishing
 a dev release from an already-published release line.
+
+After the publish workflow succeeds, immediately set the next coordinated
+development version, commit, and push it before resuming development:
+
+```shell
+python tools/release/release.py \
+  action=set_version \
+  set=hydra-full-release \
+  version=1.4.0.dev4
+```
+
+This prevents new development from reporting a version that has already been
+published.
 
 ### Prepare and publish workflow responsibilities
 

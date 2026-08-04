@@ -81,6 +81,12 @@ python tools/release/release.py \
 
 Use PEP 440 version spelling, such as `1.4.0.dev2`, `1.4.0rc1`, or `1.4.0`.
 
+Advance development versions immediately after publishing, not while preparing
+the next release. The checked-in version should identify the next unpublished
+release throughout development. For example, after publishing `1.4.0.dev2`, set
+the coordinated package versions to `1.4.0.dev3`, commit, and push that bump
+before resuming development.
+
 The release kind is derived from the target version strings:
 
 - `.devN` versions are dev releases;
@@ -184,9 +190,10 @@ python tools/release/release.py \
 ```
 
 To publish the dev release, rerun with `publish=true`. This requires a clean
-working tree whose current commit matches `remote/<workflow_ref>`, applies the
-version bump, commits and pushes it when the bump changes files, and dispatches
-`Publish to PyPI` with the selected package set and expected version:
+working tree whose current commit matches `remote/<workflow_ref>` and dispatches
+`Publish to PyPI` with the selected package set and expected version. In the
+normal release flow, the selected packages are already at this version because
+they were bumped immediately after the previous release:
 
 ```shell
 python tools/release/release.py \
@@ -195,6 +202,24 @@ python tools/release/release.py \
   version=1.4.0.dev3 \
   publish=true
 ```
+
+The command can set, commit, and push the target version when the selected
+packages do not already match it. Treat that as a recovery path, not the normal
+release cadence.
+
+After the publish workflow succeeds, immediately advance the selected packages
+to the next development version, commit, and push the change before resuming
+development:
+
+```shell
+python tools/release/release.py \
+  action=set_version \
+  set=hydra-full-release \
+  version=1.4.0.dev4
+```
+
+Do not leave the development branch reporting a version that has already been
+published.
 
 The dev-release action uses `workflow_ref=main` by default. Use
 `workflow_ref=<branch-or-tag>` for unusual cases such as publishing a dev release
