@@ -97,19 +97,6 @@ def filter_overrides(overrides: Sequence[str]) -> Sequence[str]:
     return [x for x in overrides if not x.startswith("hydra.")]
 
 
-def _check_hydra_context(hydra_context: Optional[HydraContext]) -> None:
-    if hydra_context is None:
-        # hydra_context is required as of Hydra 1.2.
-        # We can remove this check in Hydra 1.3.
-        raise TypeError(
-            dedent(
-                """
-                run_job's signature has changed: the `hydra_context` arg is now required.
-                For more info, check https://github.com/facebookresearch/hydra/pull/1581."""
-            ),
-        )
-
-
 def run_job(
     task_function: TaskFunction,
     config: DictConfig,
@@ -118,7 +105,6 @@ def run_job(
     hydra_context: HydraContext,
     configure_logging: bool = True,
 ) -> "JobReturn":
-    _check_hydra_context(hydra_context)
     callbacks = hydra_context.callbacks
 
     old_cwd = os.getcwd()
@@ -165,9 +151,6 @@ def run_job(
         Path(str(output_dir)).mkdir(parents=True, exist_ok=True)
 
         _chdir = hydra_cfg.hydra.job.chdir
-
-        if _chdir is None:
-            _chdir = False
 
         if _chdir:
             os.chdir(output_dir)
