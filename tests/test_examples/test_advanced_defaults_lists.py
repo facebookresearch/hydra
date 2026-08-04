@@ -28,7 +28,7 @@ def test_nested_defaults_list(tmpdir: Path) -> None:
 
 def test_ray_example_config(hydra_restore_singletons: Any) -> None:
     config_dir = Path("examples/advanced/ray_example/conf").absolute()
-    with initialize_config_dir(version_base=None, config_dir=str(config_dir)):
+    with initialize_config_dir(config_dir=str(config_dir)):
         cfg = compose(config_name="config")
 
     assert cfg == {

@@ -14,7 +14,7 @@ import hydra
 
 from mypackage import mydecorator
 
-@hydra.main(version_base=None)
+@hydra.main()
 @mydecorator
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
