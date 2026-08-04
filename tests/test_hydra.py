@@ -30,7 +30,7 @@ from hydra.test_utils.test_utils import (
 chdir_hydra_root()
 
 
-@mark.parametrize("version_base", ["1.0", "1.1"])
+@mark.parametrize("version_base", ["1.0", "1.1", "1.2"])
 def test_hydra_main_old_version_base(
     hydra_restore_singletons: Any, version_base: str
 ) -> None:

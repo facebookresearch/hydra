@@ -1,6 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import re
-from textwrap import dedent
 from typing import Any, List, Sequence, Union
 from unittest.mock import Mock
 
@@ -13,7 +12,7 @@ from hydra._internal.config_loader_impl import ConfigLoaderImpl
 from hydra._internal.utils import create_config_search_path
 from hydra.core.config_loader import ConfigLoader
 from hydra.core.plugins import Plugins
-from hydra.core.utils import JobReturn, _check_hydra_context
+from hydra.core.utils import JobReturn
 from hydra.plugins.launcher import Launcher
 from hydra.plugins.sweeper import Sweeper
 from hydra.test_utils.test_utils import chdir_hydra_root
@@ -87,12 +86,3 @@ def test_setup_plugins(
                 task_function=task_function,
                 config=config,
             )
-
-
-def test_run_job() -> None:
-    hydra_context = None
-    msg = dedent("""
-        run_job's signature has changed: the `hydra_context` arg is now required.
-        For more info, check https://github.com/facebookresearch/hydra/pull/1581.""")
-    with raises(TypeError, match=msg):
-        _check_hydra_context(hydra_context)

@@ -2,14 +2,11 @@
 import functools
 import logging
 import sys
-import warnings
-from textwrap import dedent
 from typing import (
     Any,
     Callable,
     Dict,
     List,
-    MutableMapping,
     MutableSequence,
     Optional,
     Sequence,
@@ -17,7 +14,6 @@ from typing import (
 )
 
 import optuna
-from hydra._internal.deprecation_warning import deprecation_warning
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.override_parser.types import (
     ChoiceSweep,
@@ -40,37 +36,9 @@ from optuna.distributions import (
 )
 from optuna.trial import Trial
 
-from .config import Direction, DistributionConfig, DistributionType
+from .config import Direction
 
 log = logging.getLogger(__name__)
-
-
-def create_optuna_distribution_from_config(
-    config: MutableMapping[str, Any],
-) -> BaseDistribution:
-    kwargs = dict(config)
-    if isinstance(config["type"], str):
-        kwargs["type"] = DistributionType[config["type"]]
-    param = DistributionConfig(**kwargs)
-    if param.type == DistributionType.categorical:
-        assert param.choices is not None
-        return CategoricalDistribution(param.choices)
-    if param.type == DistributionType.int:
-        assert param.low is not None
-        assert param.high is not None
-        if param.log:
-            return IntDistribution(int(param.low), int(param.high), log=True)
-        step = int(param.step) if param.step is not None else 1
-        return IntDistribution(int(param.low), int(param.high), step=step)
-    if param.type == DistributionType.float:
-        assert param.low is not None
-        assert param.high is not None
-        if param.log:
-            return FloatDistribution(param.low, param.high, log=True)
-        if param.step is not None:
-            return FloatDistribution(param.low, param.high, step=param.step)
-        return FloatDistribution(param.low, param.high)
-    raise NotImplementedError(f"{param.type} is not supported by Optuna sweeper.")
 
 
 def create_optuna_distribution_from_override(override: Override) -> Any:
@@ -160,7 +128,6 @@ class OptunaSweeperImpl(Sweeper):
         n_trials: int,
         n_jobs: int,
         max_failure_rate: float,
-        search_space: Optional[DictConfig],
         custom_search_space: Optional[str],
         params: Optional[DictConfig],
     ) -> None:
@@ -178,34 +145,12 @@ class OptunaSweeperImpl(Sweeper):
         ] = None
         if custom_search_space:
             self.custom_search_space_extender = get_method(custom_search_space)
-        self.search_space = search_space
         self.params = params
         self.job_idx: int = 0
-        self.search_space_distributions: Optional[Dict[str, BaseDistribution]] = None
 
     def _process_searchspace_config(self) -> None:
-        url = "https://hydra.cc/docs/upgrades/1.1_to_1.2/changes_to_sweeper_config/"
-        if self.params is None and self.search_space is None:
+        if self.params is None:
             self.params = OmegaConf.create({})
-        elif self.search_space is not None:
-            if self.params is not None:
-                warnings.warn(
-                    "Both hydra.sweeper.params and hydra.sweeper.search_space are configured."
-                    "\nHydra will use hydra.sweeper.params for defining search space."
-                    f"\n{url}"
-                )
-            else:
-                deprecation_warning(
-                    message=dedent(f"""\
-                        `hydra.sweeper.search_space` is deprecated and will be removed in the next major release.
-                        Please configure with `hydra.sweeper.params`.
-                        {url}
-                        """),
-                )
-                self.search_space_distributions = {
-                    str(x): create_optuna_distribution_from_config(y)
-                    for x, y in self.search_space.items()
-                }
 
     def setup(
         self,
@@ -308,10 +253,7 @@ class OptunaSweeperImpl(Sweeper):
             fixed_overrides,
         ) = create_params_from_overrides(params_conf)
 
-        search_space_distributions = dict()
-        if self.search_space_distributions:
-            search_space_distributions = self.search_space_distributions.copy()
-        search_space_distributions.update(override_search_space_distributions)
+        search_space_distributions = override_search_space_distributions
 
         if is_grid_sampler:
             search_space_for_grid_sampler = {
