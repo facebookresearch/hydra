@@ -1,0 +1,1 @@
+Normalize Defaults List items containing a slash in their selected value (e.g. `foo: bar/baz` -> `foo/bar: baz`) early during Defaults List creation.

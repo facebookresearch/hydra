@@ -866,6 +866,52 @@ def create_defaults_list(
     )
 
 
+def _has_normalized_ancestor(tree: DefaultsTreeNode) -> Tuple[bool, Optional[InputDefault]]:
+    curr: Optional[DefaultsTreeNode] = tree
+    while curr is not None:
+        if isinstance(curr.node, GroupDefault) and getattr(curr.node, "normalized_shorthand", False):
+            return True, curr.node
+        curr = curr.parent
+    return False, None
+
+
+def _get_old_path(tree: DefaultsTreeNode) -> str:
+    # 1. Collect nodes from root to tree
+    nodes = []
+    curr: Optional[DefaultsTreeNode] = tree
+    while curr is not None:
+        nodes.append(curr)
+        curr = curr.parent
+    nodes.reverse()
+
+    # 2. Save original groups and parent_base_dirs
+    saved_groups = {}
+    saved_parent_base_dirs = {}
+    for n in nodes:
+        saved_parent_base_dirs[id(n)] = n.node.parent_base_dir
+        if isinstance(n.node, GroupDefault):
+            saved_groups[id(n)] = n.node.group
+            if getattr(n.node, "normalized_shorthand", False):
+                n.node.group = getattr(n.node, "original_group", n.node.group)
+
+    # 3. Re-apply parent updates from root to tree
+    parent_base_dir = ""
+    for n in nodes:
+        n.node.parent_base_dir = parent_base_dir
+        parent_base_dir = n.node.get_group_path()
+
+    # 4. Get the old config path
+    old_path = tree.node.get_config_path()
+
+    # 5. Restore original groups and parent_base_dirs
+    for n in nodes:
+        n.node.parent_base_dir = saved_parent_base_dirs[id(n)]
+        if id(n) in saved_groups:
+            n.node.group = saved_groups[id(n)]
+
+    return old_path
+
+
 def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> None:
     element = tree.node
     options = None
@@ -873,6 +919,23 @@ def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> N
     if isinstance(element, GroupDefault):
         group = element.get_group_path()
         options = repo.get_group_options(group, ObjectType.CONFIG)
+
+    # Check if the failure is caused by relying on the old slash-containing group defaults behavior
+    has_norm, norm_node = _has_normalized_ancestor(tree)
+    if has_norm and norm_node is not None:
+        old_path = _get_old_path(tree)
+        if repo.config_exists(old_path):
+            orig_gp = getattr(norm_node, "original_group", "")
+            norm_gp = norm_node.group
+            msg = dedent(f"""\
+            Could not load '{element.get_config_path()}'.
+            However, a config was found at '{old_path}', which indicates this application
+            relies on the deprecated slash-containing default option shorthand behavior.
+            In Hydra 1.4, defaults list items like '{orig_gp}: {norm_gp[len(orig_gp)+1:]}/...' are
+            normalized early to '{norm_gp}: ...'. Please update your configs or refer to the
+            migration page: https://hydra.cc/docs/upgrades/1.3_to_1.4/slash_in_default/
+            """)
+            raise ConfigCompositionException(msg)
 
     if element.primary:
         msg = dedent(f"""\

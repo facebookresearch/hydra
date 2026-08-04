@@ -212,6 +212,21 @@ class ConfigRepository(IConfigRepository):
                         options.append(vv)
                     config_value = options
 
+                normalized_shorthand = False
+                original_group = None
+                if (
+                    isinstance(config_value, str)
+                    and "/" in config_value
+                    and ".." not in config_value
+                    and "${" not in config_value
+                    and config_value != "???"
+                ):
+                    original_group = keywords.group
+                    group_suffix, option_name = config_value.rsplit("/", 1)
+                    keywords.group = f"{keywords.group}/{group_suffix}"
+                    config_value = option_name
+                    normalized_shorthand = True
+
                 default = GroupDefault(
                     group=keywords.group,
                     value=config_value,
@@ -219,6 +234,8 @@ class ConfigRepository(IConfigRepository):
                     optional=keywords.optional,
                     override=keywords.override,
                 )
+                default.normalized_shorthand = normalized_shorthand
+                default.original_group = original_group
 
             elif isinstance(item, str):
                 path, package, _package2 = self._split_group(item)

@@ -440,6 +440,9 @@ class GroupDefault(InputDefault):
     # True if this item was added using +foo=bar from the external overrides
     external_append: bool = field(default=False, compare=False, repr=False)
 
+    normalized_shorthand: bool = field(default=False, compare=False, repr=False)
+    original_group: Optional[str] = field(default=None, compare=False, repr=False)
+
     def __post_init__(self) -> None:
         assert self.group is not None and self.group != ""
         if self.package == "_here_":
