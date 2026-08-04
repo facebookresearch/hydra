@@ -13,7 +13,7 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.37158d48.css">
-<script src="/assets/js/runtime~main.a4216e4e.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.fe40f64e.js" defer="defer"></script>
 <script src="/assets/js/main.1fd771fe.js" defer="defer"></script>
 </head>
 <body>
@@ -72,6 +72,11 @@ defined in each plugin package&#x27;s <code>hydra_plugins/&lt;plugin&gt;/__init_
 together:</p>
 <div class="language-shell codeBlockContainer_amAr theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_Ie75"><pre tabindex="0" class="prism-code language-shell codeBlock_O12j thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_fJnv"><div class="token-line" style="color:#bfc7d5"><span class="token plain">python tools/release/release.py \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  action=set_version \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  set=hydra-full-release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  version=1.4.0.dev2</span><br></div></code></pre></div></div>
 <p>Use PEP 440 version spelling, such as <code>1.4.0.dev2</code>, <code>1.4.0rc1</code>, or <code>1.4.0</code>.</p>
+<p>Advance development versions immediately after publishing, not while preparing
+the next release. The checked-in version should identify the next unpublished
+release throughout development. For example, after publishing <code>1.4.0.dev2</code>, set
+the coordinated package versions to <code>1.4.0.dev3</code>, commit, and push that bump
+before resuming development.</p>
 <p>The release kind is derived from the target version strings:</p>
 <ul>
 <li class=""><code>.devN</code> versions are dev releases;</li>
@@ -125,10 +130,20 @@ exact publish workflow dispatch that would run:</p>
 <p>To dry-run a single plugin dev release, narrow the selected package set:</p>
 <div class="language-shell codeBlockContainer_amAr theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_Ie75"><pre tabindex="0" class="prism-code language-shell codeBlock_O12j thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_fJnv"><div class="token-line" style="color:#bfc7d5"><span class="token plain">python tools/release/release.py \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  action=dev_release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  set=hydra-plugins \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  only=hydra_optuna_sweeper \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  version=1.4.0.dev3</span><br></div></code></pre></div></div>
 <p>To publish the dev release, rerun with <code>publish=true</code>. This requires a clean
-working tree whose current commit matches <code>remote/&lt;workflow_ref&gt;</code>, applies the
-version bump, commits and pushes it when the bump changes files, and dispatches
-<code>Publish to PyPI</code> with the selected package set and expected version:</p>
+working tree whose current commit matches <code>remote/&lt;workflow_ref&gt;</code> and dispatches
+<code>Publish to PyPI</code> with the selected package set and expected version. In the
+normal release flow, the selected packages are already at this version because
+they were bumped immediately after the previous release:</p>
 <div class="language-shell codeBlockContainer_amAr theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_Ie75"><pre tabindex="0" class="prism-code language-shell codeBlock_O12j thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_fJnv"><div class="token-line" style="color:#bfc7d5"><span class="token plain">python tools/release/release.py \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  action=dev_release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  set=hydra-full-release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  version=1.4.0.dev3 \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  publish=true</span><br></div></code></pre></div></div>
+<p>The command can set, commit, and push the target version when the selected
+packages do not already match it. Treat that as a recovery path, not the normal
+release cadence.</p>
+<p>After the publish workflow succeeds, immediately advance the selected packages
+to the next development version, commit, and push the change before resuming
+development:</p>
+<div class="language-shell codeBlockContainer_amAr theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_Ie75"><pre tabindex="0" class="prism-code language-shell codeBlock_O12j thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_fJnv"><div class="token-line" style="color:#bfc7d5"><span class="token plain">python tools/release/release.py \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  action=set_version \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  set=hydra-full-release \</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  version=1.4.0.dev4</span><br></div></code></pre></div></div>
+<p>Do not leave the development branch reporting a version that has already been
+published.</p>
 <p>The dev-release action uses <code>workflow_ref=main</code> by default. Use
 <code>workflow_ref=&lt;branch-or-tag&gt;</code> for unusual cases such as publishing a dev release
 from an already-published release line.</p>
