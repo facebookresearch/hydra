@@ -18,7 +18,7 @@ class CallableTask:
         )
 
 
-app = hydra.main(version_base=None, config_path=None)(CallableTask("callable"))
+app = hydra.main(config_path=None)(CallableTask("callable"))
 
 
 if __name__ == "__main__":

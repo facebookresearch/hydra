@@ -19,7 +19,7 @@ class ConfigStore(metaclass=Singleton):
         name: str,
         node: Any,
         group: Optional[str] = None,
-        package: Optional[str] = "_group_",
+        package: Optional[str] = None,
         provider: Optional[str] = None,
     ) -> None:
         """
@@ -51,7 +51,7 @@ Say we have a simple application and a `db` config group with a `mysql` option:
 <div className="col col--5">
 
 ```python title="my_app.py"
-@hydra.main(version_base=None, config_path="conf")
+@hydra.main(config_path="conf")
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 
@@ -103,7 +103,7 @@ cs = ConfigStore.instance()
 # Registering the Config class with the name `postgresql` with the config group `db`
 cs.store(name="postgresql", group="db", node=PostgresSQLConfig)
 
-@hydra.main(version_base=None, config_path="conf")
+@hydra.main(config_path="conf")
 def my_app(cfg: DictConfig) -> None:
     print(OmegaConf.to_yaml(cfg))
 

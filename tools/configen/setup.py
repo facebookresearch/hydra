@@ -13,7 +13,7 @@ setup(
     url="https://github.com/facebookresearch/hydra/tree/main/tools/configen",
     include_package_data=True,
     install_requires=[
-        "hydra-core>=1.1.0",
+        "hydra-core>=1.4.0.dev1",
         "jinja2",
     ],
 )

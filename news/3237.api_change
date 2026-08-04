@@ -1,0 +1,2 @@
+Deprecate `version_base` in preparation for its removal in Hydra 1.5. Require
+Hydra 1.4 or newer for `hydra-configen`.
