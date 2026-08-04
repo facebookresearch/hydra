@@ -85,7 +85,7 @@ and configs containing binary and Path data can be round-tripped to/from yaml fi
 <h3 class="anchor anchorTargetStickyNavbar_AKxV" id="migrating-from-11">Migrating from 1.1<a href="https://hydra.cc/blog/2022/05/18/Hydra_1.2/#migrating-from-11" class="hash-link" aria-label="Direct link to Migrating from 1.1" title="Direct link to Migrating from 1.1" translate="no">​</a></h3>
 <p>Hydra 1.2 is a major release. For most people, migrating from 1.1 to 1.2 will be smooth.
 In addition, for this release we introduce support for more compatible upgrades
-through the <a class="" href="https://hydra.cc/docs/upgrades/version_base/">version_base</a> mechanism.
+through the <a class="" href="https://hydra.cc/docs/1.2/upgrades/version_base/">version_base</a> mechanism.
 New users are encouraged to use the latest defaults by setting <code>version_base=None</code> with <code>@hydra.main()</code> and <code>hydra.initialize()</code>,
 while existing users have more control over what potentially incompatible changes are introduced when upgrading to Hydra 1.2.
 Please see the "Behavior changes" section of the <a href="https://github.com/facebookresearch/hydra/releases/tag/v1.2.0" target="_blank" rel="noopener noreferrer" class="">Hydra 1.2 release notes</a> for details.
