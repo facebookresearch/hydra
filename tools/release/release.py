@@ -680,7 +680,7 @@ def run_dev_release(
 OmegaConf.register_resolver("parent_key", lambda _parent_: _parent_._key())
 
 
-@hydra.main(version_base=None, config_path="conf", config_name="config")
+@hydra.main(config_path="conf", config_name="config")
 def main(cfg: Config) -> None:
     hydra_root = find_parent_dir_containing(target="ATTRIBUTION")
     package_set = selected_package_set_name()

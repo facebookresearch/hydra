@@ -29,7 +29,7 @@ def outer_decorator(func: Callable[..., Any]) -> Callable[..., Any]:
 
 
 @outer_decorator
-@hydra.main(version_base=None, config_path=None)
+@hydra.main(config_path=None)
 def app(cfg: DictConfig) -> Any:
     assert module_facade.__name__ == "module_facade"
     output_dir = Path(HydraConfig.get().runtime.output_dir)
