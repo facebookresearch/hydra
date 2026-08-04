@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-04",
-  "generated_at": "2026-08-04T09:01:52Z",
+  "generated_at": "2026-08-04T10:14:59Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 113,
@@ -5452,6 +5452,34 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3231"
     },
     {
+      "number": 3237,
+      "title": "Remove version_base",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3341,
+          "url": "https://github.com/facebookresearch/hydra/pull/3341"
+        },
+        {
+          "number": 3342,
+          "url": "https://github.com/facebookresearch/hydra/pull/3342"
+        },
+        {
+          "number": 3343,
+          "url": "https://github.com/facebookresearch/hydra/pull/3343"
+        }
+      ],
+      "created": "2026-06-23",
+      "updated": "2026-08-03",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3237"
+    },
+    {
       "number": 3242,
       "title": "Bash completion should support script paths containing hyphens",
       "category": "Bug",
@@ -5721,34 +5749,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
-    },
-    {
-      "number": 3237,
-      "title": "Remove version_base",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3341,
-          "url": "https://github.com/facebookresearch/hydra/pull/3341"
-        },
-        {
-          "number": 3342,
-          "url": "https://github.com/facebookresearch/hydra/pull/3342"
-        },
-        {
-          "number": 3343,
-          "url": "https://github.com/facebookresearch/hydra/pull/3343"
-        }
-      ],
-      "created": "2026-06-23",
-      "updated": "2026-08-03",
-      "labels": [
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3237"
     },
     {
       "number": 3345,
