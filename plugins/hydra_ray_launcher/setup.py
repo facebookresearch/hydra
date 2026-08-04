@@ -28,7 +28,7 @@ setup(
     python_requires=">=3.10",
     install_requires=[
         "boto3",
-        "hydra-core>=1.1.2",
+        "hydra-core>=1.4.0.dev1,<1.5.0.dev0",
         "ray[default]<3",
         "aiohttp<4",
         "cloudpickle<3",

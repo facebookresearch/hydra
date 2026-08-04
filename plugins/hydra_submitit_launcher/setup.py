@@ -28,7 +28,7 @@ setup(
     ],
     python_requires=">=3.10",
     install_requires=[
-        "hydra-core>=1.1.0.dev7",
+        "hydra-core>=1.4.0.dev1,<1.5.0.dev0",
         "submitit>=1.4.6",
     ],
     include_package_data=True,

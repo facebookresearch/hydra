@@ -25,6 +25,6 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.10",
-    install_requires=["colorlog", "hydra-core>=1.0.0"],
+    install_requires=["colorlog", "hydra-core>=1.4.0.dev1,<1.5.0.dev0"],
     include_package_data=True,
 )
