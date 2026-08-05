@@ -233,7 +233,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-04T10:14:59Z",
+  "generated_at": "2026-08-05T07:07:16Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -925,7 +925,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
-      "updated_at": "2026-06-26T13:23:00Z"
+      "updated_at": "2026-08-04T21:31:36Z"
     },
     "2898": {
       "category": "Enhancement",

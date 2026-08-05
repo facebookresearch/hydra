@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-08-04",
-  "generated_at": "2026-08-04T10:14:59Z",
+  "generated_on": "2026-08-05",
+  "generated_at": "2026-08-05T07:07:16Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 113,
@@ -1136,7 +1136,7 @@
       "status_emoji": "⬜",
       "prs": [],
       "created": "2024-04-22",
-      "updated": "2026-06-26",
+      "updated": "2026-08-04",
       "labels": [
         "bug",
         "plugin",
