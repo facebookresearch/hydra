@@ -34,6 +34,13 @@ This ensures that:
 2. Option is `baz`.
 3. Nested relative defaults in `foo/bar/baz.yaml` now resolve relative to `foo/bar` as expected.
 
+### Breaking Surface & Package Changes
+
+Normalizing `foo: bar/baz` to `foo/bar: baz` keeps the underlying config path but has the following package and override consequences:
+
+1. **Override Key Change**: The override key changes from `foo` to `foo/bar`. If your command line overrides previously used `foo=bar/baz`, they must now use `foo/bar=baz`.
+2. **Package Name Change**: By default, the package location of the option changes from `foo` to `foo.bar`. This can move where the composed dictionary keys are nested in the final output configuration.
+
 ### Migration
 
 If your application relied on the old behavior where defaults nested inside `foo/bar/baz.yaml` resolved relative to `foo` (and thus you placed those nested configs at `foo/` instead of `foo/bar/`), Hydra 1.4 detects this mismatch and raises a clear error:

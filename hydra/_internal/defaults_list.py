@@ -519,11 +519,9 @@ def _update_overrides(
                 if isinstance(d, GroupDefault) and d.is_options()
                 else d.get_name()
             )
-            raise ConfigCompositionException(
-                dedent(f"""\
+            raise ConfigCompositionException(dedent(f"""\
                     In {pcp}: Override '{okey} : {oval}' is defined before '{d.get_override_key()}: {dvalue}'.
-                    Overrides must be at the end of the defaults list""")
-            )
+                    Overrides must be at the end of the defaults list"""))
 
         if isinstance(d, GroupDefault):
             if d.override:
@@ -532,12 +530,10 @@ def _update_overrides(
                 if interpolated_subtree:
                     # Since interpolations are deferred for until all the config groups are already set,
                     # Their subtree may not contain config group overrides
-                    raise ConfigCompositionException(
-                        dedent(f"""\
+                    raise ConfigCompositionException(dedent(f"""\
                             {parent.get_config_path()}: Default List Overrides are not allowed in the subtree
                             of an in interpolated config group (override {d.get_override_key()}={d.get_name()}).
-                            """)
-                    )
+                            """))
                 # Overrides are registered when they are encountered during the
                 # reverse traversal in _create_defaults_tree_impl, not here, so
                 # that the last override in depth first order wins.
@@ -866,10 +862,14 @@ def create_defaults_list(
     )
 
 
-def _has_normalized_ancestor(tree: DefaultsTreeNode) -> Tuple[bool, Optional[InputDefault]]:
+def _has_normalized_ancestor(
+    tree: DefaultsTreeNode,
+) -> Tuple[bool, Optional[InputDefault]]:
     curr: Optional[DefaultsTreeNode] = tree
     while curr is not None:
-        if isinstance(curr.node, GroupDefault) and getattr(curr.node, "normalized_shorthand", False):
+        if isinstance(curr.node, GroupDefault) and getattr(
+            curr.node, "normalized_shorthand", False
+        ):
             return True, curr.node
         curr = curr.parent
     return False, None
@@ -891,23 +891,31 @@ def _get_old_path(tree: DefaultsTreeNode) -> str:
         saved_parent_base_dirs[id(n)] = n.node.parent_base_dir
         if isinstance(n.node, GroupDefault):
             saved_groups[id(n)] = n.node.group
-            if getattr(n.node, "normalized_shorthand", False):
-                n.node.group = getattr(n.node, "original_group", n.node.group)
 
-    # 3. Re-apply parent updates from root to tree
-    parent_base_dir = ""
-    for n in nodes:
-        n.node.parent_base_dir = parent_base_dir
-        parent_base_dir = n.node.get_group_path()
+    try:
+        # 3. Temporarily restore original group name for normalized nodes
+        for n in nodes:
+            if isinstance(n.node, GroupDefault):
+                if getattr(n.node, "normalized_shorthand", False):
+                    n.node.group = getattr(n.node, "original_group", n.node.group)
 
-    # 4. Get the old config path
-    old_path = tree.node.get_config_path()
+        # 4. Re-calculate parent_base_dir from root to tree
+        parent_base_dir = ""
+        for n in nodes:
+            n.node.parent_base_dir = parent_base_dir
+            if n.node.is_virtual():
+                parent_base_dir = ""
+            else:
+                parent_base_dir = n.node.get_group_path()
 
-    # 5. Restore original groups and parent_base_dirs
-    for n in nodes:
-        n.node.parent_base_dir = saved_parent_base_dirs[id(n)]
-        if id(n) in saved_groups:
-            n.node.group = saved_groups[id(n)]
+        # 5. Get the old config path
+        old_path = tree.node.get_config_path()
+    finally:
+        # 6. Safely restore all original groups and parent_base_dirs
+        for n in nodes:
+            n.node.parent_base_dir = saved_parent_base_dirs[id(n)]
+            if id(n) in saved_groups:
+                n.node.group = saved_groups[id(n)]
 
     return old_path
 
@@ -931,7 +939,7 @@ def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> N
             Could not load '{element.get_config_path()}'.
             However, a config was found at '{old_path}', which indicates this application
             relies on the deprecated slash-containing default option shorthand behavior.
-            In Hydra 1.4, defaults list items like '{orig_gp}: {norm_gp[len(orig_gp)+1:]}/...' are
+            In Hydra 1.4, defaults list items like '{orig_gp}: {norm_gp[len(orig_gp) + 1:]}/...' are
             normalized early to '{norm_gp}: ...'. Please update your configs or refer to the
             migration page: https://hydra.cc/docs/upgrades/1.3_to_1.4/slash_in_default/
             """)

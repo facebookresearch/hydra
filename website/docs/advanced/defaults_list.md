@@ -304,6 +304,28 @@ Example outputs:
   ```
 </details>
 
+## Slash-containing Group Default Option Shorthand (New in 1.4)
+
+If a Defaults List item specifies a group default with a slash in the option value, e.g.:
+
+```yaml
+defaults:
+  - foo: bar/baz
+```
+
+Hydra 1.4 normalizes this shorthand early to the canonical representation:
+
+```yaml
+defaults:
+  - foo/bar: baz
+```
+
+This normalization means:
+* The config group is `foo/bar`.
+* The selected option name is `baz`.
+* The default package is `foo.bar` rather than `foo`.
+* To override this default on the command line, use `foo/bar=baz`.
+
 ## Related topics
 - [Packages](overriding_packages.md)
 - [Common Patterns/Extending Configs](patterns/extending_configs.md)

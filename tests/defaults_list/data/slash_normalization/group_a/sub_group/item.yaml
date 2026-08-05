@@ -1,1 +1,3 @@
+defaults:
+  - nested
 x: 42

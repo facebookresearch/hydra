@@ -217,7 +217,7 @@ class ConfigRepository(IConfigRepository):
                 if (
                     isinstance(config_value, str)
                     and "/" in config_value
-                    and ".." not in config_value
+                    and ".." not in config_value.split("/")
                     and "${" not in config_value
                     and config_value != "???"
                 ):

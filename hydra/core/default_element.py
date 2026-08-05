@@ -539,7 +539,19 @@ See http://hydra.cc/docs/1.1/upgrades/1.0_to_1.1/defaults_list_interpolation for
                 )
                 raise ConfigCompositionException(msg)
 
-            self.value = self._resolve_interpolation_impl(known_choices, name)
+            resolved = self._resolve_interpolation_impl(known_choices, name)
+            self.value = resolved
+
+            if isinstance(resolved, str) and "/" in resolved:
+                segments = resolved.split("/")
+                if ".." not in segments and resolved != "???" and "${" not in resolved:
+                    last_slash_idx = resolved.rfind("/")
+                    suffix = resolved[last_slash_idx + 1 :]
+                    prefix = resolved[:last_slash_idx]
+                    self.original_group = self.group
+                    self.normalized_shorthand = True
+                    self.group = f"{self.group}/{prefix}"
+                    self.value = suffix
 
     def is_missing(self) -> bool:
         if self.is_name():
