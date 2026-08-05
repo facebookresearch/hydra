@@ -31,7 +31,7 @@ from hydra.core.override_parser.types import (
     Transformer,
     ValueType,
 )
-from hydra.errors import HydraException
+from hydra.errors import Hydra14MigrationWarning, HydraException
 
 UNQUOTED_SPECIAL = r"/-\+.$%*@?|"  # special characters allowed in unquoted strings
 
@@ -1004,7 +1004,8 @@ def test_deprecated_name_package(hydra_restore_singletons: Any) -> None:
         "see https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header"
     )
 
-    version.setbase("1.1")
+    with warns(Hydra14MigrationWarning):
+        version.setbase("1.1")
 
     with warns(
         UserWarning,
