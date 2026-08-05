@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-08-05",
-  "generated_at": "2026-08-05T16:53:56Z",
+  "generated_at": "2026-08-05T18:46:40Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 113,
+    "open_total": 112,
     "by_category": [
       {
         "category": "Bug",
@@ -15,13 +15,13 @@
         "category": "Enhancement",
         "emoji": "✨",
         "count": 86,
-        "percentage": 76.1
+        "percentage": 76.8
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 8,
-        "percentage": 7.1
+        "count": 7,
+        "percentage": 6.2
       },
       {
         "category": "Question",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -66,33 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 232
+        "count": 233
       }
     ]
   },
   "issues": [
-    {
-      "number": 3334,
-      "title": "Warn Hydra 1.3 users relying on Hydra 1.1 behavior before Hydra 1.4",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3347,
-          "url": "https://github.com/facebookresearch/hydra/pull/3347"
-        }
-      ],
-      "created": "2026-08-02",
-      "updated": "2026-08-04",
-      "labels": [
-        "documentation",
-        "enhancement",
-        "priority_high"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3334"
-    },
     {
       "number": 1749,
       "title": "tests: Use multiline regex search instead of assert_regex_match",
@@ -5790,9 +5768,38 @@
       "updated": "2026-08-03",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3346"
+    },
+    {
+      "number": 3334,
+      "title": "Warn Hydra 1.3 users relying on Hydra 1.1 behavior before Hydra 1.4",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3347,
+          "url": "https://github.com/facebookresearch/hydra/pull/3347"
+        }
+      ],
+      "created": "2026-08-02",
+      "updated": "2026-08-04",
+      "labels": [
+        "documentation",
+        "enhancement",
+        "priority_high"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3334"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-05T18:46:40Z",
+      "kind": "closed",
+      "issue": 3334,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3334",
+      "title": "Warn Hydra 1.3 users relying on Hydra 1.1 behavior before Hydra 1.4"
+    },
     {
       "ts": "2026-08-05T16:53:56Z",
       "kind": "pr",
@@ -7366,14 +7373,6 @@
       "issue": 1866,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1866",
       "title": "[Bug] recursive instantiation mutates original config object's interpolations"
-    },
-    {
-      "ts": "2026-07-16T17:48:53Z",
-      "kind": "label",
-      "issue": 1898,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1898",
-      "title": "[Bug] Submitit has optional parameter tasks_per_node set",
-      "detail": "removed \"triage\""
     }
   ]
 }
