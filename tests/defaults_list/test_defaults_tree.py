@@ -13,7 +13,7 @@ from hydra.core.default_element import (
     VirtualRoot,
 )
 from hydra.core.plugins import Plugins
-from hydra.errors import ConfigCompositionException
+from hydra.errors import ConfigCompositionException, Hydra14MigrationWarning
 from hydra.test_utils.test_utils import chdir_hydra_root
 from tests.defaults_list import _test_defaults_tree_impl
 
@@ -941,7 +941,8 @@ def test_legacy_override_hydra_version_base_1_1(
     expected: DefaultsTreeNode,
     hydra_restore_singletons: Any,
 ) -> None:
-    version.setbase("1.1")
+    with warns(Hydra14MigrationWarning):
+        version.setbase("1.1")
     msg = dedent(
         """\
         Invalid overriding of hydra/help:
@@ -2109,7 +2110,8 @@ def test_legacy_interpolation(
     Defaults list element '.*=.*' is using a deprecated interpolation form.
     See http://hydra.cc/docs/1.1/upgrades/1.0_to_1.1/defaults_list_interpolation for migration information."""
     )
-    version.setbase("1.1")
+    with warns(Hydra14MigrationWarning):
+        version.setbase("1.1")
     with warns(expected_warning=UserWarning, match=msg):
         _test_defaults_tree_impl(
             config_name=config_name,
@@ -2925,7 +2927,8 @@ def test_deprecated_package_header_keywords(
         See https://hydra.cc/docs/1.2/upgrades/1.0_to_1.1/changes_to_package_header for more information"""
     )
 
-    version.setbase("1.1")
+    with warns(Hydra14MigrationWarning):
+        version.setbase("1.1")
 
     with warns(UserWarning, match=re.escape(msg)):
         _test_defaults_tree_impl(

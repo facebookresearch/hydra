@@ -15,6 +15,7 @@ from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.utils import env_override, setup_globals
 from hydra.errors import (
     ConfigCompositionException,
+    Hydra14MigrationWarning,
     HydraException,
     MissingConfigException,
 )
@@ -190,7 +191,8 @@ class TestConfigLoader:
         config_loader = ConfigLoaderImpl(
             config_search_path=create_config_search_path(path)
         )
-        version.setbase("1.1")
+        with warns(Hydra14MigrationWarning):
+            version.setbase("1.1")
         with warns(
             UserWarning,
             match=(

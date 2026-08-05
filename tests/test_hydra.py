@@ -3,15 +3,18 @@ import os
 import re
 import subprocess
 import sys
+import warnings
 from logging import getLogger
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, List, Optional, Set
 
 from omegaconf import DictConfig, OmegaConf
-from pytest import mark, param, raises
+from pytest import mark, param, raises, warns
 
+import hydra
 from hydra import MissingConfigException, version
+from hydra.errors import Hydra14MigrationWarning
 from hydra.test_utils.test_utils import (
     TSweepRunner,
     TTaskRunner,
@@ -27,6 +30,24 @@ from hydra.test_utils.test_utils import (
 )
 
 chdir_hydra_root()
+
+
+def test_hydra_main_version_base_1_1(hydra_restore_singletons: Any) -> None:
+    with warns(
+        Hydra14MigrationWarning,
+        match='version_base="1.1" selects Hydra 1.1 compatibility behavior',
+    ):
+        hydra.main(version_base="1.1", config_path=None)
+
+
+@mark.parametrize("version_base", [None, "1.2", "1.3"])
+def test_hydra_main_supported_version_base_without_migration_warning(
+    hydra_restore_singletons: Any, version_base: Optional[str]
+) -> None:
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        hydra.main(version_base=version_base, config_path=None)
+    assert not any(isinstance(item.message, Hydra14MigrationWarning) for item in caught)
 
 
 @mark.parametrize("calling_file, calling_module", [(".", None), (None, ".")])
@@ -1478,10 +1499,12 @@ def test_hydra_main_without_config_path(tmpdir: Path) -> None:
 
     expected = dedent(
         f"""
-        .*my_app.py:7: UserWarning:
+        .*my_app.py:7: Hydra14MigrationWarning:
         The version_base parameter is not specified.
-        Please specify a compatability version level, or None.
-        Will assume defaults for version {version.__compat_version__}
+        Hydra will assume defaults for version {version.__compat_version__}.
+        Hydra 1.4 will remove this compatibility behavior.
+        Before upgrading to Hydra 1.4, set version_base="1.3" and test your application.
+        See https://hydra.cc/docs/upgrades/1.3_to_1.4/prepare_for_1_4/ for preparation instructions.
           @hydra.main()
         .*my_app.py:7: UserWarning:
         config_path is not specified in @hydra.main().
@@ -1506,6 +1529,12 @@ def test_job_chdir_not_specified(tmpdir: Path) -> None:
 
     expected = dedent(
         """
+        .*Hydra14MigrationWarning:
+        version_base="1.1" selects Hydra 1.1 compatibility behavior.
+        Hydra 1.4 will remove this compatibility behavior.
+        Before upgrading to Hydra 1.4, set version_base="1.3" and test your application.
+        See https://hydra.cc/docs/upgrades/1.3_to_1.4/prepare_for_1_4/ for preparation instructions.
+          @hydra.main(version_base="1.1", config_path=".")
         .*UserWarning: Future Hydra versions will no longer change working directory at job runtime by default.
         See https://hydra.cc/docs/1.2/upgrades/1.1_to_1.2/changes_to_job_working_dir/ for more information..*
         .*

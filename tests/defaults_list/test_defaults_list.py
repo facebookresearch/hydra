@@ -15,7 +15,7 @@ from hydra.core.default_element import (
 )
 from hydra.core.override_parser.overrides_parser import OverridesParser
 from hydra.core.plugins import Plugins
-from hydra.errors import ConfigCompositionException
+from hydra.errors import ConfigCompositionException, Hydra14MigrationWarning
 from hydra.test_utils.test_utils import chdir_hydra_root
 from tests.defaults_list import create_repo
 
@@ -88,7 +88,8 @@ class TestDeprecatedOptional:
         expected_list: List[InputDefault],
         hydra_restore_singletons: Any,
     ) -> None:
-        version.setbase("1.1")
+        with warns(Hydra14MigrationWarning):
+            version.setbase("1.1")
         repo = create_repo()
         warning = dedent(
             """
@@ -1297,7 +1298,8 @@ def test_legacy_override_hydra_version_base_1_1(
     recwarn: Any,  # Testing deprecated behavior
     hydra_restore_singletons: Any,
 ) -> None:
-    version.setbase("1.1")
+    with warns(Hydra14MigrationWarning):
+        version.setbase("1.1")
     _test_defaults_list_impl(
         config_name=config_name,
         overrides=overrides,
