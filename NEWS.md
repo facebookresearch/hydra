@@ -1,3 +1,10 @@
+1.3.5 (2026-08-06)
+==================
+
+### API Change (Renames, deprecations and removals)
+
+- Warn Hydra 1.3 applications that rely on Hydra 1.1 compatibility before
+  upgrading to Hydra 1.4. ([#3334](https://github.com/facebookresearch/hydra/issues/3334))
 1.3.4 (2026-07-05)
 ==================
 
