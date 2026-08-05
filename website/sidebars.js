@@ -163,6 +163,7 @@ module.exports = AddFBInternalOnly({
                 label: '1.3 to 1.4',
                 items: [
                     'upgrades/1.3_to_1.4/prepare_for_1_4',
+                    'upgrades/1.3_to_1.4/breaking_changes',
                     'upgrades/1.3_to_1.4/hydra_job_override_dirname',
                     'upgrades/1.3_to_1.4/instantiate_resolution',
                     'upgrades/1.3_to_1.4/instantiate_target_whitelist',
