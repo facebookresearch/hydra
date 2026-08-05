@@ -233,7 +233,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-05T07:55:45Z",
+  "generated_at": "2026-08-05T16:53:56Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -456,9 +456,11 @@
       "labels": [
         "bug"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3352"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
       "updated_at": "2026-07-03T05:30:51Z"
     },

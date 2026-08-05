@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-05",
-  "generated_at": "2026-08-05T07:55:45Z",
+  "generated_at": "2026-08-05T16:53:56Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 113,
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 2
+        "count": 3
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 110
+        "count": 109
       },
       {
         "status": "done",
@@ -137,6 +137,26 @@
         "sweep"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2237"
+    },
+    {
+      "number": 2350,
+      "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3352,
+          "url": "https://github.com/facebookresearch/hydra/pull/3352"
+        }
+      ],
+      "created": "2022-08-19",
+      "updated": "2026-07-03",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2350"
     },
     {
       "number": 385,
@@ -555,21 +575,6 @@
         "blocked"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2227"
-    },
-    {
-      "number": 2350,
-      "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2022-08-19",
-      "updated": "2026-07-03",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2350"
     },
     {
       "number": 2412,
@@ -5789,6 +5794,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-05T16:53:56Z",
+      "kind": "pr",
+      "issue": 2350,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2350",
+      "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
+      "detail": "linked #3352"
+    },
+    {
+      "ts": "2026-08-05T16:53:56Z",
+      "kind": "status",
+      "issue": 2350,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2350",
+      "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3352,
+        "url": "https://github.com/facebookresearch/hydra/pull/3352"
+      }
+    },
+    {
       "ts": "2026-08-04T09:01:52Z",
       "kind": "pr",
       "issue": 3334,
@@ -7349,20 +7374,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1898",
       "title": "[Bug] Submitit has optional parameter tasks_per_node set",
       "detail": "removed \"triage\""
-    },
-    {
-      "ts": "2026-07-16T17:30:20Z",
-      "kind": "closed",
-      "issue": 2293,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2293",
-      "title": "Modify Trial when using a Sweeper"
-    },
-    {
-      "ts": "2026-07-16T17:26:09Z",
-      "kind": "closed",
-      "issue": 1463,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1463",
-      "title": "[Feature Request] Fault tolerance option for Optuna Sweeper"
     }
   ]
 }
