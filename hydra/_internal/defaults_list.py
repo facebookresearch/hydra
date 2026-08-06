@@ -519,9 +519,11 @@ def _update_overrides(
                 if isinstance(d, GroupDefault) and d.is_options()
                 else d.get_name()
             )
-            raise ConfigCompositionException(dedent(f"""\
+            raise ConfigCompositionException(
+                dedent(f"""\
                     In {pcp}: Override '{okey} : {oval}' is defined before '{d.get_override_key()}: {dvalue}'.
-                    Overrides must be at the end of the defaults list"""))
+                    Overrides must be at the end of the defaults list""")
+            )
 
         if isinstance(d, GroupDefault):
             if d.override:
@@ -530,10 +532,12 @@ def _update_overrides(
                 if interpolated_subtree:
                     # Since interpolations are deferred for until all the config groups are already set,
                     # Their subtree may not contain config group overrides
-                    raise ConfigCompositionException(dedent(f"""\
+                    raise ConfigCompositionException(
+                        dedent(f"""\
                             {parent.get_config_path()}: Default List Overrides are not allowed in the subtree
                             of an in interpolated config group (override {d.get_override_key()}={d.get_name()}).
-                            """))
+                            """)
+                    )
                 # Overrides are registered when they are encountered during the
                 # reverse traversal in _create_defaults_tree_impl, not here, so
                 # that the last override in depth first order wins.
@@ -888,34 +892,38 @@ def _get_old_path(tree: DefaultsTreeNode) -> str:
     saved_groups = {}
     saved_parent_base_dirs = {}
     for n in nodes:
-        saved_parent_base_dirs[id(n)] = n.node.parent_base_dir
-        if isinstance(n.node, GroupDefault):
-            saved_groups[id(n)] = n.node.group
+        node = n.node
+        saved_parent_base_dirs[id(n)] = node.parent_base_dir
+        if isinstance(node, GroupDefault):
+            saved_groups[id(n)] = node.group
 
     try:
         # 3. Temporarily restore original group name for normalized nodes
         for n in nodes:
-            if isinstance(n.node, GroupDefault):
-                if getattr(n.node, "normalized_shorthand", False):
-                    n.node.group = getattr(n.node, "original_group", n.node.group)
+            node = n.node
+            if isinstance(node, GroupDefault):
+                if getattr(node, "normalized_shorthand", False):
+                    node.group = getattr(node, "original_group", node.group)
 
         # 4. Re-calculate parent_base_dir from root to tree
         parent_base_dir = ""
         for n in nodes:
-            n.node.parent_base_dir = parent_base_dir
-            if n.node.is_virtual():
+            node = n.node
+            node.parent_base_dir = parent_base_dir
+            if node.is_virtual():
                 parent_base_dir = ""
             else:
-                parent_base_dir = n.node.get_group_path()
+                parent_base_dir = node.get_group_path()
 
         # 5. Get the old config path
         old_path = tree.node.get_config_path()
     finally:
         # 6. Safely restore all original groups and parent_base_dirs
         for n in nodes:
-            n.node.parent_base_dir = saved_parent_base_dirs[id(n)]
-            if id(n) in saved_groups:
-                n.node.group = saved_groups[id(n)]
+            node = n.node
+            node.parent_base_dir = saved_parent_base_dirs[id(n)]
+            if id(n) in saved_groups and isinstance(node, GroupDefault):
+                node.group = saved_groups[id(n)]
 
     return old_path
 
@@ -939,7 +947,7 @@ def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> N
             Could not load '{element.get_config_path()}'.
             However, a config was found at '{old_path}', which indicates this application
             relies on the deprecated slash-containing default option shorthand behavior.
-            In Hydra 1.4, defaults list items like '{orig_gp}: {norm_gp[len(orig_gp) + 1:]}/...' are
+            In Hydra 1.4, defaults list items like '{orig_gp}: {norm_gp[len(orig_gp) + 1 :]}/...' are
             normalized early to '{norm_gp}: ...'. Please update your configs or refer to the
             migration page: https://hydra.cc/docs/upgrades/1.3_to_1.4/slash_in_default/
             """)
