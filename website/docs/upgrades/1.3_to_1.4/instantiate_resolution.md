@@ -32,8 +32,10 @@ This has several benefits:
 ## Compatibility impact
 
 Call-site arguments are now a separate runtime overlay. They determine the
-arguments passed to the target, but they do not modify the input configuration
-or affect how its interpolations resolve.
+arguments passed to the target without modifying the input configuration. A
+configured interpolation that survives the overlay still resolves against the
+values being passed to the target, so an argument the call-site replaces is
+seen by the interpolations that depend on it.
 
 They are also no longer coerced or validated against the corresponding field
 in an input Structured Config. Primitive values, native `list`, `tuple`, and
@@ -82,7 +84,8 @@ config_result = instantiate(
 assert config_result["child"] == {"value": 10}
 ```
 
-For example:
+The input configuration is left unchanged, while the interpolation still sees
+the value passed at the call-site:
 
 ```python
 from omegaconf import OmegaConf
@@ -98,13 +101,14 @@ cfg = OmegaConf.create(
 )
 
 result = instantiate(cfg, b=99, _target_whitelist_="builtins.dict")
-assert result == {"b": 99, "c": 200}
+assert result == {"b": 99, "c": 99}
+assert cfg.b == 200
 ```
 
-Hydra 1.3 merged `b=99` into a copied configuration before resolving `${b}`,
-so `c` also became `99`. Hydra 1.4 leaves `cfg` unchanged, resolves `${b}`
-against the original configuration, and independently passes the call-site
-value `b=99` to the target.
+Hydra 1.3 achieved this by merging `b=99` into a copied configuration before
+resolving `${b}`. Hydra 1.4 resolves the interpolation against the effective
+configuration being instantiated instead, so `cfg` itself is never modified and
+a configured value that the call-site replaces is not resolved at all.
 
 With `_recursive_=False` and `_convert_="none"`, OmegaConf containers are also
 no longer copied and detached before the target call. The target receives the
@@ -143,14 +147,7 @@ independent = OmegaConf.create(
 )
 ```
 
-If another argument should use the call-site value, pass that argument
-explicitly as well:
-
-```python
-result = instantiate(
-    cfg,
-    b=99,
-    c=99,
-    _target_whitelist_="builtins.dict",
-)
-```
+A container passed through without recursion is resolved by the caller rather
+than by Hydra, so it keeps its identity and its own ancestor context even when
+another argument is overridden at the call-site. Its interpolations therefore
+resolve against the input configuration.

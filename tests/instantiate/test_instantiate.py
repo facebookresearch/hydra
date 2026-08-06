@@ -224,13 +224,13 @@ def register_test_resolver(name: str, value: Any) -> Any:
         param(
             {"_target_": "tests.instantiate.AClass", "b": 200, "c": "${b}"},
             {"a": 10, "b": 99, "d": 40},
-            AClass(10, 99, 200, 40),
+            AClass(10, 99, 99, 40),
             id="class+override+interpolation",
         ),
         param(
             {"_target_": "tests.instantiate.AClass", "b": 200, "c": "${b}"},
             {"a": 10, "b": 99, "_partial_": True},
-            partial(AClass, a=10, b=99, c=200),
+            partial(AClass, a=10, b=99, c=99),
             id="class+override+interpolation+partial1",
         ),
         param(
@@ -241,7 +241,7 @@ def register_test_resolver(name: str, value: Any) -> Any:
                 "c": "${b}",
             },
             {"a": 10, "b": 99},
-            partial(AClass, a=10, b=99, c=200),
+            partial(AClass, a=10, b=99, c=99),
             id="class+override+interpolation+partial2",
         ),
         # Check class and static methods
@@ -669,6 +669,79 @@ def test_instantiate_does_not_copy_unrelated_root_siblings(
     )
 
     assert instantiate_func(cfg.node) == AClass(a=10, b=20, c=30)
+
+
+@mark.parametrize("is_partial", [True, False])
+def test_callsite_argument_is_visible_to_nested_interpolation(
+    instantiate_func: Any, is_partial: bool
+) -> None:
+    """
+    In 3353, a configured interpolation resolved against the input value
+    instead of the value being passed to the target.
+    """
+    cfg = OmegaConf.create(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "b": 200,
+            "sibling": "${b}",
+            "nested": {"deep": "${b}", "relative": "${.deep}"},
+        }
+    )
+    original_config = str(cfg)
+
+    result = instantiate_func(cfg, b=99, _partial_=is_partial)
+    kwargs = result.keywords if is_partial else result.kwargs
+
+    assert kwargs["b"] == 99
+    assert kwargs["sibling"] == 99
+    assert kwargs["nested"] == {"deep": 99, "relative": 99}
+    assert str(cfg) == original_config
+
+
+def test_callsite_argument_does_not_resolve_a_replaced_value(
+    instantiate_func: Any,
+) -> None:
+    """
+    A configured value that a call-site argument replaces entirely is not
+    resolved, so an unresolvable interpolation inside it is not an error.
+    """
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "value": "${nonexistent}",
+        },
+        value=10,
+    )
+
+    assert result.kwargs["value"] == 10
+
+
+def test_non_recursive_config_argument_keeps_identity_with_callsite_argument(
+    instantiate_func: Any,
+) -> None:
+    """
+    A non-recursive container is resolved by the caller rather than by Hydra,
+    so a call-site argument elsewhere must not cost it its identity.
+    """
+    cfg = OmegaConf.create(
+        {
+            "node": {
+                "_target_": "tests.instantiate.ArgsClass",
+                "_recursive_": False,
+                "b": 200,
+                "sibling": "${.b}",
+                "payload": {"value": 10, "alias": "${.value}"},
+            },
+        },
+        flags={"allow_objects": True},
+    )
+    source_payload = cfg.node.payload
+
+    result = instantiate_func(cfg.node, b=99)
+
+    assert result.kwargs["sibling"] == 99
+    assert result.kwargs["payload"] is source_payload
+    assert source_payload._get_parent() is cfg.node
 
 
 def test_non_recursive_config_argument_is_passed_directly_without_resolving(

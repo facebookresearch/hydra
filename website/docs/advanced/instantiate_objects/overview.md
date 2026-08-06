@@ -159,8 +159,10 @@ Named arguments in the config can be overridden by passing named argument with t
 
 Call-site arguments are applied separately from the input configuration. They
 replace the corresponding arguments passed to the target without modifying the
-input configuration. They therefore do not affect interpolation resolution or
-Structured Config coercion in the input configuration. Configuration values are
+input configuration, and without being coerced against a Structured Config
+field. A configured interpolation that survives still resolves against the
+values being passed to the target, so overriding an argument also updates the
+interpolations that depend on it. Configuration values are
 resolved lazily as instantiation proceeds instead of resolving and copying the
 full configuration tree up front. This avoids processing unrelated configuration
 values and allows runtime state established by an earlier target to be used

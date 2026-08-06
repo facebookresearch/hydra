@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
+import copy
 import functools
 import inspect
 import os
@@ -674,6 +675,58 @@ def _instantiate_override(
     return value
 
 
+def _contains_interpolation(node: Any) -> bool:
+    if node is None:
+        return False
+    if node._is_interpolation():
+        return True
+    if not OmegaConf.is_config(node) or node._is_none() or node._is_missing():
+        return False
+    keys: Any = range(len(node)) if OmegaConf.is_sequence(node) else node.keys()
+    return any(_contains_interpolation(node._get_node(key)) for key in keys)
+
+
+def _has_surviving_interpolation(node: Any, overrides: ConfigOverlay) -> bool:
+    """Whether a configured interpolation outlives the call-site arguments.
+
+    A configured value that a call-site argument replaces entirely is not
+    processed, so an interpolation inside it does not need to be resolved.
+    """
+    return any(
+        key not in overrides and _contains_interpolation(node._get_node(key))
+        for key in node.keys()
+    )
+
+
+def _effective_node(node: Any, overrides: ConfigOverlay) -> Any:
+    """A copy of node with the call-site arguments layered over it.
+
+    Configured interpolations are resolved against this copy so that they see
+    the values being passed to the target. The input configuration is never
+    modified. Call-site values are inserted as raw nodes, because assigning
+    them would coerce or reject them against an input Structured Config, and
+    container flags such as struct and readonly would reject them outright.
+    """
+    effective = copy.deepcopy(node)
+    for flag, value in (("readonly", False), ("struct", False)):
+        effective._set_flag(flag, value)
+    content = effective.__dict__["_content"]
+    for key in overrides:
+        override = overrides[key]
+        child = (
+            copy.deepcopy(override)
+            if OmegaConf.is_config(override)
+            else AnyNode(override, flags={"allow_objects": True})
+        )
+        child._set_parent(effective)
+        child._set_key(key)
+        content[key] = child
+    # Keep ancestor context so interpolations reaching outside node still work.
+    effective._set_parent(node._get_parent())
+    effective._set_key(node._key())
+    return effective
+
+
 def _instantiate_effective_value(
     node: Any,
     key: str,
@@ -682,6 +735,7 @@ def _instantiate_effective_value(
     convert: Union[str, ConvertMode],
     recursive: bool,
     target_whitelist: NormalizedTargetWhitelist,
+    effective: Any = None,
 ) -> Any:
     if overrides is not None and key in overrides:
         override = overrides[key]
@@ -704,7 +758,13 @@ def _instantiate_effective_value(
             target_whitelist=target_whitelist,
         )
 
-    value = node[key]
+    # The effective configuration only matters for values Hydra resolves here.
+    # A container passed through without recursion is resolved later by the
+    # caller, so it is handed over as the configured node itself.
+    source = node
+    if effective is not None and (recursive or node._get_node(key)._is_interpolation()):
+        source = effective
+    value = source[key]
     if recursive:
         value = instantiate_node(
             value,
@@ -792,6 +852,13 @@ def instantiate_node(
             raise InstantiationException(_with_full_key(msg, full_key))
 
         exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_"})
+        # Only pay for the effective copy when a configured interpolation
+        # survives the call-site arguments and could depend on one of them.
+        effective = (
+            _effective_node(node, overrides)
+            if overrides and _has_surviving_interpolation(node, overrides)
+            else None
+        )
         if (overrides is not None and _Keys.TARGET in overrides) or _is_target(node):
             target = (
                 overrides[_Keys.TARGET]
@@ -812,6 +879,7 @@ def instantiate_node(
                         convert=convert,
                         recursive=recursive,
                         target_whitelist=target_whitelist,
+                        effective=effective,
                     )
                     kwargs[key] = _convert_node(value, convert)
 
@@ -841,6 +909,7 @@ def instantiate_node(
                         convert=convert,
                         recursive=recursive,
                         target_whitelist=target_whitelist,
+                        effective=effective,
                     )
                 return dict_items
             else:
@@ -857,6 +926,7 @@ def instantiate_node(
                             convert=convert,
                             recursive=recursive,
                             target_whitelist=target_whitelist,
+                            effective=effective,
                         )
                     )
                 cfg._set_parent(node)
