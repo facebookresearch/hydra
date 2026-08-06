@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-08-06",
-  "generated_at": "2026-08-06T04:27:17Z",
+  "generated_at": "2026-08-06T05:29:27Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 113,
+    "open_total": 114,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 9,
-        "percentage": 8.0
+        "count": 10,
+        "percentage": 8.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 86,
-        "percentage": 76.1
+        "percentage": 75.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 7,
-        "percentage": 6.2
+        "percentage": 6.1
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 6.2
+        "percentage": 6.1
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.7
+        "percentage": 2.6
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 109
+        "count": 110
       },
       {
         "status": "done",
@@ -1891,6 +1891,24 @@
         "regression"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3353"
+    },
+    {
+      "number": 3354,
+      "title": "`instantiate()` must treat call-site `???` as a literal value",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-06",
+      "updated": "2026-08-06",
+      "labels": [
+        "bug",
+        "instantiate_api",
+        "priority_blocker",
+        "regression"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3354"
     },
     {
       "number": 692,
@@ -5817,6 +5835,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-06T05:29:27Z",
+      "kind": "new",
+      "issue": 3354,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3354",
+      "title": "`instantiate()` must treat call-site `???` as a literal value"
+    },
+    {
       "ts": "2026-08-06T04:27:17Z",
       "kind": "pr",
       "issue": 3222,
@@ -7394,13 +7419,6 @@
       "issue": 2149,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2149",
       "title": "[Bug] Documentation Binder link is broken."
-    },
-    {
-      "ts": "2026-07-17T12:30:26Z",
-      "kind": "closed",
-      "issue": 3106,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3106",
-      "title": "[Bug] Basic sweeper would behavior wrong with value type dict"
     }
   ]
 }
