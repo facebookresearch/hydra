@@ -224,13 +224,13 @@ def register_test_resolver(name: str, value: Any) -> Any:
         param(
             {"_target_": "tests.instantiate.AClass", "b": 200, "c": "${b}"},
             {"a": 10, "b": 99, "d": 40},
-            AClass(10, 99, 200, 40),
+            AClass(10, 99, 99, 40),
             id="class+override+interpolation",
         ),
         param(
             {"_target_": "tests.instantiate.AClass", "b": 200, "c": "${b}"},
             {"a": 10, "b": 99, "_partial_": True},
-            partial(AClass, a=10, b=99, c=200),
+            partial(AClass, a=10, b=99, c=99),
             id="class+override+interpolation+partial1",
         ),
         param(
@@ -241,7 +241,7 @@ def register_test_resolver(name: str, value: Any) -> Any:
                 "c": "${b}",
             },
             {"a": 10, "b": 99},
-            partial(AClass, a=10, b=99, c=200),
+            partial(AClass, a=10, b=99, c=99),
             id="class+override+interpolation+partial2",
         ),
         # Check class and static methods
@@ -451,6 +451,123 @@ def test_class_instantiate(
     assert str(config) == original_config_str
 
 
+@mark.parametrize(
+    "src",
+    [
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "value": 10,
+            "child": {
+                "_target_": "tests.instantiate.ArgsClass",
+                "seen": "${..value}",
+            },
+        }
+    ],
+)
+def test_callsite_override_is_visible_to_nested_configured_interpolation(
+    instantiate_func: Any, config: Any
+) -> None:
+    result = instantiate_func(config, value=20)
+
+    assert result.kwargs["value"] == 20
+    assert result.kwargs["child"].kwargs["seen"] == 20
+
+
+def test_callsite_override_is_visible_through_absolute_interpolation(
+    instantiate_func: Any,
+) -> None:
+    config = OmegaConf.create(
+        {
+            "node": {
+                "_target_": "tests.instantiate.ArgsClass",
+                "value": 10,
+                "seen": "${node.value}",
+            }
+        }
+    )
+
+    result = instantiate_func(config.node, value=20)
+
+    assert result.kwargs == {"value": 20, "seen": 20}
+    assert config.node.value == 10
+
+
+@mark.parametrize(
+    "src",
+    [
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "settings": {"value": 10},
+            "seen": "${settings.value}",
+        }
+    ],
+)
+def test_nested_callsite_override_is_visible_to_configured_interpolation(
+    instantiate_func: Any, config: Any
+) -> None:
+    result = instantiate_func(config, settings={"value": 20})
+
+    assert result.kwargs["settings"].value == 20
+    assert result.kwargs["seen"] == 20
+
+
+@mark.parametrize(
+    ("runtime_value", "expected"),
+    [
+        param([20], 20, id="list"),
+        param((20,), 20, id="tuple"),
+        param(["${literal}"], "${literal}", id="literal-interpolation-string"),
+    ],
+)
+def test_sequence_callsite_override_is_visible_to_configured_interpolation(
+    instantiate_func: Any, runtime_value: Any, expected: Any
+) -> None:
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "items": [10],
+            "seen": "${items.0}",
+        },
+        items=runtime_value,
+    )
+
+    assert result.kwargs["seen"] == expected
+
+
+def test_config_callsite_override_keeps_its_interpolation_context(
+    instantiate_func: Any,
+) -> None:
+    runtime_value = OmegaConf.create({"value": 20, "alias": "${value}"})
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "settings": {"value": 10, "alias": 10},
+            "seen": "${settings.alias}",
+        },
+        settings=runtime_value,
+    )
+
+    assert result.kwargs["settings"].alias == 20
+    assert result.kwargs["seen"] == 20
+    assert runtime_value.alias == 20
+    assert runtime_value._get_parent() is None
+
+
+def test_callsite_override_remains_literal_when_referenced_by_config(
+    instantiate_func: Any,
+) -> None:
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "value": "configured",
+            "seen": "${value}",
+        },
+        value="${literal}",
+    )
+
+    assert result.kwargs == {"value": "${literal}", "seen": "${literal}"}
+
+
 def test_partial_with_missing(instantiate_func: Any) -> Any:
     config = {
         "_target_": "tests.instantiate.AClass",
@@ -509,6 +626,19 @@ def test_none_cases(
     assert ret.kwargs["list"][1] is None
     assert ret.kwargs["list"][2] is None
     assert str(cfg) == original_config_str
+
+
+def test_none_dict_root_accepts_nested_dict_override(instantiate_func: Any) -> None:
+    config = DictConfig(None)
+
+    result = instantiate_func(
+        config,
+        _target_="tests.instantiate.ArgsClass",
+        settings={"value": 10},
+    )
+
+    assert result.kwargs["settings"].value == 10
+    assert config._is_none()
 
 
 @mark.parametrize("convert_to_list", [True, False])
@@ -668,7 +798,7 @@ def test_instantiate_does_not_copy_unrelated_root_siblings(
         flags={"allow_objects": True},
     )
 
-    assert instantiate_func(cfg.node) == AClass(a=10, b=20, c=30)
+    assert instantiate_func(cfg.node, d=40) == AClass(a=10, b=20, c=30, d=40)
 
 
 def test_non_recursive_config_argument_is_passed_directly_without_resolving(

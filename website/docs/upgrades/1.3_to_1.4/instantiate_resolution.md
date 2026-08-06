@@ -19,7 +19,7 @@ configuration and resolves each value when that value is needed.
 
 This has several benefits:
 
-- Unrelated parts of the configuration tree are not copied or resolved.
+- Unrelated configuration values are not deep-copied or resolved.
 - A call-site argument can replace an unresolvable configured value without
   forcing Hydra to resolve the replaced value first.
 - An earlier target can establish runtime state, such as registering a custom

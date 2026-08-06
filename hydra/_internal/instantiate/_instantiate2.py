@@ -1,5 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
+import copy
 import functools
 import inspect
 import os
@@ -8,8 +9,10 @@ from enum import Enum
 from textwrap import dedent
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union, cast
 
-from omegaconf import AnyNode, DictConfig, OmegaConf, SCMode
+from omegaconf import AnyNode, DictConfig, ListConfig, OmegaConf, SCMode, TupleConfig
 from omegaconf._utils import is_structured_config
+from omegaconf.base import Node
+from omegaconf.nodes import InterpolationResultNode
 
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.utils import _locate
@@ -101,6 +104,42 @@ ConfigOverlay = Union[Dict[str, Any], DictConfig]
 _TARGET_WHITELIST_CONTEXT: ContextVar[NormalizedTargetWhitelist] = ContextVar(
     "hydra_instantiate_target_whitelist", default=None
 )
+
+
+class _LiteralInterpolationString:
+    def __init__(self, value: str) -> None:
+        self.value = value
+
+    def __str__(self) -> str:
+        return self.value
+
+
+_UNRESOLVED = object()
+
+
+class _LazyConfigOverrideValue(InterpolationResultNode):
+    def __init__(self, source: Any, key: Any, parent: Any) -> None:
+        super().__init__(None, key=key, parent=parent)
+        self.source = source
+        self.source_key = key
+        self.resolved: Any = _UNRESOLVED
+
+    def _value(self) -> Any:
+        if self.resolved is _UNRESOLVED:
+            self.resolved = self.source[self.source_key]
+        return self.resolved
+
+
+def _wrap_resolution_override(value: Any) -> Any:
+    if isinstance(value, str) and "${" in value:
+        return _LiteralInterpolationString(value)
+    return value
+
+
+def _unwrap_resolution_value(value: Any) -> Any:
+    if isinstance(value, _LiteralInterpolationString):
+        return value.value
+    return value
 
 
 def _get_os_alias_target(target: str) -> str:
@@ -506,10 +545,12 @@ def instantiate(
         config = OmegaConf.structured(config, flags={"allow_objects": True})
 
     if OmegaConf.is_dict(config):
+        resolution_node = _create_resolution_view(config, kwargs) if kwargs else config
         return instantiate_node(
             config,
             *args,
             overrides=kwargs,
+            resolution_node=resolution_node,
             is_root=True,
             target_whitelist=target_whitelist,
         )
@@ -597,6 +638,176 @@ def _get_dict_override(value: Any) -> Optional[ConfigOverlay]:
     return None
 
 
+def _create_resolution_view(
+    node: Any,
+    overrides: ConfigOverlay,
+) -> Any:
+    """Create a non-owning config view used only to resolve interpolations.
+
+    Container shells provide effective parent/root traversal. Source value nodes and
+    resolver caches stay shared, so creating the view neither resolves nor copies
+    configured values. Direct content assignment avoids reparenting source nodes.
+    """
+    target = node
+    views: Dict[int, Any] = {}
+
+    def override_value(values: ConfigOverlay, key: Any) -> Tuple[Any, Any]:
+        if isinstance(values, DictConfig):
+            return values._get_node(key), values
+        return values[key], None
+
+    def clone_override(
+        value: Any,
+        *,
+        key: Any,
+        parent: Any,
+        configured_value: Any = None,
+        source: Any = None,
+    ) -> Any:
+        dict_override = _get_dict_override(value)
+        if dict_override is not None:
+            if not OmegaConf.is_dict(configured_value):
+                configured_value = OmegaConf.create({})
+            return clone_config(
+                configured_value,
+                parent=parent,
+                nested_overrides=dict_override,
+            )
+        if isinstance(value, (list, tuple)):
+            sequence_source = OmegaConf.create(() if isinstance(value, tuple) else [])
+            sequence_view = (
+                TupleConfig(None) if isinstance(value, tuple) else ListConfig(None)
+            )
+            sequence_view.__dict__["_metadata"] = copy.copy(
+                sequence_source.__dict__["_metadata"]
+            )
+            sequence_view.__dict__["_flags_cache"] = {}
+            sequence_view.__dict__["_parent"] = parent
+            sequence_view.__dict__["_content"] = [
+                clone_override(item, key=index, parent=sequence_view)
+                for index, item in enumerate(value)
+            ]
+            return sequence_view
+        if OmegaConf.is_config(value):
+            return clone_config(value, parent=parent, preserve_context=True)
+        if isinstance(value, Node):
+            assert source is not None
+            return _LazyConfigOverrideValue(source, key, parent)
+        return InterpolationResultNode(
+            _wrap_resolution_override(value),
+            key=key,
+            parent=parent,
+        )
+
+    def clone_config(
+        source: Any,
+        parent: Any = None,
+        nested_overrides: Optional[ConfigOverlay] = None,
+        preserve_context: bool = False,
+    ) -> Any:
+        effective_overrides = (
+            nested_overrides
+            if nested_overrides is not None
+            else overrides
+            if source is target
+            else None
+        )
+        if (
+            OmegaConf.is_dict(source)
+            and source.__dict__["_content"] is None
+            and effective_overrides is not None
+        ):
+            ref_type = source._metadata.ref_type
+            source_view = (
+                OmegaConf.structured(ref_type)
+                if is_structured_config(ref_type)
+                else OmegaConf.create({})
+            )
+            view = clone_config(
+                source_view,
+                parent=parent,
+                nested_overrides=effective_overrides,
+            )
+            views[id(source)] = view
+            return view
+
+        if OmegaConf.is_dict(source):
+            view = DictConfig(None)
+        elif isinstance(source, TupleConfig):
+            view = TupleConfig(None)
+        elif isinstance(source, ListConfig):
+            view = ListConfig(None)
+        else:
+            return source
+
+        view.__dict__["_metadata"] = copy.copy(source.__dict__["_metadata"])
+        view.__dict__["_flags_cache"] = {}
+        view.__dict__["_parent"] = parent
+        views[id(source)] = view
+
+        content = source.__dict__["_content"]
+        if isinstance(content, dict):
+            if preserve_context:
+                view.__dict__["_content"] = {
+                    key: (
+                        clone_config(child, parent=view, preserve_context=True)
+                        if OmegaConf.is_config(child)
+                        else _LazyConfigOverrideValue(source, key, view)
+                    )
+                    for key, child in content.items()
+                }
+                return view
+
+            view_content: Dict[Any, Any] = {}
+            for key, child in content.items():
+                if effective_overrides is not None and key in effective_overrides:
+                    override, override_source = override_value(effective_overrides, key)
+                    view_child = clone_override(
+                        override,
+                        key=key,
+                        parent=view,
+                        configured_value=child,
+                        source=override_source,
+                    )
+                else:
+                    view_child = clone_config(child, parent=view)
+                view_content[key] = view_child
+
+            if effective_overrides is not None:
+                for key in effective_overrides.keys():
+                    if key in view_content:
+                        continue
+                    override, override_source = override_value(effective_overrides, key)
+                    view_child = clone_override(
+                        override,
+                        key=key,
+                        parent=view,
+                        source=override_source,
+                    )
+                    view_content[key] = view_child
+            view.__dict__["_content"] = view_content
+        elif isinstance(content, list):
+            if preserve_context:
+                view.__dict__["_content"] = [
+                    (
+                        clone_config(child, parent=view, preserve_context=True)
+                        if OmegaConf.is_config(child)
+                        else _LazyConfigOverrideValue(source, index, view)
+                    )
+                    for index, child in enumerate(content)
+                ]
+            else:
+                view.__dict__["_content"] = [
+                    clone_config(child, parent=view) for child in content
+                ]
+        else:
+            view.__dict__["_content"] = content
+        return view
+
+    clone_config(node._get_root())
+    return views[id(node)]
+
+
 def _iter_effective_keys(node: Any, overrides: Optional[ConfigOverlay]) -> List[str]:
     keys = list(node.keys())
     if overrides:
@@ -606,13 +817,14 @@ def _iter_effective_keys(node: Any, overrides: Optional[ConfigOverlay]) -> List[
 
 def _get_effective_control(
     node: Any,
+    resolution_node: Any,
     overrides: Optional[ConfigOverlay],
     key: _Keys,
     default: Any,
 ) -> Any:
     if overrides is not None and key in overrides:
         return overrides[key]
-    return node[key] if key in node else default
+    return _unwrap_resolution_value(resolution_node[key]) if key in node else default
 
 
 def _is_missing_parameter(
@@ -676,6 +888,7 @@ def _instantiate_override(
 
 def _instantiate_effective_value(
     node: Any,
+    resolution_node: Any,
     key: str,
     overrides: Optional[ConfigOverlay],
     *,
@@ -693,6 +906,7 @@ def _instantiate_effective_value(
             return instantiate_node(
                 configured_value,
                 overrides=dict_override,
+                resolution_node=resolution_node._get_node(key),
                 convert=convert,
                 recursive=recursive,
                 target_whitelist=target_whitelist,
@@ -704,7 +918,16 @@ def _instantiate_effective_value(
             target_whitelist=target_whitelist,
         )
 
-    value = node[key]
+    configured_value = node._get_node(key)
+    configured_content = (
+        configured_value.__dict__["_content"]
+        if OmegaConf.is_config(configured_value)
+        else None
+    )
+    if not recursive and isinstance(configured_content, (dict, list)):
+        value = configured_value
+    else:
+        value = _unwrap_resolution_value(resolution_node[key])
     if recursive:
         value = instantiate_node(
             value,
@@ -719,12 +942,16 @@ def instantiate_node(
     node: Any,
     *args: Any,
     overrides: Optional[ConfigOverlay] = None,
+    resolution_node: Any = None,
     convert: Union[str, ConvertMode] = ConvertMode.NONE,
     recursive: bool = True,
     partial: bool = False,
     is_root: bool = False,
     target_whitelist: NormalizedTargetWhitelist = None,
 ) -> Any:
+    if isinstance(node, _LiteralInterpolationString):
+        return node.value
+
     # Return None if config is None
     if node is None or (
         OmegaConf.is_config(node) and node._is_none() and not overrides
@@ -746,13 +973,22 @@ def instantiate_node(
     if not OmegaConf.is_config(node):
         return node
 
+    if resolution_node is None:
+        resolution_node = node
+
     # Override parent modes from config if specified
     if OmegaConf.is_dict(node):
         # using getitem instead of get(key, default) because OmegaConf will raise an exception
         # if the key type is incompatible on get.
-        convert = _get_effective_control(node, overrides, _Keys.CONVERT, convert)
-        recursive = _get_effective_control(node, overrides, _Keys.RECURSIVE, recursive)
-        partial = _get_effective_control(node, overrides, _Keys.PARTIAL, partial)
+        convert = _get_effective_control(
+            node, resolution_node, overrides, _Keys.CONVERT, convert
+        )
+        recursive = _get_effective_control(
+            node, resolution_node, overrides, _Keys.RECURSIVE, recursive
+        )
+        partial = _get_effective_control(
+            node, resolution_node, overrides, _Keys.PARTIAL, partial
+        )
 
     full_key = node._get_full_key(None)
 
@@ -796,7 +1032,7 @@ def instantiate_node(
             target = (
                 overrides[_Keys.TARGET]
                 if overrides is not None and _Keys.TARGET in overrides
-                else node.get(_Keys.TARGET)
+                else _unwrap_resolution_value(resolution_node.get(_Keys.TARGET))
             )
             _target_ = _resolve_target(target, full_key, target_whitelist)
             kwargs = {}
@@ -807,6 +1043,7 @@ def instantiate_node(
                         continue
                     value = _instantiate_effective_value(
                         node,
+                        resolution_node,
                         key,
                         overrides,
                         convert=convert,
@@ -836,6 +1073,7 @@ def instantiate_node(
                     # list items inherits recursive flag from the containing dict.
                     dict_items[key] = _instantiate_effective_value(
                         node,
+                        resolution_node,
                         key,
                         overrides,
                         convert=convert,
@@ -852,6 +1090,7 @@ def instantiate_node(
                     cfg[key] = _wrap_structured_config_as_object(
                         _instantiate_effective_value(
                             node,
+                            resolution_node,
                             key,
                             overrides,
                             convert=convert,
