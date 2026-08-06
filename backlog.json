@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-06",
-  "generated_at": "2026-08-06T05:29:27Z",
+  "generated_at": "2026-08-06T07:54:56Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 114,
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 4
+        "count": 6
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 110
+        "count": 108
       },
       {
         "status": "done",
@@ -156,6 +156,52 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3222"
+    },
+    {
+      "number": 3353,
+      "title": "`instantiate()` call-site overrides must be visible to dependent interpolations",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3355,
+          "url": "https://github.com/facebookresearch/hydra/pull/3355"
+        }
+      ],
+      "created": "2026-08-06",
+      "updated": "2026-08-06",
+      "labels": [
+        "bug",
+        "instantiate_api",
+        "priority_blocker",
+        "regression"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3353"
+    },
+    {
+      "number": 3354,
+      "title": "`instantiate()` must treat call-site `???` as a literal value",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3355,
+          "url": "https://github.com/facebookresearch/hydra/pull/3355"
+        }
+      ],
+      "created": "2026-08-06",
+      "updated": "2026-08-06",
+      "labels": [
+        "bug",
+        "instantiate_api",
+        "priority_blocker",
+        "regression"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3354"
     },
     {
       "number": 385,
@@ -1873,42 +1919,6 @@
       "updated": "2026-07-31",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3329"
-    },
-    {
-      "number": 3353,
-      "title": "`instantiate()` call-site overrides must be visible to dependent interpolations",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-08-06",
-      "updated": "2026-08-06",
-      "labels": [
-        "bug",
-        "instantiate_api",
-        "priority_blocker",
-        "regression"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3353"
-    },
-    {
-      "number": 3354,
-      "title": "`instantiate()` must treat call-site `???` as a literal value",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-08-06",
-      "updated": "2026-08-06",
-      "labels": [
-        "bug",
-        "instantiate_api",
-        "priority_blocker",
-        "regression"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3354"
     },
     {
       "number": 692,
@@ -5835,6 +5845,46 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-06T07:54:56Z",
+      "kind": "pr",
+      "issue": 3354,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3354",
+      "title": "`instantiate()` must treat call-site `???` as a literal value",
+      "detail": "linked #3355"
+    },
+    {
+      "ts": "2026-08-06T07:54:56Z",
+      "kind": "pr",
+      "issue": 3353,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3353",
+      "title": "`instantiate()` call-site overrides must be visible to dependent interpolations",
+      "detail": "linked #3355"
+    },
+    {
+      "ts": "2026-08-06T07:54:56Z",
+      "kind": "status",
+      "issue": 3354,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3354",
+      "title": "`instantiate()` must treat call-site `???` as a literal value",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3355,
+        "url": "https://github.com/facebookresearch/hydra/pull/3355"
+      }
+    },
+    {
+      "ts": "2026-08-06T07:54:56Z",
+      "kind": "status",
+      "issue": 3353,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3353",
+      "title": "`instantiate()` call-site overrides must be visible to dependent interpolations",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3355,
+        "url": "https://github.com/facebookresearch/hydra/pull/3355"
+      }
+    },
+    {
       "ts": "2026-08-06T05:29:27Z",
       "kind": "new",
       "issue": 3354,
@@ -7385,40 +7435,6 @@
       "issue": 1832,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1832",
       "title": "[Feature Request] Expand options to transform special characters for dir name"
-    },
-    {
-      "ts": "2026-07-18T05:25:35Z",
-      "kind": "pr",
-      "issue": 1855,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1855",
-      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
-      "detail": "linked #3285"
-    },
-    {
-      "ts": "2026-07-18T05:25:35Z",
-      "kind": "status",
-      "issue": 1855,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1855",
-      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` ",
-      "detail": "not started → in progress",
-      "pr": {
-        "number": 3285,
-        "url": "https://github.com/facebookresearch/hydra/pull/3285"
-      }
-    },
-    {
-      "ts": "2026-07-17T18:16:57Z",
-      "kind": "closed",
-      "issue": 1859,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1859",
-      "title": "SLURM sweep with hydra"
-    },
-    {
-      "ts": "2026-07-17T14:25:20Z",
-      "kind": "closed",
-      "issue": 2149,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2149",
-      "title": "[Bug] Documentation Binder link is broken."
     }
   ]
 }

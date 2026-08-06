@@ -234,7 +234,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-06T05:29:27Z",
+  "generated_at": "2026-08-06T07:54:56Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -1542,9 +1542,11 @@
         "priority_blocker",
         "regression"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3355"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "`instantiate()` call-site overrides must be visible to dependent interpolations",
       "updated_at": "2026-08-06T04:25:38Z"
     },
@@ -1557,9 +1559,11 @@
         "priority_blocker",
         "regression"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3355"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "`instantiate()` must treat call-site `???` as a literal value",
       "updated_at": "2026-08-06T05:26:52Z"
     },
