@@ -618,8 +618,10 @@ def _get_effective_control(
 def _is_missing_parameter(
     node: Any, overrides: Optional[ConfigOverlay], key: str
 ) -> bool:
+    # A call-site argument is a runtime value, so "???" is a plain string
+    # rather than a missing marker.
     if overrides is not None and key in overrides:
-        return isinstance(overrides[key], str) and overrides[key] == "???"
+        return False
     return OmegaConf.is_missing(node, key)
 
 

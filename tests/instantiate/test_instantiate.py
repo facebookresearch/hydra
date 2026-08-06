@@ -205,10 +205,11 @@ def register_test_resolver(name: str, value: Any) -> Any:
             partial(AClass, a=10, b=20, c=30),
             id="class+override+partial1",
         ),
+        # "???" passed at the call-site is a literal string, not a missing value
         param(
             {"_target_": "tests.instantiate.AClass", "b": 20, "c": 30},
             {"a": "???", "_partial_": True},
-            partial(AClass, b=20, c=30),
+            partial(AClass, a="???", b=20, c=30),
             id="class+override+partial1+missing",
         ),
         param(
@@ -465,6 +466,33 @@ def test_partial_with_missing(instantiate_func: Any) -> Any:
     obj = partial_obj(a=10)
     assert partial_equal(obj, AClass(a=10, b=20, c=30))
     assert str(config) == original_config_str
+
+
+def test_callsite_missing_string_is_literal(instantiate_func: Any) -> Any:
+    """
+    A call-site argument is a runtime value, so "???" is passed to the target
+    as a string instead of being read as an OmegaConf missing marker.
+    """
+    result = instantiate_func(
+        {"_target_": "tests.instantiate.ArgsClass"},
+        value="???",
+    )
+
+    assert result.kwargs == {"value": "???"}
+
+
+def test_partial_callsite_missing_string_is_literal(instantiate_func: Any) -> Any:
+    """
+    In 3354, partial instantiation read a call-site "???" as a missing value
+    and silently omitted the argument.
+    """
+    factory = instantiate_func(
+        {"_target_": "tests.instantiate.ArgsClass"},
+        value="???",
+        _partial_=True,
+    )
+
+    assert factory().kwargs == {"value": "???"}
 
 
 def test_instantiate_with_missing(instantiate_func: Any) -> Any:
