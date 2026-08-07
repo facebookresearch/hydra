@@ -168,8 +168,27 @@ while resolving a later argument.
 
 Primitive values, native `list`, `tuple`, and `dict` containers, and OmegaConf
 containers passed at the call-site retain Hydra's normal configuration
-semantics, including recursive merging, instantiation, and conversion where
-applicable.
+semantics, including instantiation and conversion where applicable.
+
+A `dict` call-site argument replaces the configured value rather than merging
+into it, so the target does not receive configured keys that the call-site
+argument did not name. When the configured value is itself an instantiate
+config, the call-site dict instead overrides the arguments it names and leaves
+the rest of that nested config in place:
+
+```python
+cfg = OmegaConf.create(
+    {
+        "_target_": "my_app.Trainer",
+        "optimizer": {"_target_": "my_app.Optimizer", "lr": 0.1, "momentum": 0.5},
+        "tags": {"env": "prod", "team": "ml"},
+    }
+)
+
+# optimizer is a nested target, so momentum=0.5 is preserved
+# tags is a plain dict, so it is replaced and team is not passed
+instantiate(cfg, optimizer={"lr": 0.3}, tags={"env": "dev"})
+```
 
 Already-constructed dataclass and attrs instances are regular runtime objects.
 They remain unchanged, even if they define `_target_`. To use such an instance

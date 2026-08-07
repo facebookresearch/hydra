@@ -1110,6 +1110,51 @@ def test_omegaconf_structured_runtime_override_merges_with_configured_value(
     assert result.kwargs["value"] == Tree(value=20, left=Tree(value=30))
 
 
+def test_regression_2350_dict_override_replaces_configured_dict(
+    instantiate_func: Any,
+) -> None:
+    """
+    In 2350, a dict call-site argument was recursively merged into the
+    configured dict, so keys that were only in the configuration survived.
+    A call-site argument replaces a plain configured dict instead.
+    """
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "value": {"configured": 10},
+        },
+        value={"runtime": 20},
+    )
+
+    assert result.kwargs["value"] == {"runtime": 20}
+
+
+def test_dict_override_patches_configured_nested_target(
+    instantiate_func: Any,
+) -> None:
+    """
+    A configured value that is itself an instantiate config keeps the
+    documented patching behavior: the call-site dict overrides the arguments
+    it names and leaves the rest of the nested config in place.
+    """
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "value": {
+                "_target_": "tests.instantiate.Tree",
+                "value": 10,
+                "left": {
+                    "_target_": "tests.instantiate.Tree",
+                    "value": 30,
+                },
+            },
+        },
+        value={"value": 20},
+    )
+
+    assert result.kwargs["value"] == Tree(value=20, left=Tree(value=30))
+
+
 def test_runtime_override_is_not_coerced_by_structured_config(
     instantiate_func: Any,
 ) -> None:
@@ -1494,6 +1539,7 @@ def test_instantiate_with_callable_target_keyword(
             ),
             id="recursive:map:dict",
         ),
+        # the configured dictionary is not a target, so it is replaced
         param(
             {
                 "_target_": "tests.instantiate.Mapping",
@@ -1508,7 +1554,6 @@ def test_instantiate_with_callable_target_keyword(
             },
             Mapping(
                 dictionary={
-                    "a": Mapping(),
                     "b": Mapping(),
                 }
             ),
@@ -1709,7 +1754,8 @@ def test_recursive_instantiation(
                 dictionary=cast(
                     Any,
                     {
-                        "a": partial(Mapping),
+                        # the configured dictionary is not a target, so it is
+                        # replaced by the call-site argument
                         "b": partial(Mapping),
                     },
                 ),

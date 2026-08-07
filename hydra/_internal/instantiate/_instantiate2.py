@@ -674,6 +674,24 @@ def _instantiate_override(
     return value
 
 
+def _configured_value_is_target(node: Any, key: str) -> bool:
+    """Whether the configured value for key is an instantiate config.
+
+    A value declared with a Structured Config type carries `_target_` through
+    that type even when its configured value is None, and `instantiate_node`
+    materializes it from the type before instantiating.
+    """
+    if key not in node:
+        return False
+    configured_value = node._get_node(key)
+    if OmegaConf.is_config(configured_value) and configured_value._is_none():
+        ref_type = configured_value._metadata.ref_type
+        if is_structured_config(ref_type):
+            return _is_target(OmegaConf.structured(ref_type))
+        return False
+    return _is_target(configured_value)
+
+
 def _instantiate_effective_value(
     node: Any,
     key: str,
@@ -686,12 +704,16 @@ def _instantiate_effective_value(
     if overrides is not None and key in overrides:
         override = overrides[key]
         dict_override = _get_dict_override(override)
-        if recursive and dict_override is not None:
-            configured_value = node._get_node(key) if key in node else None
-            if not OmegaConf.is_dict(configured_value):
-                configured_value = OmegaConf.create({})
+        # Patch a configured nested target with the named arguments. A
+        # configured value that is not a target is replaced instead, so a
+        # call-site argument does not inherit unrelated configured keys.
+        if (
+            recursive
+            and dict_override is not None
+            and _configured_value_is_target(node, key)
+        ):
             return instantiate_node(
-                configured_value,
+                node._get_node(key),
                 overrides=dict_override,
                 convert=convert,
                 recursive=recursive,

@@ -38,8 +38,47 @@ or affect how its interpolations resolve.
 They are also no longer coerced or validated against the corresponding field
 in an input Structured Config. Primitive values, native `list`, `tuple`, and
 `dict` containers, and OmegaConf containers remain supported configuration
-inputs. They retain Hydra's normal recursive merging, instantiation, and
-conversion where applicable.
+inputs. They retain Hydra's normal instantiation and conversion where
+applicable.
+
+A `dict` call-site argument no longer merges into the configured value. Hydra
+1.3 merged the two, so the target received configured keys that the call-site
+argument did not name:
+
+```python
+from hydra.utils import instantiate
+
+cfg = {
+    "_target_": "builtins.dict",
+    "tags": {"env": "prod", "team": "ml"},
+}
+
+result = instantiate(cfg, tags={"env": "dev"}, _target_whitelist_="builtins.dict")
+assert result["tags"] == {"env": "dev"}
+```
+
+Hydra 1.3 returned `{"env": "dev", "team": "ml"}` for `tags`.
+
+A configured value that is itself an instantiate config keeps the documented
+patching behavior. The call-site dict overrides the arguments it names and
+leaves the rest of that nested config in place:
+
+```python
+cfg = {
+    "_target_": "builtins.dict",
+    "optimizer": {"_target_": "builtins.dict", "lr": 0.1, "momentum": 0.5},
+}
+
+result = instantiate(
+    cfg,
+    optimizer={"lr": 0.3},
+    _target_whitelist_="builtins.dict",
+)
+assert result["optimizer"] == {"lr": 0.3, "momentum": 0.5}
+```
+
+To pass a merged value, merge it explicitly at the call-site, for example with
+`OmegaConf.merge(cfg.tags, {"env": "dev"})`.
 
 Hydra 1.4 intentionally changes the treatment of already-constructed dataclass
 and attrs instances passed as call-site arguments. They are now regular runtime

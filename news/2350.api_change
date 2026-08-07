@@ -1,0 +1,6 @@
+A `dict` call-site argument to `hydra.utils.instantiate()` now replaces the
+configured value instead of merging into it, so the target no longer receives
+configured keys that the call-site argument did not name. A configured value
+that is itself an instantiate config keeps its documented patching behavior.
+See the
+[Hydra 1.4 instantiate migration guide](https://hydra.cc/docs/upgrades/1.3_to_1.4/instantiate_resolution/).
