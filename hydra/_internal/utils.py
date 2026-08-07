@@ -283,9 +283,6 @@ def run_and_report(func: Any) -> Any:
                             exception_hook(type(ex), ex, final_tb)
                         except Exception:
                             traceback.print_exception(None, value=ex, tb=final_tb)
-                sys.stderr.write(
-                    "\nSet the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.\n"
-                )
             except Exception as ex2:
                 sys.stderr.write(
                     "An error occurred during Hydra's exception formatting:"

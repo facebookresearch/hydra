@@ -468,7 +468,7 @@ def _resolve_target(
             try:
                 target = _locate(target)
             except Exception as e:
-                msg = f"Error locating target '{target}', set env var HYDRA_FULL_ERROR=1 to see chained exception."
+                msg = f"Error locating target '{target}'"
                 raise InstantiationException(_with_full_key(msg, full_key)) from e
     if not callable(target):
         msg = f"Expected a callable target, got '{target}' of type '{type(target).__name__}'"

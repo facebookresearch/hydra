@@ -227,8 +227,6 @@ class TestRunAndReport:
                         assert False, "nested_err"
                     AssertionError: nested_err
                     assert False
-
-                    Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
                     """).strip(),
                 id="strip_run_job_from_top_of_stack",
             ),
@@ -239,8 +237,6 @@ class TestRunAndReport:
                       File "[^"]+", line \d+, in job_calling_omconf
                         OmegaConf.resolve\(123\)  # type: ignore(\n    [~\^]+)?
                     ValueError: Invalid config type \(int\), expected an OmegaConf Container
-
-                    Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
                     """).strip(),
                 id="strip_omegaconf_from_bottom_of_stack",
             ),
@@ -329,7 +325,6 @@ class TestRunAndReport:
                 assert False, "nested_err"$
             AssertionError: nested_err$
             assert False$
-            Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
             """)
         mock_stderr = io.StringIO()
         with (

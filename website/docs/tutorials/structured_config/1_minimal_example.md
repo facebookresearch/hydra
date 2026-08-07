@@ -58,8 +58,6 @@ Traceback (most recent call last):
 omegaconf.errors.ConfigAttributeError: Key 'pork' not in 'MySQLConfig'
         full_key: pork
         object_type=MySQLConfig
-
-Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
 ```
 
 Hydra will also catch typos, or type errors in the command line:

@@ -1,0 +1,3 @@
+Hydra no longer suggests `HYDRA_FULL_ERROR=1` after a sanitized error. The variable still
+disables traceback sanitization and is now documented in the developer guide as a framework
+debugging facility.
