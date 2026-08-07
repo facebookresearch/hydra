@@ -480,6 +480,8 @@ def instantiate(
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
                    in the config objects are being passed as is to the target.
+                   A dict replaces a configured plain mapping, but merges into
+                   a configured Structured Config or target config.
                    Dataclass and attrs instances are passed through without
                    conversion or recursive instantiation.
     :return: if _target_ is a class name: the instantiated object
@@ -674,22 +676,28 @@ def _instantiate_override(
     return value
 
 
-def _configured_value_is_target(node: Any, key: str) -> bool:
-    """Whether the configured value for key is an instantiate config.
-
-    A value declared with a Structured Config type carries `_target_` through
-    that type even when its configured value is None, and `instantiate_node`
-    materializes it from the type before instantiating.
-    """
+def _get_dict_override_merge_base(
+    node: Any, key: str, *, is_target_parameter: bool
+) -> Optional[DictConfig]:
+    """Return the configured mapping to merge with a dict override, if any."""
     if key not in node:
-        return False
+        return None
     configured_value = node._get_node(key)
-    if OmegaConf.is_config(configured_value) and configured_value._is_none():
+    if not isinstance(configured_value, DictConfig):
+        return None
+    if configured_value._is_none() or configured_value._is_missing():
         ref_type = configured_value._metadata.ref_type
         if is_structured_config(ref_type):
-            return _is_target(OmegaConf.structured(ref_type))
-        return False
-    return _is_target(configured_value)
+            configured_value = OmegaConf.structured(ref_type)
+        else:
+            return None
+    if (
+        not is_target_parameter
+        or is_structured_config(OmegaConf.get_type(configured_value))
+        or _is_target(configured_value)
+    ):
+        return configured_value
+    return None
 
 
 def _instantiate_effective_value(
@@ -697,6 +705,7 @@ def _instantiate_effective_value(
     key: str,
     overrides: Optional[ConfigOverlay],
     *,
+    is_target_parameter: bool,
     convert: Union[str, ConvertMode],
     recursive: bool,
     target_whitelist: NormalizedTargetWhitelist,
@@ -704,21 +713,20 @@ def _instantiate_effective_value(
     if overrides is not None and key in overrides:
         override = overrides[key]
         dict_override = _get_dict_override(override)
-        # Patch a configured nested target with the named arguments. A
-        # configured value that is not a target is replaced instead, so a
-        # call-site argument does not inherit unrelated configured keys.
-        if (
-            recursive
-            and dict_override is not None
-            and _configured_value_is_target(node, key)
-        ):
-            return instantiate_node(
-                node._get_node(key),
-                overrides=dict_override,
-                convert=convert,
-                recursive=recursive,
-                target_whitelist=target_whitelist,
+        if dict_override is not None:
+            configured_value = _get_dict_override_merge_base(
+                node, key, is_target_parameter=is_target_parameter
             )
+            if configured_value is not None:
+                value = OmegaConf.merge(configured_value, dict_override)
+                if recursive:
+                    value = instantiate_node(
+                        value,
+                        convert=convert,
+                        recursive=recursive,
+                        target_whitelist=target_whitelist,
+                    )
+                return value
         return _instantiate_override(
             override,
             convert=convert,
@@ -831,6 +839,7 @@ def instantiate_node(
                         node,
                         key,
                         overrides,
+                        is_target_parameter=True,
                         convert=convert,
                         recursive=recursive,
                         target_whitelist=target_whitelist,
@@ -860,6 +869,7 @@ def instantiate_node(
                         node,
                         key,
                         overrides,
+                        is_target_parameter=False,
                         convert=convert,
                         recursive=recursive,
                         target_whitelist=target_whitelist,
@@ -876,6 +886,7 @@ def instantiate_node(
                             node,
                             key,
                             overrides,
+                            is_target_parameter=False,
                             convert=convert,
                             recursive=recursive,
                             target_whitelist=target_whitelist,

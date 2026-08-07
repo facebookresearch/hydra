@@ -19,6 +19,7 @@ from omegaconf import (
     OmegaConf,
     TupleConfig,
 )
+from omegaconf.errors import ValidationError
 from pytest import fixture, mark, param, raises, warns
 
 from hydra._internal.instantiate import _instantiate2
@@ -1113,29 +1114,43 @@ def test_omegaconf_structured_runtime_override_merges_with_configured_value(
 def test_regression_2350_dict_override_replaces_configured_dict(
     instantiate_func: Any,
 ) -> None:
-    """
-    In 2350, a dict call-site argument was recursively merged into the
-    configured dict, so keys that were only in the configuration survived.
-    A call-site argument replaces a plain configured dict instead.
-    """
+    @dataclass
+    class Config:
+        _target_: str = "tests.instantiate.ArgsClass"
+        value: Dict[str, int] = field(default_factory=lambda: {"configured": 10})
+
     result = instantiate_func(
-        {
-            "_target_": "tests.instantiate.ArgsClass",
-            "value": {"configured": 10},
-        },
+        Config,
         value={"runtime": 20},
     )
 
     assert result.kwargs["value"] == {"runtime": 20}
 
 
-def test_dict_override_patches_configured_nested_target(
-    instantiate_func: Any,
+@mark.parametrize(
+    "recursive,expected",
+    [
+        param(
+            False,
+            {
+                "_target_": "tests.instantiate.Tree",
+                "value": 20,
+                "left": {
+                    "_target_": "tests.instantiate.Tree",
+                    "value": 30,
+                },
+            },
+            id="not_recursive",
+        ),
+        param(True, Tree(value=20, left=Tree(value=30)), id="recursive"),
+    ],
+)
+def test_dict_override_merges_configured_target(
+    instantiate_func: Any, recursive: bool, expected: Any
 ) -> None:
     """
-    A configured value that is itself an instantiate config keeps the
-    documented patching behavior: the call-site dict overrides the arguments
-    it names and leaves the rest of the nested config in place.
+    A configured target keeps merge behavior: the call-site dict overrides the
+    arguments it names and leaves the rest of the target config in place.
     """
     result = instantiate_func(
         {
@@ -1150,9 +1165,128 @@ def test_dict_override_patches_configured_nested_target(
             },
         },
         value={"value": 20},
+        _recursive_=recursive,
     )
 
-    assert result.kwargs["value"] == Tree(value=20, left=Tree(value=30))
+    value = result.kwargs["value"]
+    assert value == expected
+    if not recursive:
+        assert isinstance(value, DictConfig)
+
+
+def test_dict_override_merges_structured_config_fields(
+    instantiate_func: Any,
+) -> None:
+    @dataclass
+    class Child:
+        count: int = 10
+        label: str = "configured"
+
+    @dataclass
+    class Value:
+        count: int = 10
+        derived: int = "${.count}"  # type: ignore[assignment]
+        label: str = "configured"
+        child: Child = field(default_factory=Child)
+        tags: Dict[str, str] = field(
+            default_factory=lambda: {"env": "prod", "team": "ml"}
+        )
+
+    @dataclass
+    class Config:
+        _target_: str = "tests.instantiate.ArgsClass"
+        value: Value = field(default_factory=Value)
+
+    cfg = OmegaConf.structured(Config)
+    OmegaConf.set_readonly(cfg, True)
+    result = instantiate_func(
+        cfg,
+        value={
+            "count": "20",
+            "child": {"count": "30"},
+            "tags": {"env": "dev"},
+        },
+    )
+
+    value = result.kwargs["value"]
+    assert OmegaConf.get_type(value) is Value
+    assert value == {
+        "count": 20,
+        "derived": 20,
+        "label": "configured",
+        "child": {"count": 30, "label": "configured"},
+        "tags": {"env": "dev", "team": "ml"},
+    }
+    assert OmegaConf.get_type(value.child) is Child
+    assert cfg.value == {
+        "count": 10,
+        "derived": 10,
+        "label": "configured",
+        "child": {"count": 10, "label": "configured"},
+        "tags": {"env": "prod", "team": "ml"},
+    }
+    assert OmegaConf.is_readonly(cfg)
+    assert OmegaConf.is_interpolation(cfg.value, "derived")
+
+    with raises(ValidationError):
+        instantiate_func(Config, value={"count": "not an integer"})
+
+
+@mark.parametrize(
+    "recursive,expected",
+    [
+        param(
+            False,
+            {
+                "_target_": "tests.instantiate.Tree",
+                "value": 20,
+                "left": {
+                    "_target_": "tests.instantiate.Tree",
+                    "value": 30,
+                },
+            },
+            id="not_recursive",
+        ),
+        param(True, Tree(value=20, left=Tree(value=30)), id="recursive"),
+    ],
+)
+def test_dict_override_merges_target_nested_in_structured_config(
+    instantiate_func: Any, recursive: bool, expected: Any
+) -> None:
+    @dataclass
+    class Value:
+        child: Dict[str, Any] = field(
+            default_factory=lambda: {
+                "_target_": "tests.instantiate.Tree",
+                "value": 10,
+                "left": {
+                    "_target_": "tests.instantiate.Tree",
+                    "value": 30,
+                },
+            }
+        )
+
+    @dataclass
+    class Config:
+        _target_: str = "tests.instantiate.ArgsClass"
+        value: Value = field(default_factory=Value)
+
+    result = instantiate_func(
+        Config,
+        value={"child": {"value": 20}},
+        _recursive_=recursive,
+    )
+
+    assert result.kwargs["value"].child == expected
+
+
+def test_dict_override_merges_non_target_config(instantiate_func: Any) -> None:
+    result = instantiate_func(
+        {"value": {"configured": 10, "overridden": 20}},
+        value={"overridden": 30},
+    )
+
+    assert result == {"value": {"configured": 10, "overridden": 30}}
 
 
 def test_runtime_override_is_not_coerced_by_structured_config(
