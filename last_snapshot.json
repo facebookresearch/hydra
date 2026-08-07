@@ -234,7 +234,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-06T07:54:56Z",
+  "generated_at": "2026-08-07T07:32:45Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -1543,10 +1543,11 @@
         "regression"
       ],
       "pr_numbers": [
-        "3355"
+        "3355",
+        "3356"
       ],
       "state": "OPEN",
-      "status": "community PR",
+      "status": "in progress",
       "title": "`instantiate()` call-site overrides must be visible to dependent interpolations",
       "updated_at": "2026-08-06T04:25:38Z"
     },

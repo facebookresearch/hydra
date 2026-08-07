@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-08-06",
-  "generated_at": "2026-08-06T07:54:56Z",
+  "generated_on": "2026-08-07",
+  "generated_at": "2026-08-07T07:32:45Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 114,
@@ -46,12 +46,12 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 0
+        "count": 1
       },
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 6
+        "count": 5
       },
       {
         "status": "blocked",
@@ -71,6 +71,33 @@
     ]
   },
   "issues": [
+    {
+      "number": 3353,
+      "title": "`instantiate()` call-site overrides must be visible to dependent interpolations",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3355,
+          "url": "https://github.com/facebookresearch/hydra/pull/3355"
+        },
+        {
+          "number": 3356,
+          "url": "https://github.com/facebookresearch/hydra/pull/3356"
+        }
+      ],
+      "created": "2026-08-06",
+      "updated": "2026-08-06",
+      "labels": [
+        "bug",
+        "instantiate_api",
+        "priority_blocker",
+        "regression"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3353"
+    },
     {
       "number": 1749,
       "title": "tests: Use multiline regex search instead of assert_regex_match",
@@ -156,29 +183,6 @@
         "defaults list"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3222"
-    },
-    {
-      "number": 3353,
-      "title": "`instantiate()` call-site overrides must be visible to dependent interpolations",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3355,
-          "url": "https://github.com/facebookresearch/hydra/pull/3355"
-        }
-      ],
-      "created": "2026-08-06",
-      "updated": "2026-08-06",
-      "labels": [
-        "bug",
-        "instantiate_api",
-        "priority_blocker",
-        "regression"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3353"
     },
     {
       "number": 3354,
@@ -5845,6 +5849,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-07T07:32:45Z",
+      "kind": "pr",
+      "issue": 3353,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3353",
+      "title": "`instantiate()` call-site overrides must be visible to dependent interpolations",
+      "detail": "linked #3356"
+    },
+    {
+      "ts": "2026-08-07T07:32:45Z",
+      "kind": "status",
+      "issue": 3353,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3353",
+      "title": "`instantiate()` call-site overrides must be visible to dependent interpolations",
+      "detail": "community PR → in progress",
+      "pr": {
+        "number": 3355,
+        "url": "https://github.com/facebookresearch/hydra/pull/3355"
+      }
+    },
+    {
       "ts": "2026-08-06T07:54:56Z",
       "kind": "pr",
       "issue": 3354,
@@ -7416,25 +7440,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3221",
       "title": "Clean up deprecations older than Hydra 1.2",
       "detail": "linked #3285"
-    },
-    {
-      "ts": "2026-07-18T07:35:10Z",
-      "kind": "status",
-      "issue": 3221,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3221",
-      "title": "Clean up deprecations older than Hydra 1.2",
-      "detail": "not started → in progress",
-      "pr": {
-        "number": 3285,
-        "url": "https://github.com/facebookresearch/hydra/pull/3285"
-      }
-    },
-    {
-      "ts": "2026-07-18T05:43:23Z",
-      "kind": "closed",
-      "issue": 1832,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1832",
-      "title": "[Feature Request] Expand options to transform special characters for dir name"
     }
   ]
 }
