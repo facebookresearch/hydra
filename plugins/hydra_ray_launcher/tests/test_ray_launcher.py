@@ -32,7 +32,10 @@ def test_discovery() -> None:
 
 
 @mark.skipif(sys.platform.startswith("win"), reason=win_msg)
-@mark.parametrize("launcher_name, overrides", [("ray", [])])
+@mark.parametrize(
+    "launcher_name, overrides",
+    [("ray", ["+hydra.launcher.ray.init.object_store_memory=78643200"])],
+)
 class TestRayLauncher(LauncherTestSuite):
     """
     Run the Launcher test suite on this launcher.
@@ -52,6 +55,7 @@ class TestRayLauncher(LauncherTestSuite):
                 "hydra/launcher=ray",
                 "hydra/hydra_logging=hydra_debug",
                 "hydra/job_logging=disabled",
+                "+hydra.launcher.ray.init.object_store_memory=78643200",
             ],
         )
     ],
@@ -118,3 +122,68 @@ def test_ray_aws_launch_does_not_mutate_launcher_config(
         "pip install example==1.0",
         "cluster",
     ]
+
+
+def test_ray_launcher_object_store_memory(monkeypatch: Any, tmp_path: Path) -> None:
+    from hydra_plugins.hydra_ray_launcher import _core
+
+    cfg = OmegaConf.create(
+        {
+            "hydra": {
+                "hydra_logging": {},
+                "verbose": False,
+                "sweep": {"dir": str(tmp_path)},
+            },
+        }
+    )
+
+    # Test cases: (configured_address, configured_memory, expected_memory)
+    test_cases = [
+        # Ordinary local launch (no address, no memory configured) -> no injected value
+        (None, None, None),
+        # Existing cluster connection -> no injected value
+        ("auto", None, None),
+        # Explicit memory configured -> remains untouched
+        (None, 12345, 12345),
+        # Explicit memory configured on existing cluster -> remains untouched
+        ("auto", 12345, 12345),
+    ]
+
+    for address, memory, expected_memory in test_cases:
+        init_cfg: dict[str, Any] = {}
+        if address is not None:
+            init_cfg["address"] = address
+        if memory is not None:
+            init_cfg["object_store_memory"] = memory
+
+        ray_cfg = OmegaConf.create(
+            {
+                "init": init_cfg,
+                "remote": {},
+            }
+        )
+
+        launcher = SimpleNamespace(
+            config=cfg,
+            hydra_context=object(),
+            ray_cfg=ray_cfg,
+            task_function=lambda: None,
+        )
+
+        captured_ray_init = None
+
+        def mock_start_ray(ray_init: Any) -> None:
+            nonlocal captured_ray_init
+            captured_ray_init = ray_init
+
+        monkeypatch.setattr(_core, "start_ray", mock_start_ray)
+        monkeypatch.setattr(_core, "configure_log", lambda *args: None)
+
+        res = _core.launch(cast(RayLauncher, launcher), [], 0)
+        assert res == []
+
+        assert captured_ray_init is not None
+        if expected_memory is not None:
+            assert captured_ray_init.get("object_store_memory") == expected_memory
+        else:
+            assert "object_store_memory" not in captured_ray_init

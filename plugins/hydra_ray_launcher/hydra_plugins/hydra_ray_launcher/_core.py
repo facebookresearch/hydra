@@ -32,12 +32,10 @@ def launch(
         f"sweep output dir: {sweep_dir}"
     )
 
-    # Avoid allocating too little memory in CI https://github.com/ray-project/ray/issues/11966#issuecomment-1318100747
     ray_init = cast(
         DictConfig,
         OmegaConf.create(OmegaConf.to_container(launcher.ray_cfg.init, resolve=True)),
     )
-    ray_init.setdefault("object_store_memory", 78643200)
     start_ray(ray_init)
 
     runs = []
