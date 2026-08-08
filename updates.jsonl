@@ -646,3 +646,4 @@
 {"ts": "2026-08-08T19:58:43Z", "kind": "closed", "issue": 3353, "issue_url": "https://github.com/facebookresearch/hydra/issues/3353", "title": "`instantiate()` call-site overrides must be visible to dependent interpolations"}
 {"ts": "2026-08-08T20:05:31Z", "kind": "closed", "issue": 3354, "issue_url": "https://github.com/facebookresearch/hydra/issues/3354", "title": "`instantiate()` must treat call-site `???` as a literal value"}
 {"ts": "2026-08-08T20:45:01Z", "kind": "new", "issue": 3361, "issue_url": "https://github.com/facebookresearch/hydra/issues/3361", "title": "Modernize Hydra’s default exception rendering"}
+{"ts": "2026-08-08T21:01:58Z", "kind": "new", "issue": 3362, "issue_url": "https://github.com/facebookresearch/hydra/issues/3362", "title": "Reject backslashes in Defaults List paths"}
