@@ -163,6 +163,11 @@ arguments resolve against those call-site values. Call-site values are not
 generally coerced against Structured Config fields. Dictionary overrides of
 Structured Config nodes are the exception, as described below.
 
+Plain Python call-site overrides must be concrete runtime values. Hydra rejects
+`???` and strings containing OmegaConf interpolation syntax (`${...}`),
+including inside native containers. Explicit OmegaConf containers retain
+normal OmegaConf semantics and may contain missing values or interpolations.
+
 Configuration values are resolved lazily as instantiation proceeds instead of
 resolving the full configuration tree up front. Calls on OmegaConf inputs
 without call-site overrides do not make an additional input copy. When

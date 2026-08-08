@@ -66,6 +66,9 @@ have been removed:
 - `hydra.utils.instantiate()` passes dataclass and attrs instances supplied as
   call-site arguments through unchanged instead of interpreting them as
   Structured Configs.
+- `hydra.utils.instantiate()` rejects `???` and interpolation syntax in plain
+  Python call-site overrides. Supply concrete runtime values or explicit
+  OmegaConf containers instead.
 - `hydra.utils.instantiate()` resolves interpolations during recursive
   traversal instead of resolving the entire configuration before
   instantiation. With `_recursive_=False`, `_convert_="none"`, and no call-site

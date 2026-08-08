@@ -207,12 +207,6 @@ def register_test_resolver(name: str, value: Any) -> Any:
             id="class+override+partial1",
         ),
         param(
-            {"_target_": "tests.instantiate.AClass", "b": 20, "c": 30},
-            {"a": "???", "_partial_": True},
-            partial(AClass, b=20, c=30),
-            id="class+override+partial1+missing",
-        ),
-        param(
             {
                 "_target_": "tests.instantiate.AClass",
                 "_partial_": True,
@@ -486,22 +480,6 @@ def test_callsite_override_is_visible_through_absolute_interpolation(
     assert config.node.base == 10
 
 
-@mark.parametrize("base", ["${literal}", "before ${literal} after"])
-def test_callsite_override_remains_literal_when_referenced_by_config(
-    instantiate_func: Any, base: str
-) -> None:
-    result = instantiate_func(
-        {
-            "_target_": "tests.instantiate.ArgsClass",
-            "base": "configured",
-            "derived": "${base}",
-        },
-        base=base,
-    )
-
-    assert result.kwargs == {"base": base, "derived": base}
-
-
 def test_callsite_runtime_object_is_visible_to_configured_interpolation(
     instantiate_func: Any,
 ) -> None:
@@ -622,6 +600,69 @@ def test_instantiate_with_missing(instantiate_func: Any) -> Any:
     }
     with raises(MissingMandatoryValue, match=re.escape("Missing mandatory value: a")):
         instantiate_func(config)
+
+
+@mark.parametrize(
+    "value",
+    [
+        param("???", id="missing"),
+        param("${configured}", id="interpolation"),
+        param({"nested": "???"}, id="nested_missing"),
+        param({"nested": "${configured}"}, id="nested_interpolation"),
+        param(["???"], id="list_missing"),
+        param(("${configured}",), id="tuple_interpolation"),
+    ],
+)
+def test_callsite_override_rejects_omegaconf_syntax(
+    instantiate_func: Any, value: Any
+) -> None:
+    config = {
+        "_target_": "tests.instantiate.ArgsClass",
+        "configured": 10,
+    }
+
+    with raises(InstantiationException, match="Call-site override"):
+        instantiate_func(config, value=value)
+
+
+@mark.parametrize(
+    "value", [param("???", id="missing"), param("${value}", id="interpolation")]
+)
+def test_callsite_positional_override_rejects_omegaconf_syntax(
+    instantiate_func: Any, value: str
+) -> None:
+    config = {"_target_": "tests.instantiate.ArgsClass"}
+
+    with raises(
+        InstantiationException,
+        match=re.escape("Call-site override '_args_.0'"),
+    ):
+        instantiate_func(config, value)
+
+
+def test_callsite_override_does_not_inspect_structured_runtime_value(
+    instantiate_func: Any,
+) -> None:
+    @dataclass
+    class DictRuntimeValue(dict):  # type: ignore[type-arg]
+        pass
+
+    @attr.define(slots=False)
+    class ListRuntimeValue(list):  # type: ignore[type-arg]
+        pass
+
+    mapping = DictRuntimeValue()
+    mapping["value"] = "${literal}"
+    sequence = ListRuntimeValue()
+    sequence.append("???")
+
+    for value in (mapping, sequence):
+        result = instantiate_func(
+            {"_target_": "tests.instantiate.ArgsClass"},
+            value=value,
+        )
+
+        assert result.kwargs["value"] is value
 
 
 def test_none_cases(
