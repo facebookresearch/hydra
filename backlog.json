@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-08-08",
-  "generated_at": "2026-08-08T18:12:30Z",
+  "generated_at": "2026-08-08T19:58:43Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 113,
+    "open_total": 112,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 9,
-        "percentage": 8.0
+        "count": 8,
+        "percentage": 7.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 86,
-        "percentage": 76.1
+        "percentage": 76.8
       },
       {
         "category": "Documentation",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -66,38 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 234
+        "count": 235
       }
     ]
   },
   "issues": [
-    {
-      "number": 3353,
-      "title": "`instantiate()` call-site overrides must be visible to dependent interpolations",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3355,
-          "url": "https://github.com/facebookresearch/hydra/pull/3355"
-        },
-        {
-          "number": 3356,
-          "url": "https://github.com/facebookresearch/hydra/pull/3356"
-        }
-      ],
-      "created": "2026-08-06",
-      "updated": "2026-08-06",
-      "labels": [
-        "bug",
-        "instantiate_api",
-        "priority_blocker",
-        "regression"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3353"
-    },
     {
       "number": 1749,
       "title": "tests: Use multiline regex search instead of assert_regex_match",
@@ -5850,9 +5823,43 @@
       "updated": "2026-08-03",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3346"
+    },
+    {
+      "number": 3353,
+      "title": "`instantiate()` call-site overrides must be visible to dependent interpolations",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3355,
+          "url": "https://github.com/facebookresearch/hydra/pull/3355"
+        },
+        {
+          "number": 3356,
+          "url": "https://github.com/facebookresearch/hydra/pull/3356"
+        }
+      ],
+      "created": "2026-08-06",
+      "updated": "2026-08-06",
+      "labels": [
+        "bug",
+        "instantiate_api",
+        "priority_blocker",
+        "regression"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3353"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-08T19:58:43Z",
+      "kind": "closed",
+      "issue": 3353,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3353",
+      "title": "`instantiate()` call-site overrides must be visible to dependent interpolations"
+    },
     {
       "ts": "2026-08-08T07:23:12Z",
       "kind": "pr",
@@ -7437,14 +7444,6 @@
       "issue": 1855,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1855",
       "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` "
-    },
-    {
-      "ts": "2026-07-18T11:46:10Z",
-      "kind": "status",
-      "issue": 3221,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3221",
-      "title": "Clean up deprecations older than Hydra 1.2",
-      "detail": "in progress → not started"
     }
   ]
 }
