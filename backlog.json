@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-08-08",
-  "generated_at": "2026-08-08T20:05:31Z",
+  "generated_at": "2026-08-08T20:45:01Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 111,
+    "open_total": 112,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 7,
-        "percentage": 6.3
+        "count": 8,
+        "percentage": 7.1
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 86,
-        "percentage": 77.5
+        "percentage": 76.8
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 7,
-        "percentage": 6.3
+        "percentage": 6.2
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 6.3
+        "percentage": 6.2
       },
       {
         "category": "Refactor",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 107
+        "count": 108
       },
       {
         "status": "done",
@@ -1858,6 +1858,19 @@
         "needs decision"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3328"
+    },
+    {
+      "number": 3361,
+      "title": "Modernize Hydra’s default exception rendering",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-08",
+      "updated": "2026-08-08",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3361"
     },
     {
       "number": 692,
@@ -5854,6 +5867,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-08T20:45:01Z",
+      "kind": "new",
+      "issue": 3361,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3361",
+      "title": "Modernize Hydra’s default exception rendering"
+    },
+    {
       "ts": "2026-08-08T20:05:31Z",
       "kind": "closed",
       "issue": 3354,
@@ -7436,14 +7456,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3221",
       "title": "Clean up deprecations older than Hydra 1.2",
       "detail": "unlinked #3285"
-    },
-    {
-      "ts": "2026-07-18T11:46:10Z",
-      "kind": "pr",
-      "issue": 1781,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1781",
-      "title": "[Bug] Testing for hydra examples",
-      "detail": "linked #3286"
     }
   ]
 }
