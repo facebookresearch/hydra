@@ -90,6 +90,7 @@
     "2323": "2026-07-29",
     "2338": "2026-07-04",
     "2348": "2026-07-03",
+    "2350": "2026-08-08",
     "2351": "2026-07-29",
     "2359": "2026-06-30",
     "2364": "2026-07-25",
@@ -234,7 +235,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-07T07:32:45Z",
+  "generated_at": "2026-08-08T07:23:12Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -450,20 +451,6 @@
       "status": "community PR",
       "title": "[Bug] Optuna sweeper raises uncaught exception when run ends with nan value",
       "updated_at": "2026-07-15T18:04:14Z"
-    },
-    "2350": {
-      "category": "Bug",
-      "created_at": "2022-08-19T17:45:13Z",
-      "labels": [
-        "bug"
-      ],
-      "pr_numbers": [
-        "3352"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
-      "updated_at": "2026-07-03T05:30:51Z"
     },
     "2412": {
       "category": "Enhancement",
@@ -1527,9 +1514,11 @@
       "category": "Enhancement",
       "created_at": "2026-07-31T11:16:56Z",
       "labels": [],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3358"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "Stop advertising HYDRA_FULL_ERROR in user-facing errors",
       "updated_at": "2026-07-31T11:21:50Z"
     },
@@ -2982,6 +2971,20 @@
       "status": "done",
       "title": "[Bug] AssertionError when configuring hydra from top-level dataclass",
       "updated_at": "2025-04-04T13:48:21Z"
+    },
+    "2350": {
+      "category": "Bug",
+      "created_at": "2022-08-19T17:45:13Z",
+      "labels": [
+        "bug"
+      ],
+      "pr_numbers": [
+        "3352"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
+      "updated_at": "2026-07-03T05:30:51Z"
     },
     "2351": {
       "category": "Enhancement",
