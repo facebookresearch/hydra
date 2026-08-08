@@ -1,8 +1,10 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
+import copy
 import functools
 import inspect
 import os
+import re
 from contextvars import ContextVar
 from enum import Enum
 from textwrap import dedent
@@ -102,6 +104,13 @@ ConfigOverlay = Union[Dict[str, Any], DictConfig]
 _TARGET_WHITELIST_CONTEXT: ContextVar[NormalizedTargetWhitelist] = ContextVar(
     "hydra_instantiate_target_whitelist", default=None
 )
+_INSTANTIATE_OVERRIDE_RESOLVER = "hydra.instantiate_override"
+_INSTANTIATE_OVERRIDE_STORAGE = "_hydra_instantiate_overrides"
+
+
+def _resolve_instantiate_override(token: str, *, _root_: Any) -> Any:
+    source, key = _root_.__dict__[_INSTANTIATE_OVERRIDE_STORAGE][token]
+    return source[key]
 
 
 def _get_os_alias_target(target: str) -> str:
@@ -509,6 +518,13 @@ def instantiate(
         config = OmegaConf.structured(config, flags={"allow_objects": True})
 
     if OmegaConf.is_dict(config):
+        resolution_overrides = dict(kwargs)
+        if args:
+            resolution_overrides[_Keys.ARGS] = args
+        if resolution_overrides:
+            config = _copy_config_with_override_interpolations(
+                config, resolution_overrides
+            )
         return instantiate_node(
             config,
             *args,
@@ -739,6 +755,178 @@ def _get_dict_override_merge_base(
     ):
         return configured_value
     return None
+
+
+def _get_override_child(source: Any, key: Any) -> Any:
+    if isinstance(source, DictConfig):
+        return source._get_node(key, validate_access=False)
+    if OmegaConf.is_sequence(source):
+        return source._get_node(key)
+    return source[key]
+
+
+def _replace_child(parent: Any, key: Any, child: Any) -> None:
+    child._set_parent(parent)
+    child._set_key(key)
+    parent.__dict__["_content"][key] = child
+
+
+def _override_mapping(value: Any) -> Optional[ConfigOverlay]:
+    if OmegaConf.is_config(value) and (
+        value._is_none() or value._is_missing() or value._is_interpolation()
+    ):
+        return None
+    return _get_dict_override(value)
+
+
+def _create_override_node(
+    value: Any,
+    *,
+    source: Any,
+    key: Any,
+    path: Tuple[Any, ...],
+    storage: Dict[str, Tuple[Any, Any]],
+) -> Any:
+    mapping = _override_mapping(value)
+    if mapping is not None:
+        result = OmegaConf.create({}, flags={"allow_objects": True})
+        for child_key in mapping:
+            child = _create_override_node(
+                _get_override_child(mapping, child_key),
+                source=mapping,
+                key=child_key,
+                path=(*path, child_key),
+                storage=storage,
+            )
+            _replace_child(result, child_key, child)
+        return result
+
+    if not is_structured_config(value) and (
+        isinstance(value, (list, tuple)) or OmegaConf.is_sequence(value)
+    ):
+        is_tuple = type(value) is tuple or OmegaConf.is_tuple(value)
+        result = OmegaConf.create(() if is_tuple else [])
+        content = []
+        for index in range(len(value)):
+            child = _create_override_node(
+                _get_override_child(value, index),
+                source=value,
+                key=index,
+                path=(*path, index),
+                storage=storage,
+            )
+            child._set_parent(result)
+            child._set_key(index)
+            content.append(child)
+        result.__dict__["_content"] = content
+        return result
+
+    name = re.sub(r"[^A-Za-z0-9_]+", "_", ".".join(map(str, path))).strip("_")
+    name = name or "value"
+    if name[0].isdigit() or name.lower() in {"false", "inf", "nan", "null", "true"}:
+        name = f"value_{name}"
+    token = name
+    index = 2
+    while token in storage:
+        token = f"{name}_{index}"
+        index += 1
+    storage[token] = (source, key)
+    return AnyNode(
+        f"${{{_INSTANTIATE_OVERRIDE_RESOLVER}:{token}}}",
+        flags={"allow_objects": True},
+    )
+
+
+def _apply_override_interpolations(
+    node: DictConfig,
+    overrides: ConfigOverlay,
+    storage: Dict[str, Tuple[Any, Any]],
+    *,
+    is_target_parameter: bool,
+) -> None:
+    configured_values = {}
+    override_nodes = {}
+    for key in overrides:
+        configured_values[key] = node._get_node(key, validate_access=False)
+        override = _get_override_child(overrides, key)
+        override_nodes[key] = _create_override_node(
+            override,
+            source=overrides,
+            key=key,
+            path=(key,),
+            storage=storage,
+        )
+        _replace_child(node, key, override_nodes[key])
+
+    mapping_keys = [
+        key
+        for key in overrides
+        if configured_values[key] is not None
+        and _override_mapping(_get_override_child(overrides, key)) is not None
+    ]
+    # Each pass lets another interpolation level observe effective overrides.
+    for _ in mapping_keys:
+        for key in mapping_keys:
+            current_value = node._get_node(key, validate_access=False)
+            _replace_child(node, key, configured_values[key])
+            try:
+                merge_base = _get_dict_override_merge_base(
+                    node, key, is_target_parameter=is_target_parameter
+                )
+            finally:
+                _replace_child(node, key, current_value)
+
+            if merge_base is not None:
+                merged = OmegaConf.merge(merge_base, override_nodes[key])
+                _replace_child(node, key, merged)
+
+
+def _copy_config_with_override_interpolations(
+    config: DictConfig, overrides: ConfigOverlay
+) -> DictConfig:
+    OmegaConf.register_resolver(
+        _INSTANTIATE_OVERRIDE_RESOLVER,
+        _resolve_instantiate_override,
+        replace=True,
+        annotation_validation="off",
+    )
+
+    path = []
+    current: Any = config
+    while current._get_parent() is not None:
+        path.append(current._key())
+        current = current._get_parent()
+
+    copied_root = copy.deepcopy(current)
+    copied_config = copied_root
+    for key in reversed(path):
+        copied_config = _get_override_child(copied_config, key)
+
+    if copied_config._is_none():
+        ref_type = copied_config._metadata.ref_type
+        parent = copied_config._get_parent()
+        key = copied_config._key()
+        copied_config = (
+            OmegaConf.structured(ref_type)
+            if is_structured_config(ref_type)
+            else OmegaConf.create({})
+        )
+        if parent is None:
+            copied_root = copied_config
+        else:
+            _replace_child(parent, key, copied_config)
+
+    storage: Dict[str, Tuple[Any, Any]] = dict(
+        current.__dict__.get(_INSTANTIATE_OVERRIDE_STORAGE, {})
+    )
+    copied_root.__dict__[_INSTANTIATE_OVERRIDE_STORAGE] = storage
+    _apply_override_interpolations(
+        copied_config,
+        overrides,
+        storage,
+        is_target_parameter=_Keys.TARGET in overrides or _is_target(copied_config),
+    )
+    return copied_config
 
 
 def _instantiate_effective_value(

@@ -225,13 +225,13 @@ def register_test_resolver(name: str, value: Any) -> Any:
         param(
             {"_target_": "tests.instantiate.AClass", "b": 200, "c": "${b}"},
             {"a": 10, "b": 99, "d": 40},
-            AClass(10, 99, 200, 40),
+            AClass(10, 99, 99, 40),
             id="class+override+interpolation",
         ),
         param(
             {"_target_": "tests.instantiate.AClass", "b": 200, "c": "${b}"},
             {"a": 10, "b": 99, "_partial_": True},
-            partial(AClass, a=10, b=99, c=200),
+            partial(AClass, a=10, b=99, c=99),
             id="class+override+interpolation+partial1",
         ),
         param(
@@ -242,7 +242,7 @@ def register_test_resolver(name: str, value: Any) -> Any:
                 "c": "${b}",
             },
             {"a": 10, "b": 99},
-            partial(AClass, a=10, b=99, c=200),
+            partial(AClass, a=10, b=99, c=99),
             id="class+override+interpolation+partial2",
         ),
         # Check class and static methods
@@ -452,6 +452,151 @@ def test_class_instantiate(
     assert str(config) == original_config_str
 
 
+def test_callsite_override_is_visible_to_configured_interpolation(
+    instantiate_func: Any,
+) -> None:
+    config = {
+        "_target_": "tests.instantiate.ArgsClass",
+        "base": 10,
+        "middle": "${base}",
+        "derived": "${middle}",
+    }
+
+    result = instantiate_func(config, base=20)
+
+    assert result.kwargs == {"base": 20, "middle": 20, "derived": 20}
+
+
+def test_callsite_override_is_visible_through_absolute_interpolation(
+    instantiate_func: Any,
+) -> None:
+    config = OmegaConf.create(
+        {
+            "node": {
+                "_target_": "tests.instantiate.ArgsClass",
+                "base": 10,
+                "derived": "${node.base}",
+            }
+        }
+    )
+
+    result = instantiate_func(config.node, base=20)
+
+    assert result.kwargs == {"base": 20, "derived": 20}
+    assert config.node.base == 10
+
+
+@mark.parametrize("base", ["${literal}", "before ${literal} after"])
+def test_callsite_override_remains_literal_when_referenced_by_config(
+    instantiate_func: Any, base: str
+) -> None:
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "base": "configured",
+            "derived": "${base}",
+        },
+        base=base,
+    )
+
+    assert result.kwargs == {"base": base, "derived": base}
+
+
+def test_callsite_runtime_object_is_visible_to_configured_interpolation(
+    instantiate_func: Any,
+) -> None:
+    base = Parameters([1, 2, 3])
+
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "base": "configured",
+            "derived": "${base}",
+        },
+        base=base,
+    )
+
+    assert result.kwargs["base"] is base
+    assert result.kwargs["derived"] is base
+
+
+def test_callsite_override_storage_survives_nested_reinstantiation(
+    instantiate_func: Any,
+) -> None:
+    config = OmegaConf.create(
+        {
+            "_target_": "builtins.dict",
+            "_recursive_": False,
+            "base": 10,
+            "child": {
+                "_target_": "builtins.dict",
+                "value": "${..base}",
+            },
+        }
+    )
+
+    result = instantiate_func(config, base=20)
+    child = result["child"]
+
+    assert child.value == 20
+    assert instantiate_func(child, extra=1) == {"value": 20, "extra": 1}
+    assert config.base == 10
+
+
+def test_callsite_override_resolver_token_uses_normalized_path() -> None:
+    config = OmegaConf.create(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "base": {"value": 10},
+        }
+    )
+
+    copied = _instantiate2._copy_config_with_override_interpolations(
+        config, {"base": {"value": 20}}
+    )
+
+    assert copied.base._get_node("value")._value() == (
+        "${hydra.instantiate_override:base_value}"
+    )
+
+
+@mark.parametrize(
+    ("key", "token"),
+    [
+        param("123", "value_123", id="integer"),
+        param("true", "value_true", id="boolean"),
+        param("nan", "value_nan", id="float"),
+    ],
+)
+def test_callsite_override_resolver_token_is_not_parsed_as_primitive(
+    key: str, token: str
+) -> None:
+    config = OmegaConf.create({key: 10})
+
+    copied = _instantiate2._copy_config_with_override_interpolations(config, {key: 20})
+
+    node = copied._get_node(key)
+    assert node is not None
+    assert node._value() == f"${{hydra.instantiate_override:{token}}}"
+    assert copied[key] == 20
+
+
+def test_callsite_override_restores_internal_resolver_after_clear() -> None:
+    OmegaConf.clear_resolver(_instantiate2._INSTANTIATE_OVERRIDE_RESOLVER)
+
+    result = _instantiate2.instantiate(
+        {
+            "_target_": "builtins.dict",
+            "base": 10,
+            "derived": "${base}",
+        },
+        base=20,
+        _target_whitelist_=UNSAFE_ALLOW_ALL_TARGETS,
+    )
+
+    assert result == {"base": 20, "derived": 20}
+
+
 def test_partial_with_missing(instantiate_func: Any) -> Any:
     config = {
         "_target_": "tests.instantiate.AClass",
@@ -510,6 +655,15 @@ def test_none_cases(
     assert ret.kwargs["list"][1] is None
     assert ret.kwargs["list"][2] is None
     assert str(cfg) == original_config_str
+
+
+def test_callsite_override_materializes_none_root(instantiate_func: Any) -> None:
+    config = DictConfig(None)
+
+    result = instantiate_func(config, value=10)
+
+    assert result == {"value": 10}
+    assert config._is_none()
 
 
 @mark.parametrize("convert_to_list", [True, False])
@@ -669,7 +823,7 @@ def test_instantiate_does_not_copy_unrelated_root_siblings(
         flags={"allow_objects": True},
     )
 
-    assert instantiate_func(cfg.node) == AClass(a=10, b=20, c=30)
+    assert instantiate_func(cfg.node, b=99) == AClass(a=10, b=99, c=30)
 
 
 def test_non_recursive_config_argument_is_passed_directly_without_resolving(
@@ -1208,6 +1362,43 @@ def test_dict_override_merges_interpolated_configured_target(
     assert result.kwargs["value"] == Tree(value=20, left=Tree(value=30))
 
 
+@mark.parametrize(
+    "overrides",
+    [
+        param(
+            {
+                "value": {"runtime": 20},
+                "template": {"configured": 10},
+            },
+            id="dependent-first",
+        ),
+        param(
+            {
+                "template": {"configured": 10},
+                "value": {"runtime": 20},
+            },
+            id="dependency-first",
+        ),
+    ],
+)
+def test_dict_override_merge_is_independent_of_callsite_argument_order(
+    instantiate_func: Any, overrides: Dict[str, Any]
+) -> None:
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "template": {"_target_": "builtins.dict", "original": 0},
+            "value": "${template}",
+        },
+        **overrides,
+    )
+
+    assert result.kwargs == {
+        "template": {"original": 0, "configured": 10},
+        "value": {"original": 0, "configured": 10, "runtime": 20},
+    }
+
+
 def test_dict_override_merges_interpolated_structured_config(
     instantiate_func: Any,
 ) -> None:
@@ -1555,8 +1746,9 @@ def test_runtime_override_is_not_coerced_by_structured_config(
     assert result.lr == "runtime value"
 
 
+@mark.parametrize("with_override", [False, True])
 def test_nested_target_can_register_resolver_for_later_argument(
-    instantiate_func: Any,
+    instantiate_func: Any, with_override: bool
 ) -> None:
     resolver_name = "hydra_instantiate_delayed_resolution"
     OmegaConf.clear_resolver(resolver_name)
@@ -1572,12 +1764,16 @@ def test_nested_target_can_register_resolver_for_later_argument(
                     "value": 10,
                 },
                 "second": f"${{{resolver_name}:}}",
-            }
+            },
+            **({"callsite": 20} if with_override else {}),
         )
     finally:
         OmegaConf.clear_resolver(resolver_name)
 
-    assert result.kwargs == {"first": 10, "second": 10}
+    expected = {"first": 10, "second": 10}
+    if with_override:
+        expected["callsite"] = 20
+    assert result.kwargs == expected
 
 
 @mark.parametrize(

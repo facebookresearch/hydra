@@ -157,15 +157,18 @@ component = instantiate(
 **Named arguments** : Config fields (except reserved fields like `_target_`) are passed as named arguments to the target.
 Named arguments in the config can be overridden by passing named argument with the same name in the `instantiate()` call-site.
 
-Call-site arguments are applied separately from the input configuration. They
-replace the corresponding arguments passed to the target without modifying the
-input configuration. Ordinary replacements therefore do not affect how its
-interpolations resolve. Call-site values are also not generally coerced against
-Structured Config fields. Dictionary overrides of Structured Config nodes are
-the exception, as described below. Configuration values are resolved lazily as
-instantiation proceeds instead of resolving and copying the full configuration
-tree up front. This avoids processing unrelated configuration values and allows
-runtime state established by an earlier target to be used while resolving a
+Call-site arguments replace the corresponding arguments passed to the target
+without modifying the input configuration. Interpolations in other configured
+arguments resolve against those call-site values. Call-site values are not
+generally coerced against Structured Config fields. Dictionary overrides of
+Structured Config nodes are the exception, as described below.
+
+Configuration values are resolved lazily as instantiation proceeds instead of
+resolving the full configuration tree up front. Calls on OmegaConf inputs
+without call-site overrides do not make an additional input copy. When
+overrides are present, Hydra uses a private copy so configured interpolations
+resolve against the call-site values while leaving the input unchanged. Runtime
+state established by an earlier target can still be used while resolving a
 later argument.
 
 Primitive values, native `list`, `tuple`, and `dict` containers, and OmegaConf
