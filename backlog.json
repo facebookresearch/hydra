@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-08",
-  "generated_at": "2026-08-08T07:23:12Z",
+  "generated_at": "2026-08-08T18:12:30Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 113,
@@ -165,6 +165,24 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3222"
     },
     {
+      "number": 3329,
+      "title": "Stop advertising HYDRA_FULL_ERROR in user-facing errors",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3358,
+          "url": "https://github.com/facebookresearch/hydra/pull/3358"
+        }
+      ],
+      "created": "2026-07-31",
+      "updated": "2026-07-31",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3329"
+    },
+    {
       "number": 3354,
       "title": "`instantiate()` must treat call-site `???` as a literal value",
       "category": "Bug",
@@ -186,24 +204,6 @@
         "regression"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3354"
-    },
-    {
-      "number": 3329,
-      "title": "Stop advertising HYDRA_FULL_ERROR in user-facing errors",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3358,
-          "url": "https://github.com/facebookresearch/hydra/pull/3358"
-        }
-      ],
-      "created": "2026-07-31",
-      "updated": "2026-07-31",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3329"
     },
     {
       "number": 385,
@@ -3527,6 +3527,26 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2348"
     },
     {
+      "number": 2350,
+      "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3352,
+          "url": "https://github.com/facebookresearch/hydra/pull/3352"
+        }
+      ],
+      "created": "2022-08-19",
+      "updated": "2026-07-03",
+      "labels": [
+        "bug"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2350"
+    },
+    {
       "number": 2351,
       "title": "[Feature Request] Possibility to save full start command in separate file",
       "category": "Enhancement",
@@ -5830,26 +5850,6 @@
       "updated": "2026-08-03",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3346"
-    },
-    {
-      "number": 2350,
-      "title": "[Bug] Structured config with dict as default value does not handle overrides correctly",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3352,
-          "url": "https://github.com/facebookresearch/hydra/pull/3352"
-        }
-      ],
-      "created": "2022-08-19",
-      "updated": "2026-07-03",
-      "labels": [
-        "bug"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2350"
     }
   ],
   "updates": [
