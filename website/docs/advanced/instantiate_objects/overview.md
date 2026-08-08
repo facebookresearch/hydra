@@ -172,8 +172,9 @@ Primitive values, native `list`, `tuple`, and `dict` containers, and OmegaConf
 containers passed at the call-site retain Hydra's normal configuration
 semantics, including instantiation and conversion where applicable.
 
-When a `dict` call-site argument overrides a parameter of the target being
-instantiated, it is handled according to the configured parameter value:
+When a `dict` or `DictConfig` call-site argument overrides a parameter of the
+target being instantiated, it is handled according to the configured parameter
+value:
 
 - If the configured value is a Structured Config node, Hydra merges the
   dictionary into a copy of the node, preserving its schema, validation, and
@@ -185,6 +186,10 @@ instantiated, it is handled according to the configured parameter value:
   controls whether the result is instantiated or passed through; it does not
   change this merge behavior.
 - Any other configured mapping is replaced entirely.
+
+Hydra uses the configured parameter's effective value after interpolation to
+select among these cases. If the interpolation cannot be resolved, the
+call-site dictionary replaces it.
 
 ```python
 cfg = OmegaConf.create(

@@ -1127,6 +1127,18 @@ def test_regression_2350_dict_override_replaces_configured_dict(
     assert result.kwargs["value"] == {"runtime": 20}
 
 
+def test_dict_override_for_unconfigured_target_parameter(
+    instantiate_func: Any,
+) -> None:
+    @dataclass
+    class Config:
+        _target_: str = "tests.instantiate.ArgsClass"
+
+    result = instantiate_func(Config, extra={"value": 10})
+
+    assert result.kwargs["extra"] == {"value": 10}
+
+
 @mark.parametrize(
     "recursive,expected",
     [
@@ -1172,6 +1184,101 @@ def test_dict_override_merges_configured_target(
     assert value == expected
     if not recursive:
         assert isinstance(value, DictConfig)
+
+
+def test_dict_override_merges_interpolated_configured_target(
+    instantiate_func: Any,
+) -> None:
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "template": {
+                "_target_": "tests.instantiate.Tree",
+                "value": 10,
+                "left": {
+                    "_target_": "tests.instantiate.Tree",
+                    "value": 30,
+                },
+            },
+            "value": "${template}",
+        },
+        value={"value": 20},
+    )
+
+    assert result.kwargs["value"] == Tree(value=20, left=Tree(value=30))
+
+
+def test_dict_override_merges_interpolated_structured_config(
+    instantiate_func: Any,
+) -> None:
+    @dataclass
+    class Value:
+        count: int = 10
+        label: str = "configured"
+
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "template": OmegaConf.structured(Value),
+            "value": "${template}",
+        },
+        value={"count": 20},
+    )
+
+    value = result.kwargs["value"]
+    assert OmegaConf.get_type(value) is Value
+    assert value == {"count": 20, "label": "configured"}
+
+
+def test_dict_override_replaces_interpolated_configured_dict(
+    instantiate_func: Any,
+) -> None:
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "template": {"configured": 10},
+            "value": "${template}",
+        },
+        value={"runtime": 20},
+    )
+
+    assert result.kwargs["value"] == {"runtime": 20}
+
+
+def test_dict_override_replaces_unresolvable_configured_interpolation(
+    instantiate_func: Any,
+) -> None:
+    result = instantiate_func(
+        {
+            "_target_": "tests.instantiate.ArgsClass",
+            "value": "${missing}",
+        },
+        value={"runtime": 20},
+    )
+
+    assert result.kwargs["value"] == {"runtime": 20}
+
+
+def test_dict_override_merges_resolver_result_target(
+    instantiate_func: Any,
+) -> None:
+    resolver_name = "hydra_instantiate_target_mapping"
+    OmegaConf.register_resolver(
+        resolver_name,
+        lambda: {"_target_": "builtins.dict", "configured": 10},
+    )
+    try:
+        result = instantiate_func(
+            {
+                "_target_": "tests.instantiate.ArgsClass",
+                "value": f"${{{resolver_name}:}}",
+            },
+            value={"runtime": 20},
+        )
+    finally:
+        OmegaConf.clear_resolver(resolver_name)
+
+    assert result.kwargs["value"] == {"configured": 10, "runtime": 20}
 
 
 def test_dict_override_merges_structured_config_fields(
@@ -1230,6 +1337,153 @@ def test_dict_override_merges_structured_config_fields(
 
     with raises(ValidationError):
         instantiate_func(Config, value={"count": "not an integer"})
+
+
+@mark.parametrize("convert", list(ConvertMode))
+@mark.parametrize("runtime_type", ["dataclass", "attrs"])
+@mark.parametrize("container", ["direct", "mapping", "list", "tuple"])
+def test_structured_config_dict_override_preserves_nested_runtime_object(
+    instantiate_func: Any,
+    container: str,
+    runtime_type: str,
+    convert: ConvertMode,
+) -> None:
+    @dataclass
+    class RuntimeValue:
+        _target_: str
+        value: int
+        token: InitVar[str]
+        runtime_token: str = field(init=False)
+
+        def __post_init__(self, token: str) -> None:
+            self.runtime_token = token
+
+    @attr.define
+    class AttrsRuntimeValue:
+        _target_: str
+        value: int
+
+    @dataclass
+    class Value:
+        payload: Any = None
+
+    @dataclass
+    class Config:
+        _target_: str = "tests.instantiate.ArgsClass"
+        value: Value = field(default_factory=Value)
+
+    runtime_value = (
+        RuntimeValue(
+            _target_="tests.instantiate.AnotherClass",
+            value=10,
+            token="secret",
+        )
+        if runtime_type == "dataclass"
+        else AttrsRuntimeValue("tests.instantiate.AnotherClass", 10)
+    )
+    payload = {
+        "direct": runtime_value,
+        "mapping": {"runtime": runtime_value},
+        "list": [runtime_value],
+        "tuple": (runtime_value,),
+    }[container]
+
+    result = instantiate_func(Config, value={"payload": payload}, _convert_=convert)
+    value = result.kwargs["value"]
+    actual = value.payload if hasattr(value, "payload") else value["payload"]
+    if container == "mapping":
+        actual = actual["runtime"]
+    elif container in ("list", "tuple"):
+        actual = actual[0]
+
+    assert actual is runtime_value
+
+
+@mark.parametrize("convert", list(ConvertMode))
+def test_structured_config_dict_override_preserves_typed_runtime_object(
+    instantiate_func: Any, convert: ConvertMode
+) -> None:
+    @dataclass
+    class Child:
+        value: int = 10
+
+    @dataclass
+    class Value:
+        child: Child = field(default_factory=Child)
+
+    @dataclass
+    class Config:
+        _target_: str = "tests.instantiate.ArgsClass"
+        value: Value = field(default_factory=Value)
+
+    child = Child(value=20)
+    result = instantiate_func(Config, value={"child": child}, _convert_=convert)
+    value = result.kwargs["value"]
+
+    assert (value.child if hasattr(value, "child") else value["child"]) is child
+
+
+@mark.parametrize("container", ["mapping", "sequence"])
+def test_nested_target_result_preserves_runtime_object(
+    instantiate_func: Any, container: str
+) -> None:
+    @dataclass
+    class RuntimeValue:
+        value: int
+
+    runtime_value = RuntimeValue(value=10)
+    target = OmegaConf.create({"_target_": "builtins.dict"})
+    target["object"] = structured_config_object_node(runtime_value)
+    config = {"result": target} if container == "mapping" else [target]
+
+    result = instantiate_func(config)
+    target_result = result["result"] if container == "mapping" else result[0]
+
+    assert target_result["object"] is runtime_value
+
+
+def test_dict_override_materializes_structured_config_with_allow_objects(
+    instantiate_func: Any,
+) -> None:
+    class RuntimeObject: ...
+
+    @dataclass
+    class Value:
+        payload: Any = RuntimeObject()
+
+    @dataclass
+    class Config:
+        _target_: str = "tests.instantiate.ArgsClass"
+        value: Optional[Value] = None
+
+    result = instantiate_func(Config, value={})
+
+    value = result.kwargs["value"]
+    assert OmegaConf.get_type(value) is Value
+    assert isinstance(value.payload, RuntimeObject)
+
+
+@mark.parametrize(
+    "configured_value",
+    [param(None, id="none"), param(MISSING, id="missing")],
+)
+def test_dict_override_materialized_structured_config_resolves_outside_subtree(
+    instantiate_func: Any, configured_value: Any
+) -> None:
+    @dataclass
+    class Value:
+        count: int = 10
+        inherited: int = "${..template}"  # type: ignore[assignment]
+
+    @dataclass
+    class Config:
+        _target_: str = "tests.instantiate.ArgsClass"
+        template: int = 20
+        value: Optional[Value] = configured_value
+
+    result = instantiate_func(Config, value={"count": 30})
+
+    assert result.kwargs["value"] == {"count": 30, "inherited": 20}
 
 
 @mark.parametrize(

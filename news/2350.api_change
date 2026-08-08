@@ -1,2 +1,3 @@
-A `dict` call-site argument to `hydra.utils.instantiate()` now replaces a plain,
-non-target mapping configured for a target parameter instead of merging into it.
+A `dict` or `DictConfig` call-site argument to `hydra.utils.instantiate()` now
+replaces a plain, non-target mapping configured for a target parameter instead
+of merging into it.

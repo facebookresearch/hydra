@@ -45,8 +45,9 @@ values, native `list`, `tuple`, and `dict` containers, and OmegaConf containers
 remain supported configuration inputs. They retain Hydra's normal
 instantiation and conversion where applicable.
 
-When a `dict` call-site argument overrides a parameter of the target being
-instantiated, it is handled according to the configured parameter value:
+When a `dict` or `DictConfig` call-site argument overrides a parameter of the
+target being instantiated, it is handled according to the configured parameter
+value:
 
 - If the configured value is a Structured Config node, Hydra validates the
   merged dictionary against the schema. Fields that the dictionary does not
@@ -58,6 +59,10 @@ instantiated, it is handled according to the configured parameter value:
   controls whether the result is instantiated or passed through; it does not
   change this merge behavior.
 - Any other configured mapping is replaced entirely.
+
+Hydra uses the configured parameter's effective value after interpolation to
+select among these cases. If the interpolation cannot be resolved, the
+call-site dictionary replaces it.
 
 The Structured Config behavior is an exception to replacement. Hydra 1.3
 instead merged dictionaries into configured plain mappings, so the target
