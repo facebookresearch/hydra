@@ -10,7 +10,7 @@ from enum import Enum
 from textwrap import dedent
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union, cast
 
-from omegaconf import AnyNode, DictConfig, OmegaConf, SCMode
+from omegaconf import AnyNode, DictConfig, Node, OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
 from omegaconf.errors import InterpolationResolutionError
 
@@ -401,6 +401,34 @@ def _prepare_input_value(
     return value
 
 
+def _validate_callsite_override(value: Any, path: Tuple[Any, ...]) -> None:
+    if is_structured_config(value):
+        return
+
+    raw_value = value._value() if isinstance(value, Node) else value
+    full_key = ".".join(
+        str(component.value if isinstance(component, Enum) else component)
+        for component in path
+    )
+    if isinstance(raw_value, str) and raw_value == "???":
+        raise InstantiationException(
+            f"Call-site override '{full_key}' cannot be an OmegaConf missing value. "
+            "Pass a concrete runtime value instead."
+        )
+    if isinstance(raw_value, str) and "${" in raw_value:
+        raise InstantiationException(
+            f"Call-site override '{full_key}' cannot be an OmegaConf interpolation. "
+            "Pass a concrete runtime value instead."
+        )
+
+    if isinstance(value, dict):
+        for key, child in value.items():
+            _validate_callsite_override(child, (*path, key))
+    elif isinstance(value, (list, tuple)):
+        for index, child in enumerate(value):
+            _validate_callsite_override(child, (*path, index))
+
+
 def _resolve_target(
     target: Union[str, type, Callable[..., Any]],
     full_key: str,
@@ -490,6 +518,9 @@ def instantiate(
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
                    in the config objects are being passed as is to the target.
+                   Plain Python missing values and interpolation syntax are not
+                   supported in call-site overrides; pass concrete runtime
+                   values or an explicit OmegaConf container instead.
                    A dict replaces a configured plain mapping, but merges into
                    a configured Structured Config or target config.
                    Dataclass and attrs instances are passed through without
@@ -503,6 +534,11 @@ def instantiate(
         return None
 
     target_whitelist = _resolve_target_whitelist(_target_whitelist_)
+
+    for index, value in enumerate(args):
+        _validate_callsite_override(value, (_Keys.ARGS, index))
+    for key, value in kwargs.items():
+        _validate_callsite_override(value, (key,))
 
     if isinstance(config, (dict, list)) or type(config) is tuple:
         config = _prepare_input_container(config)

@@ -47,6 +47,11 @@ values, native `list`, `tuple`, and `dict` containers, and OmegaConf containers
 remain supported configuration inputs. They retain Hydra's normal
 instantiation and conversion where applicable.
 
+Plain Python call-site overrides must be concrete runtime values. Hydra rejects
+`???` and strings containing OmegaConf interpolation syntax (`${...}`),
+including inside native containers. Explicit OmegaConf containers retain
+normal OmegaConf semantics and may contain missing values or interpolations.
+
 When a `dict` or `DictConfig` call-site argument overrides a parameter of the
 target being instantiated, it is handled according to the configured parameter
 value:
