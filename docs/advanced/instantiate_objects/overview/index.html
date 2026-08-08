@@ -13,7 +13,7 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.37158d48.css">
-<script src="/assets/js/runtime~main.9006b609.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.e666d4f4.js" defer="defer"></script>
 <script src="/assets/js/main.502f7777.js" defer="defer"></script>
 </head>
 <body>
@@ -60,16 +60,36 @@ preserve legacy all-target behavior, use <code>UNSAFE_ALLOW_ALL_TARGETS</code>:<
 Named arguments in the config can be overridden by passing named argument with the same name in the <code>instantiate()</code> call-site.</p>
 <p>Call-site arguments are applied separately from the input configuration. They
 replace the corresponding arguments passed to the target without modifying the
-input configuration. They therefore do not affect interpolation resolution or
-Structured Config coercion in the input configuration. Configuration values are
-resolved lazily as instantiation proceeds instead of resolving and copying the
-full configuration tree up front. This avoids processing unrelated configuration
-values and allows runtime state established by an earlier target to be used
-while resolving a later argument.</p>
+input configuration. Ordinary replacements therefore do not affect how its
+interpolations resolve. Call-site values are also not generally coerced against
+Structured Config fields. Dictionary overrides of Structured Config nodes are
+the exception, as described below. Configuration values are resolved lazily as
+instantiation proceeds instead of resolving and copying the full configuration
+tree up front. This avoids processing unrelated configuration values and allows
+runtime state established by an earlier target to be used while resolving a
+later argument.</p>
 <p>Primitive values, native <code>list</code>, <code>tuple</code>, and <code>dict</code> containers, and OmegaConf
 containers passed at the call-site retain Hydra&#x27;s normal configuration
-semantics, including recursive merging, instantiation, and conversion where
-applicable.</p>
+semantics, including instantiation and conversion where applicable.</p>
+<p>When a <code>dict</code> or <code>DictConfig</code> call-site argument overrides a parameter of the
+target being instantiated, it is handled according to the configured parameter
+value:</p>
+<ul>
+<li class="">If the configured value is a Structured Config node, Hydra merges the
+dictionary into a copy of the node, preserving its schema, validation, and
+fields that the dictionary does not name. Interpolations within that node
+resolve against the merged values.</li>
+<li class="">Otherwise, if the configured mapping contains <code>_target_</code>, Hydra merges the
+dictionary into that target config, preserving its target, instantiation
+settings, and arguments that the dictionary does not name. <code>_recursive_</code>
+controls whether the result is instantiated or passed through; it does not
+change this merge behavior.</li>
+<li class="">Any other configured mapping is replaced entirely.</li>
+</ul>
+<p>Hydra uses the configured parameter&#x27;s effective value after interpolation to
+select among these cases. If the interpolation cannot be resolved, the
+call-site dictionary replaces it.</p>
+<div class="language-python codeBlockContainer_amAr theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_Ie75"><pre tabindex="0" class="prism-code language-python codeBlock_O12j thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_fJnv"><div class="token-line" style="color:#bfc7d5"><span class="token plain">cfg </span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain"> OmegaConf</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token plain">create</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    </span><span class="token punctuation" style="color:rgb(199, 146, 234)">{</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">        </span><span class="token string" style="color:rgb(195, 232, 141)">&quot;_target_&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">:</span><span class="token plain"> </span><span class="token string" style="color:rgb(195, 232, 141)">&quot;my_app.Trainer&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">        </span><span class="token string" style="color:rgb(195, 232, 141)">&quot;optimizer&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">:</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(199, 146, 234)">{</span><span class="token string" style="color:rgb(195, 232, 141)">&quot;_target_&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">:</span><span class="token plain"> </span><span class="token string" style="color:rgb(195, 232, 141)">&quot;my_app.Optimizer&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"> </span><span class="token string" style="color:rgb(195, 232, 141)">&quot;lr&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">:</span><span class="token plain"> </span><span class="token number" style="color:rgb(247, 140, 108)">0.1</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"> </span><span class="token string" style="color:rgb(195, 232, 141)">&quot;momentum&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">:</span><span class="token plain"> </span><span class="token number" style="color:rgb(247, 140, 108)">0.5</span><span class="token punctuation" style="color:rgb(199, 146, 234)">}</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">        </span><span class="token string" style="color:rgb(195, 232, 141)">&quot;tags&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">:</span><span class="token plain"> </span><span class="token punctuation" style="color:rgb(199, 146, 234)">{</span><span class="token string" style="color:rgb(195, 232, 141)">&quot;env&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">:</span><span class="token plain"> </span><span class="token string" style="color:rgb(195, 232, 141)">&quot;prod&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"> </span><span class="token string" style="color:rgb(195, 232, 141)">&quot;team&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">:</span><span class="token plain"> </span><span class="token string" style="color:rgb(195, 232, 141)">&quot;ml&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">}</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    </span><span class="token punctuation" style="color:rgb(199, 146, 234)">}</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain"></span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain"></span><span class="token comment" style="color:rgb(105, 112, 152);font-style:italic"># optimizer is a nested target, so momentum=0.5 is preserved</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain"></span><span class="token comment" style="color:rgb(105, 112, 152);font-style:italic"># tags is a plain dict, so it is replaced and team is not passed</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">instantiate</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token plain">cfg</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"> optimizer</span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token punctuation" style="color:rgb(199, 146, 234)">{</span><span class="token string" style="color:rgb(195, 232, 141)">&quot;lr&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">:</span><span class="token plain"> </span><span class="token number" style="color:rgb(247, 140, 108)">0.3</span><span class="token punctuation" style="color:rgb(199, 146, 234)">}</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"> tags</span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token punctuation" style="color:rgb(199, 146, 234)">{</span><span class="token string" style="color:rgb(195, 232, 141)">&quot;env&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">:</span><span class="token plain"> </span><span class="token string" style="color:rgb(195, 232, 141)">&quot;dev&quot;</span><span class="token punctuation" style="color:rgb(199, 146, 234)">}</span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><br></div></code></pre></div></div>
 <p>Already-constructed dataclass and attrs instances are regular runtime objects.
 They remain unchanged, even if they define <code>_target_</code>. To use such an instance
 as configuration, explicitly convert it with <code>OmegaConf.structured(instance)</code>.</p>
