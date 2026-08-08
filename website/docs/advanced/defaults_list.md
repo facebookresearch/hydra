@@ -304,7 +304,7 @@ Example outputs:
   ```
 </details>
 
-## Slash-containing Group Default Option Shorthand (New in 1.4)
+## Slash-containing Group Default Option Shorthand
 
 If a Defaults List item specifies a group default with a slash in the option value, e.g.:
 

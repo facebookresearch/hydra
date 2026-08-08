@@ -868,15 +868,16 @@ def create_defaults_list(
 
 def _has_normalized_ancestor(
     tree: DefaultsTreeNode,
-) -> Tuple[bool, Optional[InputDefault]]:
+) -> Optional[GroupDefault]:
     curr: Optional[DefaultsTreeNode] = tree
     while curr is not None:
-        if isinstance(curr.node, GroupDefault) and getattr(
-            curr.node, "normalized_shorthand", False
+        node = curr.node
+        if isinstance(node, GroupDefault) and getattr(
+            node, "normalized_shorthand", False
         ):
-            return True, curr.node
+            return node
         curr = curr.parent
-    return False, None
+    return None
 
 
 def _get_old_path(tree: DefaultsTreeNode) -> str:
@@ -937,12 +938,13 @@ def config_not_found_error(repo: IConfigRepository, tree: DefaultsTreeNode) -> N
         options = repo.get_group_options(group, ObjectType.CONFIG)
 
     # Check if the failure is caused by relying on the old slash-containing group defaults behavior
-    has_norm, norm_node = _has_normalized_ancestor(tree)
-    if has_norm and norm_node is not None:
+    norm_node = _has_normalized_ancestor(tree)
+    if norm_node is not None:
         old_path = _get_old_path(tree)
         if repo.config_exists(old_path):
             orig_gp = getattr(norm_node, "original_group", "")
             norm_gp = norm_node.group
+            assert norm_gp is not None
             msg = dedent(f"""\
             Could not load '{element.get_config_path()}'.
             However, a config was found at '{old_path}', which indicates this application
