@@ -33,13 +33,73 @@ This has several benefits:
 
 Call-site arguments are now a separate runtime overlay. They determine the
 arguments passed to the target, but they do not modify the input configuration
-or affect how its interpolations resolve.
+itself. Ordinary replacements do not affect how input interpolations resolve.
+A dictionary overriding a Structured Config node is the exception: Hydra
+updates a copy of that node, so its interpolations resolve against the updated
+values.
 
-They are also no longer coerced or validated against the corresponding field
-in an input Structured Config. Primitive values, native `list`, `tuple`, and
-`dict` containers, and OmegaConf containers remain supported configuration
-inputs. They retain Hydra's normal recursive merging, instantiation, and
-conversion where applicable.
+Call-site arguments are not generally coerced or validated against the
+corresponding field in an input Structured Config. Dictionary overrides of
+Structured Config nodes are the exception, as described below. Primitive
+values, native `list`, `tuple`, and `dict` containers, and OmegaConf containers
+remain supported configuration inputs. They retain Hydra's normal
+instantiation and conversion where applicable.
+
+When a `dict` or `DictConfig` call-site argument overrides a parameter of the
+target being instantiated, it is handled according to the configured parameter
+value:
+
+- If the configured value is a Structured Config node, Hydra validates the
+  merged dictionary against the schema. Fields that the dictionary does not
+  name retain their configured values, and interpolations within the node can
+  observe the merged values.
+- Otherwise, if the configured mapping contains `_target_`, Hydra merges the
+  dictionary into that target config, preserving its target, instantiation
+  settings, and arguments that the dictionary does not name. `_recursive_`
+  controls whether the result is instantiated or passed through; it does not
+  change this merge behavior.
+- Any other configured mapping is replaced entirely.
+
+Hydra uses the configured parameter's effective value after interpolation to
+select among these cases. If the interpolation cannot be resolved, the
+call-site dictionary replaces it.
+
+The Structured Config behavior is an exception to replacement. Hydra 1.3
+instead merged dictionaries into configured plain mappings, so the target
+received configured keys that the call-site argument did not name:
+
+```python
+from hydra.utils import instantiate
+
+cfg = {
+    "_target_": "builtins.dict",
+    "tags": {"env": "prod", "team": "ml"},
+}
+
+result = instantiate(cfg, tags={"env": "dev"}, _target_whitelist_="builtins.dict")
+assert result["tags"] == {"env": "dev"}
+```
+
+Hydra 1.3 returned `{"env": "dev", "team": "ml"}` for `tags`.
+
+For example, a configured target retains its merge behavior:
+
+```python
+cfg = {
+    "_target_": "builtins.dict",
+    "optimizer": {"_target_": "builtins.dict", "lr": 0.1, "momentum": 0.5},
+}
+
+result = instantiate(
+    cfg,
+    optimizer={"lr": 0.3},
+    _target_whitelist_="builtins.dict",
+)
+assert result["optimizer"] == {"lr": 0.3, "momentum": 0.5}
+```
+
+To pass a merged value, merge it explicitly at the call-site, for example with
+`OmegaConf.merge(cfg["tags"], {"env": "dev"})`.
 
 Hydra 1.4 intentionally changes the treatment of already-constructed dataclass
 and attrs instances passed as call-site arguments. They are now regular runtime

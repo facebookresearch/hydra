@@ -159,17 +159,51 @@ Named arguments in the config can be overridden by passing named argument with t
 
 Call-site arguments are applied separately from the input configuration. They
 replace the corresponding arguments passed to the target without modifying the
-input configuration. They therefore do not affect interpolation resolution or
-Structured Config coercion in the input configuration. Configuration values are
-resolved lazily as instantiation proceeds instead of resolving and copying the
-full configuration tree up front. This avoids processing unrelated configuration
-values and allows runtime state established by an earlier target to be used
-while resolving a later argument.
+input configuration. Ordinary replacements therefore do not affect how its
+interpolations resolve. Call-site values are also not generally coerced against
+Structured Config fields. Dictionary overrides of Structured Config nodes are
+the exception, as described below. Configuration values are resolved lazily as
+instantiation proceeds instead of resolving and copying the full configuration
+tree up front. This avoids processing unrelated configuration values and allows
+runtime state established by an earlier target to be used while resolving a
+later argument.
 
 Primitive values, native `list`, `tuple`, and `dict` containers, and OmegaConf
 containers passed at the call-site retain Hydra's normal configuration
-semantics, including recursive merging, instantiation, and conversion where
-applicable.
+semantics, including instantiation and conversion where applicable.
+
+When a `dict` or `DictConfig` call-site argument overrides a parameter of the
+target being instantiated, it is handled according to the configured parameter
+value:
+
+- If the configured value is a Structured Config node, Hydra merges the
+  dictionary into a copy of the node, preserving its schema, validation, and
+  fields that the dictionary does not name. Interpolations within that node
+  resolve against the merged values.
+- Otherwise, if the configured mapping contains `_target_`, Hydra merges the
+  dictionary into that target config, preserving its target, instantiation
+  settings, and arguments that the dictionary does not name. `_recursive_`
+  controls whether the result is instantiated or passed through; it does not
+  change this merge behavior.
+- Any other configured mapping is replaced entirely.
+
+Hydra uses the configured parameter's effective value after interpolation to
+select among these cases. If the interpolation cannot be resolved, the
+call-site dictionary replaces it.
+
+```python
+cfg = OmegaConf.create(
+    {
+        "_target_": "my_app.Trainer",
+        "optimizer": {"_target_": "my_app.Optimizer", "lr": 0.1, "momentum": 0.5},
+        "tags": {"env": "prod", "team": "ml"},
+    }
+)
+
+# optimizer is a nested target, so momentum=0.5 is preserved
+# tags is a plain dict, so it is replaced and team is not passed
+instantiate(cfg, optimizer={"lr": 0.3}, tags={"env": "dev"})
+```
 
 Already-constructed dataclass and attrs instances are regular runtime objects.
 They remain unchanged, even if they define `_target_`. To use such an instance

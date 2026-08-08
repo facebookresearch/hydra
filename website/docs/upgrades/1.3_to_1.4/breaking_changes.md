@@ -57,6 +57,12 @@ have been removed:
 
 ### Instantiation
 
+- A `dict` or `DictConfig` call-site argument to `hydra.utils.instantiate()`
+  replaces a plain mapping configured for that target parameter instead of
+  merging into it. As an exception, a dictionary overriding a Structured Config
+  node is merged and schema-validated. Configured target values also retain
+  merge behavior, regardless of whether recursive instantiation is enabled. See
+  [Instantiate resolution and call-site overrides](/docs/upgrades/1.3_to_1.4/instantiate_resolution).
 - `hydra.utils.instantiate()` passes dataclass and attrs instances supplied as
   call-site arguments through unchanged instead of interpreting them as
   Structured Configs.

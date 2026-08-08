@@ -10,6 +10,7 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union, 
 
 from omegaconf import AnyNode, DictConfig, OmegaConf, SCMode
 from omegaconf._utils import is_structured_config
+from omegaconf.errors import InterpolationResolutionError
 
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.utils import _locate
@@ -480,6 +481,8 @@ def instantiate(
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
                    in the config objects are being passed as is to the target.
+                   A dict replaces a configured plain mapping, but merges into
+                   a configured Structured Config or target config.
                    Dataclass and attrs instances are passed through without
                    conversion or recursive instantiation.
     :return: if _target_ is a class name: the instantiated object
@@ -560,7 +563,39 @@ def _convert_node(node: Any, convert: Union[ConvertMode, str]) -> Any:
 def _wrap_structured_config_as_object(value: Any) -> Any:
     if is_structured_config(value):
         return AnyNode(value, flags={"allow_objects": True})
+    if isinstance(value, dict):
+        return {
+            key: _wrap_structured_config_as_object(item) for key, item in value.items()
+        }
+    if isinstance(value, list):
+        return [_wrap_structured_config_as_object(item) for item in value]
+    if type(value) is tuple:
+        return tuple(_wrap_structured_config_as_object(item) for item in value)
     return value
+
+
+def _restore_nested_structured_config_objects(node: Any, value: Any) -> Any:
+    if is_structured_config(value):
+        return AnyNode(value, flags={"allow_objects": True})
+    if isinstance(value, dict) and isinstance(node, DictConfig):
+        content = node.__dict__["_content"]
+        for key, item in value.items():
+            child = node._get_node(key, validate_access=False)
+            restored = _restore_nested_structured_config_objects(child, item)
+            if restored is not child:
+                restored._set_parent(node)
+                restored._set_key(key)
+                content[key] = restored
+    elif isinstance(value, (list, tuple)) and OmegaConf.is_sequence(node):
+        content = node.__dict__["_content"]
+        for index, item in enumerate(value):
+            child = node._get_node(index)
+            restored = _restore_nested_structured_config_objects(child, item)
+            if restored is not child:
+                restored._set_parent(node)
+                restored._set_key(index)
+                content[index] = restored
+    return node
 
 
 def _create_sequence_result(
@@ -674,11 +709,44 @@ def _instantiate_override(
     return value
 
 
+def _get_dict_override_merge_base(
+    node: Any, key: str, *, is_target_parameter: bool
+) -> Optional[ConfigOverlay]:
+    """Return the configured mapping to merge with a dict override, if any."""
+    configured_value = node._get_node(key, validate_access=False)
+    if (
+        is_target_parameter
+        and configured_value is not None
+        and configured_value._is_interpolation()
+    ):
+        try:
+            configured_value = node[key]
+        except InterpolationResolutionError:
+            return None
+    if isinstance(configured_value, dict):
+        return configured_value if _is_target(configured_value) else None
+    if not isinstance(configured_value, DictConfig):
+        return None
+    if (
+        not is_target_parameter
+        or is_structured_config(configured_value._metadata.ref_type)
+        or is_structured_config(configured_value._metadata.object_type)
+        or (
+            not configured_value._is_none()
+            and not configured_value._is_missing()
+            and _is_target(configured_value)
+        )
+    ):
+        return configured_value
+    return None
+
+
 def _instantiate_effective_value(
     node: Any,
     key: str,
     overrides: Optional[ConfigOverlay],
     *,
+    is_target_parameter: bool,
     convert: Union[str, ConvertMode],
     recursive: bool,
     target_whitelist: NormalizedTargetWhitelist,
@@ -686,17 +754,22 @@ def _instantiate_effective_value(
     if overrides is not None and key in overrides:
         override = overrides[key]
         dict_override = _get_dict_override(override)
-        if recursive and dict_override is not None:
-            configured_value = node._get_node(key) if key in node else None
-            if not OmegaConf.is_dict(configured_value):
-                configured_value = OmegaConf.create({})
-            return instantiate_node(
-                configured_value,
-                overrides=dict_override,
-                convert=convert,
-                recursive=recursive,
-                target_whitelist=target_whitelist,
+        if dict_override is not None:
+            configured_value = _get_dict_override_merge_base(
+                node, key, is_target_parameter=is_target_parameter
             )
+            if configured_value is not None:
+                value = OmegaConf.merge(configured_value, dict_override)
+                if isinstance(dict_override, dict):
+                    _restore_nested_structured_config_objects(value, dict_override)
+                if recursive:
+                    value = instantiate_node(
+                        value,
+                        convert=convert,
+                        recursive=recursive,
+                        target_whitelist=target_whitelist,
+                    )
+                return value
         return _instantiate_override(
             override,
             convert=convert,
@@ -809,6 +882,7 @@ def instantiate_node(
                         node,
                         key,
                         overrides,
+                        is_target_parameter=True,
                         convert=convert,
                         recursive=recursive,
                         target_whitelist=target_whitelist,
@@ -838,6 +912,7 @@ def instantiate_node(
                         node,
                         key,
                         overrides,
+                        is_target_parameter=False,
                         convert=convert,
                         recursive=recursive,
                         target_whitelist=target_whitelist,
@@ -854,6 +929,7 @@ def instantiate_node(
                             node,
                             key,
                             overrides,
+                            is_target_parameter=False,
                             convert=convert,
                             recursive=recursive,
                             target_whitelist=target_whitelist,
