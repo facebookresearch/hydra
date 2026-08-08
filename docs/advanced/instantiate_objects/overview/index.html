@@ -13,7 +13,7 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.37158d48.css">
-<script src="/assets/js/runtime~main.e666d4f4.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.4fe8f269.js" defer="defer"></script>
 <script src="/assets/js/main.502f7777.js" defer="defer"></script>
 </head>
 <body>
@@ -58,15 +58,21 @@ preserve legacy all-target behavior, use <code>UNSAFE_ALLOW_ALL_TARGETS</code>:<
 <div class="language-python codeBlockContainer_amAr theme-code-block" style="--prism-color:#bfc7d5;--prism-background-color:#292d3e"><div class="codeBlockContent_Ie75"><pre tabindex="0" class="prism-code language-python codeBlock_O12j thin-scrollbar" style="color:#bfc7d5;background-color:#292d3e"><code class="codeBlockLines_fJnv"><div class="token-line" style="color:#bfc7d5"><span class="token keyword" style="font-style:italic">from</span><span class="token plain"> hydra</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token plain">utils </span><span class="token keyword" style="font-style:italic">import</span><span class="token plain"> UNSAFE_ALLOW_ALL_TARGETS</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"> instantiate</span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">component </span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain"> instantiate</span><span class="token punctuation" style="color:rgb(199, 146, 234)">(</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    cfg</span><span class="token punctuation" style="color:rgb(199, 146, 234)">.</span><span class="token plain">component</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">    _target_whitelist_</span><span class="token operator" style="color:rgb(137, 221, 255)">=</span><span class="token plain">UNSAFE_ALLOW_ALL_TARGETS</span><span class="token punctuation" style="color:rgb(199, 146, 234)">,</span><span class="token plain"></span><br></div><div class="token-line" style="color:#bfc7d5"><span class="token plain"></span><span class="token punctuation" style="color:rgb(199, 146, 234)">)</span><br></div></code></pre></div></div>
 <p><strong>Named arguments</strong> : Config fields (except reserved fields like <code>_target_</code>) are passed as named arguments to the target.
 Named arguments in the config can be overridden by passing named argument with the same name in the <code>instantiate()</code> call-site.</p>
-<p>Call-site arguments are applied separately from the input configuration. They
-replace the corresponding arguments passed to the target without modifying the
-input configuration. Ordinary replacements therefore do not affect how its
-interpolations resolve. Call-site values are also not generally coerced against
-Structured Config fields. Dictionary overrides of Structured Config nodes are
-the exception, as described below. Configuration values are resolved lazily as
-instantiation proceeds instead of resolving and copying the full configuration
-tree up front. This avoids processing unrelated configuration values and allows
-runtime state established by an earlier target to be used while resolving a
+<p>Call-site arguments replace the corresponding arguments passed to the target
+without modifying the input configuration. Interpolations in other configured
+arguments resolve against those call-site values. Call-site values are not
+generally coerced against Structured Config fields. Dictionary overrides of
+Structured Config nodes are the exception, as described below.</p>
+<p>Plain Python call-site overrides must be concrete runtime values. Hydra rejects
+<code>???</code> and strings containing OmegaConf interpolation syntax (<code>${...}</code>),
+including inside native containers. Explicit OmegaConf containers retain
+normal OmegaConf semantics and may contain missing values or interpolations.</p>
+<p>Configuration values are resolved lazily as instantiation proceeds instead of
+resolving the full configuration tree up front. Calls on OmegaConf inputs
+without call-site overrides do not make an additional input copy. When
+overrides are present, Hydra uses a private copy so configured interpolations
+resolve against the call-site values while leaving the input unchanged. Runtime
+state established by an earlier target can still be used while resolving a
 later argument.</p>
 <p>Primitive values, native <code>list</code>, <code>tuple</code>, and <code>dict</code> containers, and OmegaConf
 containers passed at the call-site retain Hydra&#x27;s normal configuration
