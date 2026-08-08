@@ -1,0 +1,3 @@
+Make configured interpolations in `hydra.utils.instantiate()` resolve against
+the complete set of call-site overrides without modifying the input
+configuration.

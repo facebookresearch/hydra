@@ -13,30 +13,32 @@ for the associated security and migration context.
 
 ## Benefits
 
-`instantiate()` no longer deep-copies and eagerly resolves the full input
-configuration before it starts instantiating targets. Instead, it traverses the
-configuration and resolves each value when that value is needed.
+`instantiate()` no longer eagerly resolves the full input configuration before
+it starts instantiating targets. Instead, it traverses the configuration and
+resolves each value when that value is needed. Calls on OmegaConf inputs without
+call-site overrides also avoid the former additional full-tree copy. When
+overrides are present, Hydra uses a private copy so configured interpolations
+resolve against the call-site values without modifying the input configuration.
 
 This has several benefits:
 
-- Unrelated parts of the configuration tree are not copied or resolved.
+- Unrelated parts of the configuration tree are not resolved.
 - A call-site argument can replace an unresolvable configured value without
   forcing Hydra to resolve the replaced value first.
 - An earlier target can establish runtime state, such as registering a custom
   resolver, before a later argument is resolved.
-- With `_recursive_=False` and the default `_convert_="none"`, Hydra no longer
-  makes a final copy of OmegaConf containers before the target call. Containers
-  passed through from the input tree retain their identity, lazy
-  interpolations, ancestor context, resolver cache, and inherited flags.
+- With `_recursive_=False`, the default `_convert_="none"`, and no call-site
+  overrides, Hydra no longer makes a final copy of OmegaConf containers before
+  the target call. Containers passed through from the input tree retain their
+  identity, lazy interpolations, ancestor context, resolver cache, and inherited
+  flags.
 
 ## Compatibility impact
 
-Call-site arguments are now a separate runtime overlay. They determine the
-arguments passed to the target, but they do not modify the input configuration
-itself. Ordinary replacements do not affect how input interpolations resolve.
-A dictionary overriding a Structured Config node is the exception: Hydra
-updates a copy of that node, so its interpolations resolve against the updated
-values.
+Call-site arguments determine the arguments passed to the target, but they do
+not modify the input configuration itself. Hydra applies them to a private copy
+used for resolution, so interpolations in other configured arguments resolve
+against the effective values.
 
 Call-site arguments are not generally coerced or validated against the
 corresponding field in an input Structured Config. Dictionary overrides of
@@ -52,7 +54,7 @@ value:
 - If the configured value is a Structured Config node, Hydra validates the
   merged dictionary against the schema. Fields that the dictionary does not
   name retain their configured values, and interpolations within the node can
-  observe the merged values.
+  resolve against the merged values.
 - Otherwise, if the configured mapping contains `_target_`, Hydra merges the
   dictionary into that target config, preserving its target, instantiation
   settings, and arguments that the dictionary does not name. `_recursive_`
@@ -158,21 +160,22 @@ cfg = OmegaConf.create(
 )
 
 result = instantiate(cfg, b=99, _target_whitelist_="builtins.dict")
-assert result == {"b": 99, "c": 200}
+assert result == {"b": 99, "c": 99}
 ```
 
-Hydra 1.3 merged `b=99` into a copied configuration before resolving `${b}`,
-so `c` also became `99`. Hydra 1.4 leaves `cfg` unchanged, resolves `${b}`
-against the original configuration, and independently passes the call-site
-value `b=99` to the target.
+Hydra 1.4 leaves `cfg` unchanged while resolving `${b}` against the effective
+call-site value. This preserves the result produced by Hydra 1.3 without
+eagerly resolving the full configuration.
 
-With `_recursive_=False` and `_convert_="none"`, OmegaConf containers are also
-no longer copied and detached before the target call. The target receives the
-same `DictConfig`, `ListConfig`, or `TupleConfig` object from the input tree.
-Mutations made by the target are therefore visible through the original
-configuration, and an attached subtree retains its ancestor configuration when
-stored or serialized. Other conversion modes retain their documented
-conversion behavior.
+With `_recursive_=False`, `_convert_="none"`, and no call-site overrides,
+OmegaConf containers are no longer copied and detached before the target call.
+The target receives the same `DictConfig`, `ListConfig`, or `TupleConfig`
+object from the input tree. Mutations made by the target are therefore visible
+through the original configuration, and an attached subtree retains its
+ancestor configuration when stored or serialized. When call-site overrides
+are present, configured containers come from Hydra's private resolution copy.
+Containers supplied directly as call-site values still retain their identity.
+Other conversion modes retain their documented conversion behavior.
 
 To pass an independent Config object instead, create one explicitly:
 
@@ -200,17 +203,5 @@ while copying:
 ```python
 independent = OmegaConf.create(
     OmegaConf.to_container(cfg.payload, resolve=True)
-)
-```
-
-If another argument should use the call-site value, pass that argument
-explicitly as well:
-
-```python
-result = instantiate(
-    cfg,
-    b=99,
-    c=99,
-    _target_whitelist_="builtins.dict",
 )
 ```

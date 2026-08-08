@@ -68,8 +68,8 @@ have been removed:
   Structured Configs.
 - `hydra.utils.instantiate()` resolves interpolations during recursive
   traversal instead of resolving the entire configuration before
-  instantiation. With `_recursive_=False` and `_convert_="none"`, Config
-  containers are passed through without a final copy. See
+  instantiation. With `_recursive_=False`, `_convert_="none"`, and no call-site
+  overrides, Config containers are passed through without a final copy. See
   [Instantiate resolution and call-site overrides](/docs/upgrades/1.3_to_1.4/instantiate_resolution).
 - Launcher and sweeper plugin configurations are instantiated
   non-recursively.

@@ -132,6 +132,17 @@ def test_instantiate_args_kwargs_with_interpolation(cfg: Any, expected: Any) -> 
             id="direct_args",
         ),
         param(
+            {
+                "_target_": "tests.instantiate.ArgsClass",
+                "_args_": [1],
+                "derived": "${._args_.0}",
+            },
+            [2],
+            {},
+            ArgsClass(2, derived=2),
+            id="direct_args+interpolation",
+        ),
+        param(
             {"_target_": "tests.instantiate.ArgsClass", "_args_": [1]},
             [],
             {"_args_": [2]},
