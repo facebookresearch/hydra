@@ -1,0 +1,3 @@
+defaults:
+  - prefix_group: sub_group
+  - group_a: ${prefix_group}/item

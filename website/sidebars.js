@@ -168,6 +168,7 @@ module.exports = AddFBInternalOnly({
                     'upgrades/1.3_to_1.4/instantiate_resolution',
                     'upgrades/1.3_to_1.4/instantiate_target_whitelist',
                     'upgrades/1.3_to_1.4/nevergrad_sweeper',
+                    'upgrades/1.3_to_1.4/slash_in_default',
                 ],
             },
             {

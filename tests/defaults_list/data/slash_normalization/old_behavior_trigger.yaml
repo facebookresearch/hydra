@@ -1,0 +1,2 @@
+defaults:
+  - group_b: sub_group/item_with_defaults
