@@ -644,3 +644,4 @@
 {"ts": "2026-08-08T07:23:12Z", "kind": "closed", "issue": 2350, "issue_url": "https://github.com/facebookresearch/hydra/issues/2350", "title": "[Bug] Structured config with dict as default value does not handle overrides correctly"}
 {"ts": "2026-08-08T07:23:12Z", "kind": "pr", "issue": 3329, "issue_url": "https://github.com/facebookresearch/hydra/issues/3329", "title": "Stop advertising HYDRA_FULL_ERROR in user-facing errors", "detail": "linked #3358"}
 {"ts": "2026-08-08T19:58:43Z", "kind": "closed", "issue": 3353, "issue_url": "https://github.com/facebookresearch/hydra/issues/3353", "title": "`instantiate()` call-site overrides must be visible to dependent interpolations"}
+{"ts": "2026-08-08T20:05:31Z", "kind": "closed", "issue": 3354, "issue_url": "https://github.com/facebookresearch/hydra/issues/3354", "title": "`instantiate()` must treat call-site `???` as a literal value"}

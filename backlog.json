@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-08-08",
-  "generated_at": "2026-08-08T19:58:43Z",
+  "generated_at": "2026-08-08T20:05:31Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 112,
+    "open_total": 111,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 8,
-        "percentage": 7.1
+        "count": 7,
+        "percentage": 6.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 86,
-        "percentage": 76.8
+        "percentage": 77.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 7,
-        "percentage": 6.2
+        "percentage": 6.3
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 6.2
+        "percentage": 6.3
       },
       {
         "category": "Refactor",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 5
+        "count": 4
       },
       {
         "status": "blocked",
@@ -66,7 +66,7 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 235
+        "count": 236
       }
     ]
   },
@@ -154,29 +154,6 @@
       "updated": "2026-07-31",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3329"
-    },
-    {
-      "number": 3354,
-      "title": "`instantiate()` must treat call-site `???` as a literal value",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3355,
-          "url": "https://github.com/facebookresearch/hydra/pull/3355"
-        }
-      ],
-      "created": "2026-08-06",
-      "updated": "2026-08-06",
-      "labels": [
-        "bug",
-        "instantiate_api",
-        "priority_blocker",
-        "regression"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3354"
     },
     {
       "number": 385,
@@ -5850,9 +5827,39 @@
         "regression"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3353"
+    },
+    {
+      "number": 3354,
+      "title": "`instantiate()` must treat call-site `???` as a literal value",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3355,
+          "url": "https://github.com/facebookresearch/hydra/pull/3355"
+        }
+      ],
+      "created": "2026-08-06",
+      "updated": "2026-08-06",
+      "labels": [
+        "bug",
+        "instantiate_api",
+        "priority_blocker",
+        "regression"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3354"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-08T20:05:31Z",
+      "kind": "closed",
+      "issue": 3354,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3354",
+      "title": "`instantiate()` must treat call-site `???` as a literal value"
+    },
     {
       "ts": "2026-08-08T19:58:43Z",
       "kind": "closed",
@@ -7437,13 +7444,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1781",
       "title": "[Bug] Testing for hydra examples",
       "detail": "linked #3286"
-    },
-    {
-      "ts": "2026-07-18T11:46:10Z",
-      "kind": "closed",
-      "issue": 1855,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1855",
-      "title": "[Bug] Nested interpolation: `Error resolving interpolation ${foo/baz@foo.qux}, possible interpolations keys: foo/baz@foo.qux` "
     }
   ]
 }
