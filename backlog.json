@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-08-09",
-  "generated_at": "2026-08-09T07:24:17Z",
+  "generated_at": "2026-08-09T09:45:09Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 112,
+    "open_total": 113,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 86,
-        "percentage": 76.8
+        "count": 87,
+        "percentage": 77.0
       },
       {
         "category": "Documentation",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 108
+        "count": 109
       },
       {
         "status": "done",
@@ -117,6 +117,28 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2237"
     },
     {
+      "number": 2893,
+      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3363,
+          "url": "https://github.com/facebookresearch/hydra/pull/3363"
+        }
+      ],
+      "created": "2024-04-22",
+      "updated": "2026-08-09",
+      "labels": [
+        "bug",
+        "plugin",
+        "ray-launcher"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2893"
+    },
+    {
       "number": 3329,
       "title": "Stop advertising HYDRA_FULL_ERROR in user-facing errors",
       "category": "Enhancement",
@@ -133,28 +155,6 @@
       "updated": "2026-07-31",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3329"
-    },
-    {
-      "number": 2893,
-      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3363,
-          "url": "https://github.com/facebookresearch/hydra/pull/3363"
-        }
-      ],
-      "created": "2024-04-22",
-      "updated": "2026-08-04",
-      "labels": [
-        "bug",
-        "plugin",
-        "ray-launcher"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2893"
     },
     {
       "number": 385,
@@ -1868,6 +1868,19 @@
       "updated": "2026-08-08",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3362"
+    },
+    {
+      "number": 3364,
+      "title": "Make Compose API initialization contexts nestable and self-contained",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-09",
+      "updated": "2026-08-09",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3364"
     },
     {
       "number": 692,
@@ -5381,6 +5394,27 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3216"
     },
     {
+      "number": 3222,
+      "title": "Normalize slash-containing group default options",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3350,
+          "url": "https://github.com/facebookresearch/hydra/pull/3350"
+        }
+      ],
+      "created": "2026-06-20",
+      "updated": "2026-06-20",
+      "labels": [
+        "defaults list",
+        "maintenance"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3222"
+    },
+    {
       "number": 3223,
       "title": "Prevent duplicate-load defaults-list interpolation workaround",
       "category": "Bug",
@@ -5860,30 +5894,16 @@
         "regression"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3354"
-    },
-    {
-      "number": 3222,
-      "title": "Normalize slash-containing group default options",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3350,
-          "url": "https://github.com/facebookresearch/hydra/pull/3350"
-        }
-      ],
-      "created": "2026-06-20",
-      "updated": "2026-06-20",
-      "labels": [
-        "defaults list",
-        "maintenance"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3222"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-09T09:45:09Z",
+      "kind": "new",
+      "issue": 3364,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3364",
+      "title": "Make Compose API initialization contexts nestable and self-contained"
+    },
     {
       "ts": "2026-08-09T07:24:17Z",
       "kind": "pr",
@@ -7472,13 +7492,6 @@
       "issue": 3288,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3288",
       "title": "Development environment retains stale editable plugin dependency metadata"
-    },
-    {
-      "ts": "2026-07-18T13:14:43Z",
-      "kind": "new",
-      "issue": 3289,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3289",
-      "title": "Development environment can retain stale plugin dependency metadata"
     }
   ]
 }
