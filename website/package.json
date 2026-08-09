@@ -10,6 +10,7 @@
     "docusaurus": "docusaurus",
     "start": "docusaurus start --port 9134",
     "build": "docusaurus build",
+    "validate:landscape": "node scripts/validate-landscape.mjs",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy"
   },
