@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-08-09",
-  "generated_at": "2026-08-09T09:45:09Z",
+  "generated_at": "2026-08-09T13:42:58Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 113,
+    "open_total": 112,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 87,
-        "percentage": 77.0
+        "count": 86,
+        "percentage": 76.8
       },
       {
         "category": "Documentation",
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 4
+        "count": 5
       },
       {
         "status": "blocked",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 109
+        "count": 107
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 237
+        "count": 238
       }
     ]
   },
@@ -155,6 +155,24 @@
       "updated": "2026-07-31",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3329"
+    },
+    {
+      "number": 3362,
+      "title": "Reject backslashes in Defaults List paths",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3365,
+          "url": "https://github.com/facebookresearch/hydra/pull/3365"
+        }
+      ],
+      "created": "2026-08-08",
+      "updated": "2026-08-08",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3362"
     },
     {
       "number": 385,
@@ -1746,19 +1764,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3279"
     },
     {
-      "number": 3283,
-      "title": "Reject duplicate override targets during composition",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-07-17",
-      "updated": "2026-07-17",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3283"
-    },
-    {
       "number": 3313,
       "title": "Standardize Ax Sweeper parameters and remove the Ax upper bound",
       "category": "Enhancement",
@@ -1855,19 +1860,6 @@
       "updated": "2026-08-08",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3361"
-    },
-    {
-      "number": 3362,
-      "title": "Reject backslashes in Defaults List paths",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-08-08",
-      "updated": "2026-08-08",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3362"
     },
     {
       "number": 3364,
@@ -5894,9 +5886,49 @@
         "regression"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3354"
+    },
+    {
+      "number": 3283,
+      "title": "Reject duplicate override targets during composition",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-07-17",
+      "updated": "2026-07-17",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3283"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-09T13:42:58Z",
+      "kind": "pr",
+      "issue": 3362,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3362",
+      "title": "Reject backslashes in Defaults List paths",
+      "detail": "linked #3365"
+    },
+    {
+      "ts": "2026-08-09T13:42:58Z",
+      "kind": "closed",
+      "issue": 3283,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3283",
+      "title": "Reject duplicate override targets during composition"
+    },
+    {
+      "ts": "2026-08-09T13:42:58Z",
+      "kind": "status",
+      "issue": 3362,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3362",
+      "title": "Reject backslashes in Defaults List paths",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3365,
+        "url": "https://github.com/facebookresearch/hydra/pull/3365"
+      }
+    },
     {
       "ts": "2026-08-09T09:45:09Z",
       "kind": "new",
@@ -7471,27 +7503,6 @@
       "issue": 3291,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3291",
       "title": "Remove packaging from Hydra core runtime dependencies"
-    },
-    {
-      "ts": "2026-07-18T17:05:29Z",
-      "kind": "new",
-      "issue": 3290,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3290",
-      "title": "Remove packaging from Hydra runtime dependencies"
-    },
-    {
-      "ts": "2026-07-18T15:28:40Z",
-      "kind": "closed",
-      "issue": 3289,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3289",
-      "title": "Development environment can retain stale plugin dependency metadata"
-    },
-    {
-      "ts": "2026-07-18T15:28:40Z",
-      "kind": "closed",
-      "issue": 3288,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3288",
-      "title": "Development environment retains stale editable plugin dependency metadata"
     }
   ]
 }

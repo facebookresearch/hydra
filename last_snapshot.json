@@ -217,6 +217,7 @@
     "3259": "2026-07-05",
     "3268": "2026-07-05",
     "3275": "2026-07-16",
+    "3283": "2026-08-09",
     "3287": "2026-07-19",
     "3288": "2026-07-18",
     "3289": "2026-07-18",
@@ -238,7 +239,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-09T09:45:09Z",
+  "generated_at": "2026-08-09T13:42:58Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -1420,16 +1421,6 @@
       "title": "hydra.mini(): capability-based application entry point with opt-in behavior",
       "updated_at": "2026-07-16T14:18:12Z"
     },
-    "3283": {
-      "category": "Enhancement",
-      "created_at": "2026-07-17T12:27:51Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Reject duplicate override targets during composition",
-      "updated_at": "2026-07-17T12:30:14Z"
-    },
     "3313": {
       "category": "Enhancement",
       "created_at": "2026-07-24T19:47:58Z",
@@ -1526,9 +1517,11 @@
       "category": "Enhancement",
       "created_at": "2026-08-08T21:00:29Z",
       "labels": [],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3365"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "Reject backslashes in Defaults List paths",
       "updated_at": "2026-08-08T21:00:53Z"
     },
@@ -4563,6 +4556,16 @@
       "status": "done",
       "title": "[Bug] Bash completion executes non-Hydra Python scripts",
       "updated_at": "2026-07-16T05:39:12Z"
+    },
+    "3283": {
+      "category": "Enhancement",
+      "created_at": "2026-07-17T12:27:51Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Reject duplicate override targets during composition",
+      "updated_at": "2026-07-17T12:30:14Z"
     },
     "3287": {
       "category": "Enhancement",
