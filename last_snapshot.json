@@ -207,6 +207,7 @@
     "3213": "2026-06-17",
     "3215": "2026-07-22",
     "3216": "2026-07-21",
+    "3222": "2026-08-09",
     "3223": "2026-06-20",
     "3228": "2026-06-22",
     "3229": "2026-07-25",
@@ -237,7 +238,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-08T21:01:58Z",
+  "generated_at": "2026-08-09T07:24:17Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -913,9 +914,11 @@
         "plugin",
         "ray-launcher"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3363"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
       "updated_at": "2026-08-04T21:31:36Z"
     },
@@ -1320,21 +1323,6 @@
       "status": "not started",
       "title": "Clean up deprecations older than Hydra 1.2",
       "updated_at": "2026-06-25T03:00:01Z"
-    },
-    "3222": {
-      "category": "Enhancement",
-      "created_at": "2026-06-20T19:30:36Z",
-      "labels": [
-        "defaults list",
-        "maintenance"
-      ],
-      "pr_numbers": [
-        "3350"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "Normalize slash-containing group default options",
-      "updated_at": "2026-06-20T19:47:38Z"
     },
     "3224": {
       "category": "Enhancement",
@@ -4423,6 +4411,21 @@
       "status": "done",
       "title": "Evaluate opt-out from eager resolution in instantiate",
       "updated_at": "2026-06-26T08:18:10Z"
+    },
+    "3222": {
+      "category": "Enhancement",
+      "created_at": "2026-06-20T19:30:36Z",
+      "labels": [
+        "defaults list",
+        "maintenance"
+      ],
+      "pr_numbers": [
+        "3350"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Normalize slash-containing group default options",
+      "updated_at": "2026-06-20T19:47:38Z"
     },
     "3223": {
       "category": "Bug",

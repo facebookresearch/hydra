@@ -1,9 +1,9 @@
 {
-  "generated_on": "2026-08-08",
-  "generated_at": "2026-08-08T21:01:58Z",
+  "generated_on": "2026-08-09",
+  "generated_at": "2026-08-09T07:24:17Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 113,
+    "open_total": 112,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 87,
-        "percentage": 77.0
+        "count": 86,
+        "percentage": 76.8
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 109
+        "count": 108
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 236
+        "count": 237
       }
     ]
   },
@@ -117,27 +117,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2237"
     },
     {
-      "number": 3222,
-      "title": "Normalize slash-containing group default options",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3350,
-          "url": "https://github.com/facebookresearch/hydra/pull/3350"
-        }
-      ],
-      "created": "2026-06-20",
-      "updated": "2026-06-20",
-      "labels": [
-        "maintenance",
-        "defaults list"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3222"
-    },
-    {
       "number": 3329,
       "title": "Stop advertising HYDRA_FULL_ERROR in user-facing errors",
       "category": "Enhancement",
@@ -154,6 +133,28 @@
       "updated": "2026-07-31",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3329"
+    },
+    {
+      "number": 2893,
+      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3363,
+          "url": "https://github.com/facebookresearch/hydra/pull/3363"
+        }
+      ],
+      "created": "2024-04-22",
+      "updated": "2026-08-04",
+      "labels": [
+        "bug",
+        "plugin",
+        "ray-launcher"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2893"
     },
     {
       "number": 385,
@@ -1128,23 +1129,6 @@
         "triage"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2892"
-    },
-    {
-      "number": 2893,
-      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-04-22",
-      "updated": "2026-08-04",
-      "labels": [
-        "bug",
-        "plugin",
-        "ray-launcher"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2893"
     },
     {
       "number": 2898,
@@ -5876,9 +5860,57 @@
         "regression"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3354"
+    },
+    {
+      "number": 3222,
+      "title": "Normalize slash-containing group default options",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3350,
+          "url": "https://github.com/facebookresearch/hydra/pull/3350"
+        }
+      ],
+      "created": "2026-06-20",
+      "updated": "2026-06-20",
+      "labels": [
+        "defaults list",
+        "maintenance"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3222"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-09T07:24:17Z",
+      "kind": "pr",
+      "issue": 2893,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2893",
+      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
+      "detail": "linked #3363"
+    },
+    {
+      "ts": "2026-08-09T07:24:17Z",
+      "kind": "closed",
+      "issue": 3222,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3222",
+      "title": "Normalize slash-containing group default options"
+    },
+    {
+      "ts": "2026-08-09T07:24:17Z",
+      "kind": "status",
+      "issue": 2893,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2893",
+      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3363,
+        "url": "https://github.com/facebookresearch/hydra/pull/3363"
+      }
+    },
     {
       "ts": "2026-08-08T21:01:58Z",
       "kind": "new",
@@ -7447,27 +7479,6 @@
       "issue": 3289,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3289",
       "title": "Development environment can retain stale plugin dependency metadata"
-    },
-    {
-      "ts": "2026-07-18T13:14:43Z",
-      "kind": "new",
-      "issue": 3288,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3288",
-      "title": "Development environment retains stale editable plugin dependency metadata"
-    },
-    {
-      "ts": "2026-07-18T13:14:43Z",
-      "kind": "new",
-      "issue": 3287,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3287",
-      "title": "Support OmegaConf 2.4 experimental tuple configuration"
-    },
-    {
-      "ts": "2026-07-18T12:19:28Z",
-      "kind": "closed",
-      "issue": 1781,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1781",
-      "title": "[Bug] Testing for hydra examples"
     }
   ]
 }
