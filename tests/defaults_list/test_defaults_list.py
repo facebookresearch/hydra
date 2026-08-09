@@ -2269,6 +2269,13 @@ def test_parent_traversal_substring_is_allowed(default: InputDefault) -> None:
             id="config-group",
         ),
         param(
+            "error_backslash_config_traversal",
+            [],
+            "config",
+            "..\\secret",
+            id="config-traversal-bypass",
+        ),
+        param(
             "error_backslash_option",
             [],
             "config option",
@@ -2332,6 +2339,25 @@ def test_backslash_error(
     _test_defaults_list_impl(
         config_name=config_name,
         overrides=overrides,
+        expected=expected,
+    )
+
+
+def test_backslash_error_includes_location_prefix() -> None:
+    expected = raises(
+        ConfigCompositionException,
+        match=re.escape(
+            "In error_backslash_option: Backslash ('\\') in Defaults List "
+            "config option paths is not supported ('..\\file1').\n"
+            "Use '/' as the config group separator; it is the only "
+            "supported separator, regardless of the operating system.\n"
+            "See https://hydra.cc/docs/advanced/defaults_list/ for more "
+            "information."
+        ),
+    )
+    _test_defaults_list_impl(
+        config_name="error_backslash_option",
+        overrides=[],
         expected=expected,
     )
 
