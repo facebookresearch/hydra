@@ -411,7 +411,7 @@ def _resolve_deferred_interpolations(
                 # Another deferred subtree may provide the missing choice.
                 continue
 
-            _check_parent_traversal(candidate, tree.node)
+            _check_defaults_list_paths(candidate, tree.node)
             candidate.update_parent(
                 tree.node.get_group_path(),
                 tree.node.get_final_package(),
@@ -452,7 +452,7 @@ def _resolve_deferred_interpolations(
     fail_on_unresolved(root)
 
 
-def _check_parent_traversal(default: InputDefault, parent: InputDefault) -> None:
+def _check_defaults_list_paths(default: InputDefault, parent: InputDefault) -> None:
     if isinstance(default, ConfigDefault):
         assert default.path is not None
         paths = [("config", default.path)]
@@ -467,6 +467,22 @@ def _check_parent_traversal(default: InputDefault, parent: InputDefault) -> None
             paths.extend(("config option", option) for option in default.get_options())
     else:
         return
+
+    def _location() -> str:
+        if parent.is_virtual():
+            return ""
+        return f"In {parent.get_config_path()}: "
+
+    for path_type, path in paths:
+        if "\\" in path:
+            raise ConfigCompositionException(
+                f"{_location()}Backslashes in Defaults List "
+                f"{path_type} paths are not supported ('{path}').\n"
+                "Hydra uses '/' as the config group separator on every platform. "
+                "Use '/' instead.\n"
+                "See https://hydra.cc/docs/advanced/defaults_list/ for more "
+                "information."
+            )
 
     for path_type, path in paths:
         if ".." not in path.split("/"):
@@ -484,11 +500,8 @@ def _check_parent_traversal(default: InputDefault, parent: InputDefault) -> None
                 "command line."
             ),
         }[path_type]
-        location = ""
-        if not parent.is_virtual():
-            location = f"In {parent.get_config_path()}: "
         raise ConfigCompositionException(
-            f"{location}Parent traversal ('..') in Defaults List "
+            f"{_location()}Parent traversal ('..') in Defaults List "
             f"{path_type} paths is not supported ('{path}').\n"
             f"{guidance}\n"
             "See https://hydra.cc/docs/advanced/defaults_list/ for more "
@@ -612,7 +625,7 @@ def _create_defaults_tree_impl(
         defaults_list.extend(overrides.append_group_defaults)
 
     for d in defaults_list:
-        _check_parent_traversal(d, parent)
+        _check_defaults_list_paths(d, parent)
 
     _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
 
@@ -651,7 +664,7 @@ def _create_defaults_tree_impl(
                 assert isinstance(d, GroupDefault)
                 overrides.override_default_option(d)
 
-            _check_parent_traversal(d, parent)
+            _check_defaults_list_paths(d, parent)
 
             if isinstance(d, GroupDefault) and d.is_options():
                 # overriding may change from options to name

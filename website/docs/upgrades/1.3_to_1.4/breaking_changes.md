@@ -18,6 +18,8 @@ complete. The final release notes will be the authoritative list.
   included in a stable Hydra release, but was available in Hydra 1.4
   development versions from February 2025 through July 2026.
 - Parent traversal in Defaults List config paths is no longer accepted.
+- Backslashes in Defaults List config paths are no longer accepted. Use `/`,
+  which is the config group separator on every platform.
 
 ### Hydra 1.1 compatibility behavior
 

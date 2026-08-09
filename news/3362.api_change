@@ -1,0 +1,1 @@
+Reject backslashes in Defaults List config, config group and config option paths.

@@ -6,7 +6,7 @@ from typing import Any, List, Optional
 from pytest import mark, param, raises
 
 from hydra._internal.defaults_list import (
-    _check_parent_traversal,
+    _check_defaults_list_paths,
     _validate_self,
     create_defaults_list,
 )
@@ -2248,7 +2248,7 @@ def test_parent_traversal_substring_is_allowed(default: InputDefault) -> None:
     parent = ConfigDefault(path="empty")
     parent.update_parent("", "")
 
-    _check_parent_traversal(default, parent)
+    _check_defaults_list_paths(default, parent)
 
 
 def test_parent_traversal_error_explains_supported_paths() -> None:
@@ -2265,6 +2265,115 @@ def test_parent_traversal_error_explains_supported_paths() -> None:
     )
     _test_defaults_list_impl(
         config_name="group1/error_parent_traversal_config",
+        overrides=[],
+        expected=expected,
+    )
+
+
+@mark.parametrize(
+    "config_name,overrides,error_path_type,error_path",
+    [
+        param(
+            "error_backslash_config",
+            [],
+            "config",
+            "group1\\file1",
+            id="config",
+        ),
+        param(
+            "error_backslash_group",
+            [],
+            "config group",
+            "group1\\subgroup",
+            id="config-group",
+        ),
+        param(
+            "error_backslash_option",
+            [],
+            "config option",
+            "sub\\file1",
+            id="config-option",
+        ),
+        param(
+            "error_backslash_options",
+            [],
+            "config option",
+            "sub\\file1",
+            id="config-options-list",
+        ),
+        param(
+            "error_backslash_traversal_config",
+            [],
+            "config",
+            "..\\group1/file1",
+            id="config-parent-traversal",
+        ),
+        param(
+            "error_backslash_traversal_option",
+            [],
+            "config option",
+            "..\\file1",
+            id="config-option-parent-traversal",
+        ),
+        param(
+            "error_backslash_interpolation",
+            [],
+            "config option",
+            "sub\\${group1}",
+            id="config-option-with-interpolation",
+        ),
+        param(
+            "empty",
+            ["+group1=sub\\file1"],
+            "config option",
+            "sub\\file1",
+            id="cli-append-option",
+        ),
+        param(
+            "group_default",
+            ["group1=..\\file1"],
+            "config option",
+            "..\\file1",
+            id="cli-override-option-parent-traversal",
+        ),
+    ],
+)
+def test_backslash_error(
+    config_name: str,
+    overrides: List[str],
+    error_path_type: str,
+    error_path: str,
+) -> None:
+    expected = raises(
+        ConfigCompositionException,
+        match=re.escape(
+            f"Backslashes in Defaults List {error_path_type} paths are not "
+            f"supported ('{error_path}').\n"
+            "Hydra uses '/' as the config group separator on every platform. "
+            "Use '/' instead."
+        ),
+    )
+    _test_defaults_list_impl(
+        config_name=config_name,
+        overrides=overrides,
+        expected=expected,
+    )
+
+
+def test_backslash_error_explains_supported_separator() -> None:
+    expected = raises(
+        ConfigCompositionException,
+        match=re.escape(
+            "In group1/error_backslash_config: Backslashes in Defaults List "
+            "config paths are not supported ('..\\group2/file1').\n"
+            "Hydra uses '/' as the config group separator on every platform. "
+            "Use '/' instead.\n"
+            "See https://hydra.cc/docs/advanced/defaults_list/ for more "
+            "information."
+        ),
+    )
+    _test_defaults_list_impl(
+        config_name="group1/error_backslash_config",
         overrides=[],
         expected=expected,
     )

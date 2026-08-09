@@ -43,7 +43,10 @@ traversal. Select the target config directly instead. Use an absolute config
 path or group such as `/config` or `/group: option` in a Defaults List. In a
 command-line override, target the group directly with `group=option`, using
 `+group=option` when adding a new default.
-The path separator is `/` regardless of the operating system.
+The path separator is `/` regardless of the operating system. A backslash is not
+a path separator: `\` is rejected in Defaults List config, config group and
+config option paths, so that a Defaults List composes identically on every
+platform.
 
 *OPTION*: The currently selected *CONFIG_NAME* or *CONFIG_NAMES* from a *CONFIG_GROUP*.
 
