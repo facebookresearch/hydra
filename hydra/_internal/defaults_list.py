@@ -411,7 +411,7 @@ def _resolve_deferred_interpolations(
                 # Another deferred subtree may provide the missing choice.
                 continue
 
-            _check_parent_traversal(candidate, tree.node)
+            _validate_paths(candidate, tree.node)
             candidate.update_parent(
                 tree.node.get_group_path(),
                 tree.node.get_final_package(),
@@ -452,7 +452,7 @@ def _resolve_deferred_interpolations(
     fail_on_unresolved(root)
 
 
-def _check_parent_traversal(default: InputDefault, parent: InputDefault) -> None:
+def _validate_paths(default: InputDefault, parent: InputDefault) -> None:
     if isinstance(default, ConfigDefault):
         assert default.path is not None
         paths = [("config", default.path)]
@@ -469,6 +469,22 @@ def _check_parent_traversal(default: InputDefault, parent: InputDefault) -> None
         return
 
     for path_type, path in paths:
+        # Check for backslashes before parent traversal: the traversal check
+        # splits on '/', so a path like '..\secret' would otherwise slip through
+        # as a single segment and reach operating-system path handling, where
+        # Windows interprets '\' as a separator but POSIX and ConfigStore do not.
+        if "\\" in path:
+            location = ""
+            if not parent.is_virtual():
+                location = f"In {parent.get_config_path()}: "
+            raise ConfigCompositionException(
+                f"{location}Backslash ('\\') in Defaults List "
+                f"{path_type} paths is not supported ('{path}').\n"
+                "Use '/' as the config group separator; it is the only "
+                "supported separator, regardless of the operating system.\n"
+                "See https://hydra.cc/docs/advanced/defaults_list/ for more "
+                "information."
+            )
         if ".." not in path.split("/"):
             continue
 
@@ -612,7 +628,7 @@ def _create_defaults_tree_impl(
         defaults_list.extend(overrides.append_group_defaults)
 
     for d in defaults_list:
-        _check_parent_traversal(d, parent)
+        _validate_paths(d, parent)
 
     _update_overrides(defaults_list, overrides, parent, interpolated_subtree)
 
@@ -651,7 +667,7 @@ def _create_defaults_tree_impl(
                 assert isinstance(d, GroupDefault)
                 overrides.override_default_option(d)
 
-            _check_parent_traversal(d, parent)
+            _validate_paths(d, parent)
 
             if isinstance(d, GroupDefault) and d.is_options():
                 # overriding may change from options to name
