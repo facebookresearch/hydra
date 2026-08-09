@@ -17,6 +17,15 @@
   min-height: 40vh;
 }
 
+.topArea {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(240px, 16vw, 290px);
+}
+
+.topContent {
+  min-width: 0;
+}
+
 .heroLeft {
   position: absolute;
   top: 0; bottom: 0; left: 0; right: 50%;
@@ -80,7 +89,105 @@
   margin-right: 20px;
 }
 
+.featuredProjects {
+  padding: 1.5rem 1rem;
+  border-left: 1px solid var(--ifm-color-emphasis-300);
+  background: var(--ifm-color-emphasis-100);
+}
 
+.featuredHeader {
+  margin-bottom: 1rem;
+}
+
+.featuredHeader h2 {
+  margin: 0;
+  color: #276475;
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.featuredHeader p {
+  margin: 0.2rem 0 0;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.8rem;
+}
+
+.projectList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.projectCard {
+  display: block;
+  padding: 0.8rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 4px;
+  background: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+  text-decoration: none;
+  transition: border-color var(--ifm-transition-fast);
+}
+
+.projectCard:hover {
+  border-color: var(--ifm-color-primary);
+  color: var(--ifm-font-color-base);
+  text-decoration: none;
+}
+
+.projectCard h3 {
+  margin: 0.15rem 0 0.4rem;
+  color: #276475;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+[data-theme='dark'] .featuredHeader h2,
+[data-theme='dark'] .projectCard h3 {
+  color: var(--ifm-color-primary-lightest);
+}
+
+.projectCard p:last-child {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.projectMeta {
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.landscapeLink {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+@media screen and (max-width: 1100px) {
+  .topArea {
+    display: block;
+  }
+
+  .featuredProjects {
+    padding: 1.5rem var(--ifm-spacing-horizontal);
+    border-top: 1px solid var(--ifm-color-emphasis-300);
+    border-left: 0;
+  }
+
+  .projectList {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
 
 @media screen and (max-width: 768px) {
   .heroBanner {
@@ -96,5 +203,9 @@
   }
   .buttons {
     flex-direction: column;
+  }
+
+  .projectList {
+    grid-template-columns: 1fr;
   }
 }
