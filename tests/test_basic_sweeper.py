@@ -97,8 +97,6 @@ def test_partial_failure(
             val = 1 / cfg\.divisor(
                   ~~\^~~~~~~~~~~~~)?
         ZeroDivisionError: division by zero
-
-        Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
         """).strip()
 
     assert_multiline_regex_search(expected_err_regex, err)

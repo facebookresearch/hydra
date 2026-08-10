@@ -1285,8 +1285,7 @@ def test_module_run(
                 1\. To use it as a list, use key=\[value1,value2\]
                 2\. To use it as string, quote the value: key=\\'value1,value2\\'
                 3\. To sweep over it, add --multirun to your command line
-
-                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\."""
+                """
             ).strip(),
             id="run:choice_sweep",
         ),
@@ -1299,8 +1298,7 @@ def test_module_run(
                 Value '\[1, 2\]'( of type 'list')? could not be converted to Integer
                     full_key: test\.param
                     object_type=TestConfig
-
-                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\."""
+                """
             ).strip(),
             id="run:list_value",
         ),
@@ -1459,8 +1457,6 @@ def test_app_with_error_exception_sanitized(tmpdir: Any, monkeypatch: Any) -> No
         omegaconf\.errors\.ConfigAttributeError: Key 'foo' is not in struct
             full_key: foo
             object_type=dict{suggestion_suffix}
-
-        Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
         """)
         .strip()
         .format(traceback_line=traceback_line, suggestion_suffix=suggestion_suffix)
@@ -1562,8 +1558,6 @@ class TestTaskRunnerLogging:
                 1 / 0(
                 ~~\^~~)?
             ZeroDivisionError: division by zero
-
-            Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.
             """).strip()
     ],
 )
@@ -1592,7 +1586,6 @@ def test_job_exception_full_error(tmpdir: Any) -> None:
     )
 
     assert "ZeroDivisionError: division by zero" in ret
-    assert "Set the environment variable HYDRA_FULL_ERROR=1" not in ret
 
 
 def test_structured_with_none_list(monkeypatch: Any, tmpdir: Path) -> None:
@@ -1691,8 +1684,6 @@ def test_frozen_primary_config(
                   File "\S*\.py", line \d+, in deprecation_warning
                     raise HydraDeprecationError\(.*\)
                 hydra\.errors\.HydraDeprecationError: Feature FooBar is deprecated
-
-                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace\.$
                 """).strip(),
             id="deprecation_error",
         ),
@@ -1859,8 +1850,6 @@ def test_hydra_resolver_in_output_dir(tmpdir: Path, multirun: bool) -> None:
                 1. To use it as a list, use key=[value1,value2]
                 2. To use it as string, quote the value: key=\\'value1,value2\\'
                 3. To sweep over it, add --multirun to your command line
-
-                Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
                 """),
             True,
             False,

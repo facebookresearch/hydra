@@ -49,8 +49,6 @@ def test_write_protect_config_node(tmpdir: Any) -> None:
         Cannot change read-only config container
             full_key: data_bits
             object_type=SerialPort
-
-        Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
         """)
     err = run_with_error(cmd)
     assert_text_same(from_line=expected, to_line=err)
