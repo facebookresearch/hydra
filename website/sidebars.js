@@ -18,6 +18,7 @@ module.exports = AddFBInternalOnly({
     docs: {
         About: [
             'intro',
+            'landscape',
             'version_archive',
         ],
         Tutorials: [

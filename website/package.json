@@ -8,10 +8,12 @@
   },
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "docusaurus start --port 9134",
-    "build": "docusaurus build",
+    "generate:landscape": "node scripts/run-landscape-generator.mjs",
+    "start": "node scripts/run-landscape-generator.mjs && docusaurus start --port 9134",
+    "build": "node scripts/run-landscape-generator.mjs && docusaurus build",
+    "validate:landscape": "node scripts/run-landscape-generator.mjs --check && node scripts/validate-landscape.mjs",
     "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy"
+    "deploy": "node scripts/run-landscape-generator.mjs && docusaurus deploy"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.1",

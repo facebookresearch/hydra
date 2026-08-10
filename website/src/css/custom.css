@@ -75,6 +75,49 @@ div[class^="announcementBarContent"] a:hover {
   color: var(--brand) !important;
 }
 
+.landscape-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.landscape-actions > details {
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: var(--ifm-global-radius);
+}
+
+.landscape-actions > details > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.landscape-actions > details[open] > summary {
+  margin-bottom: 0.75rem;
+}
+
+.landscape-badge > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.landscape-badge > summary::before {
+  align-self: center;
+}
+
+.landscape-badge > summary img {
+  height: 20px;
+}
+
+@media only screen and (max-width: 768px) {
+  .landscape-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media only screen and (max-width: 768px) {
   .announcement {
     font-size: 18px;

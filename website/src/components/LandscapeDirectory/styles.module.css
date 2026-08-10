@@ -1,0 +1,226 @@
+.directory {
+  container-type: inline-size;
+  margin: 2rem 0 3rem;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  align-items: end;
+  padding: 0.75rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 10px;
+  background: var(--ifm-background-surface-color);
+}
+
+.filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+@container (min-width: 1250px) {
+  .filters {
+    grid-template-columns:
+      minmax(220px, 1.4fr)
+      minmax(150px, 0.8fr)
+      minmax(280px, 1.3fr)
+      minmax(175px, 0.9fr)
+      minmax(150px, 0.8fr)
+      auto;
+  }
+}
+
+.filters input,
+.filters select,
+.filters button,
+.emptyState button {
+  min-height: 2.55rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--ifm-color-emphasis-400);
+  border-radius: 6px;
+  background: var(--ifm-background-color);
+  color: var(--ifm-font-color-base);
+  font: inherit;
+}
+
+.filters input:focus,
+.filters select:focus,
+.filters button:focus-visible,
+.emptyState button:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+.filters button,
+.emptyState button {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.filters button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.resultCount {
+  margin: 0.9rem 0 1rem;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.9rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 1.1rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 10px;
+  background: var(--ifm-background-surface-color);
+  transition: border-color 120ms ease;
+}
+
+.card:hover {
+  border-color: var(--ifm-color-primary);
+}
+
+.cardHeader {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.projectName {
+  margin: 0 0 0.15rem;
+  font-size: 1.15rem;
+  line-height: 1.25;
+}
+
+.repository {
+  color: var(--ifm-color-emphasis-700);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.72rem;
+  overflow-wrap: anywhere;
+}
+
+.goodUsage,
+.poweredBy {
+  flex: 0 0 auto;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.goodUsage {
+  background: color-mix(in srgb, var(--ifm-color-primary) 22%, transparent);
+  color: var(--ifm-color-primary-darkest);
+}
+
+[data-theme='dark'] .goodUsage {
+  color: var(--ifm-color-primary-lightest);
+}
+
+.poweredBy {
+  background: var(--ifm-color-emphasis-200);
+  color: var(--ifm-color-emphasis-800);
+}
+
+.description {
+  flex: 1;
+  margin: 0.9rem 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.9rem;
+}
+
+.tag {
+  padding: 0.16rem 0.4rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 4px;
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.7rem;
+}
+
+.cardFooter {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  color: var(--ifm-color-emphasis-700);
+  font-size: 0.7rem;
+}
+
+.cardFooter span:last-child {
+  text-align: right;
+}
+
+.emptyState {
+  padding: 3rem 1rem;
+  border: 1px dashed var(--ifm-color-emphasis-400);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.emptyState h3 {
+  margin-bottom: 0.35rem;
+}
+
+@media screen and (max-width: 1100px) {
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .searchField {
+    grid-column: 1 / -1;
+  }
+}
+
+@media screen and (max-width: 700px) {
+  .filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .searchField {
+    grid-column: 1 / -1;
+  }
+
+  .cardHeader,
+  .cardFooter {
+    flex-direction: column;
+  }
+
+  .cardFooter span:last-child {
+    text-align: left;
+  }
+
+  .goodUsage,
+  .poweredBy {
+    align-self: flex-start;
+  }
+}
