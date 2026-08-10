@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-08-10",
-  "generated_at": "2026-08-10T15:16:14Z",
+  "generated_at": "2026-08-10T15:31:45Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 106,
+    "open_total": 105,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 7,
-        "percentage": 6.6
+        "percentage": 6.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 83,
-        "percentage": 78.3
+        "count": 82,
+        "percentage": 78.1
       },
       {
         "category": "Documentation",
@@ -33,13 +33,13 @@
         "category": "Refactor",
         "emoji": "🔧",
         "count": 1,
-        "percentage": 0.9
+        "percentage": 1.0
       },
       {
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.8
+        "percentage": 2.9
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 104
+        "count": 103
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 244
+        "count": 245
       }
     ]
   },
@@ -563,22 +563,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2453"
-    },
-    {
-      "number": 2590,
-      "title": "Is there a way to disable Hydra exceptions/errors override?",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-02-20",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2590"
     },
     {
       "number": 2657,
@@ -3815,6 +3799,21 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2575"
     },
     {
+      "number": 2587,
+      "title": "How to instantiate a child class which inherited from super class?",
+      "category": "Question",
+      "category_emoji": "❓",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-02-15",
+      "updated": "2026-07-15",
+      "labels": [
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2587"
+    },
+    {
       "number": 2632,
       "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
       "category": "Enhancement",
@@ -5891,22 +5890,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3362"
     },
     {
-      "number": 2587,
-      "title": "How to instantiate a child class which inherited from super class?",
-      "category": "Question",
-      "category_emoji": "❓",
+      "number": 2590,
+      "title": "Is there a way to disable Hydra exceptions/errors override?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-02-15",
+      "created": "2023-02-20",
       "updated": "2026-07-15",
       "labels": [
+        "enhancement",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2587"
+      "url": "https://github.com/facebookresearch/hydra/issues/2590"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-10T15:31:45Z",
+      "kind": "closed",
+      "issue": 2590,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2590",
+      "title": "Is there a way to disable Hydra exceptions/errors override?"
+    },
     {
       "ts": "2026-08-10T15:16:14Z",
       "kind": "closed",
@@ -7495,13 +7502,6 @@
       "issue": 1758,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1758",
       "title": "[Feature Request] Recursive config interpolation with custom object resolvers"
-    },
-    {
-      "ts": "2026-07-19T10:14:25Z",
-      "kind": "closed",
-      "issue": 1764,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1764",
-      "title": "[ray launcher] fix how ray launcher gets the job return"
     }
   ]
 }
