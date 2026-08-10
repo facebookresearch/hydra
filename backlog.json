@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-08-09",
-  "generated_at": "2026-08-09T13:42:58Z",
+  "generated_on": "2026-08-10",
+  "generated_at": "2026-08-10T04:02:38Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 112,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 0
+        "count": 1
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 107
+        "count": 106
       },
       {
         "status": "done",
@@ -71,6 +71,27 @@
     ]
   },
   "issues": [
+    {
+      "number": 3206,
+      "title": "Create website surfaces for ecosystem and featured projects",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3367,
+          "url": "https://github.com/facebookresearch/hydra/pull/3367"
+        }
+      ],
+      "created": "2026-06-10",
+      "updated": "2026-07-17",
+      "labels": [
+        "documentation",
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3206"
+    },
     {
       "number": 1749,
       "title": "tests: Use multiline regex search instead of assert_regex_match",
@@ -1595,22 +1616,6 @@
         "instantiate_api"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3203"
-    },
-    {
-      "number": 3206,
-      "title": "Create website surfaces for ecosystem and featured projects",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-10",
-      "updated": "2026-07-17",
-      "labels": [
-        "documentation",
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3206"
     },
     {
       "number": 3220,
@@ -5594,6 +5599,19 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3275"
     },
     {
+      "number": 3283,
+      "title": "Reject duplicate override targets during composition",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-07-17",
+      "updated": "2026-07-17",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3283"
+    },
+    {
       "number": 3287,
       "title": "Support OmegaConf 2.4 experimental tuple configuration",
       "category": "Enhancement",
@@ -5886,22 +5904,29 @@
         "regression"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3354"
-    },
-    {
-      "number": 3283,
-      "title": "Reject duplicate override targets during composition",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2026-07-17",
-      "updated": "2026-07-17",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3283"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-10T04:02:38Z",
+      "kind": "pr",
+      "issue": 3206,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3206",
+      "title": "Create website surfaces for ecosystem and featured projects",
+      "detail": "linked #3367"
+    },
+    {
+      "ts": "2026-08-10T04:02:38Z",
+      "kind": "status",
+      "issue": 3206,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3206",
+      "title": "Create website surfaces for ecosystem and featured projects",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3367,
+        "url": "https://github.com/facebookresearch/hydra/pull/3367"
+      }
+    },
     {
       "ts": "2026-08-09T13:42:58Z",
       "kind": "pr",
@@ -7484,25 +7509,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3290",
       "title": "Remove packaging from Hydra runtime dependencies",
       "detail": "linked #3292"
-    },
-    {
-      "ts": "2026-07-18T18:08:16Z",
-      "kind": "status",
-      "issue": 3290,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3290",
-      "title": "Remove packaging from Hydra runtime dependencies",
-      "detail": "not started → in progress",
-      "pr": {
-        "number": 3292,
-        "url": "https://github.com/facebookresearch/hydra/pull/3292"
-      }
-    },
-    {
-      "ts": "2026-07-18T17:05:29Z",
-      "kind": "new",
-      "issue": 3291,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3291",
-      "title": "Remove packaging from Hydra core runtime dependencies"
     }
   ]
 }
