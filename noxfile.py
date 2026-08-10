@@ -560,6 +560,8 @@ def test_tools(session: Session) -> None:
             session.run(*cmd, silent=SILENT)
             session.run("pytest", tool_path)
         elif any(Path(tool_path).glob("test_*.py")):
+            if tool == "landscape":
+                session.install("-r", f"{tool_path}/requirements.txt", silent=SILENT)
             if tool == "release":
                 session.install("requests", silent=SILENT)
             session.run("pytest", tool_path, env={"PYTHONPATH": BASE})

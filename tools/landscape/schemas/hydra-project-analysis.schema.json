@@ -1,0 +1,180 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "repo",
+    "analyzed_commit",
+    "project_name",
+    "project_url",
+    "project_subpath",
+    "category",
+    "domains",
+    "relationships",
+    "reach",
+    "origin",
+    "maintenance",
+    "classification",
+    "confidence",
+    "summary",
+    "evidence",
+    "disposition",
+    "rationale",
+    "unresolved_questions"
+  ],
+  "properties": {
+    "repo": {
+      "type": "string"
+    },
+    "analyzed_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "project_name": {
+      "type": "string"
+    },
+    "project_url": {
+      "type": "string"
+    },
+    "project_subpath": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "category": {
+      "enum": [
+        "library_tool",
+        "plugin_integration",
+        "framework",
+        "template_starter",
+        "application",
+        "learning_resource",
+        "unknown"
+      ]
+    },
+    "domains": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$"
+      }
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "uses",
+          "extends",
+          "integrates",
+          "teaches"
+        ]
+      }
+    },
+    "reach": {
+      "enum": [
+        "core",
+        "subsystem",
+        "optional_feature",
+        "isolated_example",
+        "none",
+        "unknown"
+      ]
+    },
+    "origin": {
+      "enum": [
+        "native",
+        "adapted_upstream",
+        "vendored_or_copied",
+        "transitive",
+        "unknown"
+      ]
+    },
+    "maintenance": {
+      "enum": [
+        "active",
+        "minimally_maintained",
+        "archived",
+        "stale",
+        "unknown"
+      ]
+    },
+    "classification": {
+      "enum": [
+        "confirmed",
+        "incidental",
+        "none",
+        "uncertain"
+      ]
+    },
+    "confidence": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "url",
+          "path",
+          "line",
+          "claim"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "code",
+              "config",
+              "dependency",
+              "documentation",
+              "lineage",
+              "maintenance",
+              "plugin"
+            ]
+          },
+          "url": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "claim": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "disposition": {
+      "enum": [
+        "include",
+        "feature_pool",
+        "defer",
+        "exclude",
+        "human_review"
+      ]
+    },
+    "rationale": {
+      "type": "string"
+    },
+    "unresolved_questions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

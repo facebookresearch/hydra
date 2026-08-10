@@ -23,20 +23,23 @@ jobs:
     - uses: actions/setup-node@v6
       with:
         node-version: "24"
+    - uses: actions/setup-python@v6
+      with:
+        python-version: "3.12"
     - name: Build or deploy website
       env:
         WEBSITE_GITHUB_TOKEN: ${{ github.event_name != 'pull_request' && secrets.WEBSITE_GITHUB_TOKEN || '' }}
         IS_PULL_REQUEST: ${{ github.event_name == 'pull_request' }}
       run: |
-        SUBDIR=website
+        PATHS=(website tools/landscape/data/decisions.json tools/landscape/build_public_landscape.py)
         git fetch
         REV=$(git log -5 --pretty=oneline origin/gh-pages | grep "Deploy website" |  awk 'NF>1{print $NF}'  | head -1)
         # This condition passes in 2 conditions:
         # 1. The revision does not exist (squash/force push happened)
         # 2. There are changes between last deployed revision and HEAD
-        if [[ ! $(git rev-parse --verify -q "$REV^{commit}") ||  $(git diff-index $REV -- $SUBDIR) ]]; then
-          echo "Changes detected in directory $SUBDIR between origin/main and this diff"
-          cd $SUBDIR
+        if [[ ! $(git rev-parse --verify -q "$REV^{commit}") ||  $(git diff-index $REV -- "${PATHS[@]}") ]]; then
+          echo "Changes affecting the website were detected between origin/main and this diff"
+          cd website
           corepack enable
           corepack pnpm install --frozen-lockfile
           if [[ "$IS_PULL_REQUEST" == "true" ]]; then

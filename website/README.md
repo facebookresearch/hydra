@@ -4,7 +4,8 @@ This website is built using Docusaurus 3, a modern static website generator.
 
 ### Installation
 
-The website requires Node.js 20 or newer.
+The website requires Node.js 20 or newer and Python 3.10 or newer. Python runs
+the deterministic Hydra Landscape generator before website commands.
 
 ```
 $ corepack pnpm install
@@ -19,6 +20,10 @@ last 10 days during dependency updates.
 $ corepack pnpm start
 ```
 
+This regenerates `src/data/landscape.json` from the canonical Landscape
+decisions in `../tools/landscape/data/decisions.json` before starting the
+development server. Edit the decisions rather than the generated JSON.
+
 This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
 
 ### Build
@@ -26,6 +31,8 @@ This command starts a local development server and open up a browser window. Mos
 ```
 $ corepack pnpm build
 ```
+
+The build also regenerates the Landscape data automatically.
 
 This command generates static content into the `build` directory and can be served using any static contents hosting service.
 

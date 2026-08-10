@@ -1,0 +1,2434 @@
+[
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "verl/HybridFlow: A Flexible and Efficient RL Post-Training Framework",
+      "kind": "library_tool",
+      "name": "verl",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/verl-project/verl"
+    },
+    "note": "Good Hydra usage with Hydra central to the primary training interface. Strong potential feature candidate after Hydra 1.4 compatibility validation.",
+    "repo": "verl-project/verl"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "Official code for \"F5-TTS: A Fairytaler that Fakes Fluent and Faithful Speech with Flow Matching\"",
+      "kind": "application",
+      "name": "F5-TTS",
+      "relationships": [],
+      "tags": [
+        "audio",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/SWivid/F5-TTS"
+    },
+    "note": "Include in the Hydra Landscape; not recommended as a featured integration example.",
+    "repo": "SWivid/F5-TTS"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "ESPnet3 intentionally uses Hydra for configuration-driven object construction in production training and trainer paths. The dependency is explicitly scoped to ESPnet3 and accompanied by project-specific configuration documentation.",
+      "kind": "framework",
+      "name": "ESPnet3",
+      "relationships": [],
+      "tags": [
+        "audio",
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/espnet/espnet/tree/master/espnet3"
+    },
+    "note": "Include in the Hydra Landscape; featured placement remains undecided.",
+    "repo": "espnet/espnet"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "Democratizing Reinforcement Learning for LLMs",
+      "kind": "framework",
+      "name": "rLLM",
+      "relationships": [
+        "integrates",
+        "teaches"
+      ],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/rllm-org/rllm"
+    },
+    "note": "Powered by Hydra only; the integration is not exemplary and is not eligible for featured placement.",
+    "repo": "rllm-org/rllm"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "ExecuTorch’s LLM Export API directly uses Hydra to provide structured YAML and command-line configuration for exporting models. The Hydra integration is maintained, repository-native subsystem code rather than a copied example, vendored component, or transitive dependency.",
+      "kind": "library_tool",
+      "name": "ExecuTorch LLM Export API",
+      "relationships": [
+        "teaches"
+      ],
+      "tags": [
+        "edge_computing",
+        "machine_learning"
+      ],
+      "type": "Tool",
+      "url": "https://github.com/pytorch/executorch/tree/main/extension/llm/export"
+    },
+    "note": "Good Hydra usage; the custom --config bridge preserves a legacy interface. Eligible for, but not assigned, featured placement.",
+    "repo": "pytorch/executorch"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "MapAnything: Universal Feed-Forward Metric 3D Reconstruction",
+      "kind": "framework",
+      "name": "MapAnything",
+      "relationships": [],
+      "tags": [
+        "graphics",
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/facebookresearch/map-anything"
+    },
+    "note": "Powered by Hydra only; documented core usage, but process-global Hydra manipulation prevents exemplary status and featured eligibility.",
+    "repo": "facebookresearch/map-anything"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "A modular, primitive-first, python-first PyTorch library for Reinforcement Learning.",
+      "kind": "library_tool",
+      "name": "TorchRL",
+      "relationships": [
+        "integrates"
+      ],
+      "tags": [
+        "machine_learning",
+        "robotics",
+        "simulation"
+      ],
+      "type": "Library",
+      "url": "https://github.com/pytorch/rl"
+    },
+    "note": "Good Hydra usage; feature-eligible but not featured. Maintainers should modernize version_base and dependency compatibility for Hydra 1.4.",
+    "repo": "pytorch/rl"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "PhysicsNeMo’s Lagrangian MeshGraphNet reference sample directly runs its training program through Hydra. The usage is an NVIDIA-authored, documented training-recipe capability, while the repository describes training recipes as separate from packaged core artifacts.",
+      "kind": "framework",
+      "name": "PhysicsNeMo",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "scientific_computing",
+        "simulation"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/NVIDIA/physicsnemo/tree/main/examples/cfd/lagrangian_mgn"
+    },
+    "note": "Good Hydra usage; feature-eligible but not featured. Extensive conventional integration with remaining mechanical version_base cleanup for Hydra 1.4.",
+    "repo": "NVIDIA/physicsnemo"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "detrex is a research platform for DETR-based object detection, segmentation, pose estimation and other visual recognition tasks.",
+      "kind": "library_tool",
+      "name": "detrex",
+      "relationships": [],
+      "tags": [
+        "computer_vision",
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/IDEA-Research/detrex"
+    },
+    "note": "Powered by Hydra only; a documented launcher bridge between Hydra, Detectron2 configuration, Submitit, and Slurm, with legacy compatibility workarounds.",
+    "repo": "IDEA-Research/detrex"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "PDEBench natively uses Hydra as the configuration entry point for its forward baseline-model training subsystem. This is a maintained scientific-machine-learning benchmark and tooling project.",
+      "kind": "library_tool",
+      "name": "PDEBench",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "scientific_computing",
+        "simulation"
+      ],
+      "type": "Benchmark",
+      "url": "https://github.com/pdebench/PDEBench/tree/main/pdebench/models"
+    },
+    "note": "Powered by Hydra only; operational use across training and data generation, but largely as a flat argument container with disabled runtime features and legacy compatibility.",
+    "repo": "pdebench/PDEBench"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "exclude",
+    "note": "Excluded because the project appears abandoned: no default-branch activity for more than six months, no releases, and legacy Hydra integration.",
+    "repo": "X-LANCE/SLAM-LLM"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "NequIP is a code for building E(3)-equivariant interatomic potentials",
+      "kind": "library_tool",
+      "name": "NequIP",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "molecular_simulation",
+        "scientific_computing"
+      ],
+      "type": "Library",
+      "url": "https://github.com/mir-group/nequip"
+    },
+    "note": "Good Hydra usage; actively maintained scientific-computing project with Hydra central to its documented training workflow. Feature-eligible, with modest Hydra 1.4 cleanup needed.",
+    "repo": "mir-group/nequip"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "Central repository for biomolecular foundation models with shared trainers and pipeline components",
+      "kind": "library_tool",
+      "name": "Foundry",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "scientific_computing"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/RosettaCommons/foundry"
+    },
+    "note": "Good Hydra usage; actively maintained biomolecular design toolkit with Hydra across production training and inference, extensive documentation, explicit version_base, and feature-worthy scientific applications. Feature-eligible but not yet featured.",
+    "repo": "RosettaCommons/foundry"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "A PyTorch library for all things Reinforcement Learning (RL) for Combinatorial Optimization (CO)",
+      "kind": "library_tool",
+      "name": "rl4co",
+      "relationships": [],
+      "tags": [
+        "combinatorial_optimization",
+        "machine_learning"
+      ],
+      "type": "Library",
+      "url": "https://github.com/ai4co/rl4co"
+    },
+    "note": "Good Hydra usage with extensive first-party documentation, config groups, instantiation, multirun, and HPO integration. Do not feature unless maintenance resumes and Hydra 1.4 compatibility is confirmed.",
+    "repo": "ai4co/rl4co"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "Aequitas Flow is a package-owned Fair ML experimentation component that intentionally uses Hydra for its configuration structure. Hydra is installed through Aequitas's optional flow dependency group, so its reach is optional rather than core.",
+      "kind": "library_tool",
+      "name": "Aequitas Flow",
+      "relationships": [],
+      "tags": [
+        "algorithmic_fairness",
+        "machine_learning"
+      ],
+      "type": "Library",
+      "url": "https://github.com/dssg/aequitas/tree/master/src/aequitas/flow"
+    },
+    "note": "Powered by Hydra only; the optional Flow component uses Hydra for configuration composition in a meaningful fairness-auditing application, but relies on global-state clearing, manual child composition, and stale documentation. Maintenance is modest but current.",
+    "repo": "dssg/aequitas"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "Python Package for Airborne RGB machine learning",
+      "kind": "library_tool",
+      "name": "DeepForest",
+      "relationships": [],
+      "tags": [
+        "ecology",
+        "machine_learning",
+        "remote_sensing"
+      ],
+      "type": "Library",
+      "url": "https://github.com/weecology/DeepForest"
+    },
+    "note": "Good Hydra usage; actively maintained ecological computer-vision project with a documented, tested Hydra-backed CLI and structured configuration. Feature-eligible but not yet featured; version_base and dependency bounds need Hydra 1.4 cleanup.",
+    "repo": "weecology/DeepForest"
+  },
+  {
+    "decided_at": "2026-07-31",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "Official implementation of Tuna-2: Pixel Embeddings Beat Vision Encoders for Unified Understanding and Generation",
+      "kind": "application",
+      "name": "Tuna-2",
+      "relationships": [],
+      "tags": [
+        "computer_vision",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/facebookresearch/tuna-2"
+    },
+    "note": "Powered by Hydra for training and inference with config groups, instantiation, and documented overrides. Too new and publication-oriented for exemplary status: maintenance is unproven, later activity is automated, tests and releases are absent, full weights remain unavailable, and version_base needs cleanup.",
+    "repo": "facebookresearch/tuna-2"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded as a lightly patched research artifact rather than a maintained application: the latest release is a 2023 alpha, the stack is pinned to obsolete Python/PyTorch/Lightning generations, version_base=1.1 is incompatible with the Hydra 1.4 direction, and meaningful test coverage is absent.",
+    "repo": "MIC-DKFZ/nnDetection"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "BenchMARL is a library for benchmarking Multi-Agent Reinforcement Learning (MARL). BenchMARL allows to quickly compare different MARL algorithms, tasks, and models while being systematically grounded in its two core tenets: reproducibility and standardization.",
+      "kind": "library_tool",
+      "name": "BenchMARL",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "simulation"
+      ],
+      "type": "Benchmark",
+      "url": "https://github.com/facebookresearch/BenchMARL"
+    },
+    "note": "Good Hydra usage with deep config groups, dataclass-backed validation, multirun benchmarks, launcher documentation, and experiment reload from Hydra metadata. Strong featured candidate, but featured placement is withheld until Hydra 1.4 compatibility is confirmed because Hydra is unbounded and maintenance is currently quiet.",
+    "repo": "facebookresearch/BenchMARL"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded from the current Landscape despite historically excellent Hydra/Dora architecture and high impact. The default branch has been inactive since March 2025, the dependency stack is stale, community work is accumulating without integration, and hydra-core>=1.1 plus version_base=1.1 creates acute Hydra 1.4 breakage risk without active maintenance.",
+    "repo": "facebookresearch/audiocraft"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded despite unusually strong native Hydra usage and documentation. PFPO is a frozen ICLR 2025 research artifact added in two commits in February 2025, is not independently maintained, and pins Hydra exactly to 1.3.2 with version_base=1.2, leaving no evidence of a future Hydra 1.4 migration.",
+    "repo": "microsoft/unilm"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded despite Hydra being fundamental to model construction and training. The default branch has not moved since December 2024, no automated test suite would detect compatibility failures, and hydra-core>=1.3.2 combined with version_base=1.2 creates a likely Hydra 1.4 breakage risk without active maintenance.",
+    "repo": "facebookresearch/sam2"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "A scalable generative AI framework built for researchers and developers working on Large Language Models, Multimodal, and Speech AI (Automatic Speech Recognition and Text-to-Speech)",
+      "kind": "framework",
+      "name": "NVIDIA NeMo Speech",
+      "relationships": [
+        "extends",
+        "integrates"
+      ],
+      "tags": [
+        "audio",
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/NVIDIA-NeMo/Speech"
+    },
+    "note": "High-profile, actively maintained NVIDIA speech framework with Hydra foundational across configuration, documentation, tests, and many entry points. Not classified as good Hydra usage because its crufty custom runner imports private Hydra internals and partially reimplements hydra.main behavior. Still eligible for a separate featured-project decision based on prominence; Hydra is currently capped at 1.3.2 and needs deliberate 1.4 migration work.",
+    "repo": "NVIDIA-NeMo/Speech"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded despite historically sophisticated Hydra usage across composition, instantiation, multirun, multi-objective Optuna optimization, and custom launchers. TSPP is a frozen research release with no component work after March 2024, pins hydra-core==1.1.1, omits version_base, and bundles modified copies of old Hydra plugins, leaving no credible Hydra 1.4 migration path.",
+    "repo": "NVIDIA/DeepLearningExamples"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded as an obsolete learning resource. The substantial Hydra lesson was completed in 2021, explicitly installs hydra-core==1.1.0, and accompanies an unbounded, version_base-free application built around Python 3.8 and 2021-era ML dependencies. The only later maintenance repaired links, so it is unlikely to teach or adopt Hydra 1.4 correctly.",
+    "repo": "graviraja/MLOps-Basics"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "SAM 3D Objects",
+      "kind": "application",
+      "name": "SAM 3D Objects",
+      "relationships": [],
+      "tags": [
+        "computer_vision",
+        "graphics",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/facebookresearch/sam-3d-objects"
+    },
+    "note": "Active, high-profile Meta 3D reconstruction project whose public inference pipeline and internal components are constructed through Hydra. Not good Hydra usage: setup pins 1.3.2 and overwrites installed hydra/core/utils.py with code from a contributor fork based on rejected PR #2863, Hydra is barely documented, and automated tests are absent. Still eligible for separate featured-project consideration based on prominence.",
+    "repo": "facebookresearch/sam-3d-objects"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Out-of-band candidate excluded as stale. Dora's default branch stopped in October 2023 and dora-search 0.1.12 was last published in May 2023, while later user reports accumulated without code changes. Its deeply coupled Hydra adapter retains legacy compatibility branches and dirty hacks around module identity and configuration discovery, with no credible Hydra 1.4 migration path.",
+    "repo": "facebookresearch/dora"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because Hydra belongs only to Flower's legacy Baselines subsystem, not its active framework direction. Flower explicitly plans to migrate all baselines to flwr run, the Baselines CI workflow is disabled, remaining Hydra projects receive mostly mechanical maintenance, and inconsistent dependency bounds leave some untested baselines exposed to Hydra 1.4.",
+    "repo": "flwrlabs/flower"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "ClearML - Auto-Magical CI/CD to streamline your AI workload. Experiment Management, Data Management, Pipeline, Orchestration, Scheduling & Serving in one MLOps/LLMOps solution",
+      "kind": "ml_experimentation_platform",
+      "name": "ClearML",
+      "relationships": [
+        "integrates",
+        "teaches"
+      ],
+      "tags": [
+        "infrastructure",
+        "machine_learning"
+      ],
+      "type": "ML experimentation platform",
+      "url": "https://github.com/clearml/clearml"
+    },
+    "note": "Included in the broad powered-by bucket as an active, substantial first-party Hydra integration with public documentation for configuration capture and remote overrides. Not good Hydra usage: the binding monkeypatches private Hydra execution and loader state, silently swallows failures, lacks dedicated tests, has received no functional merged changes since 2023, and retains unresolved integration bugs. Do not feature as an implementation example without Hydra 1.4 validation.",
+    "repo": "clearml/clearml"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because Hydra supports only a frozen AzureML example subsystem rather than the project's teaching surface or a maintained product. AzureML work stopped in April 2024, the repository stopped in June 2024, entry points use version_base=1.1 with an entirely unbounded hydra-core dependency, and no Hydra or AzureML pipeline tests would detect a 1.4 failure.",
+    "repo": "microsoft/promptbase"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "The independently named Benchmark experiment runner uses Hydra as its entry point and configuration-space engine for Mountpoint experiments. It also implements and activates a custom Hydra Sweeper for benchmark-specific parameter combinations.",
+      "kind": "library_tool",
+      "name": "Benchmark experiment runner",
+      "relationships": [
+        "extends"
+      ],
+      "tags": [
+        "cloud_storage",
+        "infrastructure"
+      ],
+      "type": "Tool",
+      "url": "https://github.com/awslabs/mountpoint-s3/tree/main/benchmark"
+    },
+    "note": "Good Hydra usage in an active, non-ML infrastructure benchmark runner. It coherently uses hydra.main, multirun, generated per-job directories for artifact isolation, to_absolute_path for source inputs, runtime.output_dir for sweep uploads, and the public Sweeper extension interface. Feature-eligible, while retaining follow-up concerns: the checked-in sweeper tests are stale and absent from CI, and hydra-core>=1.3.2 needs explicit Hydra 1.4 validation.",
+    "repo": "awslabs/mountpoint-s3"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "The RL Bridge for LLM-based Agent Applications. Made Simple & Flexible.",
+      "kind": "framework",
+      "name": "AReaL",
+      "relationships": [
+        "integrates"
+      ],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/areal-project/AReaL"
+    },
+    "note": "Good Hydra usage in an active RL framework. AReaL owns its areal train CLI and embeds Hydra through the public Compose API, converts the result into structured application dataclasses, documents override usage, and already pins a Hydra 1.4 development release. Feature-eligible after validation against the final 1.4 release. Minor implementation and documentation concerns remain: it clears GlobalHydra instead of using a context-managed composition boundary, manufactures a relative config path, and does not link users to Hydra documentation.",
+    "repo": "areal-project/AReaL"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because Hydra appears only in an isolated official example whose implementation and documentation are inconsistent. The example uses the Compose API cleanly, but it claims type safety, config groups, composability, and multirun without demonstrating them; leaves model and data config unused; disagrees with its checked-in config about epochs and caching; has an unbounded hydra-core dependency; and is absent from CI. Active ZenML repository maintenance does not establish maintenance of this untouched example.",
+    "repo": "zenml-io/zenml"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded despite historically substantial Hydra usage across many first-party extraction workflows. The Hydra subsystem is fragmented and effectively frozen: the root pins hydra-core==1.0.6, most entry points use obsolete pre-1.1 conventions, example documentation specifies conflicting Hydra versions, and there is no Hydra 1.4 migration or validation. The last release was in 2023, the July 2026 activity was only a README edit, and meaningful maintenance is sporadic.",
+    "repo": "zjunlp/DeepKE"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because Hydra is confined to AdaptLLM's frozen benchmark inference subsystem. AdaptLLM itself has not changed since June 2024 despite later activity elsewhere in the LMOps monorepo; it has no Hydra documentation, tests, or validation; hydra-core is unbounded and version_base is omitted; and its launcher apparently passes an unset lowercase model_parallel variable. There is no credible Hydra 1.4 maintenance path.",
+    "repo": "microsoft/LMOps"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "Habitat-Lab is a modular embodied-AI library whose own configuration system migrated to Hydra. Its primary configuration API registers a project-defined Hydra search-path plugin.",
+      "kind": "library_tool",
+      "name": "Habitat-Lab",
+      "relationships": [
+        "extends"
+      ],
+      "tags": [
+        "machine_learning",
+        "robotics",
+        "simulation"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/facebookresearch/habitat-lab/tree/main/habitat-lab"
+    },
+    "note": "Included as one of the strongest architectural examples: Hydra replaced Habitat-Lab's previous configuration system and powers its primary public configuration API through the Compose API, structured schemas, config groups, a search-path plugin, read-only results, extensive documentation, and broad test coverage. Do not feature as a current integration unless Hydra 1.4 support is validated or adopted, because official Meta maintenance ended after v0.3.4 and the hydra-core>=1.2.0 dependency is unbounded.",
+    "repo": "facebookresearch/habitat-lab"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded despite historically strong, central, and well-documented Hydra usage across training, evaluation, models, datasets, logging, outputs, and experiment records. The project is frozen on hydra-core~1.0.0, Python 3.7, PyTorch 1.8, and NumPy<1.20; its last release was in 2021 and last commit in June 2024; and the entry point retains obsolete global-state cleanup. There is no viable Hydra 1.4 path without broader project revival.",
+    "repo": "torch-points3d/torch-points3d"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "Large Concept Models: Language modeling in a sentence representation space",
+      "kind": "application",
+      "name": "Large Concept Models",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "natural_language_processing"
+      ],
+      "type": "Application",
+      "url": "https://github.com/facebookresearch/large_concept_model"
+    },
+    "note": "Included as a substantial, high-profile research artifact whose core training and fine-tuning system directly uses hydra.main, config groups, documented overrides, launcher instantiation, and local or Slurm recipes. Not good-usage or feature-eligible: development stopped after a short December 2024 to January 2025 publication burst, no release was published, hydra-core>=1.3.2 is unbounded while version_base preserves 1.2 behavior, and the only training-recipe composition test is unconditionally skipped.",
+    "repo": "facebookresearch/large_concept_model"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "FAIRChem’s fairchem-core component natively uses Hydra for its primary training/job configuration and runner instantiation. The project provides machine-learning methods for chemistry and materials science.",
+      "kind": "library_tool",
+      "name": "FAIRChem",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "scientific_computing"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/facebookresearch/fairchem/tree/main/packages/fairchem-core"
+    },
+    "note": "Included as an active, substantial, feature-eligible chemistry and materials-science platform. Hydra is first-class infrastructure for the documented fairchem CLI, strict structured job configuration, config groups, runner instantiation, local and Slurm execution, canonical config capture, and broad regression testing. Compatibility remains unresolved rather than assumed: hydra-core is unbounded, the primary CLI preserves version_base 1.1 behavior, and two other paths use version_base=None. Early Hydra 1.4 outreach is tracked in https://github.com/facebookresearch/fairchem/issues/2130.",
+    "repo": "facebookresearch/fairchem"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "DIAMOND (DIffusion As a Model Of eNvironment Dreams) is a reinforcement learning agent trained in a diffusion world model. NeurIPS 2024 Spotlight.",
+      "kind": "application",
+      "name": "DIAMOND",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "simulation"
+      ],
+      "type": "Application",
+      "url": "https://github.com/eloialonso/diamond"
+    },
+    "note": "Included as a high-profile NeurIPS 2024 research artifact whose complete training application directly uses hydra.main with version_base 1.3, composes agent and environment groups, documents overrides and output directories, and relies on generated run directories for reproducibility and resumption. Not good-usage or feature-eligible because substantive development stopped in October 2024, there are no releases, CI workflows, or tests, and the configuration registers Python's unrestricted eval as an OmegaConf resolver. The exact hydra-core==1.3 dependency prevents accidental 1.4 installation.",
+    "repo": "eloialonso/diamond"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "Official implementation of MatterGen -- a generative model for inorganic materials design across the periodic table that can be fine-tuned to steer the generation towards a wide range of property constraints.",
+      "kind": "application",
+      "name": "MatterGen",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "materials_science"
+      ],
+      "type": "Application",
+      "url": "https://github.com/microsoft/mattergen"
+    },
+    "note": "Included as an active, substantial, high-profile materials-design application whose documented training and fine-tuning interfaces use Hydra configuration groups, overrides, structured schemas, and object instantiation across data, models, trainers, and property adapters. Not yet good-usage or feature-eligible: maintained entry points use version_base 1.1 and will fail on Hydra 1.4, dependencies pin hydra-core 1.3.1 and hydra-joblib-launcher 1.1.5, fine-tuning clears GlobalHydra inside a Hydra application, and no workflow runs the test suite. Hydra 1.4 outreach and modernization remain future work.",
+    "repo": "microsoft/mattergen"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "Agent-R1’s Paper Search Recipe owns a Hydra configuration for its offline inference and evaluation path. The recipe is a maintained component of the active Agent-R1 agentic reinforcement-learning framework.",
+      "kind": "application",
+      "name": "Paper Search Recipe",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "scientific_literature_search"
+      ],
+      "type": "Application",
+      "url": "https://github.com/AgentR1/Agent-R1/tree/main/recipes/paper_search"
+    },
+    "note": "Included as an active, feature-eligible agentic reinforcement-learning framework. Hydra is the first-party training interface across the project: direct hydra.main entry points, a project-owned primary config extending verl through Hydra's search path, documented recipe launchers built from Hydra overrides, and passthrough of additional user overrides. Hydra 1.4 compatibility remains to be tested because both maintained entry points use version_base=None, the Paper Search requirements leave hydra-core unbounded, launchers advertise HYDRA_FULL_ERROR=1, and CI does not exercise configuration composition or launch behavior.",
+    "repo": "AgentR1/Agent-R1"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "Unified Training of Universal Time Series Forecasting Transformers",
+      "kind": "library_tool",
+      "name": "uni2ts",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "time_series_forecasting"
+      ],
+      "type": "Library",
+      "url": "https://github.com/SalesforceAIResearch/uni2ts"
+    },
+    "note": "Included as a substantial, documented, feature-eligible time-series forecasting library whose project-owned CLI uses direct hydra.main entry points for training and evaluation, an extensive configuration hierarchy, config groups, overrides, instantiate and call, custom resolvers, and Hydra output directories. Maintenance is moderate rather than vigorous: the last default-branch commit was a June 2026 compliance update and the last substantive work was in January. The hydra-core==1.3 dependency and version_base 1.3 entry points are internally consistent and prevent accidental 1.4 adoption, but upgrading requires explicit compatibility work; current CI does not exercise the Hydra CLI or configuration composition.",
+    "repo": "SalesforceAIResearch/uni2ts"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "VGGSfM: Visual Geometry Grounded Deep Structure From Motion",
+      "kind": "application",
+      "name": "VGGSfM",
+      "relationships": [],
+      "tags": [
+        "graphics",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/facebookresearch/vggsfm"
+    },
+    "note": "Included as a substantial, high-profile CVPR 2024 structure-from-motion application whose primary image and video reconstruction workflows directly use hydra.main, documented command-line overrides, nested target configurations, and Hydra instantiation. Not good-usage or feature-eligible because the repository is effectively frozen, version_base is omitted, the installer upgrades hydra-core without a bound, entry points disable OmegaConf struct mode, and there are no tests or CI workflows. Hydra's generated run directory is intentionally disabled because reconstruction artifacts belong under the input scene directory.",
+    "repo": "facebookresearch/vggsfm"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "MyoSuite’s maintained agent-baseline subsystem directly uses Hydra as the configuration and launch interface for MJRL and Stable-Baselines3 training. Hydra is not required by the simulator’s core package.",
+      "kind": "library_tool",
+      "name": "MyoSuite",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "robotics",
+        "simulation"
+      ],
+      "type": "Simulator",
+      "url": "https://github.com/MyoHub/myosuite/tree/main/myosuite/agents"
+    },
+    "note": "Included for meaningful robotics and simulation coverage. MyoSuite's optional reinforcement-learning baseline subsystem has project-owned Hydra launchers for Stable-Baselines3, MJRL, and TorchRL, documents local and Slurm execution through the Submitit launcher, saves job configuration, and supports checkpoint resumption through overrides. Not good-usage or feature-eligible because the Hydra launchers are mostly old and untested, all omit version_base, documentation inconsistently pins hydra-core 1.1.0 or recommends unbounded/latest Hydra, and the main CI does not exercise these launchers. The wider MyoSuite project remains active even though this subsystem is comparatively stale.",
+    "repo": "MyoHub/myosuite"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "Official implementation of “Splatter Image: Ultra-Fast Single-View 3D Reconstruction” (CVPR 2024).",
+      "kind": "application",
+      "name": "splatter-image",
+      "relationships": [],
+      "tags": [
+        "graphics",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/szymanowiczs/splatter-image"
+    },
+    "note": "Included as the official CVPR 2024 Splatter Image implementation with direct, user-facing Hydra use in its primary training workflow, config groups, documented overrides, and saved .hydra configuration used for evaluation. Not good-usage or feature-eligible because the repository is a stale research artifact with no releases, an old Python stack, an unbounded hydra-core dependency, version_base=None, and no Hydra 1.4 validation.",
+    "repo": "szymanowiczs/splatter-image"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "SAM-PT: Extending SAM to zero-shot video segmentation with point-based tracking.",
+      "kind": "application",
+      "name": "SAM-PT",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "video_segmentation"
+      ],
+      "type": "Application",
+      "url": "https://github.com/SysCV/sam-pt"
+    },
+    "note": "Included as the official SAM-PT research application with direct, documented Hydra use across its interactive demo and video-segmentation experiment workflow. Not good-usage or feature-eligible because it is an 11-commit frozen research artifact with no releases or current maintenance and no credible Hydra 1.4 migration path; hydra-core==1.3.2 prevents accidental 1.4 installation.",
+    "repo": "SysCV/sam-pt"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded despite historically excellent and substantial Hydra usage throughout nuPlan's simulation, planning, configuration, and planner-instantiation framework. The last release was in April 2023, the final 2025 commit only removed Jenkins configuration, the dependency stack pins hydra-core==1.1.0rc1, and the code retains legacy working-directory assumptions. There is no credible Hydra 1.4 path without reviving the wider devkit.",
+    "repo": "motional/nuplan-devkit"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "[NeurIPS'23 Spotlight] \"Mind2Web: Towards a Generalist Agent for the Web\" -- the first LLM-based web agent and benchmark for generalist web agents",
+      "kind": "application",
+      "name": "Mind2Web",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "web_automation"
+      ],
+      "type": "Application",
+      "url": "https://github.com/OSU-NLP-Group/Mind2Web"
+    },
+    "note": "Included as a high-profile web-agent benchmark with direct, documented Hydra use across candidate-generation and action-prediction training and evaluation. Not good-usage or feature-eligible because the research code is effectively frozen, the latest activity only updated data links, the dependency environment is pinned to a 2023 stack including hydra-core==1.3.2 and omegaconf==2.3.0, and there is no Hydra 1.4 maintenance path.",
+    "repo": "OSU-NLP-Group/Mind2Web"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "open-metric-learning is a metric-learning library whose optional Pipelines component uses Hydra for configuration-driven experiment entry points. The repository documents Hydra as its config parser and provides pipeline examples with Hydra-decorated launch functions.",
+      "kind": "library_tool",
+      "name": "open-metric-learning",
+      "relationships": [],
+      "tags": [
+        "computer_vision",
+        "machine_learning"
+      ],
+      "type": "Library",
+      "url": "https://github.com/OML-Team/open-metric-learning/tree/main/pipelines"
+    },
+    "note": "Included because the optional Pipelines component intentionally uses Hydra for configuration-driven metric-learning experiments and documents Hydra and command-line overrides for users. Not good-usage or feature-eligible because Hydra is optional to the main library, the project is only minimally maintained, Pipelines pin hydra-core==1.3.0, the documented entry points omit version_base, and there is no Hydra 1.4 compatibility evidence.",
+    "repo": "OML-Team/open-metric-learning"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "🤖 The Full Process Python Package for Robot Learning from Demonstration and Robot Manipulation",
+      "kind": "framework",
+      "name": "Rofunc",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "robotics"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/Skylark0924/Rofunc"
+    },
+    "note": "Included for substantial Hydra-powered configuration across its robotics, simulation, and reinforcement-learning framework, with user-facing documentation for task and trainer selection. Not good-usage or feature-eligible because the project is stale, pins hydra-core==1.3.2, uses version_base=None, and relies heavily on private Hydra internals including create_automatic_config_search_path and Hydra.create_main_hydra2.",
+    "repo": "Skylark0924/Rofunc"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because every detected Hydra reference belongs to a vendored Fairseq copy rather than a BiomedGPT-owned integration. BiomedGPT's user-facing workflow uses shell scripts and does not present Hydra, while the inherited Fairseq package pins hydra-core>=1.0.7,<1.1 and is incompatible with Hydra 1.4.",
+    "repo": "taokz/BiomedGPT"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because Hydra appears only as a transitive dependency installed in a separately cloned BEHAVIOR-1K environment. No starVLA-owned Hydra integration or user-facing Hydra workflow was found.",
+    "repo": "starVLA/starVLA"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because Hydra is inherited through the optional upstream-derived AudioCraft feature. TTS-WebUI does not own or expose a distinct Hydra integration.",
+    "repo": "rsxdalv/TTS-WebUI"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because the detected Hydra use is confined to a copied verl recipe inside the AutoTTRL task workspace, not an InternAgent-owned integration.",
+    "repo": "InternScience/InternAgent"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because the visible Hydra material is copied verl recipe documentation and does not establish ClawGUI-owned Hydra use.",
+    "repo": "ZJU-REAL/ClawGUI"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because Hydra belongs to the embedded Fairseq component. StreamSpeech's project-specific application does not expose a distinct native Hydra integration.",
+    "repo": "ictnlp/StreamSpeech"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because Hydra belongs to the inherited Fairseq training stack rather than an ALiBi-specific integration. The project is also stale and offers no distinct maintained Hydra-facing surface.",
+    "repo": "ofirpress/attention_with_linear_biases"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "A Fast Deep Learning Model to Upsample Low Resolution Videos to High Resolution at 30fps",
+      "kind": "application",
+      "name": "Fast-SRGAN",
+      "relationships": [],
+      "tags": [
+        "graphics",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/HasnainRaz/Fast-SRGAN"
+    },
+    "note": "Included because Fast-SRGAN uses Hydra natively as its primary project-owned training entry point and explicitly documents configuration files and command-line overrides for users. Not good-usage or feature-eligible because the project is stale, has no releases, pins hydra-core==1.3.2, and explicitly selects version_base=1.1, which Hydra 1.4 will reject.",
+    "repo": "HasnainRaz/Fast-SRGAN"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "BiomedParse: A Foundation Model for Joint Segmentation, Detection, and Recognition of Biomedical Objects Across Nine Modalities",
+      "kind": "application",
+      "name": "BiomedParse",
+      "relationships": [],
+      "tags": [
+        "biomedical_imaging",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/microsoft/BiomedParse"
+    },
+    "note": "Included as good Hydra usage because BiomedParse owns a meaningful model-composition and instantiation workflow and documents it directly in its primary user-facing inference guide. Not currently feature-eligible because the v2 environment pins hydra-core==1.3.2 and calls hydra.initialize without version_base, leaving the documented workflow unprepared for Hydra 1.4. Manual GlobalHydra clearing is treated as an implementation note, not a classification criterion.",
+    "repo": "microsoft/BiomedParse"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "Official code repo for the MARL book (www.marl-book.com)",
+      "kind": "learning_resource",
+      "name": "marl-book/codebase",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Learning resource",
+      "url": "https://github.com/marl-book/codebase"
+    },
+    "note": "Included as good Hydra usage because the official MARL Book codebase uses Hydra throughout its primary educational workflow and teaches config groups, overrides, tab completion, multirun sweeps, output directories, and target-based customization. Not feature-eligible because maintenance is stale, runtime requirements pin hydra-core==1.3.2, and the custom experiment generator is misleadingly described as advanced hyperparameter search without distinguishing deterministic matrix generation from existing Optuna and Ax HPO sweepers.",
+    "repo": "marl-book/codebase"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because Hydra is an implementation detail of Youtu-Tip's optional Youtu-Agent integration rather than a distinct user-facing Youtu-Tip configuration workflow. The project does call Hydra directly to compose bundled dependency configurations, but the sidecar locks Hydra 1.3.2 and compatibility is inherited from Youtu-Agent's ConfigLoader.version_base.",
+    "repo": "TencentCloudADP/youtu-tip"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "Source Code for Paper \"OrienterNet Visual Localization in 2D Public Maps with Neural Matching\"",
+      "kind": "application",
+      "name": "OrienterNet",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/facebookresearch/OrienterNet"
+    },
+    "note": "Included as good Hydra usage because OrienterNet uses Hydra natively in its project-owned training workflow and documents overrides, dataset selection, GPU scaling, and experiment naming for users. Not feature-eligible because the research repository is stale, leaves hydra-core unbounded, omits version_base, and documents support for Python 3.8 and 3.9, leaving it unprepared for Hydra 1.4.",
+    "repo": "facebookresearch/OrienterNet"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "Cross-view Transformers for real-time Map-view Semantic Segmentation (CVPR 2022 Oral)",
+      "kind": "application",
+      "name": "cross_view_transformers",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "robotics"
+      ],
+      "type": "Application",
+      "url": "https://github.com/bradyz/cross_view_transformers"
+    },
+    "note": "Included as archival good Hydra usage because Cross-View Transformers natively structures its training workflow with model, dataset, experiment, loss, metric, and visualization config groups and documents experiment selection and overrides. Not feature-eligible because the repository has been frozen since 2022, pins hydra-core==1.1.1, omits version_base, requires Python 3.8, and resolves its config path from the current working directory.",
+    "repo": "bradyz/cross_view_transformers"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "Monty is a sensorimotor learning framework based on the thousand brains theory of the neocortex.",
+      "kind": "framework",
+      "name": "tbp.monty",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "simulation"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/thousandbrainsproject/tbp.monty"
+    },
+    "note": "Included as good Hydra usage because Monty uses Hydra centrally across standard and parallel experiment runners, configuration validation, resolvers, instantiation, and extensive tutorials, including guidance for downstream projects. It is actively maintained and is a strong feature candidate, but feature eligibility remains pending Hydra 1.4 validation because hydra-core>=1.3.2 permits an automatic 1.4 upgrade while entry points use version_base=None and no 1.4 compatibility evidence exists.",
+    "repo": "thousandbrainsproject/tbp.monty"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "Imitation learning algorithms",
+      "kind": "library_tool",
+      "name": "imitation-learning",
+      "relationships": [
+        "integrates"
+      ],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Library",
+      "url": "https://github.com/Kaixhin/imitation-learning"
+    },
+    "note": "Included as archival good Hydra usage because the project natively uses Hydra config groups, multiruns, seed sweeps, and the Ax Sweeper for genuine joint hyperparameter optimization across environments, with detailed user-facing documentation. Not feature-eligible because the environment is frozen around hydra-core==1.3.1, hydra-ax-sweeper==1.2.0, Ax 0.2.0, and other 2022-era dependencies, while entry points use version_base=None.",
+    "repo": "Kaixhin/imitation-learning"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because SAMURAI's Hydra use remains inherited SAM 2 infrastructure hidden behind fixed inference scripts rather than a user-facing SAMURAI configuration workflow. Although primary inference selects a SAMURAI-specific config, the bundled SAM 2 initializer uses version_base=1.2, which Hydra 1.4 will reject, and the repository is stale.",
+    "proposal_accepted_as_is": true,
+    "repo": "yangchris11/samurai"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "PyTorch Lightning + Hydra. A very user-friendly template for ML experimentation.  ⚡🔥⚡",
+      "kind": "template_starter",
+      "name": "Lightning-Hydra-Template",
+      "relationships": [
+        "integrates",
+        "teaches"
+      ],
+      "tags": [
+        "machine_learning",
+        "software_engineering"
+      ],
+      "type": "Template",
+      "url": "https://github.com/ashleve/lightning-hydra-template"
+    },
+    "note": "Included as archival good Hydra usage because Lightning-Hydra-Template makes Hydra central to composition, instantiation, training, evaluation, logging, experiments, hyperparameter optimization, and extensive user education. Not feature-eligible because the default branch and latest release have been frozen since September 2023 and runtime requirements pin hydra-core==1.3.2, despite entry points correctly selecting version_base=1.3 and likely requiring few source changes for 1.4.",
+    "proposal_accepted_as_is": true,
+    "repo": "ashleve/lightning-hydra-template"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because ThunderKittens uses Hydra only in an isolated Based starter demo adapted from upstream, not in the core library or a project-owned user workflow. The active project would be a strong future candidate for Hydra-powered kernel benchmarking and hyperparameter optimization, but that opportunity is not currently realized.",
+    "proposal_accepted_as_is": true,
+    "repo": "HazyResearch/ThunderKittens"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "McByte is an independently named, clean-room-adapted tracker subsystem within the Trackers library. Its optional SAM/Cutie mask pipeline directly uses Hydra to initialize and compose Cutie configurations, while the default tracker configuration leaves mask management disabled.",
+      "kind": "library_tool",
+      "name": "McByte (Trackers)",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Library",
+      "url": "https://github.com/roboflow/trackers/tree/develop/src/trackers/core/mcbyte"
+    },
+    "note": "Included as Powered by Hydra because the actively maintained Trackers library directly uses Hydra Compose APIs in its project-owned optional McByte/Cutie mask pipeline and documents the Hydra config path and name controls. Hydra remains an implementation detail of that optional feature rather than part of the broader user-facing Trackers workflow.",
+    "proposal_accepted_as_is": true,
+    "repo": "roboflow/trackers"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "Structured state space sequence models",
+      "kind": "library_tool",
+      "name": "S4",
+      "relationships": [
+        "integrates"
+      ],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Library",
+      "url": "https://github.com/state-spaces/s4"
+    },
+    "note": "Included as archival Good Hydra Usage because S4 uses Hydra centrally for its main training entry point, configuration composition, instantiation, experiments, and output directories, with dedicated user-facing Hydra documentation. It is not feature-eligible because maintenance is stale, hydra-core is unbounded, and the entry point omits version_base, making an automatic Hydra 1.4 upgrade likely to break startup.",
+    "proposal_accepted_as_is": true,
+    "repo": "state-spaces/s4"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "exclude",
+    "note": "Excluded because TorchCFM's Hydra integration is confined to the legacy runner described as the original V0 implementation, while current development focuses on the torchcfm package and notebook examples. The inherited Lightning-Hydra-Template runner no longer has a declared Hydra dependency, its test workflow was deprecated, and version_base=1.2 will fail with Hydra 1.4.",
+    "proposal_accepted_as_is": true,
+    "repo": "atong01/conditional-flow-matching"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "verl-agent is an extension of veRL, designed for training LLM/VLM agents via RL. verl-agent is also the official code for paper \"Group-in-Group Policy Optimization for LLM Agent Training\"",
+      "kind": "framework",
+      "name": "verl-agent",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/langfengQ/verl-agent"
+    },
+    "note": "Included as Good Hydra Usage because the actively maintained verl-agent framework uses Hydra across its core PPO trainer and project-owned algorithm recipes. In particular, GraphGPO provides its own Hydra entry point, configuration tree, documented parameters, and training workflows, making the use substantive rather than passive inheritance from veRL. Feature eligibility remains pending Hydra 1.4 validation because dependencies are unbounded and entry points use version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "langfengQ/verl-agent"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "A ComfyUI custom node designed for advanced image background removal and object, face, clothes, and fashion segmentation, utilizing multiple models including RMBG-2.0, INSPYRENET, BEN, BEN2, BiRefNet, SDMatte, SAM, SAM2, SAM3 and GroundingDINO.",
+      "kind": "plugin_integration",
+      "name": "ComfyUI-RMBG",
+      "relationships": [
+        "integrates"
+      ],
+      "tags": [
+        "graphics",
+        "machine_learning"
+      ],
+      "type": "Plugin",
+      "url": "https://github.com/1038lab/ComfyUI-RMBG"
+    },
+    "note": "Included as Powered by Hydra because ComfyUI-RMBG materially integrates SAM2's Hydra-based model configuration into its own maintained, user-facing ComfyUI segmentation node and explicitly declares Hydra as a dependency. Hydra remains an internal loader rather than part of the user workflow. It is not Hydra 1.4-ready because its >=1.3.0 dependency permits 1.4 while initialize_config_dir omits version_base.",
+    "proposal_accepted_as_is": true,
+    "repo": "1038lab/ComfyUI-RMBG"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "[CVPR 2025] Fast3R: Towards 3D Reconstruction of 1000+ Images in One Forward Pass",
+      "kind": "application",
+      "name": "Fast3R",
+      "relationships": [],
+      "tags": [
+        "graphics",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/facebookresearch/fast3r"
+    },
+    "note": "Included as archival Good Hydra Usage because Fast3R uses Hydra as the actual interface for composing and instantiating its documented training system, including data, model, trainer, logging, experiment, HPO, local, and debugging groups. The integration materially applies its Lightning-Hydra-Template scaffold to Fast3R. It explicitly selects version_base=1.3 and appears source-compatible with Hydra 1.4, but the archived project is not feature-eligible.",
+    "proposal_accepted_as_is": true,
+    "repo": "facebookresearch/fast3r"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "[ICASSP 2024] 🍵 Matcha-TTS: A fast TTS architecture with conditional flow matching",
+      "kind": "application",
+      "name": "Matcha-TTS",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "speech_synthesis"
+      ],
+      "type": "Application",
+      "url": "https://github.com/shivammehta25/Matcha-TTS"
+    },
+    "note": "Included as Good Hydra Usage because Hydra is the actual Matcha-TTS training interface, composing and instantiating project-specific data, model, trainer, logging, and experiment configurations exposed through documented commands. Not feature-eligible because maintenance is minimal, Hydra core and plugins are pinned to the 1.3/1.2 line without 1.4 validation, and an inherited MNIST Optuna configuration remains as nonfunctional template residue.",
+    "proposal_accepted_as_is": true,
+    "repo": "shivammehta25/Matcha-TTS"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "code for \"Diffusion Forcing: Next-token Prediction Meets Full-Sequence Diffusion\"",
+      "kind": "application",
+      "name": "Diffusion Forcing",
+      "relationships": [],
+      "tags": [
+        "graphics",
+        "machine_learning",
+        "robotics"
+      ],
+      "type": "Application",
+      "url": "https://github.com/buoyancy99/diffusion-forcing"
+    },
+    "note": "Included as archival Good Hydra Usage because Diffusion Forcing uses Hydra as its root experiment system across project-specific algorithms, datasets, tasks, Slurm clusters, logging, video generation, robotics, and planning, with extensive user-facing configuration documentation. Not feature-eligible because maintenance is stale, hydra-core is constrained to the 1.3 line, and Hydra 1.4 compatibility has not been validated.",
+    "proposal_accepted_as_is": true,
+    "repo": "buoyancy99/diffusion-forcing"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "listing": {
+      "description": "Hydra use belongs to the optional DeepSpeech2 model integration, not to the AI Hub Models core. The integration adapts the upstream DeepSpeech2 implementation for Qualcomm-device export and explicitly installs its Hydra-related configuration dependency.",
+      "kind": "library_tool",
+      "name": "Qualcomm AI Hub Models — DeepSpeech2",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "speech_recognition"
+      ],
+      "type": "Integration",
+      "url": "https://github.com/qualcomm/ai-hub-models/tree/main/src/qai_hub_models/models/deepspeech2"
+    },
+    "note": "Included as Powered by Hydra because Qualcomm AI Hub Models materially adapts Hydra-configured upstream models across several on-device integrations and provides project-owned machinery for rewriting _target_ paths within its package structure. Hydra remains internal to model import and reconstruction rather than part of the public workflow. Not Hydra 1.4-ready because model-specific requirements pin 1.3.2 or <1.4 and some initializers use version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "qualcomm/ai-hub-models"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "[NeurIPS 2025] TTRL: Test-Time Reinforcement Learning",
+      "kind": "application",
+      "name": "TTRL",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/PRIME-RL/TTRL"
+    },
+    "note": "Included as Good Hydra Usage because TTRL materially extends veRL's Hydra architecture with a project-specific PPO configuration, voting and rollout parameters, and official reproduction scripts built around Hydra overrides. The configuration layer is the supported interface for reproducing the research rather than passive upstream inheritance. Feature eligibility remains pending Hydra 1.4 validation because bundled veRL dependencies are unbounded and the entry point uses version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "PRIME-RL/TTRL"
+  },
+  {
+    "decided_at": "2026-08-01",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "Espresso: A Fast End-to-End Neural Speech Recognition Toolkit",
+      "kind": "library_tool",
+      "name": "Espresso",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "speech_recognition"
+      ],
+      "type": "Toolkit",
+      "url": "https://github.com/freewym/espresso"
+    },
+    "note": "Included strictly as archival Good Hydra Usage because Espresso materially applies Fairseq's Hydra architecture through project-specific ASR training and decoding configurations, documented overrides, search paths, multiruns, and Ax-based WER tuning. Not feature-eligible because the project is stale and requires Hydra >=1.0.7,<1.1 with OmegaConf <2.1, making it fundamentally incompatible with Hydra 1.4.",
+    "proposal_accepted_as_is": true,
+    "repo": "freewym/espresso"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "PINNs-Torch, Physics-informed Neural Networks (PINNs) implemented in PyTorch.",
+      "kind": "library_tool",
+      "name": "PINNs-Torch",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "scientific_computing"
+      ],
+      "type": "Library",
+      "url": "https://github.com/rezaakb/pinns-torch"
+    },
+    "note": "Included as Good Hydra Usage and a strong feature candidate because PINNs-Torch uses Hydra to express project-specific scientific structure including physical domains, meshes, PDE datasets, neural networks, models, and trainers, with documented examples and strong scientific visuals. Feature eligibility remains pending Hydra 1.4 validation because dependency metadata inconsistently pins 1.3.2 or leaves Hydra unbounded, despite explicitly selecting version_base=1.3.",
+    "proposal_accepted_as_is": true,
+    "repo": "rezaakb/pinns-torch"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "🦁 A research-friendly codebase for fast experimentation of multi-agent reinforcement learning in JAX",
+      "kind": "library_tool",
+      "name": "Mava",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/instadeepai/Mava"
+    },
+    "note": "Included as Good Hydra Usage with archival/minimally-maintained status because Mava uses Hydra broadly across its project-specific MARL algorithms, networks, environments, scenarios, distributed architectures, evaluation, and logging, with explicit user-facing guidance for config groups and overrides. Not feature-eligible because default-branch maintenance is stale, hydra-core is pinned to 1.3.2, and entry points use version_base=1.2, which Hydra 1.4 will reject.",
+    "proposal_accepted_as_is": true,
+    "repo": "instadeepai/Mava"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 2,
+    "listing": {
+      "description": "SkillRL: Evolving Agents via Recursive Skill-Augmented Reinforcement Learning",
+      "kind": "framework",
+      "name": "SkillRL",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/aiming-lab/SkillRL"
+    },
+    "note": "Included as Powered by Hydra because SkillRL materially extends veRL with a documented, project-specific skill-memory namespace consumed by its training code. Hydra UX scores 2/5: official workflows assemble the feature through long shell commands and pervasive +env.skills_only_memory.* additions rather than a composable SkillRL config group. Hydra is unbounded and the inherited entry point uses version_base=None, so 1.4 compatibility is also unverified.",
+    "proposal_accepted_as_is": false,
+    "repo": "aiming-lab/SkillRL"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "exclude",
+    "filtered_as_absolute_reject": true,
+    "hydra_ux_score": 1,
+    "note": "Mechanically excluded because every Hydra-bearing source and document belongs to the bundled Fairseq copy. LongMem exposes only its own shell training script and does not provide or adapt a project-owned Hydra configuration workflow. The inherited Fairseq package also pins Hydra below 1.1.",
+    "repo": "Victorwz/LongMem"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "Official implementation for HyenaDNA, a long-range genomic foundation model built with Hyena",
+      "kind": "application",
+      "name": "HyenaDNA",
+      "relationships": [],
+      "tags": [
+        "bioinformatics",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/HazyResearch/hyena-dna"
+    },
+    "note": "Included as archival Good Hydra Usage because HyenaDNA materially adapts the S4/Safari configuration architecture into a coherent genomic workflow spanning datasets, pipelines, models, tasks, experiments, schedulers, and evaluations. Hydra UX scores 4/5 because dedicated project groups support concise commands and the documentation teaches downstream composition, although advanced workflows remain override-heavy. Not feature-eligible because maintenance is stale, hydra-core is unbounded, and the entry point omits version_base.",
+    "proposal_accepted_as_is": true,
+    "repo": "HazyResearch/hyena-dna"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "[ICML 2025] Official PyTorch Implementation of \"History-Guided Video Diffusion\"",
+      "kind": "application",
+      "name": "Diffusion Forcing Transformer with History Guidance",
+      "relationships": [],
+      "tags": [
+        "graphics",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/kwsong0113/diffusion-forcing-transformer"
+    },
+    "note": "Included as Powered by Hydra because Diffusion Forcing Transformer uses substantial project-owned configuration groups across datasets, algorithms, model architectures, diffusion modes, experiments, and clusters. Hydra UX scores 3/5: training commands compose reasonably, but the primary pretrained inference workflows expose roughly 15-20 internal overrides in giant one-line commands. Not Hydra 1.4-ready because hydra-core is unbounded and the entry point uses version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "kwsong0113/diffusion-forcing-transformer"
+  },
+  {
+    "decided_at": "2026-08-10",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "First-party Hydra tool that generates Structured Config dataclasses from Python class signatures for use with instantiate().",
+      "kind": "hydra_developer_tool",
+      "name": "Configen",
+      "relationships": [
+        "extends"
+      ],
+      "tags": [
+        "code_generation",
+        "software_engineering"
+      ],
+      "type": "Hydra developer tool",
+      "url": "https://github.com/facebookresearch/hydra/tree/main/tools/configen"
+    },
+    "note": "Included as a first-party Hydra developer tool. Configen generates Structured Config dataclasses from Python class signatures for instantiate workflows. It remains a supported standalone release target, but is not featured because its latest public release is an old prerelease and recent development has primarily been compatibility maintenance.",
+    "repo": "facebookresearch/hydra"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "exclude",
+    "note": "Excluded because Theseus uses Hydra only in a small set of example applications, not as a meaningful project-wide user experience, and the project is stale. This records the previously accepted review decision that was missing from the local ledger.",
+    "proposal_accepted_as_is": true,
+    "repo": "facebookresearch/theseus"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "[3DV 2025] Code for \"FlowMap: High-Quality Camera Poses, Intrinsics, and Depth via Gradient Descent\" by Cameron Smith*, David Charatan*, Ayush Tewari, and Vincent Sitzmann",
+      "kind": "application",
+      "name": "FlowMap",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/dcharatan/flowmap"
+    },
+    "note": "Included as archival Good Hydra Usage because FlowMap owns a coherent Hydra configuration tree spanning datasets, models, losses, tracking, experiments, and visualization, with concise primary commands and documented composable ablations. Not feature-eligible because maintenance is stale and Hydra 1.4 compatibility is unverified: hydra-core is unbounded, exact requirements use 1.3.2, and entry points use version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "dcharatan/flowmap"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "CALVIN is a simulated benchmark for language-conditioned robotic manipulation. Its baseline-agent training subsystem directly exposes Hydra configuration overrides to users.",
+      "kind": "application",
+      "name": "CALVIN baseline agent",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "robotics",
+        "simulation"
+      ],
+      "type": "Application",
+      "url": "https://github.com/mees/calvin/tree/main/calvin_models/calvin_agent"
+    },
+    "note": "Included as archival Good Hydra Usage because CALVIN owns a rich, documented configuration system for datasets, observations, models, optimizers, callbacks, logging, and training, with composable groups and concise commands. Not feature-eligible because maintenance is stale and the shipped stack is incompatible with Hydra 1.4: it pins hydra-core 1.1.1 and omits version_base.",
+    "proposal_accepted_as_is": true,
+    "repo": "mees/calvin"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "Transformers are Sample-Efficient World Models. ICLR 2023, notable top 5%.",
+      "kind": "application",
+      "name": "IRIS",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "reinforcement_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/eloialonso/iris"
+    },
+    "note": "Included as Powered by Hydra because IRIS uses Hydra for its core training application and composes tokenizer, world-model, actor-critic, environment, and dataset configs. Hydra UX scores 3/5 because each group exposes only a default option and users are mainly directed to edit YAML or provide field-level overrides. Maintenance is stale, and the shipped hydra-core 1.1.1 pin with omitted version_base is incompatible with Hydra 1.4.",
+    "proposal_accepted_as_is": true,
+    "repo": "eloialonso/iris"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "The independently named siclib training library uses Hydra to compose and override GeoCalib training configurations. Hydra is a training/evaluation subsystem rather than a dependency of the lightweight inference package.",
+      "kind": "library_tool",
+      "name": "siclib",
+      "relationships": [],
+      "tags": [
+        "computer_vision",
+        "machine_learning"
+      ],
+      "type": "Library",
+      "url": "https://github.com/cvg/GeoCalib/tree/main/siclib"
+    },
+    "note": "Included as Powered by Hydra because GeoCalib's project-owned siclib training subsystem uses Hydra composition for datasets, training recipes, and models, with documented overrides. Hydra UX scores 3/5 because a custom argparse wrapper exposes Hydra mainly through --conf and dot-list values, hiding standard group selection, help, and multirun UX. Maintenance is active, but Hydra 1.4 compatibility is unverified because hydra-core is unbounded and the Compose API uses version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "cvg/GeoCalib"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 5,
+    "listing": {
+      "description": "A Cookiecutter data-science starter template whose generated project uses Hydra for configuration. The template includes executable Hydra integration and user guidance for viewing and overriding configurations.",
+      "kind": "template_starter",
+      "name": "data-science-template",
+      "relationships": [
+        "teaches"
+      ],
+      "tags": [
+        "data_engineering",
+        "machine_learning"
+      ],
+      "type": "Template",
+      "url": "https://github.com/CodeCutTech/data-science-template/tree/main/%7B%7Bcookiecutter.__directory_name%7D%7D"
+    },
+    "note": "Included as minimally maintained Good Hydra Usage because the generated data-science starter uses Hydra as its native configuration interface and clearly teaches help output, group discovery, meaningful model and process choices, field overrides, and further documentation. Not feature-eligible because the last commit was August 2025 and Hydra 1.4 requires migration: generated entry points specify version_base 1.2 while allowing unbounded hydra-core >=1.3.2.",
+    "proposal_accepted_as_is": true,
+    "repo": "CodeCutTech/data-science-template"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "High-performance inference framework for large language models, focusing on efficiency, flexibility, and availability.",
+      "kind": "framework",
+      "name": "Chitu",
+      "relationships": [
+        "integrates"
+      ],
+      "tags": [
+        "infrastructure",
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/thu-pacman/chitu"
+    },
+    "note": "Included as Good Hydra Usage and a strong feature candidate because Chitu uses Hydra as its production runtime configuration system across serving, bootstrapping, distributed execution, model selection, benchmarking, schemas, generated CLI documentation, and validation. The project is actively maintained, high-profile, and represents production infrastructure. Feature eligibility remains contingent on Hydra 1.4 testing because hydra-core is unbounded and the primary entry point uses version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "thu-pacman/chitu"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 5,
+    "listing": {
+      "description": "Open-source deep-learning framework for exploring, building and deploying AI weather/climate workflows.",
+      "kind": "library_tool",
+      "name": "earth2studio",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "scientific_computing"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/NVIDIA/earth2studio"
+    },
+    "note": "Included as Good Hydra Usage and a top-tier feature candidate because Earth2Studio uses Hydra across substantial, project-owned weather and climate workflows. Its evaluation and S2S recipes provide composable campaigns, models, perturbations, metrics, distributed runs, output management, and reusable overrides across multiple workflow stages, backed by extensive user documentation and tests. Hydra 1.4 compatibility remains unverified because dependencies are unbounded and entry points use version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "NVIDIA/earth2studio"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 5,
+    "listing": {
+      "description": "SchNetPack - Deep Neural Networks for Atomistic Systems",
+      "kind": "library_tool",
+      "name": "SchNetPack",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "scientific_computing",
+        "simulation"
+      ],
+      "type": "Library",
+      "url": "https://github.com/atomistic-machine-learning/schnetpack"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate because SchNetPack uses Hydra as the native configuration interface for training, prediction, and molecular-dynamics workflows. It provides extensive user documentation and meaningful project-owned groups for datasets, experiments, models, representations, optimizers, trainers, loggers, calculators, systems, and dynamics. Hydra 1.4 migration is required because training entry points use version_base 1.2, the MD entry point omits version_base, and hydra-core is unbounded from 1.1.0.",
+    "proposal_accepted_as_is": true,
+    "repo": "atomistic-machine-learning/schnetpack"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "BioNeMo Recipes: For building and adapting AI models in drug discovery at scale",
+      "kind": "framework",
+      "name": "bionemo-recipes",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/NVIDIA-BioNeMo/bionemo-recipes"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate because BioNeMo Recipes uses Hydra broadly across project-owned biological foundation-model training, inference, orchestration, and interpretability workflows. Recipe documentation teaches command-line configuration, and the project provides strong performance and dashboard presentation in a distinctive biology and drug-discovery domain. The Hydra UX is effective but fragmented across self-contained recipes and often relies on field overrides rather than rich config groups. Significant Hydra 1.4 migration is required because many entry points use version_base 1.2 and dependency declarations are inconsistent or unbounded.",
+    "proposal_accepted_as_is": true,
+    "repo": "NVIDIA-BioNeMo/bionemo-recipes"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "Point Transformers",
+      "kind": "application",
+      "name": "Point-Transformers",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/qq456cvb/Point-Transformers"
+    },
+    "note": "Included as Good Hydra Usage because Point-Transformers uses Hydra as the native interface for its shared classification, segmentation, and evaluation pipelines. It exposes meaningful model config-group choices and documents comparing all three architectures through Hydra multirun. It is not a feature candidate because maintenance resumed only briefly after nearly three years of dormancy and the project has limited presentation. Hydra 1.4 compatibility also requires migration because hydra-core is pinned to 1.2 and entry points omit version_base.",
+    "proposal_accepted_as_is": true,
+    "repo": "qq456cvb/Point-Transformers"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "Ego4D Features is a documented feature-extraction component of the Ego4d Python module. It natively uses Hydra for its configurable feature-extraction workflows.",
+      "kind": "library_tool",
+      "name": "Ego4D Features",
+      "relationships": [],
+      "tags": [
+        "computer_vision",
+        "machine_learning"
+      ],
+      "type": "Tool",
+      "url": "https://github.com/facebookresearch/Ego4d/tree/main/ego4d/features"
+    },
+    "note": "Included as Powered by Hydra because Ego4D natively uses Hydra in its documented feature-extraction subsystem and several internal research pipelines. It is not Good Hydra Usage or a feature candidate because the public UX is limited to flat config-name presets and field overrides, representative configs retain hardcoded internal paths, most entry points omit version_base, and the documented root installation requirements do not declare Hydra at all. The dataset remains active and compelling, but recent repository maintenance is dominated by generated internal cleanup commits and the latest package release was in 2023.",
+    "proposal_accepted_as_is": true,
+    "repo": "facebookresearch/Ego4d"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 5,
+    "listing": {
+      "description": "[NeurIPS D&B '25] The one-stop repository for LLM unlearning",
+      "kind": "framework",
+      "name": "OpenUnlearning",
+      "relationships": [
+        "teaches"
+      ],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/locuslab/open-unlearning"
+    },
+    "note": "Included as Good Hydra Usage and a strong feature candidate because OpenUnlearning uses Hydra as its core experiment and extensibility architecture across benchmarks, models, trainers, datasets, collators, metrics, and complete training, evaluation, and unlearning workflows. It provides extensive user-facing Hydra documentation, published research, benchmark results, and Hugging Face models in the important LLM-unlearning domain. Hydra 1.4 compatibility remains unverified because the project pins hydra-core to 1.3, although its entry point already uses version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "locuslab/open-unlearning"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 5,
+    "listing": {
+      "description": "Deep learning quantum Monte Carlo for electrons in real space",
+      "kind": "library_tool",
+      "name": "DeepQMC",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "quantum_chemistry",
+        "scientific_computing"
+      ],
+      "type": "Library",
+      "url": "https://github.com/deepqmc/deepqmc"
+    },
+    "note": "Included as Good Hydra Usage and a strong feature candidate because DeepQMC uses Hydra as its primary scientific experiment and CLI architecture. It exposes meaningful tasks, molecules, neural wave-function ansatzes, Hamiltonians, optimizers, samplers, multiruns, Slurm execution, and custom help, while chaining stored Hydra configurations through restart and evaluation workflows for reproducibility. Hydra 1.4 compatibility remains unverified because hydra-core is unbounded, although the entry point already uses version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "deepqmc/deepqmc"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "FlagScale is a large model toolkit based on open-sourced projects.",
+      "kind": "library_tool",
+      "name": "FlagScale",
+      "relationships": [],
+      "tags": [
+        "infrastructure",
+        "machine_learning"
+      ],
+      "type": "Toolkit",
+      "url": "https://github.com/flagos-ai/FlagScale"
+    },
+    "note": "Included as Powered by Hydra because FlagScale uses Hydra as the central experiment and task configuration engine across training, inference, serving, reinforcement learning, and distributed execution. It is not Good Hydra Usage or a feature candidate because the primary task commands wrap Hydra without accepting overrides and the documentation directs users to edit YAML files; only the lower-level flagscale run command exposes Hydra overrides. Hydra 1.4 compatibility is also unverified because common requirements pin hydra-core to 1.3.2 while project metadata leaves it unbounded.",
+    "proposal_accepted_as_is": true,
+    "repo": "flagos-ai/FlagScale"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "End-to-end SFM framework based on GTSAM",
+      "kind": "library_tool",
+      "name": "GTSfM",
+      "relationships": [],
+      "tags": [
+        "computer_vision",
+        "graphics",
+        "scientific_computing"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/borglab/gtsfm"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate because GTSfM uses Hydra to compose and instantiate its modular end-to-end structure-from-motion pipeline, including loaders, retrieval, feature extraction, matching, verification, graph partitioning, bundle adjustment, dense reconstruction, and Gaussian splatting. Its user guide explicitly documents loader selection and Hydra overrides. The custom argparse layer and monolithic pipeline presets keep the UX below exemplary. Hydra 1.4 compatibility remains unverified because hydra-core is unbounded and currently locked to 1.3.2, although Compose API calls use version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "borglab/gtsfm"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "An AI framework for generating and modding osu! beatmaps for all gamemodes from spectrogram inputs.",
+      "kind": "application",
+      "name": "Mapperatorinator",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "music_generation"
+      ],
+      "type": "Application",
+      "url": "https://github.com/OliBomby/Mapperatorinator"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate because Mapperatorinator uses Hydra across its primary inference and training workflows, evaluation, classifiers, beatmap-modification tools, notebooks, and web interface. Current configs use Defaults Lists and model and diffusion groups, and the user-facing CLI documentation explicitly teaches Hydra override syntax. Its polished creative application, GUI, diagrams, demos, and generated artifacts make it a distinctive feature candidate. Hydra 1.4 compatibility is blocked because hydra-core is pinned to 1.3.2 and maintained entry points still select version_base 1.1.",
+    "proposal_accepted_as_is": true,
+    "repo": "OliBomby/Mapperatorinator"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "🧬 Generative modeling of regulatory DNA sequences with diffusion probabilistic models 💨",
+      "kind": "application",
+      "name": "DNA-Diffusion",
+      "relationships": [],
+      "tags": [
+        "genomics",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/pinellolab/DNA-Diffusion"
+    },
+    "note": "Included as Powered by Hydra because DNA-Diffusion uses Hydra to compose and instantiate its model, data, optimizer, diffusion, training, and sampling components. It is not Good Hydra Usage or a feature candidate because the README uses Hydra syntax without naming or explaining Hydra, while the explicit Hydra material is confined to a stale hypothetical specification and some documented paths no longer exist. Human maintenance also stopped in July 2025, and Hydra 1.4 compatibility remains unverified despite an open-ended dependency and version_base 1.3.",
+    "proposal_accepted_as_is": false,
+    "repo": "pinellolab/DNA-Diffusion"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 5,
+    "listing": {
+      "description": "Create powerful Hydra applications without the yaml files and boilerplate code.",
+      "kind": "hydra_developer_tool",
+      "name": "hydra-zen",
+      "relationships": [
+        "extends"
+      ],
+      "tags": [
+        "machine_learning",
+        "software_engineering"
+      ],
+      "type": "Hydra developer tool",
+      "url": "https://github.com/mit-ll-responsible-ai/hydra-zen"
+    },
+    "note": "Included as Good Hydra Usage and an anchor entry in the Developer Tools category because hydra-zen provides mature typed configuration generation, ConfigStore integration, instantiation, launching, sweeping, and extensive documentation on top of standard Hydra capabilities. Its maintainer also contributed directly to Hydra's maintenance. It is not a feature candidate because its programmatic configuration and wrapper-first model is an opinionated edge of Hydra's design space: the claim of eliminating handwritten YAML can weaken the explicit declarative configuration interface, couple schemas to implementation, and hide parts of the application lifecycle. Hydra 1.4 compatibility must also be confirmed because current pre-release CI is failing.",
+    "proposal_accepted_as_is": false,
+    "repo": "mit-ll-responsible-ai/hydra-zen"
+  },
+  {
+    "decided_at": "2026-08-02",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "A general physic-based retargeting framework.",
+      "kind": "application",
+      "name": "SPIDER",
+      "relationships": [],
+      "tags": [
+        "robotics",
+        "simulation"
+      ],
+      "type": "Application",
+      "url": "https://github.com/facebookresearch/spider"
+    },
+    "note": "Included as Powered by Hydra because SPIDER uses Hydra in its documented MJWP robot-retargeting runners and exposes presets and field overrides directly to users. It is not Good Hydra Usage or a feature candidate because roughly 150 flat fields feed a single dataclass, a generic override group merges global dataset and workflow presets, and the runner converts the composed DictConfig to a dictionary before manually constructing the dataclass. The project itself is active and exceptionally well presented, but Hydra 1.4 compatibility remains unverified because requirements pin 1.3.2 while package metadata is unbounded and runners use version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "facebookresearch/spider"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 2,
+    "listing": {
+      "description": "EgoVerse’s egomimic component is the repository-owned behavior-cloning and flow-matching training application. Its main training entry point directly initializes Hydra and composes repository-owned training and Submitit launcher configuration.",
+      "kind": "application",
+      "name": "EgoVerse",
+      "relationships": [
+        "integrates"
+      ],
+      "tags": [
+        "machine_learning",
+        "robotics"
+      ],
+      "type": "Application",
+      "url": "https://github.com/GaTech-RL2/EgoVerse/tree/main/egomimic"
+    },
+    "note": "Included as Powered by Hydra because EgoVerse uses Hydra centrally across training, object instantiation, multirun, and Slurm execution. It is not Good Hydra Usage or a feature candidate because the official setup tells users to patch hydra-submitit-launcher inside site-packages, pins the launcher to 1.2.0 while leaving hydra-core unbounded, and is not ready for Hydra 1.4.",
+    "proposal_accepted_as_is": true,
+    "repo": "GaTech-RL2/EgoVerse"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "UniRL is a Framework for Unified Multimodal Model Reinforcement Learning",
+      "kind": "framework",
+      "name": "UniRL",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/Tencent-Hunyuan/UniRL"
+    },
+    "note": "Included as Powered by Hydra because UniRL uses Hydra natively across its primary multimodal reinforcement-learning entry points, recipes, overrides, interpolation, and instantiation. It is not Good Hydra Usage or a feature candidate because the project explicitly resists Hydra's composition model: each experiment is a self-contained recipe selected by config name, while model, task, algorithm, engine, adapter, and topology are encoded in a growing preset matrix instead of independently composable config groups. Hydra 1.4 compatibility remains unverified because hydra-core is open-ended from 1.3 and entry points use version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "Tencent-Hunyuan/UniRL"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "🏛️A research-friendly codebase for fast experimentation of single-agent reinforcement learning in JAX • End-to-End JAX RL",
+      "kind": "application",
+      "name": "Stoix",
+      "relationships": [
+        "integrates"
+      ],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/EdanToledo/Stoix"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate because Stoix makes Hydra a documented, user-facing part of its JAX reinforcement-learning workflow and composes independent logger, execution architecture, algorithm, network, and environment groups. Its quickstart teaches meaningful group overrides, and the project also documents multirun and Optuna optimization. The custom Slurm launcher is less elegant because it constructs subprocess commands outside Hydra's launcher model. Hydra 1.4 compatibility must be established before featuring it because maintained entry points select version_base 1.2 and hydra-core is open-ended from 1.3.2.",
+    "proposal_accepted_as_is": true,
+    "repo": "EdanToledo/Stoix"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 5,
+    "listing": {
+      "description": "[CoRL 2023] This repository contains data generation and training code for Scaling Up & Distilling Down",
+      "kind": "framework",
+      "name": "Scaling Up and Distilling Down",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "robotics",
+        "simulation"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/real-stanford/scalingup"
+    },
+    "note": "Included as Good Hydra Usage because Scaling Up and Distilling Down uses Hydra extensively across its language-guided robotics data generation, evaluation, and diffusion-policy training workflows. Its documentation explains composition and experiment tracking, its reproduction guide teaches readable policy, environment, algorithm, and domain-randomization overrides, and its configuration tree composes detailed algorithm subsystems and instantiates application objects. It is not a feature candidate because the default branch has received no commits since November 2023 and its version_base 1.2 entry points are guaranteed to fail with Hydra 1.4 while hydra-core remains unbounded from 1.2.",
+    "proposal_accepted_as_is": true,
+    "repo": "real-stanford/scalingup"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "tsl: a PyTorch library for processing spatiotemporal data.",
+      "kind": "library_tool",
+      "name": "tsl",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "scientific_computing"
+      ],
+      "type": "Library",
+      "url": "https://github.com/TorchSpatiotemporal/tsl"
+    },
+    "note": "Included as Powered by Hydra because Torch Spatiotemporal prominently documents Hydra-backed reproducible experiments and provides useful model, dataset, and logger composition in its optional experiment subsystem. It is not Good Hydra Usage or a feature candidate because its custom Experiment abstraction wraps hydra.main, consumes and deletes custom sys.argv entries, injects another CLI argument, mutates global TSL configuration, deletes Hydra's generated hydra.yaml, and conceals Hydra's application lifecycle behind Experiment.run(). Hydra 1.4 compatibility remains unverified because the dependency is unbounded and the integration relies on fragile lifecycle assumptions.",
+    "proposal_accepted_as_is": true,
+    "repo": "TorchSpatiotemporal/tsl"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "PARTNR Planner is a Habitat-based embodied multi-agent planning application. Its project-owned habitat_llm evaluation entry point is a Hydra application backed by a repository-wide configuration tree.",
+      "kind": "application",
+      "name": "PARTNR Planner",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "robotics",
+        "simulation"
+      ],
+      "type": "Application",
+      "url": "https://github.com/facebookresearch/partnr-planner/tree/main/habitat_llm"
+    },
+    "note": "Included as Powered by Hydra because PARTNR Planner uses Hydra natively across its Habitat-based embodied multi-agent planning application, with substantial groups for planners, agents, language models, tools, motor skills, world models, tasks, evaluations, training, and launchers. Its tutorials teach composition, target instantiation, Defaults List inheritance, and package overrides. It is not Good Hydra Usage or a feature candidate because the user workflow is dominated by long deeply nested overrides, repeated agent-specific settings, hydra.run.dir overrides, and advertised HYDRA_FULL_ERROR usage. The default branch has not changed since April 2025, and Hydra 1.4 compatibility is unverified because version_base is omitted, core is unbounded, and Submitit is pinned to 1.2.0.",
+    "proposal_accepted_as_is": true,
+    "repo": "facebookresearch/partnr-planner"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 2,
+    "listing": {
+      "description": "[NeurIPS 2025] WorldMem: Long-term Consistent World Simulation with Memory",
+      "kind": "application",
+      "name": "WorldMem",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "simulation"
+      ],
+      "type": "Application",
+      "url": "https://github.com/xizaoqu/WorldMem"
+    },
+    "note": "Included as Powered by Hydra because WorldMem's primary training application uses Hydra to compose experiment, dataset, algorithm, and optional cluster configurations, and relies on runtime choices, interpolation, output directories, and command preservation for Slurm execution. It is not Good Hydra Usage or a feature candidate because the Hydra architecture is inherited from a research template and concealed behind train, inference, and evaluation shell scripts; the project README does not explain Hydra or present composition as a capability. Hydra 1.4 is explicitly excluded by the hydra-core compatible-release constraint from 1.3.2.",
+    "proposal_accepted_as_is": true,
+    "repo": "xizaoqu/WorldMem"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "[CVPR 2024]  Probing the 3D Awareness of Visual Foundation Models",
+      "kind": "application",
+      "name": "probe3d",
+      "relationships": [],
+      "tags": [
+        "computer_vision",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/mbanani/probe3d"
+    },
+    "note": "Included as Powered by Hydra because probe3d uses direct Hydra applications for all documented training and evaluation experiments and cleanly composes optimizer, backbone, dataset, and probe groups. It is not Good Hydra Usage or a feature candidate because the published evaluation commands incorrectly append a backbone with +backbone even though the Defaults Lists already select one, making part of the primary advertised workflow invalid. Hydra 1.4 compatibility also fails because the setup requires Python 3.9 while hydra-core is unbounded from 1.1, and maintenance is only occasional.",
+    "proposal_accepted_as_is": true,
+    "repo": "mbanani/probe3d"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 5,
+    "listing": {
+      "description": "flyteplugins-hydra is an optional Flyte SDK plugin that provides a Hydra launcher plus CLI and Python entry points for running Hydra-composed Flyte tasks and sweeps. Its implementation is native integration code rather than an example or copied tutorial.",
+      "kind": "plugin_integration",
+      "name": "flyteplugins-hydra",
+      "relationships": [
+        "extends",
+        "integrates"
+      ],
+      "tags": [
+        "infrastructure"
+      ],
+      "type": "Plugin",
+      "url": "https://github.com/flyteorg/flyte-sdk/tree/main/plugins/hydra"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate under Hydra-powered developer tools. The actively maintained flyteplugins-hydra package implements Hydra's Launcher interface and exposes standard hydra/launcher selection, multirun, custom sweepers, Python SDK entry points, a Flyte CLI, Hydra-aware completion, and reusable task resource and image presets. Feature placement is conditional on Hydra 1.4 validation because hydra-core is currently unbounded while the plugin lock resolves Hydra 1.3.2.",
+    "proposal_accepted_as_is": true,
+    "repo": "flyteorg/flyte-sdk"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "GCM Physics written in JAX",
+      "kind": "library_tool",
+      "name": "JAX-GCM",
+      "relationships": [],
+      "tags": [
+        "climate_science",
+        "scientific_computing",
+        "simulation"
+      ],
+      "type": "Library",
+      "url": "https://github.com/climate-analytics-lab/jax-gcm"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate. JAX-GCM uses Hydra as the documented production interface for a differentiable atmospheric general-circulation simulator, with meaningful physics, grid, run, initialization, terrain, forcing, and diffusion config groups plus overrides, config inspection, multirun, Docker, resumable runs, and Kubernetes deployment. It provides valuable climate-science and simulation coverage; simulators are especially relevant because their many composable dimensions align naturally with Hydra. Feature placement is conditional on Hydra 1.4 validation because hydra-core is unbounded and the entry point uses version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "climate-analytics-lab/jax-gcm"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "[ICLR '26 - Virne] A simulator & benchmark for resource allocation (RA) problems in network function virtualization (NFV), i.e., NFV-RA, including virtual network embedding, service function chain deployment, network slicing, etc.",
+      "kind": "framework",
+      "name": "Virne",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "network_virtualization",
+        "simulation"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/GeminiLight/virne"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate. Virne uses Hydra as the documented primary interface for an ICLR 2026 network-function-virtualization resource-allocation simulator and benchmark, composing physical-network, virtual-network simulation, and learning settings while exposing topology, resources, solver, training, logging, and simulation scale through overrides. It provides distinctive network-virtualization and simulation coverage. Feature placement is conditional on Hydra 1.4 compatibility work because @hydra.main omits version_base and the dependency permits every Hydra release from 1.0 onward.",
+    "proposal_accepted_as_is": true,
+    "repo": "GeminiLight/virne"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "This is the official repository for the paper TLOB: A Novel Transformer Model with Dual Attention for Price Trend Prediction with Limit Order Book Data.",
+      "kind": "application",
+      "name": "TLOB",
+      "relationships": [],
+      "tags": [
+        "financial_markets",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/LeonardoBerti00/TLOB"
+    },
+    "note": "Included as Powered by Hydra because TLOB's primary training application directly uses Hydra and registers structured model and dataset options for its official limit-order-book price-prediction implementation. It is not Good Hydra Usage or a feature candidate because documented commands require +model, +dataset, and hydra.job.chdir=False, Hydra logging is disabled, model hyperparameters remain largely untyped dictionaries, and sweeps bypass Hydra in favor of W&B. Hydra 1.4 compatibility also fails because hydra-core is unbounded and @hydra.main omits version_base.",
+    "proposal_accepted_as_is": true,
+    "repo": "LeonardoBerti00/TLOB"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "A benchmark dataset collection for bird sound classification",
+      "kind": "library_tool",
+      "name": "BirdSet",
+      "relationships": [],
+      "tags": [
+        "bioacoustics",
+        "machine_learning"
+      ],
+      "type": "Dataset",
+      "url": "https://github.com/DBD-research-group/BirdSet"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate. BirdSet uses Hydra as its documented experiment interface and composes datamodules, model modules, callbacks, paths, trainers, loggers, extras, experiments, and hyperparameter-search configuration while extensively using instantiate for its bioacoustics benchmark and training toolkit. Its biodiversity domain materially improves Landscape diversity. Feature placement is conditional on Hydra 1.4 migration because hydra-core is pinned to 1.3.2, the entry point uses version_base=None, and config_name includes the YAML extension.",
+    "proposal_accepted_as_is": true,
+    "repo": "DBD-research-group/BirdSet"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "exclude",
+    "feature_candidate": false,
+    "hydra_ux_score": 1,
+    "note": "Excluded because TeraSim's production Hydra usage is limited to hydra.utils.instantiate for adversity objects, while its actual configuration paths manually load, resolve, convert, mutate, and recreate OmegaConf containers. Some scripts import Hydra without using it, and the test documentation advertises Hydra config-group override commands that the current non-Hydra command path cannot interpret. The autonomous-vehicle simulator is substantial, but its claimed Hydra configuration system is not implemented.",
+    "proposal_accepted_as_is": true,
+    "repo": "mcity/TeraSim"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "An I/O benchmark for deep Learning applications",
+      "kind": "application",
+      "name": "DLIO Benchmark",
+      "relationships": [],
+      "tags": [
+        "data_engineering",
+        "machine_learning",
+        "scientific_computing"
+      ],
+      "type": "Application",
+      "url": "https://github.com/argonne-lcf/dlio_benchmark"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate. Argonne's actively maintained DLIO Benchmark uses Hydra as its primary workload configuration system across BERT, Llama, ResNet, UNet3D, CosmoFlow, DLRM, framework, storage, and hardware variants. It uses config groups, documented overrides, custom help, model-scoped output directories, and saved Hydra configuration and override artifacts consumed by postprocessing. It provides valuable HPC, storage, I/O, and benchmarking coverage. Feature placement is conditional on Hydra 1.4 validation because runtime dependencies permit Hydra >=1.3.2 while tests pin 1.3.2 and the entry points use version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "argonne-lcf/dlio_benchmark"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 2,
+    "listing": {
+      "description": "Strands-based agents and harnesses for agentic benchmarks.",
+      "kind": "library_tool",
+      "name": "Simple Strands Agent",
+      "relationships": [],
+      "tags": [
+        "benchmarking",
+        "machine_learning",
+        "software_engineering"
+      ],
+      "type": "Benchmark",
+      "url": "https://github.com/strands-labs/benchmark-harnesses/tree/main/simple-strands-agent"
+    },
+    "note": "Included as Powered by Hydra because Simple Strands Agent uses a direct Hydra application to configure models, providers, prompts, tools, Docker environments, datasets, timeouts, and benchmark outputs for SWE-Bench and Terminal-Bench harnesses. It is not Good Hydra Usage or a feature candidate because its 56 full YAML files duplicate complete configurations without any Defaults Lists or config groups, and its Harbor integration clears GlobalHydra then manually recreates Hydra artifacts, logging, and output handling. Hydra 1.4 is allowed by the dependency range but unverified against a 1.3.2 lock and brittle global-state behavior.",
+    "proposal_accepted_as_is": true,
+    "repo": "strands-labs/benchmark-harnesses"
+  },
+  {
+    "decided_at": "2026-08-09",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 5,
+    "listing": {
+      "description": "🏋️ A unified multi-backend utility for benchmarking Transformers, Timm, PEFT, Diffusers and Sentence-Transformers with full support of Optimum's hardware optimizations & quantization schemes.",
+      "kind": "library_tool",
+      "name": "Optimum-Benchmark",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Benchmark",
+      "url": "https://github.com/huggingface/optimum-benchmark"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate. Hugging Face's actively maintained Optimum-Benchmark uses Hydra as its primary user-facing CLI and composes structured benchmark, backend, scenario, and launcher configurations through ConfigStore groups and Defaults Lists. Its documentation teaches overrides, multiruns, launcher plugins, output directories, and persisted benchmark configuration artifacts. Feature placement is conditional on Hydra 1.4 validation because hydra-core is unbounded and the entry point uses version_base=None.",
+    "proposal_accepted_as_is": true,
+    "repo": "huggingface/optimum-benchmark"
+  },
+  {
+    "decided_at": "2026-08-10",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 5,
+    "listing": {
+      "description": "TopoBench is a Python library designed to standardize benchmarking and accelerate research in Topological Deep Learning",
+      "kind": "library_tool",
+      "name": "TopoBench",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "scientific_computing"
+      ],
+      "type": "Benchmark",
+      "url": "https://github.com/geometric-intelligence/topobench"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate. The actively maintained TopoBench uses Hydra as its primary training and benchmarking interface across models, datasets, topological transforms, optimizers, evaluators, trainers, loggers, experiments, debugging, and Optuna HPO. Its user documentation teaches config-group selection and compositional transform pipelines, and the project provides distinctive topological deep-learning coverage with strong visual presentation. Feature placement is conditional on replacing its strict hydra-core==1.3.2 pin and validating against Hydra 1.4.",
+    "proposal_accepted_as_is": true,
+    "repo": "geometric-intelligence/topobench"
+  },
+  {
+    "decided_at": "2026-08-10",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "Comprehensive benchmarking of protein-ligand structure prediction methods. (Nature Machine Intelligence)",
+      "kind": "application",
+      "name": "PoseBench",
+      "relationships": [],
+      "tags": [
+        "computational_biology",
+        "computational_chemistry",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/BioinfoMachineLearning/PoseBench"
+    },
+    "note": "Included as Powered by Hydra. PoseBench is a substantial, actively maintained Nature Machine Intelligence benchmark for protein-ligand structure prediction, and its many user-facing inference, preparation, ensemble, and analysis scripts directly expose Hydra overrides. It is not Good Hydra Usage or a feature candidate because the interface is fragmented across many script-specific flat configs and very long override commands rather than a cohesive compositional config model. Hydra 1.4 is currently blocked by a strict hydra-core==1.3.2 dependency pin.",
+    "proposal_accepted_as_is": true,
+    "repo": "BioinfoMachineLearning/PoseBench"
+  },
+  {
+    "decided_at": "2026-08-10",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "powered_by_hydra",
+    "hydra_ux_score": 3,
+    "listing": {
+      "description": "Benchmarking Agentic LLM and VLM Reasoning On Games",
+      "kind": "library_tool",
+      "name": "BALROG",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "simulation"
+      ],
+      "type": "Benchmark",
+      "url": "https://github.com/balrog-ai/BALROG"
+    },
+    "note": "Included as Powered by Hydra. BALROG's primary user-facing evaluation command directly uses Hydra overrides to configure agents, language-model clients, game environments, parallelism, trajectories, and resumable runs. It is not Good Hydra Usage or a feature candidate because all options live in one large flat config, interchangeability is modeled with scalar fields rather than config groups, and BALROG disables Hydra's output handling before rebuilding result directories and logging itself. Its unbounded Hydra dependency combined with version_base=1.1 will require migration before Hydra 1.4.",
+    "proposal_accepted_as_is": true,
+    "repo": "balrog-ai/BALROG"
+  },
+  {
+    "decided_at": "2026-08-10",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 5,
+    "listing": {
+      "description": "FusionBench: A Comprehensive Benchmark/Toolkit of Deep Model Fusion",
+      "kind": "library_tool",
+      "name": "FusionBench",
+      "relationships": [],
+      "tags": [
+        "machine_learning"
+      ],
+      "type": "Benchmark",
+      "url": "https://github.com/tanganke/fusion_bench"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate. FusionBench is an actively maintained deep-model fusion toolkit whose primary CLI composes fusion methods, model pools, task pools, Lightning Fabric, paths, and runtime behavior through Hydra config groups. It provides unusually extensive user and contributor documentation for structured configs, custom groups, overrides, multiruns, launchers, instantiation, and reusable composition. Feature placement is conditional on Hydra 1.4 validation because hydra-core is unbounded and the entry point uses version_base=None. The CLI's eager OmegaConf.resolve call is a minor weakness because it gives up interpolation laziness.",
+    "proposal_accepted_as_is": true,
+    "repo": "tanganke/fusion_bench"
+  },
+  {
+    "decided_at": "2026-08-10",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "AWS recipes for training, fine-tuning, evaluating, and reinforcing foundation models on SageMaker HyperPod.",
+      "kind": "application",
+      "name": "Amazon SageMaker HyperPod Recipes",
+      "relationships": [],
+      "tags": [
+        "infrastructure",
+        "machine_learning"
+      ],
+      "type": "Application",
+      "url": "https://github.com/aws/sagemaker-hyperpod-recipes"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate. Amazon's actively maintained SageMaker HyperPod Recipes uses Hydra to select and customize a large catalog of foundation-model training, fine-tuning, reinforcement-learning, and evaluation recipes across EKS, Slurm, and SageMaker Training Jobs. Its config groups model clusters, recipes, algorithms, datasets, PEFT strategies, distributed engines, actors, critics, reward models, and optimizers, and its public Recipe API uses Hydra composition programmatically. The operational interface has rough edges including long generated commands, disabled Hydra output metadata, post-composition mutation, and manual package unwrapping. Feature placement is conditional on migration from its strict hydra-core==1.3.2 pin and version_base=1.2.",
+    "proposal_accepted_as_is": true,
+    "repo": "aws/sagemaker-hyperpod-recipes"
+  },
+  {
+    "decided_at": "2026-08-10",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 5,
+    "listing": {
+      "description": "Hydra launcher plugin that runs jobs on Modal, with config-driven sandbox customisation.",
+      "kind": "plugin_integration",
+      "name": "Hydra Modal Launcher",
+      "relationships": [
+        "extends",
+        "integrates"
+      ],
+      "tags": [
+        "cloud_computing",
+        "distributed_computing",
+        "infrastructure"
+      ],
+      "type": "Plugin",
+      "url": "https://github.com/joncarter1/hydra-modal-launcher"
+    },
+    "note": "Included as Good Hydra Usage under launcher plugins or Hydra-powered developer tools. Jonathan Carter's Hydra Modal Launcher provides a standard hydra/launcher=modal interface with structured configuration for images, dependencies, compute, secrets, volumes, retries, regions, parallelism, and dry runs. It carefully transports user source and runtime state, preserves JobReturn semantics and local Hydra metadata, and has strong documentation, unit coverage, and optional live tests. It is not yet a feature candidate because it is very young, has one star, and has no established adoption or maintenance history. Hydra 1.4 is permitted by its dependency range but its use of internal launcher APIs still requires validation.",
+    "proposal_accepted_as_is": true,
+    "repo": "joncarter1/hydra-modal-launcher"
+  },
+  {
+    "decided_at": "2026-08-10",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "listing": {
+      "description": "The AI developer platform. Use Weights & Biases to train and fine-tune models, and manage models from experimentation to production.",
+      "kind": "ml_experimentation_platform",
+      "name": "Weights & Biases",
+      "relationships": [
+        "integrates",
+        "teaches"
+      ],
+      "tags": [
+        "experiment_tracking",
+        "machine_learning",
+        "mlops"
+      ],
+      "type": "ML experimentation platform",
+      "url": "https://github.com/wandb/wandb"
+    },
+    "note": "Included as an actively maintained ML experimentation platform with first-party Hydra documentation and Hydra-aware sweep argument handling. The integration documents configuration tracking, multiprocessing behavior, and W&B Sweeps for Hydra applications. It is not featured pending focused Hydra 1.4 compatibility validation.",
+    "repo": "wandb/wandb"
+  },
+  {
+    "decided_at": "2026-08-10",
+    "decision": "include",
+    "feature_candidate": false,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "Quadra: Effortless and reproducible deep learning workflows with configuration files.",
+      "kind": "library_tool",
+      "name": "Quadra",
+      "relationships": [
+        "extends"
+      ],
+      "tags": [
+        "machine_learning",
+        "mlops"
+      ],
+      "type": "Library",
+      "url": "https://github.com/orobix/quadra"
+    },
+    "note": "Included as Good Hydra Usage. Quadra uses Hydra as its user-facing experiment CLI and composes tasks, models, data modules, trainers, callbacks, logging, and experiment presets while documenting overrides and multiruns. It also provides a SearchPathPlugin for application config sources. It is not a feature candidate until it migrates from Hydra ~1.3 and plugin ~1.2 constraints, removes the YAML suffix from config_name, and validates against Hydra 1.4.",
+    "proposal_accepted_as_is": true,
+    "repo": "orobix/quadra"
+  },
+  {
+    "decided_at": "2026-08-10",
+    "decision": "exclude",
+    "feature_candidate": false,
+    "hydra_ux_score": 4,
+    "note": "Excluded despite strong native Hydra architecture and a clean user-facing reinforcement-learning CLI. SheepRL's default branch and latest release have been frozen since 2024, its dependency pins hydra-core exactly to 1.3.0, and recent automated maintenance attempts leave CI failing. It can be reconsidered if active maintenance and a Hydra 1.4 migration resume.",
+    "proposal_accepted_as_is": true,
+    "repo": "Eclectic-Sheep/sheeprl"
+  },
+  {
+    "decided_at": "2026-08-10",
+    "decision": "include",
+    "feature_candidate": true,
+    "group": "good_hydra_usage",
+    "hydra_ux_score": 4,
+    "listing": {
+      "description": "Modular imitation-learning framework for training, compressing, and deploying robot manipulation policies.",
+      "kind": "framework",
+      "name": "VersatIL",
+      "relationships": [],
+      "tags": [
+        "machine_learning",
+        "robotics"
+      ],
+      "type": "Framework",
+      "url": "https://github.com/Lorenzo-Mazza/VersatIL"
+    },
+    "note": "Included as Good Hydra Usage and a feature candidate. VersatIL uses Hydra as the documented configuration interface for its robot-policy training, deployment, compression, inference, and explainability workflows, with hierarchical config groups, typed dataclasses, ConfigStore registration, overrides, sweeps, packaged configs, and instantiate. Its active maintenance, robotics coverage, and explicit Hydra >=1.4.0.dev5,<1.5 dependency with Python 3.13 and 3.14 CI outweigh its limited current adoption.",
+    "proposal_accepted_as_is": true,
+    "repo": "Lorenzo-Mazza/VersatIL"
+  }
+]
