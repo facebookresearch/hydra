@@ -120,6 +120,7 @@
     "2632": "2026-07-24",
     "2655": "2026-06-30",
     "2656": "2026-06-30",
+    "2657": "2026-08-10",
     "2662": "2026-06-30",
     "2669": "2026-06-30",
     "2670": "2026-06-30",
@@ -246,7 +247,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-10T16:23:38Z",
+  "generated_at": "2026-08-10T17:08:25Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -486,19 +487,6 @@
       "status": "not started",
       "title": "[Feature Request] ConfigStore to warn or raise on name/group collision",
       "updated_at": "2026-07-29T07:39:45Z"
-    },
-    "2657": {
-      "category": "Enhancement",
-      "created_at": "2023-05-08T13:20:38Z",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "[Feature Request] Support commas in key names (override grammar)",
-      "updated_at": "2026-07-15T13:16:30Z"
     },
     "2660": {
       "category": "Enhancement",
@@ -3262,6 +3250,19 @@
       "status": "done",
       "title": "[Question] How to set the \"package directive\" on the command line or in the compose API",
       "updated_at": "2023-05-08T09:31:03Z"
+    },
+    "2657": {
+      "category": "Enhancement",
+      "created_at": "2023-05-08T13:20:38Z",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Feature Request] Support commas in key names (override grammar)",
+      "updated_at": "2026-07-15T13:16:30Z"
     },
     "2662": {
       "category": "Bug",

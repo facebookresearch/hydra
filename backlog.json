@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-08-10",
-  "generated_at": "2026-08-10T16:23:38Z",
+  "generated_at": "2026-08-10T17:08:25Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 105,
+    "open_total": 104,
     "by_category": [
       {
         "category": "Bug",
@@ -14,20 +14,20 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 82,
-        "percentage": 78.1
+        "count": 81,
+        "percentage": 77.9
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 6,
-        "percentage": 5.7
+        "percentage": 5.8
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 6,
-        "percentage": 5.7
+        "percentage": 5.8
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 103
+        "count": 102
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 245
+        "count": 246
       }
     ]
   },
@@ -563,22 +563,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2453"
-    },
-    {
-      "number": 2657,
-      "title": "[Feature Request] Support commas in key names (override grammar)",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-05-08",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2657"
     },
     {
       "number": 2660,
@@ -5904,9 +5888,32 @@
       "updated": "2026-08-08",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3362"
+    },
+    {
+      "number": 2657,
+      "title": "[Feature Request] Support commas in key names (override grammar)",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-05-08",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2657"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-10T17:08:25Z",
+      "kind": "closed",
+      "issue": 2657,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2657",
+      "title": "[Feature Request] Support commas in key names (override grammar)"
+    },
     {
       "ts": "2026-08-10T15:31:45Z",
       "kind": "closed",
@@ -7495,13 +7502,6 @@
       "issue": 1753,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1753",
       "title": "[Feature Request] Add GCP support in Ray launcher."
-    },
-    {
-      "ts": "2026-07-19T10:23:41Z",
-      "kind": "closed",
-      "issue": 1758,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1758",
-      "title": "[Feature Request] Recursive config interpolation with custom object resolvers"
     }
   ]
 }
