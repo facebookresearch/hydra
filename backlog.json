@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-08-10",
-  "generated_at": "2026-08-10T18:09:36Z",
+  "generated_at": "2026-08-10T18:25:33Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 101,
+    "open_total": 100,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 7,
-        "percentage": 6.9
+        "percentage": 7.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 79,
-        "percentage": 78.2
+        "percentage": 79.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 5,
-        "percentage": 5.0
+        "count": 4,
+        "percentage": 4.0
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 6,
-        "percentage": 5.9
+        "percentage": 6.0
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 99
+        "count": 98
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 249
+        "count": 250
       }
     ]
   },
@@ -578,23 +578,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2664"
-    },
-    {
-      "number": 2711,
-      "title": "[Feature Request] API Docs?",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-07-13",
-      "updated": "2026-07-15",
-      "labels": [
-        "documentation",
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2711"
     },
     {
       "number": 2757,
@@ -3958,6 +3941,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2697"
     },
     {
+      "number": 2704,
+      "title": "Outdated tutorial on job.chdir",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-07-05",
+      "updated": "2026-07-15",
+      "labels": [
+        "documentation",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2704"
+    },
+    {
       "number": 2709,
       "title": "[Bug] Ray Hydra Launcher fails to connect to the GCS",
       "category": "Bug",
@@ -5890,23 +5889,31 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3362"
     },
     {
-      "number": 2704,
-      "title": "Outdated tutorial on job.chdir",
+      "number": 2711,
+      "title": "[Feature Request] API Docs?",
       "category": "Documentation",
       "category_emoji": "📄",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-07-05",
+      "created": "2023-07-13",
       "updated": "2026-07-15",
       "labels": [
         "documentation",
+        "enhancement",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2704"
+      "url": "https://github.com/facebookresearch/hydra/issues/2711"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-10T18:25:33Z",
+      "kind": "closed",
+      "issue": 2711,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2711",
+      "title": "[Feature Request] API Docs?"
+    },
     {
       "ts": "2026-08-10T18:09:36Z",
       "kind": "closed",
@@ -7494,13 +7501,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1622",
       "title": "keyword documentation for config.yaml",
       "detail": "removed \"triage\""
-    },
-    {
-      "ts": "2026-07-19T15:45:10Z",
-      "kind": "closed",
-      "issue": 3291,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3291",
-      "title": "Remove packaging from Hydra core runtime dependencies"
     }
   ]
 }

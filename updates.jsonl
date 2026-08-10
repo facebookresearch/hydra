@@ -667,3 +667,4 @@
 {"ts": "2026-08-10T17:51:17Z", "kind": "closed", "issue": 2660, "issue_url": "https://github.com/facebookresearch/hydra/issues/2660", "title": "[Feature Request] Make hydra-submitit-launcher available via Conda"}
 {"ts": "2026-08-10T18:03:54Z", "kind": "closed", "issue": 2673, "issue_url": "https://github.com/facebookresearch/hydra/issues/2673", "title": "[Feature Request] Support multirun in compose API"}
 {"ts": "2026-08-10T18:09:36Z", "kind": "closed", "issue": 2704, "issue_url": "https://github.com/facebookresearch/hydra/issues/2704", "title": "Outdated tutorial on job.chdir"}
+{"ts": "2026-08-10T18:25:33Z", "kind": "closed", "issue": 2711, "issue_url": "https://github.com/facebookresearch/hydra/issues/2711", "title": "[Feature Request] API Docs?"}
