@@ -115,6 +115,7 @@
     "2562": "2026-06-30",
     "2564": "2026-06-30",
     "2575": "2026-06-30",
+    "2587": "2026-08-10",
     "2632": "2026-07-24",
     "2655": "2026-06-30",
     "2656": "2026-06-30",
@@ -244,7 +245,7 @@
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-10T14:42:28Z",
+  "generated_at": "2026-08-10T15:16:14Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -484,18 +485,6 @@
       "status": "not started",
       "title": "[Feature Request] ConfigStore to warn or raise on name/group collision",
       "updated_at": "2026-07-29T07:39:45Z"
-    },
-    "2587": {
-      "category": "Question",
-      "created_at": "2023-02-15T06:24:34Z",
-      "labels": [
-        "triage"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "How to instantiate a child class which inherited from super class?",
-      "updated_at": "2026-07-15T13:16:31Z"
     },
     "2590": {
       "category": "Enhancement",
@@ -3223,6 +3212,18 @@
       "status": "done",
       "title": "[Bug] Schema validation for recursively instantiated targets failing",
       "updated_at": "2025-05-23T07:26:41Z"
+    },
+    "2587": {
+      "category": "Question",
+      "created_at": "2023-02-15T06:24:34Z",
+      "labels": [
+        "triage"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "How to instantiate a child class which inherited from super class?",
+      "updated_at": "2026-07-15T13:16:31Z"
     },
     "2632": {
       "category": "Enhancement",

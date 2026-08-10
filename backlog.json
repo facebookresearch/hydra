@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-08-10",
-  "generated_at": "2026-08-10T14:42:28Z",
+  "generated_at": "2026-08-10T15:16:14Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 107,
+    "open_total": 106,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 7,
-        "percentage": 6.5
+        "percentage": 6.6
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 83,
-        "percentage": 77.6
+        "percentage": 78.3
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 6,
-        "percentage": 5.6
+        "percentage": 5.7
       },
       {
         "category": "Question",
         "emoji": "❓",
-        "count": 7,
-        "percentage": 6.5
+        "count": 6,
+        "percentage": 5.7
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 105
+        "count": 104
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 243
+        "count": 244
       }
     ]
   },
@@ -563,21 +563,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2453"
-    },
-    {
-      "number": 2587,
-      "title": "How to instantiate a child class which inherited from super class?",
-      "category": "Question",
-      "category_emoji": "❓",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-02-15",
-      "updated": "2026-07-15",
-      "labels": [
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2587"
     },
     {
       "number": 2590,
@@ -3769,6 +3754,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2507"
     },
     {
+      "number": 2551,
+      "title": "keep simulating in multirun even if some failed ",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-01-16",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2551"
+    },
+    {
       "number": 2562,
       "title": "[Bug] optuna depending on deprecated feature in sqlalchemy. ",
       "category": "Bug",
@@ -5890,23 +5891,29 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3362"
     },
     {
-      "number": 2551,
-      "title": "keep simulating in multirun even if some failed ",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 2587,
+      "title": "How to instantiate a child class which inherited from super class?",
+      "category": "Question",
+      "category_emoji": "❓",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-01-16",
+      "created": "2023-02-15",
       "updated": "2026-07-15",
       "labels": [
-        "enhancement",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2551"
+      "url": "https://github.com/facebookresearch/hydra/issues/2587"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-10T15:16:14Z",
+      "kind": "closed",
+      "issue": 2587,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2587",
+      "title": "How to instantiate a child class which inherited from super class?"
+    },
     {
       "ts": "2026-08-10T14:42:28Z",
       "kind": "closed",
@@ -7495,13 +7502,6 @@
       "issue": 1764,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1764",
       "title": "[ray launcher] fix how ray launcher gets the job return"
-    },
-    {
-      "ts": "2026-07-19T10:04:55Z",
-      "kind": "closed",
-      "issue": 1767,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1767",
-      "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. "
     }
   ]
 }
