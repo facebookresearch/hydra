@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-08-10",
-  "generated_at": "2026-08-10T18:03:54Z",
+  "generated_at": "2026-08-10T18:09:36Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 102,
+    "open_total": 101,
     "by_category": [
       {
         "category": "Bug",
@@ -15,13 +15,13 @@
         "category": "Enhancement",
         "emoji": "✨",
         "count": 79,
-        "percentage": 77.5
+        "percentage": 78.2
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 6,
-        "percentage": 5.9
+        "count": 5,
+        "percentage": 5.0
       },
       {
         "category": "Question",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.9
+        "percentage": 3.0
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 100
+        "count": 99
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 248
+        "count": 249
       }
     ]
   },
@@ -578,22 +578,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2664"
-    },
-    {
-      "number": 2704,
-      "title": "Outdated tutorial on job.chdir",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-07-05",
-      "updated": "2026-07-15",
-      "labels": [
-        "documentation",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2704"
     },
     {
       "number": 2711,
@@ -3908,6 +3892,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2670"
     },
     {
+      "number": 2673,
+      "title": "[Feature Request] Support multirun in compose API",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-06-04",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2673"
+    },
+    {
       "number": 2674,
       "title": "[Bug] OverrideParseException when trying to use override syntax to drop key starting with integer",
       "category": "Bug",
@@ -5890,23 +5890,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3362"
     },
     {
-      "number": 2673,
-      "title": "[Feature Request] Support multirun in compose API",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "number": 2704,
+      "title": "Outdated tutorial on job.chdir",
+      "category": "Documentation",
+      "category_emoji": "📄",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-06-04",
+      "created": "2023-07-05",
       "updated": "2026-07-15",
       "labels": [
-        "enhancement",
+        "documentation",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2673"
+      "url": "https://github.com/facebookresearch/hydra/issues/2704"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-10T18:09:36Z",
+      "kind": "closed",
+      "issue": 2704,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2704",
+      "title": "Outdated tutorial on job.chdir"
+    },
     {
       "ts": "2026-08-10T18:03:54Z",
       "kind": "closed",
@@ -7494,13 +7501,6 @@
       "issue": 3291,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3291",
       "title": "Remove packaging from Hydra core runtime dependencies"
-    },
-    {
-      "ts": "2026-07-19T15:35:01Z",
-      "kind": "closed",
-      "issue": 1636,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1636",
-      "title": "Updates to callback doc"
     }
   ]
 }
