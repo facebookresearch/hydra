@@ -656,3 +656,4 @@
 {"ts": "2026-08-09T13:42:58Z", "kind": "pr", "issue": 3362, "issue_url": "https://github.com/facebookresearch/hydra/issues/3362", "title": "Reject backslashes in Defaults List paths", "detail": "linked #3365"}
 {"ts": "2026-08-10T04:02:38Z", "kind": "status", "issue": 3206, "issue_url": "https://github.com/facebookresearch/hydra/issues/3206", "title": "Create website surfaces for ecosystem and featured projects", "detail": "not started → in progress", "pr": {"number": 3367, "url": "https://github.com/facebookresearch/hydra/pull/3367"}}
 {"ts": "2026-08-10T04:02:38Z", "kind": "pr", "issue": 3206, "issue_url": "https://github.com/facebookresearch/hydra/issues/3206", "title": "Create website surfaces for ecosystem and featured projects", "detail": "linked #3367"}
+{"ts": "2026-08-10T11:09:55Z", "kind": "closed", "issue": 3206, "issue_url": "https://github.com/facebookresearch/hydra/issues/3206", "title": "Create website surfaces for ecosystem and featured projects"}

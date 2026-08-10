@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-08-10",
-  "generated_at": "2026-08-10T07:35:02Z",
+  "generated_at": "2026-08-10T11:09:55Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 112,
+    "open_total": 111,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 8,
-        "percentage": 7.1
+        "percentage": 7.2
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 86,
-        "percentage": 76.8
+        "percentage": 77.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 7,
-        "percentage": 6.2
+        "count": 6,
+        "percentage": 5.4
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 7,
-        "percentage": 6.2
+        "percentage": 6.3
       },
       {
         "category": "Refactor",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -66,32 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 238
+        "count": 239
       }
     ]
   },
   "issues": [
-    {
-      "number": 3206,
-      "title": "Create website surfaces for ecosystem and featured projects",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3367,
-          "url": "https://github.com/facebookresearch/hydra/pull/3367"
-        }
-      ],
-      "created": "2026-06-10",
-      "updated": "2026-07-17",
-      "labels": [
-        "documentation",
-        "enhancement"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/3206"
-    },
     {
       "number": 1749,
       "title": "tests: Use multiline regex search instead of assert_regex_match",
@@ -5904,9 +5883,37 @@
         "regression"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/3354"
+    },
+    {
+      "number": 3206,
+      "title": "Create website surfaces for ecosystem and featured projects",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3367,
+          "url": "https://github.com/facebookresearch/hydra/pull/3367"
+        }
+      ],
+      "created": "2026-06-10",
+      "updated": "2026-07-17",
+      "labels": [
+        "documentation",
+        "enhancement"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/3206"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-10T11:09:55Z",
+      "kind": "closed",
+      "issue": 3206,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3206",
+      "title": "Create website surfaces for ecosystem and featured projects"
+    },
     {
       "ts": "2026-08-10T04:02:38Z",
       "kind": "pr",
@@ -7501,14 +7508,6 @@
       "issue": 3290,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3290",
       "title": "Remove packaging from Hydra runtime dependencies"
-    },
-    {
-      "ts": "2026-07-18T18:08:16Z",
-      "kind": "pr",
-      "issue": 3290,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3290",
-      "title": "Remove packaging from Hydra runtime dependencies",
-      "detail": "linked #3292"
     }
   ]
 }
