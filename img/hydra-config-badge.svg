@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="105" height="20" role="img" aria-label="config: Hydra">
+  <title>config: Hydra</title>
+  <linearGradient id="shine" x2="0" y2="100%">
+    <stop offset="0" stop-color="#fff" stop-opacity=".1"/>
+    <stop offset="1" stop-opacity=".1"/>
+  </linearGradient>
+  <clipPath id="round">
+    <rect width="105" height="20" rx="3"/>
+  </clipPath>
+  <g clip-path="url(#round)">
+    <path fill="#555" d="M0 0h45v20H0z"/>
+    <path fill="#006577" d="M45 0h60v20H45z"/>
+    <path fill="url(#shine)" d="M0 0h105v20H0z"/>
+  </g>
+  <g fill="#fff" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="11" text-rendering="geometricPrecision">
+    <text x="6" y="15" fill="#010101" fill-opacity=".3">config</text>
+    <text x="6" y="14">config</text>
+    <text x="68" y="15" fill="#010101" fill-opacity=".3">Hydra</text>
+    <text x="68" y="14">Hydra</text>
+  </g>
+  <image aria-hidden="true" x="49" y="2" width="16" height="16" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y+mAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAB7UExURQAAABNwgxRwgTGBlARneniqsz2Jl4S0vWmfqrHO1AprfQ5tgMzg5Nzq7SZ8jxl0iEKNo1qbtGejvFOWqxl0hPz9/cfd4WymwDWEmXSrwpa/x+309kuSqCV7kECLmht0iBZyhYyzwQVneSl+kxp0iD2KoF+et4yrscbR0zfIr+cAAAABdFJOUwBA5thmAAAAAWJLR0QAiAUdSAAAAAd0SU1FB+oICQ46C46WvPQAAAFBSURBVCjPhdLbeoMgDABgKXWeqoVklqzDqVAP7/+Ek3qgdBfLFfp/SUg0iv4LdvJnfn7D+MOfkzS0UxZHUc4YKxxeigCLS1ldhQSJomJJ+RngOatvCMoFICEL66Z1XX6pNYDekN2/s+W9FAJAI51CJJcH+pZpfS+xCbAC11HGdQ2U1Qnlr9g8u+HPvY7bLut10JU/UZruFpNJJNhXpPWe1sQaiFDJxx9UkgSotf3V47CNCGoPWYUoNUrl9agsNvSZSultFWe91hx85jjIbsV8Qd1YPAiJjODb98Rl3URerbEWNywcpoR2LzsYrqB6wYmjaLdcEPK4ULFk0IS07E/vF8Z9lAIc9lZyY6ybB0Zx7J4tz8OUCRobw5uu4RU7PlrRLiimGVoNI/i9rZNYh/Hctw/STf6GfNBKpHNvozz8Z38BX7cmFbu2T9kAAAAASUVORK5CYII="/>
+</svg>
