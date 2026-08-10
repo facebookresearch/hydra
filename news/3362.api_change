@@ -1,0 +1,1 @@
+Reject backslashes in Defaults List config group and option paths; '/' is the only supported config group separator.
