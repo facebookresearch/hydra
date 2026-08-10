@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-10",
-  "generated_at": "2026-08-10T15:31:45Z",
+  "generated_at": "2026-08-10T16:23:38Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 105,
@@ -3814,6 +3814,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2587"
     },
     {
+      "number": 2590,
+      "title": "Is there a way to disable Hydra exceptions/errors override?",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-02-20",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2590"
+    },
+    {
       "number": 2632,
       "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit",
       "category": "Enhancement",
@@ -5888,22 +5904,6 @@
       "updated": "2026-08-08",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3362"
-    },
-    {
-      "number": 2590,
-      "title": "Is there a way to disable Hydra exceptions/errors override?",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2023-02-20",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2590"
     }
   ],
   "updates": [
