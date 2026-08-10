@@ -13,7 +13,7 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.fedb0f75.css">
-<script src="/assets/js/runtime~main.9be7f890.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.39f8bed2.js" defer="defer"></script>
 <script src="/assets/js/main.08306b1f.js" defer="defer"></script>
 </head>
 <body>
@@ -45,7 +45,9 @@ traversal. Select the target config directly instead. Use an absolute config
 path or group such as <code>/config</code> or <code>/group: option</code> in a Defaults List. In a
 command-line override, target the group directly with <code>group=option</code>, using
 <code>+group=option</code> when adding a new default.
-The path separator is <code>/</code> regardless of the operating system.</p>
+The path separator is <code>/</code> regardless of the operating system. A backslash
+(<code>\</code>) is not a path separator and is rejected anywhere in a Defaults List
+config path.</p>
 <p><em>OPTION</em>: The currently selected <em>CONFIG_NAME</em> or <em>CONFIG_NAMES</em> from a <em>CONFIG_GROUP</em>.</p>
 <p><em>PACKAGE</em> : Where to place the content of the config within the output config.
 It is relative to the Package of the containing config by default. See <a class="" href="/docs/advanced/overriding_packages/">Packages</a>.</p>

@@ -13,7 +13,7 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="Hydra" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.fedb0f75.css">
-<script src="/assets/js/runtime~main.9be7f890.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.39f8bed2.js" defer="defer"></script>
 <script src="/assets/js/main.08306b1f.js" defer="defer"></script>
 </head>
 <body>
@@ -34,6 +34,10 @@ removed.</li>
 included in a stable Hydra release, but was available in Hydra 1.4
 development versions from February 2025 through July 2026.</li>
 <li class="">Parent traversal in Defaults List config paths is no longer accepted.</li>
+<li class="">Backslashes in Defaults List config paths are no longer accepted. <code>/</code> is the
+only supported config group separator. Paths that used <code>\</code> previously
+composed on Windows only, where the operating system resolved the backslash
+as a filesystem separator.</li>
 </ul>
 <h3 class="anchor anchorTargetStickyNavbar_AKxV" id="hydra-11-compatibility-behavior">Hydra 1.1 compatibility behavior<a href="#hydra-11-compatibility-behavior" class="hash-link" aria-label="Direct link to Hydra 1.1 compatibility behavior" title="Direct link to Hydra 1.1 compatibility behavior" translate="no">​</a></h3>
 <p><code>version_base=&quot;1.1&quot;</code> is no longer accepted, and the following legacy behavior
