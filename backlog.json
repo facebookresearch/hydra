@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-10",
-  "generated_at": "2026-08-10T17:08:25Z",
+  "generated_at": "2026-08-10T17:29:52Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 104,
@@ -3863,6 +3863,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2656"
     },
     {
+      "number": 2657,
+      "title": "[Feature Request] Support commas in key names (override grammar)",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-05-08",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2657"
+    },
+    {
       "number": 2662,
       "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler",
       "category": "Bug",
@@ -5888,22 +5904,6 @@
       "updated": "2026-08-08",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3362"
-    },
-    {
-      "number": 2657,
-      "title": "[Feature Request] Support commas in key names (override grammar)",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2023-05-08",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2657"
     }
   ],
   "updates": [
