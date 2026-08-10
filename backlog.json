@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-08-10",
-  "generated_at": "2026-08-10T13:30:00Z",
+  "generated_at": "2026-08-10T14:42:28Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 108,
+    "open_total": 107,
     "by_category": [
       {
         "category": "Bug",
@@ -14,8 +14,8 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 84,
-        "percentage": 77.8
+        "count": 83,
+        "percentage": 77.6
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 106
+        "count": 105
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 242
+        "count": 243
       }
     ]
   },
@@ -563,22 +563,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2453"
-    },
-    {
-      "number": 2551,
-      "title": "keep simulating in multirun even if some failed ",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-01-16",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2551"
     },
     {
       "number": 2587,
@@ -4409,6 +4393,28 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2889"
     },
     {
+      "number": 2893,
+      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3363,
+          "url": "https://github.com/facebookresearch/hydra/pull/3363"
+        }
+      ],
+      "created": "2024-04-22",
+      "updated": "2026-08-09",
+      "labels": [
+        "bug",
+        "plugin",
+        "ray-launcher"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2893"
+    },
+    {
       "number": 2894,
       "title": "[Bug] ipykernel_launcher.py: error:",
       "category": "Bug",
@@ -5740,6 +5746,24 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3318"
     },
     {
+      "number": 3329,
+      "title": "Stop advertising HYDRA_FULL_ERROR in user-facing errors",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3358,
+          "url": "https://github.com/facebookresearch/hydra/pull/3358"
+        }
+      ],
+      "created": "2026-07-31",
+      "updated": "2026-07-31",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3329"
+    },
+    {
       "number": 3334,
       "title": "Warn Hydra 1.3 users relying on Hydra 1.1 behavior before Hydra 1.4",
       "category": "Documentation",
@@ -5848,46 +5872,6 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3354"
     },
     {
-      "number": 2893,
-      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3363,
-          "url": "https://github.com/facebookresearch/hydra/pull/3363"
-        }
-      ],
-      "created": "2024-04-22",
-      "updated": "2026-08-09",
-      "labels": [
-        "bug",
-        "plugin",
-        "ray-launcher"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2893"
-    },
-    {
-      "number": 3329,
-      "title": "Stop advertising HYDRA_FULL_ERROR in user-facing errors",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3358,
-          "url": "https://github.com/facebookresearch/hydra/pull/3358"
-        }
-      ],
-      "created": "2026-07-31",
-      "updated": "2026-07-31",
-      "labels": [],
-      "url": "https://github.com/facebookresearch/hydra/issues/3329"
-    },
-    {
       "number": 3362,
       "title": "Reject backslashes in Defaults List paths",
       "category": "Enhancement",
@@ -5904,9 +5888,32 @@
       "updated": "2026-08-08",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3362"
+    },
+    {
+      "number": 2551,
+      "title": "keep simulating in multirun even if some failed ",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-01-16",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2551"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-10T14:42:28Z",
+      "kind": "closed",
+      "issue": 2551,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2551",
+      "title": "keep simulating in multirun even if some failed "
+    },
     {
       "ts": "2026-08-10T13:30:00Z",
       "kind": "closed",
@@ -7495,13 +7502,6 @@
       "issue": 1767,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1767",
       "title": "[CI] hydra_ax_sweeper tests are failing on the main branch. "
-    },
-    {
-      "ts": "2026-07-19T02:36:31Z",
-      "kind": "closed",
-      "issue": 3287,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3287",
-      "title": "Support OmegaConf 2.4 experimental tuple configuration"
     }
   ]
 }

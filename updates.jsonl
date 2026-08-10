@@ -660,3 +660,4 @@
 {"ts": "2026-08-10T13:30:00Z", "kind": "closed", "issue": 2893, "issue_url": "https://github.com/facebookresearch/hydra/issues/2893", "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided"}
 {"ts": "2026-08-10T13:30:00Z", "kind": "closed", "issue": 3329, "issue_url": "https://github.com/facebookresearch/hydra/issues/3329", "title": "Stop advertising HYDRA_FULL_ERROR in user-facing errors"}
 {"ts": "2026-08-10T13:30:00Z", "kind": "closed", "issue": 3362, "issue_url": "https://github.com/facebookresearch/hydra/issues/3362", "title": "Reject backslashes in Defaults List paths"}
+{"ts": "2026-08-10T14:42:28Z", "kind": "closed", "issue": 2551, "issue_url": "https://github.com/facebookresearch/hydra/issues/2551", "title": "keep simulating in multirun even if some failed "}
