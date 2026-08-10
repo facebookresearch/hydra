@@ -665,3 +665,4 @@
 {"ts": "2026-08-10T15:31:45Z", "kind": "closed", "issue": 2590, "issue_url": "https://github.com/facebookresearch/hydra/issues/2590", "title": "Is there a way to disable Hydra exceptions/errors override?"}
 {"ts": "2026-08-10T17:08:25Z", "kind": "closed", "issue": 2657, "issue_url": "https://github.com/facebookresearch/hydra/issues/2657", "title": "[Feature Request] Support commas in key names (override grammar)"}
 {"ts": "2026-08-10T17:51:17Z", "kind": "closed", "issue": 2660, "issue_url": "https://github.com/facebookresearch/hydra/issues/2660", "title": "[Feature Request] Make hydra-submitit-launcher available via Conda"}
+{"ts": "2026-08-10T18:03:54Z", "kind": "closed", "issue": 2673, "issue_url": "https://github.com/facebookresearch/hydra/issues/2673", "title": "[Feature Request] Support multirun in compose API"}

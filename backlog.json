@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-08-10",
-  "generated_at": "2026-08-10T17:51:17Z",
+  "generated_at": "2026-08-10T18:03:54Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 103,
+    "open_total": 102,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 7,
-        "percentage": 6.8
+        "percentage": 6.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 80,
-        "percentage": 77.7
+        "count": 79,
+        "percentage": 77.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 6,
-        "percentage": 5.8
+        "percentage": 5.9
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 6,
-        "percentage": 5.8
+        "percentage": 5.9
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 101
+        "count": 100
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 247
+        "count": 248
       }
     ]
   },
@@ -578,22 +578,6 @@
         "bug"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2664"
-    },
-    {
-      "number": 2673,
-      "title": "[Feature Request] Support multirun in compose API",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-06-04",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2673"
     },
     {
       "number": 2704,
@@ -3863,6 +3847,22 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2657"
     },
     {
+      "number": 2660,
+      "title": "[Feature Request] Make hydra-submitit-launcher available via Conda",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-05-14",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2660"
+    },
+    {
       "number": 2662,
       "title": "[Bug] Colorlog plugin changes the output directory of logging.FileHandler",
       "category": "Bug",
@@ -5890,23 +5890,30 @@
       "url": "https://github.com/facebookresearch/hydra/issues/3362"
     },
     {
-      "number": 2660,
-      "title": "[Feature Request] Make hydra-submitit-launcher available via Conda",
+      "number": 2673,
+      "title": "[Feature Request] Support multirun in compose API",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "done",
       "status_emoji": "✅",
       "prs": [],
-      "created": "2023-05-14",
+      "created": "2023-06-04",
       "updated": "2026-07-15",
       "labels": [
         "enhancement",
         "triage"
       ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2660"
+      "url": "https://github.com/facebookresearch/hydra/issues/2673"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-10T18:03:54Z",
+      "kind": "closed",
+      "issue": 2673,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2673",
+      "title": "[Feature Request] Support multirun in compose API"
+    },
     {
       "ts": "2026-08-10T17:51:17Z",
       "kind": "closed",
@@ -7494,14 +7501,6 @@
       "issue": 1636,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1636",
       "title": "Updates to callback doc"
-    },
-    {
-      "ts": "2026-07-19T11:34:17Z",
-      "kind": "label",
-      "issue": 1749,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1749",
-      "title": "tests: Use multiline regex search instead of assert_regex_match",
-      "detail": "removed \"triage\""
     }
   ]
 }
