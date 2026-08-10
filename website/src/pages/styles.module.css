@@ -11,15 +11,19 @@
  */
 
 .heroBanner {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(560px, 2fr);
   text-align: left;
-  position: relative;
   overflow: hidden;
+}
+
+.heroIntro {
+  position: relative;
   min-height: 40vh;
 }
 
 .topArea {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(240px, 16vw, 290px);
+  display: block;
 }
 
 .topContent {
@@ -90,13 +94,19 @@
 }
 
 .featuredProjects {
-  padding: 1.5rem 1rem;
-  border-left: 1px solid var(--ifm-color-emphasis-300);
-  background: var(--ifm-color-emphasis-100);
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  padding: 1.5rem 0;
+  border-left: 1px solid rgb(39 100 117 / 18%);
 }
 
 .featuredHeader {
-  margin-bottom: 1rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .featuredHeader h2 {
@@ -108,30 +118,34 @@
 
 .featuredHeader p {
   margin: 0.2rem 0 0;
-  color: var(--ifm-color-emphasis-700);
+  color: #235563;
   font-size: 0.8rem;
 }
 
 .projectList {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
 .projectCard {
   display: block;
-  padding: 0.8rem;
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: 4px;
-  background: var(--ifm-background-surface-color);
-  color: var(--ifm-font-color-base);
+  padding: 1rem;
+  border: 1px solid rgb(39 100 117 / 28%);
+  border-radius: var(--ifm-global-radius);
+  background: rgb(255 255 255 / 12%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 22%);
+  color: #173f4a;
   text-decoration: none;
-  transition: border-color var(--ifm-transition-fast);
+  transition:
+    background var(--ifm-transition-fast),
+    border-color var(--ifm-transition-fast);
 }
 
 .projectCard:hover {
-  border-color: var(--ifm-color-primary);
-  color: var(--ifm-font-color-base);
+  border-color: rgb(39 100 117 / 42%);
+  background: rgb(255 255 255 / 18%);
+  color: #173f4a;
   text-decoration: none;
 }
 
@@ -140,11 +154,6 @@
   color: #276475;
   font-size: 1rem;
   line-height: 1.25;
-}
-
-[data-theme='dark'] .featuredHeader h2,
-[data-theme='dark'] .projectCard h3 {
-  color: var(--ifm-color-primary-lightest);
 }
 
 .projectCard p:last-child {
@@ -158,7 +167,7 @@
 }
 
 .projectMeta {
-  color: var(--ifm-color-emphasis-700);
+  color: #235563;
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.02em;
@@ -166,26 +175,24 @@
 }
 
 .landscapeLink {
-  display: inline-block;
-  margin-top: 1rem;
+  color: #235563;
   font-size: 0.82rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
-@media screen and (max-width: 1100px) {
-  .topArea {
+.landscapeLink:hover {
+  color: #173f4a;
+}
+
+@media screen and (max-width: 1200px) {
+  .heroBanner {
     display: block;
   }
 
   .featuredProjects {
-    padding: 1.5rem var(--ifm-spacing-horizontal);
-    border-top: 1px solid var(--ifm-color-emphasis-300);
+    border-top: 1px solid rgb(39 100 117 / 18%);
     border-left: 0;
-  }
-
-  .projectList {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -202,6 +209,11 @@
     margin-top: -15px;
   }
   .buttons {
+    flex-direction: column;
+  }
+
+  .featuredHeader {
+    align-items: flex-start;
     flex-direction: column;
   }
 

@@ -68,35 +68,38 @@ function FeaturedProjects() {
         return difference || left.repository.localeCompare(right.repository);
       });
     }
-    return candidates.slice(0, 3);
+    return candidates.slice(0, 4);
   }, [dailySeed]);
 
   return (
-    <aside className={styles.featuredProjects} aria-labelledby="featured-projects-title">
-      <div className={styles.featuredHeader}>
-        <h2 id="featured-projects-title">Featured projects</h2>
-        <p>Built with Hydra</p>
-      </div>
+    <section className={styles.featuredProjects} aria-labelledby="featured-projects-title">
+      <div className="container">
+        <div className={styles.featuredHeader}>
+          <div>
+            <h2 id="featured-projects-title">Featured projects</h2>
+            <p>Built with Hydra</p>
+          </div>
+          <Link className={styles.landscapeLink} to={landscapeUrl}>
+            Explore the Hydra Landscape →
+          </Link>
+        </div>
 
-      <div className={styles.projectList}>
-        {projects.map((project) => (
-          <a
-            className={styles.projectCard}
-            href={project.url}
-            key={project.repository}
-            rel="noopener noreferrer"
-            target="_blank">
-            <span className={styles.projectMeta}>{project.type}</span>
-            <h3>{project.name}</h3>
-            <p>{project.description}</p>
-          </a>
-        ))}
+        <div className={styles.projectList}>
+          {projects.map((project) => (
+            <a
+              className={styles.projectCard}
+              href={project.url}
+              key={project.repository}
+              rel="noopener noreferrer"
+              target="_blank">
+              <span className={styles.projectMeta}>{project.type}</span>
+              <h3>{project.name}</h3>
+              <p>{project.description}</p>
+            </a>
+          ))}
+        </div>
       </div>
-
-      <Link className={styles.landscapeLink} to={landscapeUrl}>
-        Explore the Hydra Landscape →
-      </Link>
-    </aside>
+    </section>
   );
 }
 
@@ -110,7 +113,7 @@ function Home() {
       <main className={styles.topArea}>
         <div className={styles.topContent}>
           <header className={classnames('hero hero--primary', styles.heroBanner)}>
-            <div className="container">
+            <div className={classnames('container', styles.heroIntro)}>
               {/* Left */}
               <div className={styles.heroLeft}>
                 <div className={styles.imageLogo}><img src="img/logo.svg" alt="" /></div>
@@ -143,6 +146,7 @@ function Home() {
                 </div>
               </div>
             </div>
+            <FeaturedProjects />
           </header>
           {features && features.length && (
             <section className={styles.features}>
@@ -170,7 +174,6 @@ function Home() {
             </section>
           )}
         </div>
-        <FeaturedProjects />
       </main>
     </Layout>
   );
