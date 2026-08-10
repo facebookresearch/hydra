@@ -1,0 +1,1 @@
+Avoid default object_store_memory when connecting to an existing Ray cluster
