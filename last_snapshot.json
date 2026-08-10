@@ -150,6 +150,7 @@
     "2878": "2026-06-23",
     "2888": "2026-06-23",
     "2889": "2026-07-24",
+    "2893": "2026-08-10",
     "2894": "2026-06-23",
     "2908": "2026-06-23",
     "2913": "2026-06-23",
@@ -231,16 +232,18 @@
     "3309": "2026-07-24",
     "3314": "2026-07-25",
     "3318": "2026-07-26",
+    "3329": "2026-08-10",
     "3334": "2026-08-05",
     "3345": "2026-08-04",
     "3346": "2026-08-04",
     "3353": "2026-08-08",
     "3354": "2026-08-08",
+    "3362": "2026-08-10",
     "692": "2026-06-07",
     "714": "2026-07-27",
     "841": "2026-07-27"
   },
-  "generated_at": "2026-08-10T11:09:55Z",
+  "generated_at": "2026-08-10T13:30:00Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -908,22 +911,6 @@
       "title": "[Help requested] Optuna Sweeper Multiple GPU Parallelism",
       "updated_at": "2026-07-15T13:16:12Z"
     },
-    "2893": {
-      "category": "Bug",
-      "created_at": "2024-04-22T00:53:41Z",
-      "labels": [
-        "bug",
-        "plugin",
-        "ray-launcher"
-      ],
-      "pr_numbers": [
-        "3363"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
-      "updated_at": "2026-08-09T09:41:33Z"
-    },
     "2898": {
       "category": "Enhancement",
       "created_at": "2024-04-30T15:35:59Z",
@@ -1479,18 +1466,6 @@
       "title": "[Feature Request] First-class resume support for Hydra sweeps",
       "updated_at": "2026-07-31T06:11:07Z"
     },
-    "3329": {
-      "category": "Enhancement",
-      "created_at": "2026-07-31T11:16:56Z",
-      "labels": [],
-      "pr_numbers": [
-        "3358"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "Stop advertising HYDRA_FULL_ERROR in user-facing errors",
-      "updated_at": "2026-07-31T11:21:50Z"
-    },
     "3361": {
       "category": "Bug",
       "created_at": "2026-08-08T20:43:28Z",
@@ -1500,18 +1475,6 @@
       "status": "not started",
       "title": "Modernize Hydra\u2019s default exception rendering",
       "updated_at": "2026-08-08T20:43:28Z"
-    },
-    "3362": {
-      "category": "Enhancement",
-      "created_at": "2026-08-08T21:00:29Z",
-      "labels": [],
-      "pr_numbers": [
-        "3365"
-      ],
-      "state": "OPEN",
-      "status": "community PR",
-      "title": "Reject backslashes in Defaults List paths",
-      "updated_at": "2026-08-08T21:00:53Z"
     },
     "3364": {
       "category": "Enhancement",
@@ -3707,6 +3670,22 @@
       "title": "[Bug] Misleading error message when opening .yml file",
       "updated_at": "2026-06-08T18:11:11Z"
     },
+    "2893": {
+      "category": "Bug",
+      "created_at": "2024-04-22T00:53:41Z",
+      "labels": [
+        "bug",
+        "plugin",
+        "ray-launcher"
+      ],
+      "pr_numbers": [
+        "3363"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "[Bug] When connecting to an existing cluster, object_store_memory must not be provided",
+      "updated_at": "2026-08-09T09:41:33Z"
+    },
     "2894": {
       "category": "Bug",
       "created_at": "2024-04-23T16:26:18Z",
@@ -4711,6 +4690,18 @@
       "title": "Dangling Defaults List override can override a command-line append",
       "updated_at": "2026-07-25T19:56:31Z"
     },
+    "3329": {
+      "category": "Enhancement",
+      "created_at": "2026-07-31T11:16:56Z",
+      "labels": [],
+      "pr_numbers": [
+        "3358"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Stop advertising HYDRA_FULL_ERROR in user-facing errors",
+      "updated_at": "2026-07-31T11:21:50Z"
+    },
     "3334": {
       "category": "Documentation",
       "created_at": "2026-08-02T05:22:12Z",
@@ -4785,6 +4776,18 @@
       "status": "done",
       "title": "`instantiate()` must treat call-site `???` as a literal value",
       "updated_at": "2026-08-06T05:26:52Z"
+    },
+    "3362": {
+      "category": "Enhancement",
+      "created_at": "2026-08-08T21:00:29Z",
+      "labels": [],
+      "pr_numbers": [
+        "3365"
+      ],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Reject backslashes in Defaults List paths",
+      "updated_at": "2026-08-08T21:00:53Z"
     },
     "692": {
       "category": "Enhancement",
