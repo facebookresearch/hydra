@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-08-10",
-  "generated_at": "2026-08-10T17:29:52Z",
+  "generated_at": "2026-08-10T17:51:17Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 104,
+    "open_total": 103,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 7,
-        "percentage": 6.7
+        "percentage": 6.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 81,
-        "percentage": 77.9
+        "count": 80,
+        "percentage": 77.7
       },
       {
         "category": "Documentation",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 102
+        "count": 101
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 246
+        "count": 247
       }
     ]
   },
@@ -563,22 +563,6 @@
         "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2453"
-    },
-    {
-      "number": 2660,
-      "title": "[Feature Request] Make hydra-submitit-launcher available via Conda",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2023-05-14",
-      "updated": "2026-07-15",
-      "labels": [
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2660"
     },
     {
       "number": 2664,
@@ -1571,14 +1555,14 @@
     },
     {
       "number": 3250,
-      "title": "Align Hydra override key-path syntax with OmegaConf dotlist/path syntax",
+      "title": "Evaluate selected OmegaConf key-path forms for Hydra overrides",
       "category": "Enhancement",
       "category_emoji": "✨",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
       "created": "2026-06-30",
-      "updated": "2026-06-30",
+      "updated": "2026-08-10",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3250"
     },
@@ -5904,9 +5888,32 @@
       "updated": "2026-08-08",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3362"
+    },
+    {
+      "number": 2660,
+      "title": "[Feature Request] Make hydra-submitit-launcher available via Conda",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-05-14",
+      "updated": "2026-07-15",
+      "labels": [
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2660"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-10T17:51:17Z",
+      "kind": "closed",
+      "issue": 2660,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2660",
+      "title": "[Feature Request] Make hydra-submitit-launcher available via Conda"
+    },
     {
       "ts": "2026-08-10T17:08:25Z",
       "kind": "closed",
@@ -7495,13 +7502,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1749",
       "title": "tests: Use multiline regex search instead of assert_regex_match",
       "detail": "removed \"triage\""
-    },
-    {
-      "ts": "2026-07-19T10:58:56Z",
-      "kind": "closed",
-      "issue": 1753,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1753",
-      "title": "[Feature Request] Add GCP support in Ray launcher."
     }
   ]
 }
