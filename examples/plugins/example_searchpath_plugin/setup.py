@@ -12,7 +12,7 @@ with open("README.md") as fh:
         description="Example Hydra SearchPath plugin",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
-        url="https://github.com/facebookresearch/hydra/",
+        url="https://github.com/hydra-ecosystem/hydra/",
         license="MIT",
         packages=find_namespace_packages(include=["hydra_plugins.*"])
         + find_packages(include=["arbitrary_package.*"]),

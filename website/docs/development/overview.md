@@ -5,7 +5,7 @@ title: Developer Guide Overview
 
 import GithubLink from "@site/src/components/GithubLink"
 
-This guide assumes you have checked-out the [repository](https://github.com/facebookresearch/hydra).
+This guide assumes you have checked-out the [repository](https://github.com/hydra-ecosystem/hydra).
 
 ## Environment setup
 Contributor setup instructions are maintained in

@@ -43,12 +43,12 @@ parser = OverridesParser(create_functions())
 
 JSON_STR_DEPRECATION_WARNING = (
     "json_str(...) is deprecated and will be removed in Hydra 1.5. "
-    "See https://github.com/facebookresearch/hydra/pull/2930#issuecomment-5018616929"
+    "See https://github.com/hydra-ecosystem/hydra/pull/2930#issuecomment-5018616929"
 )
 
 EXTEND_LIST_DEPRECATION_WARNING = (
     "extend_list(...) is deprecated and will be removed in Hydra 1.5. "
-    "See https://github.com/facebookresearch/hydra/issues/3200"
+    "See https://github.com/hydra-ecosystem/hydra/issues/3200"
 )
 
 

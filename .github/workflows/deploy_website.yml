@@ -45,11 +45,11 @@ jobs:
           if [[ "$IS_PULL_REQUEST" == "true" ]]; then
             corepack pnpm run build
           else
-            git config --global user.email omry@users.noreply.github.com
-            git config --global user.name omry
-            echo "machine github.com login docusaurus-bot password $WEBSITE_GITHUB_TOKEN" > ~/.netrc
-            GIT_USER=docusaurus-bot corepack pnpm run deploy
+            git config --global user.email 137557794+meta-hydra-bot@users.noreply.github.com
+            git config --global user.name meta-hydra-bot
+            echo "machine github.com login meta-hydra-bot password $WEBSITE_GITHUB_TOKEN" > ~/.netrc
+            GIT_USER=meta-hydra-bot corepack pnpm run deploy
           fi
         else
-          echo "No changes detected in directory $SUBDIR between origin/main and this diff"
+          echo "No website changes detected between origin/main and this diff"
         fi

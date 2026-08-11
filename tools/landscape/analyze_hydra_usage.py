@@ -93,7 +93,7 @@ STRONG_DOCUMENTATION_PATTERNS = [
     for pattern in (
         r"hydra[-_.]core",
         r"hydra\.cc",
-        r"github\.com/facebookresearch/hydra",
+        r"github\.com/(?:facebookresearch|hydra-ecosystem)/hydra",
         r"@hydra\.main",
         r"\b(?:from|import)\s+hydra\b",
         r"\bhydra\.(?:compose|initialize|initialize_config_dir|initialize_config_module)\b",

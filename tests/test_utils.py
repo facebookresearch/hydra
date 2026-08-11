@@ -101,7 +101,7 @@ def test_to_hydra_override_value_str_roundtrip(
     msg = (
         "to_hydra_override_value_str() is deprecated and will be removed in "
         "Hydra 1.5. See "
-        "https://github.com/facebookresearch/hydra/pull/2930#issuecomment-5018616929"
+        "https://github.com/hydra-ecosystem/hydra/pull/2930#issuecomment-5018616929"
     )
     with warns(UserWarning, match=re.escape(msg)) as records:
         override_str = utils.to_hydra_override_value_str(obj)
