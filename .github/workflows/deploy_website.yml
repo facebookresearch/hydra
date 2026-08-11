@@ -47,7 +47,10 @@ jobs:
           else
             git config --global user.email 137557794+meta-hydra-bot@users.noreply.github.com
             git config --global user.name meta-hydra-bot
-            echo "machine github.com login meta-hydra-bot password $WEBSITE_GITHUB_TOKEN" > ~/.netrc
+            WEBSITE_NETRC="$HOME/.netrc"
+            trap 'rm -f "$WEBSITE_NETRC"' EXIT
+            umask 077
+            echo "machine github.com login meta-hydra-bot password $WEBSITE_GITHUB_TOKEN" > "$WEBSITE_NETRC"
             GIT_USER=meta-hydra-bot corepack pnpm run deploy
           fi
         else

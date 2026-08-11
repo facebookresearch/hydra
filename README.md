@@ -59,8 +59,8 @@ See the [Hydra Landscape](https://hydra.cc/docs/landscape/) for
 third-party libraries, templates, plugins, and projects that use or extend
 Hydra.
 
-#### Ask questions in Github Discussions or StackOverflow (Use the tag #fb-hydra or #omegaconf):
-* [Github Discussions](https://github.com/hydra-ecosystem/hydra/discussions)
+#### Ask questions in GitHub Discussions or StackOverflow (Use the tag #fb-hydra or #omegaconf):
+* [GitHub Discussions](https://github.com/hydra-ecosystem/hydra/discussions)
 * [StackOverflow](https://stackexchange.com/filters/391828/hydra-questions)
 * [X](https://twitter.com/Hydra_Framework)
 
