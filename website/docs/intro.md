@@ -44,7 +44,7 @@ Use the version switcher in the top bar to switch between documentation versions
     <tr>
       <td></td>
       <td>1.3 (Stable)</td>
-      <td><a href="https://github.com/facebookresearch/hydra/releases/tag/v1.3.0">Release notes</a></td>
+      <td><a href="https://github.com/hydra-ecosystem/hydra/releases/tag/v1.3.0">Release notes</a></td>
       <td><strong>3.6 - 3.11</strong></td>
     </tr>
     <tr>
@@ -173,7 +173,7 @@ There is a whole lot more to Hydra. Read the [tutorial](tutorials/basic/your_fir
 ## Other stuff
 ### Community
 Ask questions on github or StackOverflow (Use the tag #fb-hydra):
-* [github](https://github.com/facebookresearch/hydra/discussions)
+* [github](https://github.com/hydra-ecosystem/hydra/discussions)
 * [StackOverflow](https://stackoverflow.com/questions/tagged/fb-hydra)
 
 Follow Hydra on Twitter and Facebook:
@@ -189,6 +189,6 @@ If you use Hydra in your research please use the following BibTeX entry:
   title =        {Hydra - A framework for elegantly configuring complex applications},
   howpublished = {Github},
   year =         {2019},
-  url =          {https://github.com/facebookresearch/hydra}
+  url =          {https://github.com/hydra-ecosystem/hydra}
 }
 ```

@@ -200,7 +200,7 @@ class HydraOverrideVisitor(OverrideParserVisitor):
                         deprecation_warning(
                             "extend_list(...) is deprecated and will be removed in "
                             "Hydra 1.5. See "
-                            "https://github.com/facebookresearch/hydra/issues/3200",
+                            "https://github.com/hydra-ecosystem/hydra/issues/3200",
                             stacklevel=2,
                         )
                         override_type = OverrideType.EXTEND_LIST

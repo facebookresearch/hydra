@@ -14,7 +14,7 @@ setup(
     license="MIT",
     long_description=(Path(__file__).parent / "README.md").read_text(),
     long_description_content_type="text/markdown",
-    url="https://github.com/facebookresearch/hydra/",
+    url="https://github.com/hydra-ecosystem/hydra/",
     packages=find_namespace_packages(include=["hydra_plugins.*"]),
     classifiers=[
         "Programming Language :: Python :: 3.11",

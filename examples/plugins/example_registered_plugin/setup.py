@@ -12,7 +12,7 @@ setup(
     description="Example of Hydra Plugin Registration",
     long_description=LONG_DESC,
     long_description_content_type="text/markdown",
-    url="https://github.com/facebookresearch/hydra/",
+    url="https://github.com/hydra-ecosystem/hydra/",
     license="MIT",
     packages=["example_registered_plugin"],
     classifiers=[

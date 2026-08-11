@@ -161,7 +161,7 @@ def extract_text(*args: Any, value: Optional[Any] = None) -> Any:
 def cast_json_str(*args: Any, value: Optional[Any] = None) -> Any:
     deprecation_warning(
         "json_str(...) is deprecated and will be removed in Hydra 1.5. "
-        "See https://github.com/facebookresearch/hydra/pull/2930#issuecomment-5018616929",
+        "See https://github.com/hydra-ecosystem/hydra/pull/2930#issuecomment-5018616929",
         stacklevel=2,
     )
     value = _normalize_cast_value(*args, value=value)
@@ -442,6 +442,6 @@ def glob(
 def extend_list(*args: Any) -> ListExtensionOverrideValue:
     """
     Deprecated in Hydra 1.4 and scheduled for removal in Hydra 1.5.
-    See https://github.com/facebookresearch/hydra/issues/3200.
+    See https://github.com/hydra-ecosystem/hydra/issues/3200.
     """
     return ListExtensionOverrideValue(values=list(args))
