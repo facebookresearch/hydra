@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-08-10",
-  "generated_at": "2026-08-10T18:25:33Z",
+  "generated_on": "2026-08-11",
+  "generated_at": "2026-08-11T06:52:03Z",
   "repo": "facebookresearch/hydra",
   "summary": {
     "open_total": 100,
@@ -14,14 +14,14 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 79,
-        "percentage": 79.0
+        "count": 78,
+        "percentage": 78.0
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 4,
-        "percentage": 4.0
+        "count": 5,
+        "percentage": 5.0
       },
       {
         "category": "Question",
@@ -598,16 +598,16 @@
     {
       "number": 2758,
       "title": "[Feature Request] How to specify orders in `hydra.searchpath`?",
-      "category": "Enhancement",
-      "category_emoji": "✨",
+      "category": "Documentation",
+      "category_emoji": "📄",
       "status": "not started",
       "status_emoji": "⬜",
       "prs": [],
       "created": "2023-09-30",
-      "updated": "2026-07-15",
+      "updated": "2026-08-11",
       "labels": [
-        "enhancement",
-        "triage"
+        "documentation",
+        "enhancement"
       ],
       "url": "https://github.com/facebookresearch/hydra/issues/2758"
     },
@@ -3973,6 +3973,23 @@
       "url": "https://github.com/facebookresearch/hydra/issues/2709"
     },
     {
+      "number": 2711,
+      "title": "[Feature Request] API Docs?",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2023-07-13",
+      "updated": "2026-07-15",
+      "labels": [
+        "documentation",
+        "enhancement",
+        "triage"
+      ],
+      "url": "https://github.com/facebookresearch/hydra/issues/2711"
+    },
+    {
       "number": 2716,
       "title": "[Bug]Ray launcher plugin passes unrecognized arguments",
       "category": "Bug",
@@ -5887,26 +5904,17 @@
       "updated": "2026-08-08",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3362"
-    },
-    {
-      "number": 2711,
-      "title": "[Feature Request] API Docs?",
-      "category": "Documentation",
-      "category_emoji": "📄",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2023-07-13",
-      "updated": "2026-07-15",
-      "labels": [
-        "documentation",
-        "enhancement",
-        "triage"
-      ],
-      "url": "https://github.com/facebookresearch/hydra/issues/2711"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-11T06:52:03Z",
+      "kind": "label",
+      "issue": 2758,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/2758",
+      "title": "[Feature Request] How to specify orders in `hydra.searchpath`?",
+      "detail": "added \"documentation\"; removed \"triage\""
+    },
     {
       "ts": "2026-08-10T18:25:33Z",
       "kind": "closed",
@@ -7493,14 +7501,6 @@
       "issue": 3296,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3296",
       "title": "Better RDP login detection"
-    },
-    {
-      "ts": "2026-07-19T16:10:28Z",
-      "kind": "label",
-      "issue": 1622,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1622",
-      "title": "keyword documentation for config.yaml",
-      "detail": "removed \"triage\""
     }
   ]
 }
