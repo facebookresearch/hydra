@@ -24,7 +24,7 @@
 ----------------------
 
 > [!IMPORTANT]
-> **Hydra project transition:** Hydra is moving from the `facebookresearch`
+> **Hydra project transition:** Hydra moved from the `facebookresearch`
 > GitHub organization to
 > [`hydra-ecosystem`](https://github.com/hydra-ecosystem). The repository,
 > history, issues, and pull requests will move together. Hydra remains
