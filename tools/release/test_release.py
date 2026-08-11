@@ -149,7 +149,7 @@ def test_dispatch_publish_workflow_uses_json_boolean_input(monkeypatch) -> None:
     monkeypatch.setattr(
         release,
         "get_remote_url",
-        lambda hydra_root, vcs: "https://github.com/facebookresearch/hydra",
+        lambda hydra_root, vcs: "https://github.com/hydra-ecosystem/hydra",
     )
 
     release.dispatch_publish_workflow(
@@ -169,7 +169,7 @@ def test_dispatch_publish_workflow_uses_json_boolean_input(monkeypatch) -> None:
                 "run",
                 "publish.yml",
                 "--repo",
-                "facebookresearch/hydra",
+                "hydra-ecosystem/hydra",
                 "--ref",
                 "main",
                 "--json",
@@ -217,12 +217,12 @@ def test_check_build_artifacts_upgrades_smoke_environment_pip(
     ("output", "expected"),
     [
         (
-            "https://github.com/facebookresearch/hydra",
-            "https://github.com/facebookresearch/hydra",
+            "https://github.com/hydra-ecosystem/hydra",
+            "https://github.com/hydra-ecosystem/hydra",
         ),
         (
-            "default = https://github.com/facebookresearch/hydra",
-            "https://github.com/facebookresearch/hydra",
+            "default = https://github.com/hydra-ecosystem/hydra",
+            "https://github.com/hydra-ecosystem/hydra",
         ),
     ],
 )
@@ -237,12 +237,12 @@ def test_get_remote_url_accepts_sapling_path_output_formats(
 @pytest.mark.parametrize(
     "remote_url",
     [
-        "https://github.com/facebookresearch/hydra",
-        "https://github.com/facebookresearch/hydra.git",
-        "ssh://git@github.com/facebookresearch/hydra",
-        "ssh://git@github.com/facebookresearch/hydra.git",
-        "git@github.com:facebookresearch/hydra.git",
+        "https://github.com/hydra-ecosystem/hydra",
+        "https://github.com/hydra-ecosystem/hydra.git",
+        "ssh://git@github.com/hydra-ecosystem/hydra",
+        "ssh://git@github.com/hydra-ecosystem/hydra.git",
+        "git@github.com:hydra-ecosystem/hydra.git",
     ],
 )
 def test_get_github_repo_slug_accepts_common_github_remote_urls(remote_url) -> None:
-    assert release.get_github_repo_slug(remote_url) == "facebookresearch/hydra"
+    assert release.get_github_repo_slug(remote_url) == "hydra-ecosystem/hydra"

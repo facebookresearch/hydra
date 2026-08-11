@@ -500,6 +500,14 @@ def test_documented_user_evidence_is_preserved_past_output_cap() -> None:
     assert result["documentation_hydra_evidence"][0]["kind"] == "documented"
 
 
+def test_documentation_recognizes_current_hydra_repository_url() -> None:
+    result = analyzer.analyze_documentation(
+        {"README.md": ("See https://github.com/hydra-ecosystem/hydra for details.")},
+        None,
+    )
+    assert result["documentation_hydra_evidence"][0]["kind"] == "documented"
+
+
 def test_repository_analysis_separates_scopes_and_scans_other_markdown() -> None:
     entries = [
         entry("README.md"),

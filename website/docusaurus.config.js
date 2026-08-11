@@ -18,17 +18,17 @@ module.exports = {
     },
     trailingSlash: true,
     favicon: 'img/Hydra-head.svg',
-    organizationName: 'facebookresearch', // Usually your GitHub org/user name.
+    organizationName: 'hydra-ecosystem', // Usually your GitHub org/user name.
     projectName: 'hydra', // Usually your repo name.
     customFields: {
         githubLinkVersionToBaseUrl: {
             // TODO: Update once a branch is cut for 1.4
-            "1.4": "https://github.com/facebookresearch/hydra/blob/main/",
-            "1.3": "https://github.com/facebookresearch/hydra/blob/1.3_branch/",
-            "1.2": "https://github.com/facebookresearch/hydra/blob/1.2_branch/",
-            "1.1": "https://github.com/facebookresearch/hydra/blob/1.1_branch/",
-            "1.0": "https://github.com/facebookresearch/hydra/blob/1.0_branch/",
-            current: "https://github.com/facebookresearch/hydra/blob/main/",
+            "1.4": "https://github.com/hydra-ecosystem/hydra/blob/main/",
+            "1.3": "https://github.com/hydra-ecosystem/hydra/blob/1.3_branch/",
+            "1.2": "https://github.com/hydra-ecosystem/hydra/blob/1.2_branch/",
+            "1.1": "https://github.com/hydra-ecosystem/hydra/blob/1.1_branch/",
+            "1.0": "https://github.com/hydra-ecosystem/hydra/blob/1.0_branch/",
+            current: "https://github.com/hydra-ecosystem/hydra/blob/main/",
         },
     },
     themeConfig: {
@@ -41,7 +41,7 @@ module.exports = {
         // announcementBar: {
         //   id: 'supportus',
         //   content:
-        //     '⭐️ If you like Hydra, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/facebookresearch/hydra">GitHub</a>! ⭐️',
+        //     '⭐️ If you like Hydra, give it a star on <a target="_blank" rel="noopener noreferrer" href="https://github.com/hydra-ecosystem/hydra">GitHub</a>! ⭐️',
         // },
 		prism: {
 		  additionalLanguages: ['antlr4'],
@@ -57,60 +57,31 @@ module.exports = {
                 {to: 'docs/landscape', label: 'Hydra Landscape', position: 'left'},
                 {position: 'left', type: 'docsVersionDropdown'},
                 {to: 'blog', label: 'Blog', position: 'left'},
-                {to: 'https://github.com/facebookresearch/hydra', label: 'Hydra@GitHub', position: 'left'},
+                {to: 'https://github.com/hydra-ecosystem/hydra', label: 'Hydra@GitHub', position: 'left'},
             ],
         },
         footer: {
             style: 'dark',
             links: [
                 {
-                    title: "Links",
-                    items: [
-                        {
-                            label: 'Blog',
-                            to: 'blog'
-                        },
-                        {
-                            label: 'Docs',
-                            to: 'docs/intro'
-                        },
-                        {
-                            label: 'Hydra@GitHub',
-                            to: 'https://github.com/facebookresearch/hydra',
-                        },
-                        {
-                            label: 'Powered by OmegaConf',
-                            to: 'https://github.com/omry/omegaconf',
-                        },
-                    ],
+                    label: 'Blog',
+                    to: 'blog'
                 },
                 {
-                    title: 'Legal',
-                    // Please do not remove the privacy and terms, it's a legal requirement.
-                    items: [
-                        {
-                            label: 'Privacy',
-                            href: 'https://opensource.facebook.com/legal/privacy/',
-                            target: '_blank',
-                            rel: 'noreferrer noopener',
-                        },
-                        {
-                            label: 'Terms',
-                            href: 'https://opensource.facebook.com/legal/terms/',
-                            target: '_blank',
-                            rel: 'noreferrer noopener',
-                        },
-                        {
-                            label: 'Cookies',
-                            href: 'https://opensource.facebook.com/legal/cookie-policy',
-                            target: '_blank',
-                            rel: 'noreferrer noopener',
-                        },
-                    ],
+                    label: 'Docs',
+                    to: 'docs/intro'
+                },
+                {
+                    label: 'Hydra@GitHub',
+                    to: 'https://github.com/hydra-ecosystem/hydra',
+                },
+                {
+                    label: 'Powered by OmegaConf',
+                    to: 'https://github.com/omry/omegaconf',
                 },
             ],
 
-            copyright: `Copyright © ${new Date().getFullYear()} Meta Platforms, Inc`,
+            copyright: 'Hydra is open source under the MIT License. Copyright remains with the respective copyright holders.',
         },
     },
     presets: [
@@ -121,14 +92,11 @@ module.exports = {
                     sidebarPath: require.resolve('./sidebars.js'),
                     showLastUpdateAuthor: false,
                     showLastUpdateTime: false,
-                    editUrl: 'https://github.com/facebookresearch/hydra/edit/main/website/',
+                    editUrl: 'https://github.com/hydra-ecosystem/hydra/edit/main/website/',
                     lastVersion: 'current',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
-                },
-                googleAnalytics: {
-                    trackingID: 'UA-149862507-1',
                 },
             },
         ],

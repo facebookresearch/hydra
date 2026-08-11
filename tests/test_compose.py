@@ -37,7 +37,7 @@ chdir_hydra_root()
 
 EXTEND_LIST_DEPRECATION_WARNING = (
     "extend_list(...) is deprecated and will be removed in Hydra 1.5. "
-    "See https://github.com/facebookresearch/hydra/issues/3200"
+    "See https://github.com/hydra-ecosystem/hydra/issues/3200"
 )
 
 

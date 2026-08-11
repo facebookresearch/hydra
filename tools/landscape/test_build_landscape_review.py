@@ -258,10 +258,11 @@ def test_adapted_usage_requires_lineage_review() -> None:
 
 
 def test_hydra_itself_is_not_a_landscape_candidate() -> None:
-    record = {
-        "repo": "facebookresearch/hydra",
-        "provisional_disposition": "include",
-        "classification": "confirmed",
-        "origin": "native",
-    }
-    assert review.review_tier(record) == "likely_exclude"
+    for repo in review.HYDRA_REPOSITORIES:
+        record = {
+            "repo": repo,
+            "provisional_disposition": "include",
+            "classification": "confirmed",
+            "origin": "native",
+        }
+        assert review.review_tier(record) == "likely_exclude"

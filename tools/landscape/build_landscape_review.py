@@ -28,6 +28,7 @@ DEFAULT_DECISIONS = ROOT / "data" / "decisions.json"
 DEFAULT_OUT = WORK_ROOT / "hydra-landscape-review-v1.ndjson"
 DEFAULT_MARKDOWN = WORK_ROOT / "hydra-landscape-review-next-batch.md"
 TARGET_HYDRA_VERSION = Version("1.4.0")
+HYDRA_REPOSITORIES = {"facebookresearch/hydra", "hydra-ecosystem/hydra"}
 UTC = timezone.utc
 
 
@@ -290,13 +291,13 @@ def evidence_gaps(record: dict[str, Any]) -> list[str]:
         gaps.append("confirmed_hydra_usage")
     if record["origin"] in {"unknown", "transitive", "vendored_or_copied"}:
         gaps.append("hydra_usage_origin")
-    if record["repo"] == "facebookresearch/hydra":
+    if record["repo"] in HYDRA_REPOSITORIES:
         gaps.append("hydra_itself")
     return gaps
 
 
 def review_tier(record: dict[str, Any]) -> str:
-    if record["repo"] == "facebookresearch/hydra":
+    if record["repo"] in HYDRA_REPOSITORIES:
         return "likely_exclude"
     if record["provisional_disposition"] == "exclude":
         return "likely_exclude"

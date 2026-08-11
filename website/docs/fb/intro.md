@@ -9,7 +9,7 @@ Facebook has multiple different environments, such as the **Internal FB Cluster*
 The FB specific docs are describing the differences.
 
 ### Release strategy
-Hydra's source of truth is the [GitHub repo](https://github.com/facebookresearch/hydra).
+Hydra's source of truth is the [GitHub repo](https://github.com/hydra-ecosystem/hydra).
 
 Hydra is developed using release branches. Once a new major is released, it is maintained in patch only mode.
 Primary development is happening on the `master` branch.
