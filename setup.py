@@ -39,7 +39,7 @@ with open("README.md") as fh:
         license="MIT",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
-        url="https://github.com/facebookresearch/hydra",
+        url="https://github.com/hydra-ecosystem/hydra",
         keywords="command-line configuration yaml tab-completion",
         packages=find_namespace_packages(include=["hydra", "hydra.*"]),
         include_package_data=True,

@@ -1408,10 +1408,10 @@
         "software_engineering"
       ],
       "type": "Hydra developer tool",
-      "url": "https://github.com/facebookresearch/hydra/tree/main/tools/configen"
+      "url": "https://github.com/hydra-ecosystem/hydra/tree/main/tools/configen"
     },
     "note": "Included as a first-party Hydra developer tool. Configen generates Structured Config dataclasses from Python class signatures for instantiate workflows. It remains a supported standalone release target, but is not featured because its latest public release is an old prerelease and recent development has primarily been compatibility maintenance.",
-    "repo": "facebookresearch/hydra"
+    "repo": "hydra-ecosystem/hydra"
   },
   {
     "decided_at": "2026-08-02",

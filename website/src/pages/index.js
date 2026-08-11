@@ -134,7 +134,7 @@ function Home() {
                     </Link>
                     <span className={styles['index-ctas-github-button']}>
                       <iframe
-                        src="https://ghbtns.com/github-btn.html?user=facebookresearch&amp;repo=hydra&amp;type=star&amp;count=true&amp;size=large"
+                        src="https://ghbtns.com/github-btn.html?user=hydra-ecosystem&amp;repo=hydra&amp;type=star&amp;count=true&amp;size=large"
                         frameBorder={0}
                         scrolling={0}
                         width={160}

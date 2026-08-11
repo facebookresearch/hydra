@@ -1,4 +1,4 @@
-name: facebookresearch/hydra/core_tests
+name: Core tests
 on:
   push:
     branches:

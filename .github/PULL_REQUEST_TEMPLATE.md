@@ -1,10 +1,17 @@
 <!-- Thank you for sending a PR and taking the time to improve Hydra -->
 
+## Contributor License Agreement transition
+
+Hydra is preparing a new project-controlled Contributor License Agreement
+(CLA). Code contributions cannot be accepted unless the contributor signs the
+new CLA once it is published. If you would prefer to review its terms before
+contributing, please wait a few days for it to become available.
+
 ## Motivation
 
 (Write your motivation for proposed changes here.)
 
-### Have you read the [Contributing Guidelines on pull requests](https://github.com/facebookresearch/hydra/blob/main/CONTRIBUTING.md)?
+### Have you read the [Contributing Guidelines on pull requests](https://github.com/hydra-ecosystem/hydra/blob/main/CONTRIBUTING.md)?
 
 Yes/No
 
