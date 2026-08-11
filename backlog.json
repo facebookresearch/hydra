@@ -1,21 +1,21 @@
 {
   "generated_on": "2026-08-11",
-  "generated_at": "2026-08-11T07:29:44Z",
+  "generated_at": "2026-08-11T15:38:40Z",
   "repo": "facebookresearch/hydra",
   "summary": {
-    "open_total": 100,
+    "open_total": 101,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 7,
-        "percentage": 7.0
+        "percentage": 6.9
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 78,
-        "percentage": 78.0
+        "percentage": 77.2
       },
       {
         "category": "Documentation",
@@ -27,13 +27,13 @@
         "category": "Question",
         "emoji": "❓",
         "count": 6,
-        "percentage": 6.0
+        "percentage": 5.9
       },
       {
         "category": "Refactor",
         "emoji": "🔧",
-        "count": 1,
-        "percentage": 1.0
+        "count": 2,
+        "percentage": 2.0
       },
       {
         "category": "Build",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 98
+        "count": 99
       },
       {
         "status": "done",
@@ -1671,6 +1671,19 @@
       "updated": "2026-08-09",
       "labels": [],
       "url": "https://github.com/facebookresearch/hydra/issues/3364"
+    },
+    {
+      "number": 3369,
+      "title": "Remove redundant setup-xcode step from macOS CI",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-11",
+      "updated": "2026-08-11",
+      "labels": [],
+      "url": "https://github.com/facebookresearch/hydra/issues/3369"
     },
     {
       "number": 692,
@@ -5908,6 +5921,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-11T15:38:40Z",
+      "kind": "new",
+      "issue": 3369,
+      "issue_url": "https://github.com/facebookresearch/hydra/issues/3369",
+      "title": "Remove redundant setup-xcode step from macOS CI"
+    },
+    {
       "ts": "2026-08-11T06:52:03Z",
       "kind": "label",
       "issue": 2758,
@@ -7491,13 +7511,6 @@
     {
       "ts": "2026-07-19T18:53:51Z",
       "kind": "closed",
-      "issue": 3296,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3296",
-      "title": "Better RDP login detection"
-    },
-    {
-      "ts": "2026-07-19T18:50:26Z",
-      "kind": "new",
       "issue": 3296,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3296",
       "title": "Better RDP login detection"
