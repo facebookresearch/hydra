@@ -23,6 +23,13 @@
 
 ----------------------
 
+> [!IMPORTANT]
+> **Hydra project transition:** Hydra is moving from the `facebookresearch`
+> GitHub organization to
+> [`hydra-ecosystem`](https://github.com/hydra-ecosystem). The repository,
+> history, issues, and pull requests will move together. Hydra remains
+> MIT-licensed. No action is required from users or contributors at this time.
+
 ### Releases
 
 #### Development
