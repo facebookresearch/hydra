@@ -2,11 +2,104 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://hydra.cc/blog/</id>
     <title>Hydra Blog</title>
-    <updated>2022-05-18T00:00:00.000Z</updated>
+    <updated>2026-08-13T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://hydra.cc/blog/"/>
     <subtitle>Hydra Blog</subtitle>
     <icon>https://hydra.cc/img/Hydra-head.svg</icon>
+    <entry>
+        <title type="html"><![CDATA[Hydra's next chapter: independent stewardship]]></title>
+        <id>https://hydra.cc/blog/2026/08/13/independent-stewardship/</id>
+        <link href="https://hydra.cc/blog/2026/08/13/independent-stewardship/"/>
+        <updated>2026-08-13T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[In 2019, while working at Facebook, I started Hydra to make it easier to build]]></summary>
+        <content type="html"><![CDATA[<p>In 2019, while working at Facebook, I started Hydra to make it easier to build
+and configure complex applications. We
+<a href="https://engineering.fb.com/2019/10/03/open-source/hydra/" target="_blank" rel="noopener noreferrer" class="">released it as open source</a>
+under the MIT license, and it grew far beyond its original setting.</p>
+<p>Hydra became what it is because of its users, contributors, and maintainers.
+People adopted it in research labs, startups, large companies, and personal
+projects. They reported problems, proposed ideas, wrote plugins, improved the
+documentation, and helped shape the project over many years.</p>
+<p>Today, I am happy to share that Hydra has moved from Meta stewardship to an
+independent home under the
+<a href="https://github.com/hydra-ecosystem" target="_blank" rel="noopener noreferrer" class="">Hydra Ecosystem</a> GitHub organization.</p>
+<h2 class="anchor anchorTargetStickyNavbar_AKxV" id="what-the-agreement-covers">What the agreement covers<a href="https://hydra.cc/blog/2026/08/13/independent-stewardship/#what-the-agreement-covers" class="hash-link" aria-label="Direct link to What the agreement covers" title="Direct link to What the agreement covers" translate="no">​</a></h2>
+<p>Meta and I signed an agreement transferring to me the Hydra-related rights and
+project assets specified in the agreement. These include:</p>
+<ul>
+<li class="">the Hydra GitHub repository;</li>
+<li class="">the <code>hydra.cc</code> domain;</li>
+<li class="">the specified Hydra packages published on PyPI;</li>
+<li class="">Meta's rights in the Hydra name and logo; and</li>
+<li class="">the specified project accounts used to operate Hydra.</li>
+</ul>
+<p>The existing GitHub repository was transferred rather than replaced with a
+fork. This preserved the repository's history, issues, pull requests, releases,
+and community context.</p>
+<p>Alongside Hydra's move, I will move OmegaConf, currently hosted at
+<a href="https://github.com/omry/omegaconf" target="_blank" rel="noopener noreferrer" class="">omry/omegaconf</a>, into the Hydra Ecosystem
+organization so that Hydra and its configuration foundation have a shared
+long-term home.</p>
+<h2 class="anchor anchorTargetStickyNavbar_AKxV" id="what-is-not-changing">What is not changing<a href="https://hydra.cc/blog/2026/08/13/independent-stewardship/#what-is-not-changing" class="hash-link" aria-label="Direct link to What is not changing" title="Direct link to What is not changing" translate="no">​</a></h2>
+<p>Hydra remains under the MIT license. The transfer does not include copyright in
+Meta's historical code contributions. That code remains part of Hydra under the
+MIT license, with applicable license and copyright notices preserved. The
+transfer changes stewardship and project control without changing the ownership
+history of existing contributions.</p>
+<p>No immediate action is required from Hydra users. Existing packages continue to
+work, and existing GitHub links redirect to the new location. You can update
+your local Git remotes to the new organization at your convenience.</p>
+<h2 class="anchor anchorTargetStickyNavbar_AKxV" id="what-independent-stewardship-means">What independent stewardship means<a href="https://hydra.cc/blog/2026/08/13/independent-stewardship/#what-independent-stewardship-means" class="hash-link" aria-label="Direct link to What independent stewardship means" title="Direct link to What independent stewardship means" translate="no">​</a></h2>
+<p>The move gives Hydra a clear home outside Meta for future project decisions,
+including governance, releases, infrastructure, security, and community
+processes. It also keeps the door open to a future foundation or another
+durable organizational home if that becomes the right choice.</p>
+<p>When I left Facebook at the end of 2021, a small team continued to maintain
+Hydra. Over time, as its members moved on, that team dispersed and development
+slowed.</p>
+<p>Adoption, however, continued to grow. GitHub now reports
+<a href="https://github.com/hydra-ecosystem/hydra/network/dependents" target="_blank" rel="noopener noreferrer" class="">more than 40,000 public repositories</a>
+as direct dependents of Hydra. The new
+<a href="https://hydra.cc/docs/landscape/" target="_blank" rel="noopener noreferrer" class="">Hydra Landscape</a> is a curated directory of
+more than 100 applications, frameworks, tools, plugins, and learning resources.
+It offers a window into that much larger ecosystem, not an exhaustive survey of
+it.</p>
+<p>In recent months, I have returned to actively maintaining Hydra and OmegaConf.
+The number of open issues and pull requests has already fallen substantially in
+both projects. Work on Hydra 1.4 is underway, and it is already available as a
+development release. There is still much to do, but maintenance is active
+again.</p>
+<p>Practical transition work remains. I am finalizing release
+publishing and moving the remaining Meta-dependent infrastructure,
+contribution, and community processes to project-controlled systems. Security
+reports can now be
+<a href="https://github.com/hydra-ecosystem/hydra/security/advisories/new" target="_blank" rel="noopener noreferrer" class="">submitted privately through GitHub</a>.</p>
+<p>The contribution process deserves particular care. Hydra historically used
+Meta's contributor license agreement. Going forward, Hydra will use a
+project-controlled CLA. I will publish the CLA together with details of the new
+process once both are finalized. Pull requests already open during the
+transition will be handled individually.</p>
+<h2 class="anchor anchorTargetStickyNavbar_AKxV" id="what-comes-next">What comes next<a href="https://hydra.cc/blog/2026/08/13/independent-stewardship/#what-comes-next" class="hash-link" aria-label="Direct link to What comes next" title="Direct link to What comes next" translate="no">​</a></h2>
+<p>Completing Hydra 1.4 is the next major priority. More broadly, I intend to keep
+the project actively maintained and responsive to the community.</p>
+<p>If you are feeling adventurous, try the
+<a href="https://hydra.cc/docs/intro/#installation" target="_blank" rel="noopener noreferrer" class="">Hydra 1.4 development release</a>
+and report any problems you find.</p>
+<p>This transition is not a product relaunch or a change in Hydra's purpose. It is
+a change in stewardship that gives the project a cleaner and more sustainable
+foundation for its next chapter.</p>
+<p>I am grateful to Jon Janzen, Jonathan Torres, and the people at Meta who helped
+work through an unusual transfer. I am also deeply grateful to Hydra's
+maintainers, contributors, and users for building and sustaining the project.</p>
+<p>I look forward to continuing that work and giving Hydra and OmegaConf a stable,
+active home for the years ahead.</p>]]></content>
+        <author>
+            <name>Omry Yadan</name>
+            <uri>https://github.com/omry</uri>
+        </author>
+        <category label="Hydra" term="Hydra"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Hydra 1.2]]></title>
         <id>https://hydra.cc/blog/2022/05/18/Hydra_1.2/</id>
