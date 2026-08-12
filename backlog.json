@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-08-12",
-  "generated_at": "2026-08-12T20:48:25Z",
+  "generated_at": "2026-08-12T20:50:21Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 105,
+    "open_total": 103,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 7,
-        "percentage": 6.7
+        "percentage": 6.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 82,
-        "percentage": 78.1
+        "count": 80,
+        "percentage": 77.7
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 5,
-        "percentage": 4.8
+        "percentage": 4.9
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 6,
-        "percentage": 5.7
+        "percentage": 5.8
       },
       {
         "category": "Refactor",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 100
+        "count": 98
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 0
+        "count": 2
       }
     ]
   },
@@ -1726,33 +1726,47 @@
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3371"
     },
     {
-      "number": 3386,
-      "title": "Backlog Atlas canary: external-fork catch-up",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-08-12",
-      "updated": "2026-08-12",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3386"
-    },
-    {
       "number": 3385,
       "title": "Backlog Atlas canary: trusted prompt update",
       "category": "Enhancement",
       "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
+      "status": "done",
+      "status_emoji": "✅",
       "prs": [],
       "created": "2026-08-12",
       "updated": "2026-08-12",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3385"
+    },
+    {
+      "number": 3386,
+      "title": "Backlog Atlas canary: external-fork catch-up",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-08-12",
+      "updated": "2026-08-12",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3386"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-12T20:50:21Z",
+      "kind": "closed",
+      "issue": 3386,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3386",
+      "title": "Backlog Atlas canary: external-fork catch-up"
+    },
+    {
+      "ts": "2026-08-12T20:50:21Z",
+      "kind": "closed",
+      "issue": 3385,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3385",
+      "title": "Backlog Atlas canary: trusted prompt update"
+    },
     {
       "ts": "2026-08-12T20:48:25Z",
       "kind": "pr",
@@ -3353,20 +3367,6 @@
       "issue": 2889,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2889",
       "title": "[Bug] Misleading error message when opening .yml file"
-    },
-    {
-      "ts": "2026-07-24T05:44:30Z",
-      "kind": "new",
-      "issue": 3308,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3308",
-      "title": "[Bug]"
-    },
-    {
-      "ts": "2026-07-24T05:44:30Z",
-      "kind": "new",
-      "issue": 3307,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3307",
-      "title": "[Bug]"
     }
   ]
 }
