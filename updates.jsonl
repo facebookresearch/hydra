@@ -678,3 +678,5 @@
 {"ts": "2026-08-12T20:04:34Z", "kind": "status", "issue": 3375, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3375", "title": "Show project homepages in the Hydra Landscape", "detail": "not started → community PR", "pr": {"number": 3381, "url": "https://github.com/hydra-ecosystem/hydra/pull/3381"}}
 {"ts": "2026-08-12T20:04:34Z", "kind": "pr", "issue": 3369, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3369", "title": "Remove redundant setup-xcode step from macOS CI", "detail": "linked #3380"}
 {"ts": "2026-08-12T20:04:34Z", "kind": "pr", "issue": 3375, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3375", "title": "Show project homepages in the Hydra Landscape", "detail": "linked #3381"}
+{"ts": "2026-08-12T20:27:43Z", "kind": "new", "issue": 3385, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3385", "title": "Backlog Atlas canary: trusted prompt update"}
+{"ts": "2026-08-12T20:27:43Z", "kind": "new", "issue": 3386, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3386", "title": "Backlog Atlas canary: external-fork catch-up"}

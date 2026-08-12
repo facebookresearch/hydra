@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-08-12",
-  "generated_at": "2026-08-12T20:23:38Z",
+  "generated_at": "2026-08-12T20:27:43Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 103,
+    "open_total": 105,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 7,
-        "percentage": 6.8
+        "percentage": 6.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 80,
-        "percentage": 77.7
+        "count": 82,
+        "percentage": 78.1
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 5,
-        "percentage": 4.9
+        "percentage": 4.8
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 6,
-        "percentage": 5.8
+        "percentage": 5.7
       },
       {
         "category": "Refactor",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 0
+        "count": 2
       },
       {
         "status": "community PR",
@@ -71,6 +71,42 @@
     ]
   },
   "issues": [
+    {
+      "number": 3385,
+      "title": "Backlog Atlas canary: trusted prompt update",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3383,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3383"
+        }
+      ],
+      "created": "2026-08-12",
+      "updated": "2026-08-12",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3385"
+    },
+    {
+      "number": 3386,
+      "title": "Backlog Atlas canary: external-fork catch-up",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3384,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3384"
+        }
+      ],
+      "created": "2026-08-12",
+      "updated": "2026-08-12",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3386"
+    },
     {
       "number": 802,
       "title": "Improve Hydra test coverage to 100%",
@@ -1728,6 +1764,20 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-12T20:27:43Z",
+      "kind": "new",
+      "issue": 3386,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3386",
+      "title": "Backlog Atlas canary: external-fork catch-up"
+    },
+    {
+      "ts": "2026-08-12T20:27:43Z",
+      "kind": "new",
+      "issue": 3385,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3385",
+      "title": "Backlog Atlas canary: trusted prompt update"
+    },
+    {
       "ts": "2026-08-12T20:04:34Z",
       "kind": "pr",
       "issue": 3375,
@@ -3312,21 +3362,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3202",
       "title": "Disallow parent traversal in Defaults List config groups",
       "detail": "community PR → not started"
-    },
-    {
-      "ts": "2026-07-22T09:16:53Z",
-      "kind": "closed",
-      "issue": 3215,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3215",
-      "title": "Log multirun job failures in per-job logs"
-    },
-    {
-      "ts": "2026-07-22T08:38:42Z",
-      "kind": "label",
-      "issue": 1512,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1512",
-      "title": "Support multirun partial failure in Ax Sweeper",
-      "detail": "removed \"triage\""
     }
   ]
 }
