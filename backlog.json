@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-12",
-  "generated_at": "2026-08-12T06:35:38Z",
+  "generated_at": "2026-08-12T07:15:21Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 103,
@@ -72,6 +72,29 @@
   },
   "issues": [
     {
+      "number": 802,
+      "title": "Improve Hydra test coverage to 100%",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3377,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3377"
+        }
+      ],
+      "created": "2020-07-21",
+      "updated": "2026-07-21",
+      "labels": [
+        "help wanted",
+        "maintenance",
+        "tests",
+        "priority_low"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/802"
+    },
+    {
       "number": 1749,
       "title": "tests: Use multiline regex search instead of assert_regex_match",
       "category": "Enhancement",
@@ -115,29 +138,6 @@
         "sweep"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/2237"
-    },
-    {
-      "number": 802,
-      "title": "Improve Hydra test coverage to 100%",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3377,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3377"
-        }
-      ],
-      "created": "2020-07-21",
-      "updated": "2026-07-21",
-      "labels": [
-        "help wanted",
-        "maintenance",
-        "tests",
-        "priority_low"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/802"
     },
     {
       "number": 385,
