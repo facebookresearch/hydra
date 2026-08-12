@@ -9,8 +9,7 @@ blockExoticSubdeps: true
 auditConfig:
   ignoreGhsas:
     # image-size@2.0.2 has no patched release; both advisories are fixed by
-    # patches/image-size@2.0.2.patch. Use pnpm 10's setting name until the
-    # project upgrades to pnpm 11.
+    # patches/image-size@2.0.2.patch.
     - GHSA-5p2g-fcmc-qvqq
     - GHSA-w3rx-r6r6-pgpr
 

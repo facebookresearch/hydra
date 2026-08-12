@@ -4,7 +4,7 @@ This website is built using Docusaurus 3, a modern static website generator.
 
 ### Installation
 
-The website requires Node.js 20 or newer and Python 3.10 or newer. Python runs
+The website requires Node.js 24 or newer and Python 3.10 or newer. Python runs
 the deterministic Hydra Landscape generator before website commands.
 
 ```

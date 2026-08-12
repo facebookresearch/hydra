@@ -41,9 +41,7 @@ overrides:
   ws: 8.21.0
 
 patchedDependencies:
-  image-size@2.0.2:
-    hash: 77c12533e3a635c4066c55da8952f4912e8210416539dc1249550fa639271595
-    path: patches/image-size@2.0.2.patch
+  image-size@2.0.2: 77c12533e3a635c4066c55da8952f4912e8210416539dc1249550fa639271595
 
 importers:
 

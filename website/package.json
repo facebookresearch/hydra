@@ -2,9 +2,9 @@
   "name": "website",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "pnpm@10.34.4",
+  "packageManager": "pnpm@11.21.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "scripts": {
     "docusaurus": "docusaurus",
