@@ -8,10 +8,19 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - .github/workflows/deploy_website.yml
+      - website/**
+      - tools/landscape/data/decisions.json
+      - tools/landscape/build_public_landscape.py
 
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -31,7 +40,12 @@ jobs:
         WEBSITE_GITHUB_TOKEN: ${{ github.event_name != 'pull_request' && secrets.WEBSITE_GITHUB_TOKEN || '' }}
         IS_PULL_REQUEST: ${{ github.event_name == 'pull_request' }}
       run: |
-        PATHS=(website tools/landscape/data/decisions.json tools/landscape/build_public_landscape.py)
+        PATHS=(
+          .github/workflows/deploy_website.yml
+          website
+          tools/landscape/data/decisions.json
+          tools/landscape/build_public_landscape.py
+        )
         git fetch
         REV=$(git log -5 --pretty=oneline origin/gh-pages | grep "Deploy website" |  awk 'NF>1{print $NF}'  | head -1)
         # This condition passes in 2 conditions:
