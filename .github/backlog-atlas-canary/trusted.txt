@@ -1,0 +1,1 @@
+Backlog Atlas canary: trusted same-repository event. Safe to delete.
