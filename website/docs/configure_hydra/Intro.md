@@ -157,6 +157,6 @@ minor:   ${python_version:minor}     # 3.10
 micro:   ${python_version:micro}     # 3.10.1
 ```
 
-Additionally hydra supports OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/custom_resolvers.html#custom-resolvers" target="_blank">custom resolvers</a>
+Additionally hydra supports OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/custom_resolvers.html#custom-resolvers" target="_blank" rel="noopener noreferrer">custom resolvers</a>
 
-You can learn more about OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank">here</a>.
+You can learn more about OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank" rel="noopener noreferrer">here</a>.

@@ -1,9 +1,6 @@
 ---
 title: "Hydra's next chapter: independent stewardship"
-author: Omry Yadan
-author_title: Creator of Hydra
-author_url: https://github.com/omry
-author_image_url: https://github.com/omry.png
+authors: [omry]
 tags: [Hydra]
 image: /img/Hydra-Readme-logo2.svg
 ---

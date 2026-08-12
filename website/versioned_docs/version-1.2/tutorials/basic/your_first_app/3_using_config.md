@@ -47,4 +47,4 @@ omegaconf.errors.MissingMandatoryValue: Missing mandatory value: node.waldo
 ```
 
 Hydra's configuration object is an instance of OmegaConf's DictConfig.
-You can learn more about OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank">here</a>.
+You can learn more about OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank" rel="noopener noreferrer">here</a>.

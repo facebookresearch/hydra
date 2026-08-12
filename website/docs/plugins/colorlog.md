@@ -12,7 +12,7 @@ import GithubLink,{ExampleGithubLink} from "@site/src/components/GithubLink"
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hydra-colorlog)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/hydra-colorlog.svg)](https://pypistats.org/packages/hydra-colorlog)<ExampleGithubLink text="Example application" to="plugins/hydra_colorlog/example"/><ExampleGithubLink text="Plugin source" to="plugins/hydra_colorlog"/>
 
-Adds <a class="external" href="https://github.com/borntyping/python-colorlog" target="_blank">colorlog</a> colored logs for `hydra/job_logging` and `hydra/hydra_logging`.
+Adds <a class="external" href="https://github.com/borntyping/python-colorlog" target="_blank" rel="noopener noreferrer">colorlog</a> colored logs for `hydra/job_logging` and `hydra/hydra_logging`.
 
 
 ### Installation

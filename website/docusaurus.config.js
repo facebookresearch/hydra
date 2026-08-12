@@ -11,9 +11,10 @@ module.exports = {
     url: 'https://hydra.cc',
     baseUrl: '/',
     onBrokenLinks: 'throw',
+    onBrokenAnchors: 'throw',
     markdown: {
         hooks: {
-            onBrokenMarkdownLinks: 'warn',
+            onBrokenMarkdownLinks: 'throw',
         },
     },
     trailingSlash: true,

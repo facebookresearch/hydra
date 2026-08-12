@@ -1,8 +1,6 @@
 ---
 title: Hydra Ray Launcher
-author: Jieru Hu
-author_url: https://github.com/jieru-hu
-author_image_url: https://graph.facebook.com/733244046/picture/?height=200&width=200
+authors: [jieru_hu]
 tags: [Hydra, Ray, Plugin]
 image: /img/Hydra-Readme-logo2.svg
 ---
@@ -98,5 +96,4 @@ Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
 
 That’s it for now! Please try out the new Hydra Ray Launcher and let us know what you think. 
 We are always happy to connect with you via [GitHub](https://github.com/facebookresearch/hydra) or the [Hydra Chat](https://hydra-framework.zulipchat.com/).
-
 

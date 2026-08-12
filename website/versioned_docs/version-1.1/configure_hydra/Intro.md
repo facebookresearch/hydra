@@ -151,4 +151,4 @@ minor:   ${python_version:minor}     # 3.8
 micro:   ${python_version:micro}     # 3.8.2
 ```
 
-You can learn more about OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank">here</a>.
+You can learn more about OmegaConf <a class="external" href="https://omegaconf.readthedocs.io/en/latest/usage.html#access-and-manipulation" target="_blank" rel="noopener noreferrer">here</a>.

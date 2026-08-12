@@ -3,7 +3,7 @@ id: colorlog
 title: Colorlog plugin
 sidebar_label: Colorlog plugin
 ---
-Adds <a class="external" href="https://github.com/borntyping/python-colorlog" target="_blank">colorlog</a> colored logs for `hydra/job_logging` and `hydra/hydra_logging`.
+Adds <a class="external" href="https://github.com/borntyping/python-colorlog" target="_blank" rel="noopener noreferrer">colorlog</a> colored logs for `hydra/job_logging` and `hydra/hydra_logging`.
 
 Install with 
 ```

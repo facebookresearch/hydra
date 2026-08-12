@@ -82,10 +82,13 @@ An Input Config in a Config Group. When used in a Defaults List, a Config Group 
 A Package is the path to node in a config. By default, the Package of a Config Group Option is derived from the Config Group.
 *e.g:* Configs in **mi6/agent** will have the package **mi6.agent** by default.
 
+### Package directive
 
 The [Package Directive](overriding_packages.md#overriding-the-package-via-the-package-directive) specifies the root [Package](#package) of a [Config File](#input-configs). It can appear at the top of YAML config file.
 
 ## Example of Core Concepts
+
+### Output config
 
 <div className="row">
 <div className="col col--4">

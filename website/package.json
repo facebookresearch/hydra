@@ -13,17 +13,21 @@
     "build": "node scripts/run-landscape-generator.mjs && docusaurus build",
     "validate:landscape": "node scripts/run-landscape-generator.mjs --check && node scripts/validate-landscape.mjs",
     "swizzle": "docusaurus swizzle",
-    "deploy": "node scripts/run-landscape-generator.mjs && docusaurus deploy"
+    "deploy": "node scripts/run-landscape-generator.mjs && docusaurus deploy",
+    "test:security-patches": "node scripts/test-security-patches.mjs"
   },
   "dependencies": {
-    "@docusaurus/core": "^3.10.1",
-    "@docusaurus/plugin-content-docs": "^3.10.1",
-    "@docusaurus/preset-classic": "^3.10.1",
+    "@docusaurus/core": "^3.10.2",
+    "@docusaurus/plugin-content-docs": "^3.10.2",
+    "@docusaurus/preset-classic": "^3.10.2",
     "@mdx-js/react": "^3.1.1",
     "classnames": "^2.5.1",
     "prism-react-renderer": "^2.4.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
+  },
+  "devDependencies": {
+    "image-size": "2.0.2"
   },
   "browserslist": {
     "production": [
