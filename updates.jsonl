@@ -690,3 +690,5 @@
 {"ts": "2026-08-12T20:42:32Z", "kind": "pr", "issue": 3386, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3386", "title": "Backlog Atlas canary: external-fork catch-up", "detail": "linked #3384"}
 {"ts": "2026-08-12T20:45:48Z", "kind": "status", "issue": 3386, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3386", "title": "Backlog Atlas canary: external-fork catch-up", "detail": "in progress → not started"}
 {"ts": "2026-08-12T20:45:48Z", "kind": "pr", "issue": 3386, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3386", "title": "Backlog Atlas canary: external-fork catch-up", "detail": "unlinked #3384"}
+{"ts": "2026-08-12T20:48:25Z", "kind": "status", "issue": 3385, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3385", "title": "Backlog Atlas canary: trusted prompt update", "detail": "in progress → not started"}
+{"ts": "2026-08-12T20:48:25Z", "kind": "pr", "issue": 3385, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3385", "title": "Backlog Atlas canary: trusted prompt update", "detail": "unlinked #3383"}
