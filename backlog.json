@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-12",
-  "generated_at": "2026-08-12T20:27:43Z",
+  "generated_at": "2026-08-12T20:31:43Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 105,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 1
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 98
+        "count": 99
       },
       {
         "status": "done",
@@ -71,24 +71,6 @@
     ]
   },
   "issues": [
-    {
-      "number": 3385,
-      "title": "Backlog Atlas canary: trusted prompt update",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3383,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3383"
-        }
-      ],
-      "created": "2026-08-12",
-      "updated": "2026-08-12",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3385"
-    },
     {
       "number": 3386,
       "title": "Backlog Atlas canary: external-fork catch-up",
@@ -1760,9 +1742,38 @@
       "updated": "2026-08-11",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3371"
+    },
+    {
+      "number": 3385,
+      "title": "Backlog Atlas canary: trusted prompt update",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-12",
+      "updated": "2026-08-12",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3385"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-12T20:31:43Z",
+      "kind": "pr",
+      "issue": 3385,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3385",
+      "title": "Backlog Atlas canary: trusted prompt update",
+      "detail": "unlinked #3383"
+    },
+    {
+      "ts": "2026-08-12T20:31:43Z",
+      "kind": "status",
+      "issue": 3385,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3385",
+      "title": "Backlog Atlas canary: trusted prompt update",
+      "detail": "in progress → not started"
+    },
     {
       "ts": "2026-08-12T20:27:43Z",
       "kind": "new",
@@ -3347,21 +3358,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3202",
       "title": "Disallow parent traversal in Defaults List config groups",
       "detail": "unlinked #3246"
-    },
-    {
-      "ts": "2026-07-23T07:51:50Z",
-      "kind": "closed",
-      "issue": 2236,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2236",
-      "title": "`AssertionError` with unusual defaults list"
-    },
-    {
-      "ts": "2026-07-23T07:51:50Z",
-      "kind": "status",
-      "issue": 3202,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3202",
-      "title": "Disallow parent traversal in Defaults List config groups",
-      "detail": "community PR → not started"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "closed_at": {},
-  "generated_at": "2026-08-12T20:27:43Z",
+  "generated_at": "2026-08-12T20:31:43Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -1176,11 +1176,9 @@
       "category": "Enhancement",
       "created_at": "2026-08-12T20:26:17Z",
       "labels": [],
-      "pr_numbers": [
-        "3383"
-      ],
+      "pr_numbers": [],
       "state": "OPEN",
-      "status": "in progress",
+      "status": "not started",
       "title": "Backlog Atlas canary: trusted prompt update",
       "updated_at": "2026-08-12T20:26:17Z"
     },
