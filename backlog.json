@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-12",
-  "generated_at": "2026-08-12T20:35:52Z",
+  "generated_at": "2026-08-12T20:42:32Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 105,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 2
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 99
+        "count": 98
       },
       {
         "status": "done",
@@ -88,6 +88,24 @@
       "updated": "2026-08-12",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3385"
+    },
+    {
+      "number": 3386,
+      "title": "Backlog Atlas canary: external-fork catch-up",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3384,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3384"
+        }
+      ],
+      "created": "2026-08-12",
+      "updated": "2026-08-12",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3386"
     },
     {
       "number": 802,
@@ -1742,22 +1760,29 @@
       "updated": "2026-08-11",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3371"
-    },
-    {
-      "number": 3386,
-      "title": "Backlog Atlas canary: external-fork catch-up",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-08-12",
-      "updated": "2026-08-12",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3386"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-12T20:42:32Z",
+      "kind": "pr",
+      "issue": 3386,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3386",
+      "title": "Backlog Atlas canary: external-fork catch-up",
+      "detail": "linked #3384"
+    },
+    {
+      "ts": "2026-08-12T20:42:32Z",
+      "kind": "status",
+      "issue": 3386,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3386",
+      "title": "Backlog Atlas canary: external-fork catch-up",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3384,
+        "url": "https://github.com/hydra-ecosystem/hydra/pull/3384"
+      }
+    },
     {
       "ts": "2026-08-12T20:35:52Z",
       "kind": "pr",
@@ -3349,20 +3374,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/845",
       "title": "Add a standalone page describing @hydra.main() in details.",
       "detail": "unlinked #3136"
-    },
-    {
-      "ts": "2026-07-23T19:37:59Z",
-      "kind": "closed",
-      "issue": 2828,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2828",
-      "title": "[Feature Request] Adding the best trial number in the `optimization_results.yaml` file"
-    },
-    {
-      "ts": "2026-07-23T19:37:59Z",
-      "kind": "closed",
-      "issue": 2435,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2435",
-      "title": "[Feature Request] Optuna experiment stream processing"
     }
   ]
 }
