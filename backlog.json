@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-12",
-  "generated_at": "2026-08-12T20:31:43Z",
+  "generated_at": "2026-08-12T20:33:53Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 105,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 2
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 99
+        "count": 98
       },
       {
         "status": "done",
@@ -88,6 +88,24 @@
       "updated": "2026-08-12",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3386"
+    },
+    {
+      "number": 3385,
+      "title": "Backlog Atlas canary: trusted prompt update",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3383,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3383"
+        }
+      ],
+      "created": "2026-08-12",
+      "updated": "2026-08-12",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3385"
     },
     {
       "number": 802,
@@ -1742,22 +1760,29 @@
       "updated": "2026-08-11",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3371"
-    },
-    {
-      "number": 3385,
-      "title": "Backlog Atlas canary: trusted prompt update",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-08-12",
-      "updated": "2026-08-12",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3385"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-12T20:33:53Z",
+      "kind": "pr",
+      "issue": 3385,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3385",
+      "title": "Backlog Atlas canary: trusted prompt update",
+      "detail": "linked #3383"
+    },
+    {
+      "ts": "2026-08-12T20:33:53Z",
+      "kind": "status",
+      "issue": 3385,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3385",
+      "title": "Backlog Atlas canary: trusted prompt update",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3383,
+        "url": "https://github.com/hydra-ecosystem/hydra/pull/3383"
+      }
+    },
     {
       "ts": "2026-08-12T20:31:43Z",
       "kind": "pr",
@@ -3342,22 +3367,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/2793",
       "title": "[Optuna Sweeper] Support persisted studies for analysis and resume",
       "detail": "removed \"triage\""
-    },
-    {
-      "ts": "2026-07-23T19:37:59Z",
-      "kind": "status",
-      "issue": 845,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/845",
-      "title": "Add a standalone page describing @hydra.main() in details.",
-      "detail": "community PR → not started"
-    },
-    {
-      "ts": "2026-07-23T07:51:50Z",
-      "kind": "pr",
-      "issue": 3202,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3202",
-      "title": "Disallow parent traversal in Defaults List config groups",
-      "detail": "unlinked #3246"
     }
   ]
 }
