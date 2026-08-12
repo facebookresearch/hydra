@@ -79,6 +79,10 @@ module.exports = {
                     label: 'Powered by OmegaConf',
                     to: 'https://github.com/omry/omegaconf',
                 },
+                {
+                    label: 'Privacy',
+                    to: '/privacy/',
+                },
             ],
 
             copyright: 'Hydra is open source under the MIT License. Copyright remains with the respective copyright holders.',
@@ -94,6 +98,9 @@ module.exports = {
                     showLastUpdateTime: false,
                     editUrl: 'https://github.com/hydra-ecosystem/hydra/edit/main/website/',
                     lastVersion: 'current',
+                },
+                gtag: {
+                    trackingID: 'G-1E68PJ51JC',
                 },
                 theme: {
                     customCss: require.resolve('./src/css/custom.css'),
