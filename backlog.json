@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-12",
-  "generated_at": "2026-08-12T20:42:32Z",
+  "generated_at": "2026-08-12T20:45:48Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 105,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 2
+        "count": 1
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 98
+        "count": 99
       },
       {
         "status": "done",
@@ -88,24 +88,6 @@
       "updated": "2026-08-12",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3385"
-    },
-    {
-      "number": 3386,
-      "title": "Backlog Atlas canary: external-fork catch-up",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3384,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3384"
-        }
-      ],
-      "created": "2026-08-12",
-      "updated": "2026-08-12",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3386"
     },
     {
       "number": 802,
@@ -1760,9 +1742,38 @@
       "updated": "2026-08-11",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3371"
+    },
+    {
+      "number": 3386,
+      "title": "Backlog Atlas canary: external-fork catch-up",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-12",
+      "updated": "2026-08-12",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3386"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-12T20:45:48Z",
+      "kind": "pr",
+      "issue": 3386,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3386",
+      "title": "Backlog Atlas canary: external-fork catch-up",
+      "detail": "unlinked #3384"
+    },
+    {
+      "ts": "2026-08-12T20:45:48Z",
+      "kind": "status",
+      "issue": 3386,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3386",
+      "title": "Backlog Atlas canary: external-fork catch-up",
+      "detail": "in progress → not started"
+    },
     {
       "ts": "2026-08-12T20:42:32Z",
       "kind": "pr",
@@ -3359,21 +3370,6 @@
       "issue": 3053,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3053",
       "title": "[Bug] --multirun yields error on specific command line flag ordering"
-    },
-    {
-      "ts": "2026-07-23T20:03:28Z",
-      "kind": "closed",
-      "issue": 3091,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3091",
-      "title": "Optuna sweeper n_jobs>1 is blocking"
-    },
-    {
-      "ts": "2026-07-23T19:37:59Z",
-      "kind": "pr",
-      "issue": 845,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/845",
-      "title": "Add a standalone page describing @hydra.main() in details.",
-      "detail": "unlinked #3136"
     }
   ]
 }
