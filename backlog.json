@@ -1,21 +1,21 @@
 {
-  "generated_on": "2026-08-11",
-  "generated_at": "2026-08-11T23:18:18Z",
+  "generated_on": "2026-08-12",
+  "generated_at": "2026-08-12T00:14:54Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 102,
+    "open_total": 103,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 7,
-        "percentage": 6.9
+        "percentage": 6.8
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 79,
-        "percentage": 77.5
+        "count": 80,
+        "percentage": 77.7
       },
       {
         "category": "Documentation",
@@ -27,13 +27,13 @@
         "category": "Question",
         "emoji": "❓",
         "count": 6,
-        "percentage": 5.9
+        "percentage": 5.8
       },
       {
         "category": "Refactor",
         "emoji": "🔧",
         "count": 2,
-        "percentage": 2.0
+        "percentage": 1.9
       },
       {
         "category": "Build",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 100
+        "count": 101
       },
       {
         "status": "done",
@@ -1696,9 +1696,29 @@
       "updated": "2026-08-11",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3371"
+    },
+    {
+      "number": 3375,
+      "title": "Show project homepages in the Hydra Landscape",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-11",
+      "updated": "2026-08-11",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3375"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-12T00:14:54Z",
+      "kind": "new",
+      "issue": 3375,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3375",
+      "title": "Show project homepages in the Hydra Landscape"
+    },
     {
       "ts": "2026-08-11T17:21:55Z",
       "kind": "label",
@@ -3282,18 +3302,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3200",
       "title": "Deprecate unreleased extend_list before Hydra 1.4.0",
       "detail": "linked #3298"
-    },
-    {
-      "ts": "2026-07-20T08:04:16Z",
-      "kind": "status",
-      "issue": 3200,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3200",
-      "title": "Deprecate unreleased extend_list before Hydra 1.4.0",
-      "detail": "not started → in progress",
-      "pr": {
-        "number": 3298,
-        "url": "https://github.com/facebookresearch/hydra/pull/3298"
-      }
     }
   ]
 }
