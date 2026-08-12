@@ -56,6 +56,7 @@ jobs:
           cd website
           corepack enable
           corepack pnpm install --frozen-lockfile
+          corepack pnpm run test:security-patches
           if [[ "$IS_PULL_REQUEST" == "true" ]]; then
             corepack pnpm run build
           else
