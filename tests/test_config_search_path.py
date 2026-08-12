@@ -22,6 +22,10 @@ def to_tuples_list(
     return [(x.provider, x.path) for x in search_path.config_search_path]
 
 
+def test_str() -> None:
+    assert str(create_search_path([("foo", "/path")])) == "[provider=foo, path=/path]"
+
+
 @mark.parametrize(
     "input_list, reference, expected_idx",
     [
