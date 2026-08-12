@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-12",
-  "generated_at": "2026-08-12T10:24:47Z",
+  "generated_at": "2026-08-12T20:04:34Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 103,
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 3
+        "count": 5
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 100
+        "count": 98
       },
       {
         "status": "done",
@@ -138,6 +138,42 @@
         "sweep"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/2237"
+    },
+    {
+      "number": 3369,
+      "title": "Remove redundant setup-xcode step from macOS CI",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3380,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3380"
+        }
+      ],
+      "created": "2026-08-11",
+      "updated": "2026-08-11",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3369"
+    },
+    {
+      "number": 3375,
+      "title": "Show project homepages in the Hydra Landscape",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3381,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3381"
+        }
+      ],
+      "created": "2026-08-11",
+      "updated": "2026-08-11",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3375"
     },
     {
       "number": 385,
@@ -1677,19 +1713,6 @@
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3364"
     },
     {
-      "number": 3369,
-      "title": "Remove redundant setup-xcode step from macOS CI",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-08-11",
-      "updated": "2026-08-11",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3369"
-    },
-    {
       "number": 3371,
       "title": "Set up CLA, GA4, and privacy policy",
       "category": "Enhancement",
@@ -1701,22 +1724,49 @@
       "updated": "2026-08-11",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3371"
-    },
-    {
-      "number": 3375,
-      "title": "Show project homepages in the Hydra Landscape",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-08-11",
-      "updated": "2026-08-11",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3375"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-12T20:04:34Z",
+      "kind": "pr",
+      "issue": 3375,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3375",
+      "title": "Show project homepages in the Hydra Landscape",
+      "detail": "linked #3381"
+    },
+    {
+      "ts": "2026-08-12T20:04:34Z",
+      "kind": "pr",
+      "issue": 3369,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3369",
+      "title": "Remove redundant setup-xcode step from macOS CI",
+      "detail": "linked #3380"
+    },
+    {
+      "ts": "2026-08-12T20:04:34Z",
+      "kind": "status",
+      "issue": 3375,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3375",
+      "title": "Show project homepages in the Hydra Landscape",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3381,
+        "url": "https://github.com/hydra-ecosystem/hydra/pull/3381"
+      }
+    },
+    {
+      "ts": "2026-08-12T20:04:34Z",
+      "kind": "status",
+      "issue": 3369,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3369",
+      "title": "Remove redundant setup-xcode step from macOS CI",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3380,
+        "url": "https://github.com/hydra-ecosystem/hydra/pull/3380"
+      }
+    },
     {
       "ts": "2026-08-12T06:35:38Z",
       "kind": "pr",
@@ -3277,41 +3327,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1512",
       "title": "Support multirun partial failure in Ax Sweeper",
       "detail": "removed \"triage\""
-    },
-    {
-      "ts": "2026-07-21T06:54:55Z",
-      "kind": "closed",
-      "issue": 3216,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3216",
-      "title": "Evaluate opt-out from eager resolution in instantiate"
-    },
-    {
-      "ts": "2026-07-21T06:38:46Z",
-      "kind": "label",
-      "issue": 802,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/802",
-      "title": "Improve Hydra test coverage to 100%",
-      "detail": "added \"priority_low\", \"tests\"; removed \"triage\""
-    },
-    {
-      "ts": "2026-07-21T06:26:07Z",
-      "kind": "pr",
-      "issue": 3216,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3216",
-      "title": "Evaluate opt-out from eager resolution in instantiate",
-      "detail": "linked #3302"
-    },
-    {
-      "ts": "2026-07-21T06:26:07Z",
-      "kind": "status",
-      "issue": 3216,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3216",
-      "title": "Evaluate opt-out from eager resolution in instantiate",
-      "detail": "not started → in progress",
-      "pr": {
-        "number": 3302,
-        "url": "https://github.com/facebookresearch/hydra/pull/3302"
-      }
     }
   ]
 }
