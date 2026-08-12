@@ -672,3 +672,5 @@
 {"ts": "2026-08-11T15:38:40Z", "kind": "new", "issue": 3369, "issue_url": "https://github.com/facebookresearch/hydra/issues/3369", "title": "Remove redundant setup-xcode step from macOS CI"}
 {"ts": "2026-08-11T17:21:55Z", "kind": "label", "issue": 2759, "issue_url": "https://github.com/facebookresearch/hydra/issues/2759", "title": "[Feature Request] Dry run option for sweeper / launcher", "detail": "removed \"triage\""}
 {"ts": "2026-08-12T00:14:54Z", "kind": "new", "issue": 3375, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3375", "title": "Show project homepages in the Hydra Landscape"}
+{"ts": "2026-08-12T06:35:38Z", "kind": "status", "issue": 802, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/802", "title": "Improve Hydra test coverage to 100%", "detail": "not started → community PR", "pr": {"number": 3377, "url": "https://github.com/hydra-ecosystem/hydra/pull/3377"}}
+{"ts": "2026-08-12T06:35:38Z", "kind": "pr", "issue": 802, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/802", "title": "Improve Hydra test coverage to 100%", "detail": "linked #3377"}

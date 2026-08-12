@@ -1,6 +1,6 @@
 {
   "closed_at": {},
-  "generated_at": "2026-08-12T00:14:54Z",
+  "generated_at": "2026-08-12T06:35:38Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -1257,9 +1257,11 @@
         "priority_low",
         "tests"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3377"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "Improve Hydra test coverage to 100%",
       "updated_at": "2026-07-21T06:37:13Z"
     },

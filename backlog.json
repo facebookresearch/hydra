@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-08-12",
-  "generated_at": "2026-08-12T00:14:54Z",
+  "generated_at": "2026-08-12T06:35:38Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 103,
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 2
+        "count": 3
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 101
+        "count": 100
       },
       {
         "status": "done",
@@ -115,6 +115,29 @@
         "sweep"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/2237"
+    },
+    {
+      "number": 802,
+      "title": "Improve Hydra test coverage to 100%",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3377,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3377"
+        }
+      ],
+      "created": "2020-07-21",
+      "updated": "2026-07-21",
+      "labels": [
+        "help wanted",
+        "maintenance",
+        "tests",
+        "priority_low"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/802"
     },
     {
       "number": 385,
@@ -213,24 +236,6 @@
         "exploratory"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/753"
-    },
-    {
-      "number": 802,
-      "title": "Improve Hydra test coverage to 100%",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2020-07-21",
-      "updated": "2026-07-21",
-      "labels": [
-        "help wanted",
-        "maintenance",
-        "tests",
-        "priority_low"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/802"
     },
     {
       "number": 845,
@@ -1712,6 +1717,26 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-12T06:35:38Z",
+      "kind": "pr",
+      "issue": 802,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/802",
+      "title": "Improve Hydra test coverage to 100%",
+      "detail": "linked #3377"
+    },
+    {
+      "ts": "2026-08-12T06:35:38Z",
+      "kind": "status",
+      "issue": 802,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/802",
+      "title": "Improve Hydra test coverage to 100%",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3377,
+        "url": "https://github.com/hydra-ecosystem/hydra/pull/3377"
+      }
+    },
     {
       "ts": "2026-08-12T00:14:54Z",
       "kind": "new",
@@ -3287,21 +3312,6 @@
         "number": 3302,
         "url": "https://github.com/facebookresearch/hydra/pull/3302"
       }
-    },
-    {
-      "ts": "2026-07-20T08:22:31Z",
-      "kind": "closed",
-      "issue": 3200,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3200",
-      "title": "Deprecate unreleased extend_list before Hydra 1.4.0"
-    },
-    {
-      "ts": "2026-07-20T08:04:16Z",
-      "kind": "pr",
-      "issue": 3200,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3200",
-      "title": "Deprecate unreleased extend_list before Hydra 1.4.0",
-      "detail": "linked #3298"
     }
   ]
 }
