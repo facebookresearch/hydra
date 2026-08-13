@@ -9,7 +9,7 @@ setup(
     name="hydra-nevergrad-sweeper",
     version=read_version("hydra_plugins/hydra_nevergrad_sweeper", "__init__.py"),
     author="Jeremy Rapin, Omry Yadan, Jieru Hu",
-    author_email="jrapin@fb.com, omry@fb.com, jieru@fb.com",
+    author_email="omry@yadan.net",
     description="Hydra Nevergrad Sweeper plugin",
     license="MIT",
     long_description=(Path(__file__).parent / "README.md").read_text(),

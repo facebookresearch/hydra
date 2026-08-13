@@ -69,6 +69,28 @@ change will ...". You do not need to mention issue or pull request numbers in
 the fragment text; the release tooling adds references when rendering release
 notes.
 
+## Copyright headers
+
+New first-party source files must use this header, adapted to the file's comment
+syntax:
+
+```text
+SPDX-FileCopyrightText: Contributors to Hydra
+SPDX-License-Identifier: MIT
+```
+
+Do not use a Facebook or Meta notice as Hydra's copyright notice on a new
+first-party file. Existing copyright notices must be preserved when modifying a
+file. Files copied or derived from another project must retain all notices
+required by their source license. Generated, vendored, and otherwise externally
+licensed files are exempt from Hydra's new-file header but remain subject to
+their applicable licenses and notices. When adding an exempt Python file outside
+an already excluded tree, add its narrowest stable path to `EXCLUDED_PREFIXES`
+in `tools/copyright/check_new_files.py` in the same change.
+
+CI enforces this policy for newly added Python files. Other first-party source
+files are checked during review.
+
 ## Contributor License Agreement ("CLA")
 Hydra is preparing a new project-controlled CLA. Code contributions cannot be
 accepted unless the contributor signs the new CLA once it is published. If you

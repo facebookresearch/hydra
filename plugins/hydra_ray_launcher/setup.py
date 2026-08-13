@@ -9,7 +9,6 @@ setup(
     name="hydra-ray-launcher",
     version=read_version("hydra_plugins/hydra_ray_launcher", "__init__.py"),
     author="Jieru Hu",
-    author_email="jieru@fb.com",
     description="Hydra Ray launcher plugin",
     license="MIT",
     long_description=(Path(__file__).parent / "README.md").read_text(),

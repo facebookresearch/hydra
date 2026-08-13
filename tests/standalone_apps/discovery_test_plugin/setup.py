@@ -5,8 +5,8 @@ setup(
     name="hydra-discovery-test-plugin",
     version="0.1.0",
     author="Omry Yadan",
-    author_email="omry@fb.com",
-    url="https://github.com/facebookresearch/hydra/",
+    author_email="omry@yadan.net",
+    url="https://github.com/hydra-ecosystem/hydra/",
     packages=find_namespace_packages(include=["hydra_plugins.*"]),
     install_requires=["hydra-core"],
 )

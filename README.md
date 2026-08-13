@@ -29,7 +29,9 @@
 > [`hydra-ecosystem`](https://github.com/hydra-ecosystem). The repository moved
 > with its history, issues, and pull requests intact. Hydra remains MIT-licensed.
 > No action is required from Hydra users at this time. Contributors should
-> review the current guidance in [CONTRIBUTING.md](CONTRIBUTING.md).
+> review the current guidance in [CONTRIBUTING.md](CONTRIBUTING.md). Read
+> [Hydra's next chapter: independent stewardship](https://hydra.cc/blog/2026/08/13/independent-stewardship/)
+> for more about the transition.
 
 ### Releases
 

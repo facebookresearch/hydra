@@ -74,7 +74,7 @@ select = ["E", "F", "I", "W", "CPY"]
 "tests/instantiate/__init__.py" = ["F401"]
 
 [tool.ruff.lint.flake8-copyright]
-notice-rgx = '(?i)Copyright \(c\) Facebook, Inc. and its affiliates. All Rights Reserved'
+notice-rgx = '(?i)(Copyright \(c\) Facebook, Inc\. and its affiliates\. All Rights Reserved|SPDX-FileCopyrightText: Contributors to Hydra)'
 
 [tool.ruff.lint.pycodestyle]
 max-line-length = 119
