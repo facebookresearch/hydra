@@ -18,7 +18,7 @@ permissions:
   pull-requests: read
 
 env:
-  BACKLOG_ATLAS_PIP: backlog-atlas-branch/.backlog-atlas/packages/backlog_atlas-0.17-0.g9000fdf0e2a2-py3-none-any.whl
+  BACKLOG_ATLAS_PIP: backlog-atlas==0.18
   BACKLOG_ATLAS_BRANCH: backlog-atlas
 
 jobs:
