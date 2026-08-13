@@ -1,20 +1,6 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 
-function AddFBInternalOnly(elements) {
-    return process.env.FB_INTERNAL ? {
-        ...elements,
-        'FB Only': [
-            'fb/intro',
-            'fb/fbcode',
-            'fb/internal-fb-cluster',
-            'fb/fair-cluster',
-            'fb/fbcode-configerator-config-source',
-            'fb/flow-launcher',
-        ],
-    } : elements;
-}
-
-module.exports = AddFBInternalOnly({
+module.exports = {
     docs: {
         About: [
             'intro',
@@ -206,4 +192,4 @@ module.exports = AddFBInternalOnly({
 
         ],
     }
-})
+}

@@ -9,7 +9,7 @@ setup(
     packages=find_packages(include=["configen"]),
     entry_points={"console_scripts": ["configen = configen.configen:main"]},
     author="Omry Yadan, Rosario Scalise",
-    author_email="omry@fb.com, rosario@cs.uw.edu",
+    author_email="omry@yadan.net, rosario@cs.uw.edu",
     url="https://github.com/hydra-ecosystem/hydra/tree/main/tools/configen",
     include_package_data=True,
     install_requires=[

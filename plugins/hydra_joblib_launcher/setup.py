@@ -9,7 +9,7 @@ setup(
     name="hydra-joblib-launcher",
     version=read_version("hydra_plugins/hydra_joblib_launcher", "__init__.py"),
     author="Jan-Matthis Lueckmann, Omry Yadan",
-    author_email="mail@jan-matthis.de, omry@fb.com",
+    author_email="mail@jan-matthis.de, omry@yadan.net",
     description="Joblib Launcher for Hydra apps",
     license="MIT",
     long_description=(Path(__file__).parent / "README.md").read_text(),

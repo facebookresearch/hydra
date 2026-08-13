@@ -9,7 +9,7 @@ setup(
     name="hydra-submitit-launcher",
     version=read_version("hydra_plugins/hydra_submitit_launcher", "__init__.py"),
     author="Jeremy Rapin, Jieru Hu, Omry Yadan",
-    author_email="jrapin@fb.com, jieru@fb.com, omry@fb.com",
+    author_email="jrapin@meta.com, jieru@meta.com, omry@yadan.net",
     description="Submitit Launcher for Hydra apps",
     license="MIT",
     long_description=(Path(__file__).parent / "README.md").read_text(),
