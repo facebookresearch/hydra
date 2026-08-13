@@ -9,7 +9,7 @@ setup(
     name="hydra-ax-sweeper",
     version=read_version("hydra_plugins/hydra_ax_sweeper", "__init__.py"),
     author="Omry Yadan, Shagun Sodhani",
-    author_email="omry@fb.com, sshagunsodhani@gmail.com",
+    author_email="omry@yadan.net, sshagunsodhani@gmail.com",
     description="Hydra Ax Sweeper plugin",
     license="MIT",
     long_description=(Path(__file__).parent / "README.md").read_text(),

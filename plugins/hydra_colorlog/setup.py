@@ -9,7 +9,7 @@ setup(
     name="hydra-colorlog",
     version=read_version("hydra_plugins/hydra_colorlog", "__init__.py"),
     author="Omry Yadan",
-    author_email="omry@fb.com",
+    author_email="omry@yadan.net",
     description="Enables colorlog for Hydra apps",
     license="MIT",
     long_description=(Path(__file__).parent / "README.md").read_text(),

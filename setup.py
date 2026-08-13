@@ -34,7 +34,7 @@ with open("README.md") as fh:
         name="hydra-core",
         version=find_version("hydra", "__init__.py"),
         author="Omry Yadan",
-        author_email="omry@fb.com",
+        author_email="omry@yadan.net",
         description="A framework for elegantly configuring complex applications",
         license="MIT",
         long_description=LONG_DESC,

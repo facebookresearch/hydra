@@ -8,7 +8,6 @@ setup(
     name="hydra-example-registered-plugin",
     version="1.0.0",
     author="Jasha Sommer-Simpson",
-    author_email="jasha10@fb.com",
     description="Example of Hydra Plugin Registration",
     long_description=LONG_DESC,
     long_description_content_type="text/markdown",

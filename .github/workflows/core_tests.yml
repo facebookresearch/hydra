@@ -21,6 +21,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.0
+        with:
+          fetch-depth: 0
+      - name: Check new-file copyright headers
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: python tools/copyright/check_new_files.py --base "$BASE_SHA" --head "$GITHUB_SHA"
       - uses: "./.github/actions/linux"
         with:
           py_version: "3.11"

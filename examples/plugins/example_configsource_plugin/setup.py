@@ -8,7 +8,7 @@ with open("README.md") as fh:
         name="hydra-example-configsource",
         version="1.0.0",
         author="Omry Yadan",
-        author_email="omry@fb.com",
+        author_email="omry@yadan.net",
         description="Example Hydra ConfigSource plugin",
         long_description=LONG_DESC,
         long_description_content_type="text/markdown",
