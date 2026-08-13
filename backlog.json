@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-08-13",
-  "generated_at": "2026-08-13T07:33:24Z",
+  "generated_at": "2026-08-13T18:01:42Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 103,
+    "open_total": 104,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 7,
-        "percentage": 6.8
+        "percentage": 6.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 80,
-        "percentage": 77.7
+        "percentage": 76.9
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 5,
-        "percentage": 4.9
+        "percentage": 4.8
       },
       {
         "category": "Question",
@@ -32,8 +32,8 @@
       {
         "category": "Refactor",
         "emoji": "🔧",
-        "count": 2,
-        "percentage": 1.9
+        "count": 3,
+        "percentage": 2.9
       },
       {
         "category": "Build",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 0
+        "count": 1
       },
       {
         "status": "community PR",
@@ -71,6 +71,24 @@
     ]
   },
   "issues": [
+    {
+      "number": 3389,
+      "title": "Remove remaining Meta-era repository branding and processes",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3391,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3391"
+        }
+      ],
+      "created": "2026-08-13",
+      "updated": "2026-08-13",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3389"
+    },
     {
       "number": 802,
       "title": "Improve Hydra test coverage to 100%",
@@ -1754,6 +1772,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-08-13T18:01:42Z",
+      "kind": "new",
+      "issue": 3389,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3389",
+      "title": "Remove remaining Meta-era repository branding and processes"
+    },
+    {
       "ts": "2026-08-12T20:50:21Z",
       "kind": "closed",
       "issue": 3386,
@@ -3360,13 +3385,6 @@
       "issue": 3309,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3309",
       "title": "Expose Submitit's custom Python executable in the Submitit launcher"
-    },
-    {
-      "ts": "2026-07-24T05:55:45Z",
-      "kind": "closed",
-      "issue": 2889,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2889",
-      "title": "[Bug] Misleading error message when opening .yml file"
     }
   ]
 }
