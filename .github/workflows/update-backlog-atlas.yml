@@ -18,7 +18,7 @@ permissions:
   pull-requests: read
 
 env:
-  BACKLOG_ATLAS_PIP: backlog-atlas==0.18
+  BACKLOG_ATLAS_PIP: backlog-atlas==0.19
   BACKLOG_ATLAS_BRANCH: backlog-atlas
 
 jobs:
@@ -120,7 +120,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git rm --ignore-unmatch BACKLOG.md BACKLOG-UPDATES.md
-          git add .backlog-atlas last_snapshot.json backlog.json updates.jsonl index.html favicon.svg badge.svg
+          git add last_snapshot.json backlog.json updates.jsonl index.html favicon.svg badge.svg
           if [ -f atlas.json ]; then
             git add atlas.json
           else
