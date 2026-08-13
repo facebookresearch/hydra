@@ -176,8 +176,7 @@ Ask questions on github or StackOverflow (Use the tag #fb-hydra):
 * [github](https://github.com/hydra-ecosystem/hydra/discussions)
 * [StackOverflow](https://stackoverflow.com/questions/tagged/fb-hydra)
 
-Follow Hydra on Twitter and Facebook:
-* [Facebook page](https://www.facebook.com/Hydra-Framework-109364473802509/)
+Follow Hydra on Twitter:
 * [Twitter](https://twitter.com/Hydra_Framework)
 
 
