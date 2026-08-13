@@ -1,6 +1,7 @@
 ---
 title: Privacy policy
 description: How the Hydra website handles visitor information.
+slug: /privacy
 ---
 
 # Privacy policy
