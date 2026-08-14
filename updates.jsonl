@@ -695,3 +695,5 @@
 {"ts": "2026-08-12T20:50:21Z", "kind": "closed", "issue": 3385, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3385", "title": "Backlog Atlas canary: trusted prompt update"}
 {"ts": "2026-08-12T20:50:21Z", "kind": "closed", "issue": 3386, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3386", "title": "Backlog Atlas canary: external-fork catch-up"}
 {"ts": "2026-08-13T18:01:42Z", "kind": "new", "issue": 3389, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3389", "title": "Remove remaining Meta-era repository branding and processes"}
+{"ts": "2026-08-14T04:03:50Z", "kind": "status", "issue": 3389, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3389", "title": "Remove remaining Meta-era repository branding and processes", "detail": "in progress → not started"}
+{"ts": "2026-08-14T04:03:50Z", "kind": "pr", "issue": 3389, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3389", "title": "Remove remaining Meta-era repository branding and processes", "detail": "unlinked #3391"}

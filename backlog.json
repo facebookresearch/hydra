@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-08-13",
-  "generated_at": "2026-08-13T22:25:14Z",
+  "generated_on": "2026-08-14",
+  "generated_at": "2026-08-14T04:03:50Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 104,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 98
+        "count": 99
       },
       {
         "status": "done",
@@ -71,24 +71,6 @@
     ]
   },
   "issues": [
-    {
-      "number": 3389,
-      "title": "Remove remaining Meta-era repository branding and processes",
-      "category": "Refactor",
-      "category_emoji": "🔧",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3391,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3391"
-        }
-      ],
-      "created": "2026-08-13",
-      "updated": "2026-08-13",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3389"
-    },
     {
       "number": 802,
       "title": "Improve Hydra test coverage to 100%",
@@ -1744,6 +1726,19 @@
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3371"
     },
     {
+      "number": 3389,
+      "title": "Remove remaining Meta-era repository branding and processes",
+      "category": "Refactor",
+      "category_emoji": "🔧",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-13",
+      "updated": "2026-08-13",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3389"
+    },
+    {
       "number": 3385,
       "title": "Backlog Atlas canary: trusted prompt update",
       "category": "Enhancement",
@@ -1771,6 +1766,22 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-14T04:03:50Z",
+      "kind": "pr",
+      "issue": 3389,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3389",
+      "title": "Remove remaining Meta-era repository branding and processes",
+      "detail": "unlinked #3391"
+    },
+    {
+      "ts": "2026-08-14T04:03:50Z",
+      "kind": "status",
+      "issue": 3389,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3389",
+      "title": "Remove remaining Meta-era repository branding and processes",
+      "detail": "in progress → not started"
+    },
     {
       "ts": "2026-08-13T18:01:42Z",
       "kind": "new",
@@ -3368,20 +3379,6 @@
     {
       "ts": "2026-07-24T10:37:25Z",
       "kind": "closed",
-      "issue": 3309,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3309",
-      "title": "Expose Submitit's custom Python executable in the Submitit launcher"
-    },
-    {
-      "ts": "2026-07-24T09:17:32Z",
-      "kind": "closed",
-      "issue": 2632,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/2632",
-      "title": "[Feature Request] Let multiple jobs share the same GPU when launching a sweep on SLURM with submitit"
-    },
-    {
-      "ts": "2026-07-24T06:38:27Z",
-      "kind": "new",
       "issue": 3309,
       "issue_url": "https://github.com/facebookresearch/hydra/issues/3309",
       "title": "Expose Submitit's custom Python executable in the Submitit launcher"
