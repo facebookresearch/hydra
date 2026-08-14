@@ -1,45 +1,45 @@
 {
   "generated_on": "2026-08-14",
-  "generated_at": "2026-08-14T07:33:29Z",
+  "generated_at": "2026-08-14T13:31:35Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 104,
+    "open_total": 108,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
         "count": 7,
-        "percentage": 6.7
+        "percentage": 6.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 80,
-        "percentage": 76.9
+        "count": 84,
+        "percentage": 77.8
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 5,
-        "percentage": 4.8
+        "percentage": 4.6
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 6,
-        "percentage": 5.8
+        "percentage": 5.6
       },
       {
         "category": "Refactor",
         "emoji": "🔧",
         "count": 3,
-        "percentage": 2.9
+        "percentage": 2.8
       },
       {
         "category": "Build",
         "emoji": "🏗️",
         "count": 3,
-        "percentage": 2.9
+        "percentage": 2.8
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 99
+        "count": 103
       },
       {
         "status": "done",
@@ -1739,6 +1739,62 @@
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3389"
     },
     {
+      "number": 3395,
+      "title": "[Feature Request]",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-14",
+      "updated": "2026-08-14",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3395"
+    },
+    {
+      "number": 3396,
+      "title": "[Feature Request]",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-14",
+      "updated": "2026-08-14",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3396"
+    },
+    {
+      "number": 3397,
+      "title": "password",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-14",
+      "updated": "2026-08-14",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3397"
+    },
+    {
+      "number": 3398,
+      "title": "password",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-08-14",
+      "updated": "2026-08-14",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3398"
+    },
+    {
       "number": 3385,
       "title": "Backlog Atlas canary: trusted prompt update",
       "category": "Enhancement",
@@ -1766,6 +1822,34 @@
     }
   ],
   "updates": [
+    {
+      "ts": "2026-08-14T13:31:35Z",
+      "kind": "new",
+      "issue": 3398,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3398",
+      "title": "password"
+    },
+    {
+      "ts": "2026-08-14T13:31:35Z",
+      "kind": "new",
+      "issue": 3397,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3397",
+      "title": "password"
+    },
+    {
+      "ts": "2026-08-14T13:31:35Z",
+      "kind": "new",
+      "issue": 3396,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3396",
+      "title": "[Feature Request]"
+    },
+    {
+      "ts": "2026-08-14T13:31:35Z",
+      "kind": "new",
+      "issue": 3395,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3395",
+      "title": "[Feature Request]"
+    },
     {
       "ts": "2026-08-14T04:03:50Z",
       "kind": "pr",
@@ -3347,41 +3431,6 @@
       "issue_url": "https://github.com/facebookresearch/hydra/issues/1890",
       "title": "HPO config standardization",
       "detail": "in progress → not started"
-    },
-    {
-      "ts": "2026-07-24T17:19:03Z",
-      "kind": "pr",
-      "issue": 1890,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1890",
-      "title": "HPO config standardization",
-      "detail": "unlinked #2034"
-    },
-    {
-      "ts": "2026-07-24T17:19:03Z",
-      "kind": "pr",
-      "issue": 1890,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1890",
-      "title": "HPO config standardization",
-      "detail": "linked #3311"
-    },
-    {
-      "ts": "2026-07-24T17:19:03Z",
-      "kind": "status",
-      "issue": 1890,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/1890",
-      "title": "HPO config standardization",
-      "detail": "community PR → in progress",
-      "pr": {
-        "number": 3311,
-        "url": "https://github.com/facebookresearch/hydra/pull/3311"
-      }
-    },
-    {
-      "ts": "2026-07-24T10:37:25Z",
-      "kind": "closed",
-      "issue": 3309,
-      "issue_url": "https://github.com/facebookresearch/hydra/issues/3309",
-      "title": "Expose Submitit's custom Python executable in the Submitit launcher"
     }
   ]
 }
