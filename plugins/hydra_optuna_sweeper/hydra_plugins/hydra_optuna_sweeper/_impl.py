@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
 import functools
 import logging
+import math
 import sys
 from typing import (
     Any,
@@ -328,6 +329,11 @@ class OptunaSweeperImpl(Sweeper):
                                 f" mismatched. Expect {len(directions)}, but actually {len(values)}."
                             )
 
+                    if values is not None and any(math.isnan(v) for v in values):
+                        raise ValueError(
+                            f"Return value must not be NaN. Got '{ret.return_value}'."
+                        )
+
                     try:
                         study.tell(trial=trial, state=state, values=values)
                     except RuntimeError as e:
@@ -342,7 +348,7 @@ class OptunaSweeperImpl(Sweeper):
 
                 except Exception as e:
                     state = optuna.trial.TrialState.FAIL
-                    study.tell(trial=trial, state=state, values=values)
+                    study.tell(trial=trial, state=state, values=None)
                     log.warning(f"Failed experiment: {e}")
                     failures.append(e)
 
