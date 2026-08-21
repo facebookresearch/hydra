@@ -1,0 +1,1 @@
+Add scoped Compose API initializers that can nest and restore existing Hydra state.
