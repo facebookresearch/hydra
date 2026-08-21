@@ -1,7 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import copy
 import os
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 from hydra import version
 from hydra._internal.hydra import Hydra
@@ -16,17 +15,23 @@ from hydra.errors import HydraException
 
 
 def get_gh_backup() -> Any:
-    if GlobalHydra in Singleton._instances:
-        return copy.deepcopy(Singleton._instances[GlobalHydra])
-    else:
-        return None
+    return Singleton._instances.pop(GlobalHydra, None)
 
 
 def restore_gh_from_backup(_gh_backup: Any) -> Any:
-    if _gh_backup is None:
-        del Singleton._instances[GlobalHydra]
-    else:
+    Singleton._instances.pop(GlobalHydra, None)
+    if _gh_backup is not None:
         Singleton._instances[GlobalHydra] = _gh_backup
+
+
+def _initialize_hydra(create_hydra: Callable[[], Any]) -> Any:
+    gh_backup = get_gh_backup()
+    try:
+        create_hydra()
+    except BaseException:
+        restore_gh_from_backup(gh_backup)
+        raise
+    return gh_backup
 
 
 class initialize:
@@ -52,8 +57,6 @@ class initialize:
         caller_stack_depth: int = 1,
         version_base: Optional[str] = version._UNSPECIFIED_,
     ) -> None:
-        self._gh_backup = get_gh_backup()
-
         version.setbase(version_base)
 
         if config_path is not None and os.path.isabs(config_path):
@@ -66,11 +69,13 @@ class initialize:
                 calling_file=calling_file, calling_module=calling_module
             )
 
-        Hydra.create_main_hydra_file_or_module(
-            calling_file=calling_file,
-            calling_module=calling_module,
-            config_path=config_path,
-            job_name=job_name,
+        self._gh_backup = _initialize_hydra(
+            lambda: Hydra.create_main_hydra_file_or_module(
+                calling_file=calling_file,
+                calling_module=calling_module,
+                config_path=config_path,
+                job_name=job_name,
+            )
         )
 
     def __enter__(self, *args: Any, **kwargs: Any) -> None: ...
@@ -96,15 +101,15 @@ class initialize_config_module:
         job_name: str = "app",
         version_base: Optional[str] = version._UNSPECIFIED_,
     ):
-        self._gh_backup = get_gh_backup()
-
         version.setbase(version_base)
 
-        Hydra.create_main_hydra_file_or_module(
-            calling_file=None,
-            calling_module=f"{config_module}.{job_name}",
-            config_path=None,
-            job_name=job_name,
+        self._gh_backup = _initialize_hydra(
+            lambda: Hydra.create_main_hydra_file_or_module(
+                calling_file=None,
+                calling_module=f"{config_module}.{job_name}",
+                config_path=None,
+                job_name=job_name,
+            )
         )
 
     def __enter__(self, *args: Any, **kwargs: Any) -> None: ...
@@ -131,8 +136,6 @@ class initialize_config_dir:
         job_name: str = "app",
         version_base: Optional[str] = version._UNSPECIFIED_,
     ) -> None:
-        self._gh_backup = get_gh_backup()
-
         version.setbase(version_base)
 
         # Relative here would be interpreted as relative to cwd, which - depending on when it run
@@ -143,7 +146,9 @@ class initialize_config_dir:
                 "initialize_config_dir() requires an absolute config_dir as input"
             )
         csp = create_config_search_path(search_path_dir=config_dir)
-        Hydra.create_main_hydra2(task_name=job_name, config_search_path=csp)
+        self._gh_backup = _initialize_hydra(
+            lambda: Hydra.create_main_hydra2(task_name=job_name, config_search_path=csp)
+        )
 
     def __enter__(self, *args: Any, **kwargs: Any) -> None: ...
 
