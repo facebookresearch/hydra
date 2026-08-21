@@ -1,2 +1,1 @@
-Make Compose API initialization contexts nestable and restore an existing Hydra
-state after normal exits, initialization errors, and composition errors.
+Add scoped Compose API initializers that can nest and restore existing Hydra state.

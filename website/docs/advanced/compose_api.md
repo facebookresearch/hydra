@@ -34,9 +34,10 @@ There are 3 initialization methods:
 
 All 3 can be used as methods or contexts.
 When used as methods, they are initializing Hydra globally and should only be called once.
-When used as contexts, they temporarily install their own Hydra state and restore the exact
-previous state on exit. Contexts can be used multiple times or nested, including inside an
-application where Hydra is already initialized. Callers do not need to clear `GlobalHydra`.
+The existing context form can be used multiple times when Hydra is not already initialized.
+When Hydra may already be initialized, use the initializer's `scoped()` class method. It
+temporarily installs its own Hydra state and restores the exact previous state on exit, so
+scoped contexts can be nested without callers clearing `GlobalHydra`.
 Like <b>@hydra.main()</b>, all three still accept the deprecated `version_base`
 parameter in Hydra 1.4. Remove it after upgrading; see the
 [Hydra 1.4 preparation guide](../upgrades/1.3_to_1.4/prepare_for_1_4.md).
@@ -53,7 +54,7 @@ if __name__ == "__main__":
         print(OmegaConf.to_yaml(cfg))
 
         # Nested contexts temporarily replace the enclosing configuration.
-        with initialize(config_path="other_conf", job_name="nested_app"):
+        with initialize.scoped(config_path="other_conf", job_name="nested_app"):
             nested_cfg = compose(config_name="config")
 
         # The outer context is active again here.

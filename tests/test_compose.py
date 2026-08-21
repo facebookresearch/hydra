@@ -420,11 +420,13 @@ def test_scoped_initializers_restore_existing_hydra(
     persistent_hydra = GlobalHydra.instance()
 
     initializers = [
-        lambda: initialize(job_name="scoped"),
-        lambda: initialize_config_module(
+        lambda: initialize.scoped(job_name="scoped"),
+        lambda: initialize_config_module.scoped(
             config_module="hydra.test_utils.configs", job_name="scoped"
         ),
-        lambda: initialize_config_dir(config_dir=str(tmp_path), job_name="scoped"),
+        lambda: initialize_config_dir.scoped(
+            config_dir=str(tmp_path), job_name="scoped"
+        ),
     ]
     for initializer in initializers:
         with initializer():
@@ -447,7 +449,7 @@ def test_nested_initialize_config_dir_contexts(
         outer_hydra = GlobalHydra.instance()
         assert compose(config_name="config") == {"source": "outer"}
 
-        with initialize_config_dir(config_dir=str(inner_dir)):
+        with initialize_config_dir.scoped(config_dir=str(inner_dir)):
             assert GlobalHydra.instance() is not outer_hydra
             assert compose(config_name="config") == {"source": "inner"}
 
@@ -465,7 +467,7 @@ def test_scoped_initializer_restores_hydra_after_composition_error(
     ):
         outer_hydra = GlobalHydra.instance()
         with raises(ConfigCompositionException):
-            with initialize_config_module(
+            with initialize_config_module.scoped(
                 config_module="hydra.test_utils.configs", job_name="inner"
             ):
                 compose(config_name="missing_config")
@@ -486,11 +488,33 @@ def test_scoped_initializer_restores_hydra_after_initialization_error(
 
     monkeypatch.setattr(Hydra, "create_main_hydra_file_or_module", fail_initialization)
     with raises(RuntimeError, match="initialization failed"):
-        initialize_config_module(
+        with initialize_config_module.scoped(
             config_module="hydra.test_utils.configs", job_name="scoped"
-        )
+        ):
+            pass
 
     assert GlobalHydra.instance() is persistent_hydra
+
+
+def test_method_initializers_reject_reinitialization(
+    hydra_restore_singletons: Any, tmp_path: Path
+) -> None:
+    initialize_config_module(
+        config_module="hydra.test_utils.configs", job_name="persistent"
+    )
+    persistent_hydra = GlobalHydra.instance()
+
+    initializers = [
+        lambda: initialize(job_name="replacement"),
+        lambda: initialize_config_module(
+            config_module="hydra.test_utils.configs", job_name="replacement"
+        ),
+        lambda: initialize_config_dir(config_dir=str(tmp_path), job_name="replacement"),
+    ]
+    for initializer in initializers:
+        with raises(ValueError, match="GlobalHydra is already initialized"):
+            initializer()
+        assert GlobalHydra.instance() is persistent_hydra
 
 
 def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
