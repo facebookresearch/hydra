@@ -504,6 +504,14 @@ def test_method_initializers_reject_reinitialization(
     )
     persistent_hydra = GlobalHydra.instance()
 
+    class NonCopyable:
+        def __deepcopy__(self, memo: Any) -> Any:
+            raise AssertionError("initialized GlobalHydra should not be copied")
+
+    # Re-initialization must reach GlobalHydra's normal ValueError even when
+    # the existing instance contains state that cannot be deep-copied.
+    setattr(persistent_hydra, "noncopyable", NonCopyable())
+
     initializers = [
         lambda: initialize(job_name="replacement"),
         lambda: initialize_config_module(
@@ -515,6 +523,31 @@ def test_method_initializers_reject_reinitialization(
         with raises(ValueError, match="GlobalHydra is already initialized"):
             initializer()
         assert GlobalHydra.instance() is persistent_hydra
+
+
+def test_method_initializers_restore_hydra_after_initialization_error(
+    hydra_restore_singletons: Any, monkeypatch: Any, tmp_path: Path
+) -> None:
+    def fail_after_mutation(*args: Any, **kwargs: Any) -> None:
+        # Simulate an initialization failure after GlobalHydra was partially
+        # mutated, before an initializer object can be returned to its caller.
+        setattr(GlobalHydra.instance(), "hydra", object())
+        raise RuntimeError("initialization failed")
+
+    monkeypatch.setattr(Hydra, "create_main_hydra_file_or_module", fail_after_mutation)
+    monkeypatch.setattr(Hydra, "create_main_hydra2", fail_after_mutation)
+
+    initializers = [
+        lambda: initialize(job_name="failing"),
+        lambda: initialize_config_module(
+            config_module="hydra.test_utils.configs", job_name="failing"
+        ),
+        lambda: initialize_config_dir(config_dir=str(tmp_path), job_name="failing"),
+    ]
+    for initializer in initializers:
+        with raises(RuntimeError, match="initialization failed"):
+            initializer()
+        assert not GlobalHydra.instance().is_initialized()
 
 
 def test_missing_init_py_error(hydra_restore_singletons: Any) -> None:
