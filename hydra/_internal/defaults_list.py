@@ -74,6 +74,19 @@ class Overrides:
                 continue
             is_group = repo.group_exists(override.key_or_group)
             is_config = repo.config_exists(override.key_or_group)
+            key = override.get_key_element()
+            if override.is_delete():
+                key = key[1:]
+            if (
+                is_group
+                and override.package is not None
+                and override.package.partition(".")[0] == "_group_"
+            ):
+                default = GroupDefault(
+                    group=override.key_or_group, package=override.package
+                )
+                default.update_parent("", "")
+                key = default.get_override_key()
             value = override.value()
             is_dict = isinstance(override.value(), dict)
             if is_group and isinstance(value, (str, list)):
@@ -86,7 +99,6 @@ class Overrides:
                 else:
                     value = value_node._value()
             if override.is_delete() and (is_group or is_config):
-                key = override.get_key_element()[1:]
                 if is_group:
                     if value is not None and not isinstance(value, str):
                         raise ValueError(
@@ -120,7 +132,6 @@ class Overrides:
                     )
                 )
             else:
-                key = override.get_key_element()
                 self.override_choices[key] = value
                 self.override_metadata[key] = OverrideMetadata(external_override=True)
 
