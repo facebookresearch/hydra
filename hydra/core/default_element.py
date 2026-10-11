@@ -60,6 +60,10 @@ class InputDefault:
         self.parent_base_dir = parent_base_dir
         self.parent_package = parent_package
 
+        if self.package is not None and "_group_" in self.package:
+            resolved = self.package.replace("_group_", self.get_default_package())
+            self.package = f"_global_.{resolved}"
+
     def is_optional(self) -> bool:
         raise NotImplementedError()
 
