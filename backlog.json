@@ -1,9 +1,9 @@
 {
-  "generated_on": "2026-10-10",
-  "generated_at": "2026-10-10T15:45:12Z",
+  "generated_on": "2026-10-11",
+  "generated_at": "2026-10-11T06:37:22Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 43,
+    "open_total": 44,
     "by_category": [
       {
         "category": "Bug",
@@ -15,13 +15,13 @@
         "category": "Enhancement",
         "emoji": "✨",
         "count": 38,
-        "percentage": 88.4
+        "percentage": 86.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 2,
-        "percentage": 4.7
+        "percentage": 4.5
       },
       {
         "category": "Question",
@@ -38,8 +38,8 @@
       {
         "category": "Build",
         "emoji": "🏗️",
-        "count": 1,
-        "percentage": 2.3
+        "count": 2,
+        "percentage": 4.5
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 43
+        "count": 44
       },
       {
         "status": "done",
@@ -757,6 +757,19 @@
         "list composition"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3534"
+    },
+    {
+      "number": 3535,
+      "title": "Restore @_group_ in Defaults List package overrides",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-10-11",
+      "updated": "2026-10-11",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3535"
     },
     {
       "number": 385,
@@ -2469,6 +2482,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-10-11T06:37:22Z",
+      "kind": "new",
+      "issue": 3535,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3535",
+      "title": "Restore @_group_ in Defaults List package overrides"
+    },
+    {
       "ts": "2026-10-10T15:45:12Z",
       "kind": "new",
       "issue": 3534,
@@ -4128,13 +4148,6 @@
       "issue": 2972,
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/2972",
       "title": "How to get the application config file path inside application code?"
-    },
-    {
-      "ts": "2026-09-04T16:32:37Z",
-      "kind": "closed",
-      "issue": 2949,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/2949",
-      "title": "[Feature Request] Use @hydra.main() decorator for multiple python scripts from one bash script"
     }
   ]
 }
