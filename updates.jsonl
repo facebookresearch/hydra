@@ -979,3 +979,5 @@
 {"ts": "2026-10-10T13:48:50Z", "kind": "closed", "issue": 3532, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3532", "title": "Update Hydra documentation links to the new OmegaConf website"}
 {"ts": "2026-10-10T15:45:12Z", "kind": "new", "issue": 3534, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3534", "title": "Support package destinations inside list items"}
 {"ts": "2026-10-11T06:37:22Z", "kind": "new", "issue": 3535, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3535", "title": "Restore @_group_ in Defaults List package overrides"}
+{"ts": "2026-10-11T07:34:55Z", "kind": "status", "issue": 3535, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3535", "title": "Restore @_group_ in Defaults List package overrides", "detail": "not started → in progress", "pr": {"number": 3536, "url": "https://github.com/hydra-ecosystem/hydra/pull/3536"}}
+{"ts": "2026-10-11T07:34:55Z", "kind": "pr", "issue": 3535, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3535", "title": "Restore @_group_ in Defaults List package overrides", "detail": "linked #3536"}

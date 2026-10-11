@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-10-11",
-  "generated_at": "2026-10-11T07:19:32Z",
+  "generated_at": "2026-10-11T07:34:55Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 44,
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 0
+        "count": 1
       },
       {
         "status": "community PR",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 44
+        "count": 43
       },
       {
         "status": "done",
@@ -71,6 +71,24 @@
     ]
   },
   "issues": [
+    {
+      "number": 3535,
+      "title": "Restore @_group_ in Defaults List package overrides",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "in progress",
+      "status_emoji": "🔄",
+      "prs": [
+        {
+          "number": 3536,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3536"
+        }
+      ],
+      "created": "2026-10-11",
+      "updated": "2026-10-11",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3535"
+    },
     {
       "number": 468,
       "title": "Specify the schema for returning the result of optimization.",
@@ -757,19 +775,6 @@
         "list composition"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3534"
-    },
-    {
-      "number": 3535,
-      "title": "Restore @_group_ in Defaults List package overrides",
-      "category": "Build",
-      "category_emoji": "🏗️",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-10-11",
-      "updated": "2026-10-11",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3535"
     },
     {
       "number": 385,
@@ -2482,6 +2487,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-10-11T07:34:55Z",
+      "kind": "pr",
+      "issue": 3535,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3535",
+      "title": "Restore @_group_ in Defaults List package overrides",
+      "detail": "linked #3536"
+    },
+    {
+      "ts": "2026-10-11T07:34:55Z",
+      "kind": "status",
+      "issue": 3535,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3535",
+      "title": "Restore @_group_ in Defaults List package overrides",
+      "detail": "not started → in progress",
+      "pr": {
+        "number": 3536,
+        "url": "https://github.com/hydra-ecosystem/hydra/pull/3536"
+      }
+    },
+    {
       "ts": "2026-10-11T06:37:22Z",
       "kind": "new",
       "issue": 3535,
@@ -4134,20 +4159,6 @@
       "issue": 3436,
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3436",
       "title": "`instantiate()` loses merged ancestor values when copying a context-parented subtree"
-    },
-    {
-      "ts": "2026-09-04T17:29:11Z",
-      "kind": "closed",
-      "issue": 2977,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/2977",
-      "title": "[Feature Request] Add a generation strategy config to ax-sweeper plugin"
-    },
-    {
-      "ts": "2026-09-04T16:48:24Z",
-      "kind": "closed",
-      "issue": 2972,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/2972",
-      "title": "How to get the application config file path inside application code?"
     }
   ]
 }
