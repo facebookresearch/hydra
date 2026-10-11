@@ -60,6 +60,17 @@ class InputDefault:
         self.parent_base_dir = parent_base_dir
         self.parent_package = parent_package
 
+        if self.package is not None:
+            keyword, _, suffix = self.package.partition(".")
+            # Overrides name an existing group; selections may change after interpolation.
+            if keyword == "_group_" and (
+                self.is_override() or not self.is_interpolation()
+            ):
+                resolved = self.get_default_package()
+                if suffix:
+                    resolved = f"{resolved}.{suffix}" if resolved else suffix
+                self.package = f"_global_.{resolved}"
+
     def is_optional(self) -> bool:
         raise NotImplementedError()
 
