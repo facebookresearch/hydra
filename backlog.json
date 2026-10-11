@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-10-11",
-  "generated_at": "2026-10-11T11:25:18Z",
+  "generated_at": "2026-10-11T20:59:20Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 43,
+    "open_total": 45,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 1,
-        "percentage": 2.3
+        "count": 3,
+        "percentage": 6.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 38,
-        "percentage": 88.4
+        "percentage": 84.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 2,
-        "percentage": 4.7
+        "percentage": 4.4
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 1,
-        "percentage": 2.3
+        "percentage": 2.2
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 1,
-        "percentage": 2.3
+        "percentage": 2.2
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 43
+        "count": 45
       },
       {
         "status": "done",
@@ -757,6 +757,32 @@
         "list composition"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3534"
+    },
+    {
+      "number": 3537,
+      "title": "[Bug] 1.4.0rc1: instantiated objects keep a parent link to the source config, breaking pickling",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-10-11",
+      "updated": "2026-10-11",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3537"
+    },
+    {
+      "number": 3538,
+      "title": "[Bug] 1.4.0rc1: call-site overrides to instantiate() are no longer validated against structured config types",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-10-11",
+      "updated": "2026-10-11",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3538"
     },
     {
       "number": 385,
@@ -2487,6 +2513,20 @@
   ],
   "updates": [
     {
+      "ts": "2026-10-11T20:59:20Z",
+      "kind": "new",
+      "issue": 3538,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3538",
+      "title": "[Bug] 1.4.0rc1: call-site overrides to instantiate() are no longer validated against structured config types"
+    },
+    {
+      "ts": "2026-10-11T20:59:20Z",
+      "kind": "new",
+      "issue": 3537,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3537",
+      "title": "[Bug] 1.4.0rc1: instantiated objects keep a parent link to the source config, breaking pickling"
+    },
+    {
       "ts": "2026-10-11T11:25:18Z",
       "kind": "closed",
       "issue": 3535,
@@ -4144,21 +4184,6 @@
         "number": 3437,
         "url": "https://github.com/hydra-ecosystem/hydra/pull/3437"
       }
-    },
-    {
-      "ts": "2026-09-04T18:49:26Z",
-      "kind": "closed",
-      "issue": 2981,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/2981",
-      "title": "[Feature Request] Allow partial instantiation with factories"
-    },
-    {
-      "ts": "2026-09-04T18:47:46Z",
-      "kind": "label",
-      "issue": 3436,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3436",
-      "title": "`instantiate()` loses merged ancestor values when copying a context-parented subtree",
-      "detail": "added \"difficult\""
     }
   ]
 }
