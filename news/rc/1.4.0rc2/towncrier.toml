@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: Contributors to Hydra
+# SPDX-License-Identifier: MIT
+[tool.towncrier]
+directory = "news/rc/1.4.0rc2"
+filename = "NEWS-RC.md"
+title_format = "{version} ({project_date})"
+template = "news/_template.rst"
+issue_format = "[#{issue}](https://github.com/hydra-ecosystem/hydra/issues/{issue})"
+ignore = ["towncrier.toml"]
+
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "Bug Fixes"
+showcontent = true
