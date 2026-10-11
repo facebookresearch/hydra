@@ -144,6 +144,13 @@ class InputDefault:
 
         if package is None:
             package = self._relative_group_path().replace("/", ".")
+        elif self.package is not None:
+            keyword, _, suffix = package.partition(".")
+            if keyword == "_group_":
+                resolved = self.get_default_package()
+                if suffix:
+                    resolved = f"{resolved}.{suffix}" if resolved else suffix
+                package = f"_global_.{resolved}"
 
         if parent_package == "":
             ret = package

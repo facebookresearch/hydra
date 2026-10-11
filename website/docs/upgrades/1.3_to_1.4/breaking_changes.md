@@ -140,7 +140,9 @@ has been removed:
   `override` keyword.
 - Indexed Defaults List interpolations such as `${defaults.0.dataset}` are no
   longer accepted.
-- `_group_` and `_name_` are no longer expanded as symbolic package values.
+- `_group_` and `_name_` are no longer expanded in package headers, and `_name_`
+  is no longer expanded in Defaults List packages. `_group_` remains supported
+  in Defaults List packages and command-line package overrides.
 - The `strict` argument to `hydra.compose()` has been removed.
 - ConfigStore schemas are no longer matched automatically by config name. Use
   explicit schema extension in the Defaults List.

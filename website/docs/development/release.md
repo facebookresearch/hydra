@@ -294,6 +294,23 @@ trigger publishing.
 
 ## Release summaries
 
+### Release-candidate corrections
+
+Corrections to regressions introduced in a release candidate belong in that
+candidate's news collection, rather than the final release's `news/` collection.
+For Hydra 1.4.0rc2, keep these fragments under `news/rc/1.4.0rc2/` and render
+the candidate notes with:
+
+```shell
+towncrier build --dir . --draft --version 1.4.0rc2 \
+  --config news/rc/1.4.0rc2/towncrier.toml
+```
+
+Include that output in the rc2 release notes. The normal Towncrier configuration
+ignores `news/rc/`, so these corrections are excluded from the final 1.4.0 notes.
+
+### Publish workflow summary
+
 The publish workflow writes a release summary to the GitHub Actions run. The
 summary includes:
 
