@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-10-11",
-  "generated_at": "2026-10-11T08:43:58Z",
+  "generated_at": "2026-10-11T11:25:18Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 44,
+    "open_total": 43,
     "by_category": [
       {
         "category": "Bug",
@@ -15,13 +15,13 @@
         "category": "Enhancement",
         "emoji": "✨",
         "count": 38,
-        "percentage": 86.4
+        "percentage": 88.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 2,
-        "percentage": 4.5
+        "percentage": 4.7
       },
       {
         "category": "Question",
@@ -38,15 +38,15 @@
       {
         "category": "Build",
         "emoji": "🏗️",
-        "count": 2,
-        "percentage": 4.5
+        "count": 1,
+        "percentage": 2.3
       }
     ],
     "by_status": [
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -66,29 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 102
+        "count": 103
       }
     ]
   },
   "issues": [
-    {
-      "number": 3535,
-      "title": "Restore @_group_ in Defaults List package overrides",
-      "category": "Build",
-      "category_emoji": "🏗️",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3536,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3536"
-        }
-      ],
-      "created": "2026-10-11",
-      "updated": "2026-10-11",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3535"
-    },
     {
       "number": 468,
       "title": "Specify the schema for returning the result of optimization.",
@@ -2483,9 +2465,34 @@
       "updated": "2026-10-10",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3532"
+    },
+    {
+      "number": 3535,
+      "title": "Restore @_group_ in Defaults List package overrides",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3536,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3536"
+        }
+      ],
+      "created": "2026-10-11",
+      "updated": "2026-10-11",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3535"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-10-11T11:25:18Z",
+      "kind": "closed",
+      "issue": 3535,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3535",
+      "title": "Restore @_group_ in Defaults List package overrides"
+    },
     {
       "ts": "2026-10-11T07:34:55Z",
       "kind": "pr",
@@ -4152,13 +4159,6 @@
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3436",
       "title": "`instantiate()` loses merged ancestor values when copying a context-parented subtree",
       "detail": "added \"difficult\""
-    },
-    {
-      "ts": "2026-09-04T18:33:00Z",
-      "kind": "new",
-      "issue": 3436,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3436",
-      "title": "`instantiate()` loses merged ancestor values when copying a context-parented subtree"
     }
   ]
 }
