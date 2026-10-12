@@ -1034,12 +1034,13 @@ def test_info_advisory_is_reported_and_fix_attempt_includes_info(
 
     monkeypatch.setattr(subprocess, "run", invoke)
     data = audit(pnpm_project)
-    audit_module["fix_security"](pnpm_project, float("inf"))
+    audit_module["fix_security"](pnpm_project, float("inf"), before=data)
     assert commands[:2] == [
         ["audit", "--json", "--audit-level", "info"],
         ["audit", "--fix=update", "--audit-level", "info", "--ignore-scripts"],
     ]
-    assert commands[2][:4] == [
+    resolution = next(args for args in commands[2:] if args[0] == "install")
+    assert resolution[:4] == [
         "install",
         "--lockfile-only",
         "--no-frozen-lockfile",
