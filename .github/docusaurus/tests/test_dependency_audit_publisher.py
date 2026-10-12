@@ -17,8 +17,11 @@ PUBLISH = WORKFLOW["jobs"]["pull-request"]["steps"][-1]
 
 @pytest.mark.parametrize("existing", [False, True])
 @pytest.mark.parametrize("changes", [False, True])
-def test_generated_dependency_commit_skips_ci_and_preserves_build_report(
-    tmp_path, existing, changes
+@pytest.mark.parametrize("passed", [False, True])
+@pytest.mark.parametrize("draft", [False, True])
+@pytest.mark.parametrize("failure", [None, "view", "draft", "edit"])
+def test_publication_preserves_reports_and_signals_failed_validation(
+    tmp_path, existing, changes, passed, draft, failure
 ):
     cli = tmp_path / "mock-cli"
     cli.write_text(
@@ -34,6 +37,13 @@ def test_generated_dependency_commit_skips_ci_and_preserves_build_report(
         "    sys.exit(int(os.environ['HAS_CHANGES']))\n"
         "if tool == 'gh' and args[:2] == ['pr', 'list']:\n"
         "    print(os.environ['PR_NUMBER'])\n"
+        "if tool == 'gh' and args[:2] == ['pr', 'view']:\n"
+        "    if os.environ['API_FAILURE'] == 'view': sys.exit(1)\n"
+        "    print(os.environ['IS_DRAFT'])\n"
+        "if tool == 'gh' and args[:2] == ['pr', 'ready']:\n"
+        "    if os.environ['API_FAILURE'] == 'draft': sys.exit(1)\n"
+        "if tool == 'gh' and args[:2] == ['pr', 'edit']:\n"
+        "    if os.environ['API_FAILURE'] == 'edit': sys.exit(1)\n"
     )
     cli.chmod(0o755)
     for tool in ("git", "gh"):
@@ -58,11 +68,22 @@ def test_generated_dependency_commit_skips_ci_and_preserves_build_report(
             "COMMAND_LOG": str(command_log),
             "HAS_CHANGES": str(int(changes)),
             "PR_NUMBER": "42" if existing else "",
+            "VALIDATION_PASSED": str(passed).lower(),
+            "IS_DRAFT": str(draft).lower(),
+            "API_FAILURE": failure or "",
         },
         capture_output=True,
         text=True,
     )
-    assert result.returncode == 0, result.stderr
+    inspect_draft = existing and changes and not passed
+    view_failed = inspect_draft and failure == "view"
+    convert_draft = inspect_draft and not draft and not view_failed
+    draft_failed = convert_draft and failure == "draft"
+    blocked = view_failed or draft_failed
+    edit_failed = existing and changes and not blocked and failure == "edit"
+    assert result.returncode == (1 if not passed or blocked or edit_failed else 0), (
+        result.stderr
+    )
     commands = [json.loads(line) for line in command_log.read_text().splitlines()]
     commits = [command for command in commands if command[:2] == ["git", "commit"]]
     assert commits == (
@@ -71,10 +92,10 @@ def test_generated_dependency_commit_skips_ci_and_preserves_build_report(
                 "git",
                 "commit",
                 "-m",
-                "Documentation dependency audit and upgrades [skip ci]",
+                "Documentation dependency audit and upgrades",
             ]
         ]
-        if changes
+        if changes and not blocked
         else []
     )
     writes = [
@@ -82,11 +103,25 @@ def test_generated_dependency_commit_skips_ci_and_preserves_build_report(
         for command in commands
         if command[:2] == ["gh", "pr"] and command[2] in ("create", "edit")
     ]
-    assert len(writes) == int(existing or changes)
+    assert len(writes) == int(changes and not blocked)
     if writes:
         assert writes[0][2] == ("edit" if existing else "create")
-        assert "--draft" not in writes[0]
+        assert ("--draft" in writes[0]) == (not existing and not passed)
         assert writes[0][writes[0].index("--title") + 1] == (
             "Docusaurus maintenance: security audit and dependency upgrades"
         )
     assert (tmp_path / "dependency-audit-pr.md").read_text().startswith(report)
+    draft_commands = [
+        command for command in commands if command[:3] == ["gh", "pr", "ready"]
+    ]
+    assert draft_commands == (
+        [["gh", "pr", "ready", "42", "--undo"]] if convert_draft else []
+    )
+    inspections = [
+        command for command in commands if command[:3] == ["gh", "pr", "view"]
+    ]
+    assert len(inspections) == int(inspect_draft)
+    pushes = [command for command in commands if command[:2] == ["git", "push"]]
+    assert len(pushes) == int(changes and not blocked)
+    if pushes and draft_commands:
+        assert commands.index(draft_commands[0]) < commands.index(pushes[0])

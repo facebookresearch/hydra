@@ -102,7 +102,9 @@ def test_reader_cli_output_is_accepted_by_helper_cli_without_network(
 
     audit = runpy.run_path(str(AUDIT))
     monkeypatch.setitem(
-        audit["main"].__globals__, "prepare", lambda selected: "mocked report\n"
+        audit["main"].__globals__,
+        "prepare",
+        lambda selected, **kwargs: "mocked report\n",
     )
     report = tmp_path / "report.md"
     monkeypatch.chdir(tmp_path)
