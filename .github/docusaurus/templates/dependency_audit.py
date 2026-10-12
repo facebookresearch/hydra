@@ -198,6 +198,7 @@ def restore_invalid_state(
     *,
     security_fix: bool = False,
     frozen: bool = False,
+    allowed_security_exclusions: set[str] | None = None,
 ) -> bool:
     """Restore a valid snapshot when a command damaged package files or policy."""
     current = valid_snapshot(directory)
@@ -251,7 +252,11 @@ def restore_invalid_state(
                 (package["name"], package["version"])
                 for package in current[3]["packages"].values()
             }
-            allowed = {f"{name}@{version}" for name, version in after - before}
+            allowed = (
+                allowed_security_exclusions
+                if allowed_security_exclusions is not None
+                else {f"{name}@{version}" for name, version in after - before}
+            )
             existing_versions = exclusion_versions(existing)
             current_versions = exclusion_versions(exclusions)
             preserved_exclusions = existing_versions <= current_versions and all(
@@ -626,7 +631,10 @@ def audit(directory: Path, *, deadline: float | None = None) -> dict | str:
 
 
 def fix_security(
-    directory: Path, deadline: float, notes: list[str] | None = None
+    directory: Path,
+    deadline: float,
+    notes: list[str] | None = None,
+    cache: dict | None = None,
 ) -> subprocess.CompletedProcess[str]:
     if manager(directory) == "pnpm":
         snapshot = valid_snapshot(directory)
@@ -656,6 +664,68 @@ def fix_security(
             )
         ):
             return result
+        # Advisory ranges can start at an unpublished version. Resolve their
+        # actual published, compatible patches before bypassing the age window.
+        diagnostics = notes if notes is not None else []
+        remaining = audit(directory, deadline=deadline)
+        if restore_invalid_state(
+            directory, current, diagnostics, "Security proposal audit", frozen=True
+        ):
+            remaining = (
+                "Audit unavailable: security proposal audit changed package files."
+            )
+        # Successfully applied patches disappear from the remaining audit. Keep
+        # their proposed exceptions only after the same independent publication
+        # and compatibility checks used for findings that still need resolution.
+        applied: dict = {"package_manager": "pnpm", "vulnerabilities": {}}
+        if isinstance(remaining, dict):
+            vulnerable = {
+                node
+                for vulnerability in remaining["vulnerabilities"].values()
+                for detail in vulnerability["via"]
+                for node in detail["nodes"]
+            }
+            newly_locked = set(current[3]["packages"]) - set(snapshot[3]["packages"])
+            for specifier in (exclusions - existing) & newly_locked - vulnerable:
+                name, _, version = specifier.rpartition("@")
+                applied["vulnerabilities"].setdefault(name, {"via": []})["via"].append(
+                    {"patchedRange": version, "nodes": [specifier]}
+                )
+        metadata_cache = cache if cache is not None else {}
+        for findings in (remaining, applied):
+            describe_pnpm_fixes(
+                directory, findings, current[1], diagnostics, deadline, metadata_cache
+            )
+        verified = {
+            f"{name}@{detail['fixVersion']}"
+            for findings in (remaining, applied)
+            for name, vulnerability in (
+                findings.get("vulnerabilities", {}).items()
+                if isinstance(findings, dict)
+                else []
+            )
+            for detail in vulnerability["via"]
+            if detail.get("fixVersion")
+        }
+        additions = verified - existing
+        workspace = directory / "pnpm-workspace.yaml"
+        policy = yaml.safe_load(workspace.read_bytes())
+        trusted = yaml.safe_load(snapshot[1]["pnpm-workspace.yaml"])
+        policy["minimumReleaseAgeExclude"] = trusted.get(
+            "minimumReleaseAgeExclude", []
+        ) + sorted(additions)
+        workspace.write_text(yaml.safe_dump(policy, sort_keys=False))
+        if restore_invalid_state(
+            directory,
+            snapshot,
+            diagnostics,
+            "Security proposal policy",
+            security_fix=True,
+            allowed_security_exclusions=additions,
+        ):
+            return result
+        current = valid_snapshot(directory)
+        assert current is not None
         # pnpm can reintroduce vulnerable pins during automatic peer resolution.
         # A fresh compatible resolution avoids those pins, including the installed
         # virtual store's lockfile, without adding overrides or running scripts.
@@ -764,6 +834,7 @@ def describe_pnpm_fixes(
     if not isinstance(data, dict) or data.get("package_manager") != "pnpm":
         return
     lock = yaml.safe_load(files["pnpm-lock.yaml"])
+    overrides = yaml.safe_load(files["pnpm-workspace.yaml"]).get("overrides", {})
 
     def query(package: str, *fields: str) -> object:
         key = (package, fields)
@@ -790,7 +861,8 @@ def describe_pnpm_fixes(
                     error = {}
                 cache[key] = (
                     []
-                    if error.get("code") == "ERR_PNPM_PACKAGE_NOT_FOUND"
+                    if error.get("code")
+                    in ("ERR_PNPM_PACKAGE_NOT_FOUND", "ERR_PNPM_NO_MATCHING_VERSION")
                     else value
                     if result.returncode == 0
                     else None
@@ -807,6 +879,7 @@ def describe_pnpm_fixes(
     for name, vulnerability in data["vulnerabilities"].items():
         vulnerability["fixAvailable"] = False
         for detail in vulnerability["via"]:
+            detail.pop("fixVersion", None)
             patched = detail.get("patchedRange")
             if patched in (None, "<0.0.0", ""):
                 detail["fixStatus"] = "No patched version declared by the registry."
@@ -873,6 +946,58 @@ def describe_pnpm_fixes(
                         if compatible_patches is None
                         else compatible_patches & parent_patches
                     )
+            override = overrides.get(name) if isinstance(overrides, dict) else None
+            override_status = ""
+            override_patches = None
+            if isinstance(override, str):
+                intersections = [
+                    published(f"{name}@{local_range.strip()} {patch_range.strip()}")
+                    for local_range in override.split("||")
+                    for patch_range in patched.split("||")
+                ]
+                if any(matches is None for matches in intersections):
+                    unknown = True
+                    override_status = (
+                        f"Could not verify compatibility of retained override "
+                        f"`pnpm-workspace.yaml overrides.{name}` = `{override}`. "
+                        "Override preserved for manual review."
+                    )
+                else:
+                    override_patches = {
+                        version
+                        for matches in intersections
+                        if matches is not None
+                        for version in matches
+                    }
+                    if not override_patches:
+                        override_status = (
+                            f"Blocked by retained override "
+                            f"`pnpm-workspace.yaml overrides.{name}` = `{override}`. "
+                            "Override preserved for manual compatibility review."
+                        )
+                    elif compatible_patches is not None:
+                        compatible_patches &= override_patches
+            # Qualified rules match declared dependency ranges and parent
+            # versions, with precedence between overlapping selectors. Registry
+            # patch intersections alone do not prove their applicability. Retain
+            # all potentially relevant rules and withhold automatic exceptions.
+            qualified = []
+            for selector, value in (
+                overrides.items() if isinstance(overrides, dict) else []
+            ):
+                delimiter = re.search(r"[^ |@]>", selector)
+                target = selector[delimiter.end() :] if delimiter else selector
+                target_name = target.rsplit("@", 1)[0] if "@" in target[1:] else target
+                if selector != name and target_name == name:
+                    qualified.append(
+                        f"`pnpm-workspace.yaml overrides.{selector}` = `{value}`"
+                    )
+            if qualified:
+                unknown = True
+                override_status += (
+                    " Retained qualified overrides require manual applicability "
+                    "and compatibility review: " + "; ".join(sorted(qualified)) + "."
+                )
             if compatible_patches == set():
                 detail["fixStatus"] = (
                     "Published patches exist, but no single patch satisfies all "
@@ -889,17 +1014,23 @@ def describe_pnpm_fixes(
                         if unknown
                         else ""
                     )
+                    + (f" {override_status}" if override_status else "")
                 )
                 continue
-            version = min(
-                patches if compatible_patches is None else compatible_patches,
-                key=lambda v: tuple(map(int, v.split("."))),
-            )
+            candidates = compatible_patches
+            if candidates is None:
+                candidates = override_patches or patches
+            version = min(candidates, key=lambda v: tuple(map(int, v.split("."))))
+            if not unknown and not override_status:
+                detail["fixVersion"] = version
             detail["fixStatus"] = f"Published patch: `{name}@{version}`. " + (
-                "Parent compatibility could not be fully verified; manual review required."
-                if unknown
-                else "No checked parent constraint excludes published patches; review "
-                "manifest constraints and resolution logs."
+                override_status
+                or (
+                    "Parent compatibility could not be fully verified; manual review required."
+                    if unknown
+                    else "No checked parent constraint excludes published patches; review "
+                    "manifest constraints and resolution logs."
+                )
             )
 
 
@@ -1084,9 +1215,10 @@ def prepare(directory: Path, *, validation: dict | None = None) -> str:
         set(before.get("vulnerabilities", {})) if isinstance(before, dict) else set()
     )
     changes = []
+    cache: dict = {}
 
     # Give compatible security fixes the first use of the shared time budget.
-    fixed = fix_security(directory, deadline, notes)
+    fixed = fix_security(directory, deadline, notes, cache)
     restore_invalid_state(
         directory, last_valid_snapshot, notes, "Initial security fix", security_fix=True
     )
@@ -1209,7 +1341,7 @@ def prepare(directory: Path, *, validation: dict | None = None) -> str:
                 "Stable proposal audit unavailable; follow-up security attribution is unconfirmed."
             )
         # Keep fixes within the proposed manifest constraints; never use --force.
-        fixed = fix_security(directory, deadline, notes)
+        fixed = fix_security(directory, deadline, notes, cache)
         restore_invalid_state(
             directory,
             stable_snapshot,
@@ -1283,7 +1415,6 @@ def prepare(directory: Path, *, validation: dict | None = None) -> str:
         for name, current in initial_snapshot[2].get(section, {}).items()
         if (final := after_snapshot[2].get(section, {}).get(name)) != current
     ]
-    cache: dict = {}
     describe_pnpm_fixes(directory, before, initial_snapshot[1], notes, deadline, cache)
     describe_pnpm_fixes(directory, after, after_snapshot[1], notes, deadline, cache)
     native_locks = [
