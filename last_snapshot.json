@@ -104,7 +104,7 @@
     "753": "2026-09-05",
     "845": "2026-09-29"
   },
-  "generated_at": "2026-10-11T20:59:20Z",
+  "generated_at": "2026-10-12T07:40:58Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -552,7 +552,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "[Bug] 1.4.0rc1: instantiated objects keep a parent link to the source config, breaking pickling",
-      "updated_at": "2026-10-11T20:57:57Z"
+      "updated_at": "2026-10-12T06:07:49Z"
     },
     "3538": {
       "category": "Bug",
