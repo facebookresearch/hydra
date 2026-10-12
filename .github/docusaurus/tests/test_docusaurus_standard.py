@@ -1039,7 +1039,9 @@ def test_info_advisory_is_reported_and_fix_attempt_includes_info(
         ["audit", "--json", "--audit-level", "info"],
         ["audit", "--fix=update", "--audit-level", "info", "--ignore-scripts"],
     ]
-    assert commands[2][:4] == [
+    assert commands[2] == ["audit", "--json", "--audit-level", "info"]
+    resolution = next(args for args in commands[3:] if args[0] == "install")
+    assert resolution[:4] == [
         "install",
         "--lockfile-only",
         "--no-frozen-lockfile",
