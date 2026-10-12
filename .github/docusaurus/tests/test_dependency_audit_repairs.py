@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 import yaml
+from test_docusaurus_standard import npm_project as npm_project
 
 module = runpy.run_path(
     str(Path(__file__).parents[1] / "templates/dependency_audit.py")
@@ -39,6 +40,58 @@ def upgrade(project):
     lock["packages"]["child@1.0.1"] = {}
     lock["snapshots"]["parent@1.0.0"]["dependencies"]["child"] = "1.0.1"
     (project / "pnpm-lock.yaml").write_text(yaml.safe_dump(lock))
+
+
+@pytest.mark.parametrize("fixture_name", ["project", "npm_project"])
+def test_restore_removes_package_files_absent_from_snapshot(request, fixture_name):
+    project = request.getfixturevalue(fixture_name)
+    snapshot = module["valid_snapshot"](project)
+    for name in ("package-lock.json", "pnpm-lock.yaml", "pnpm-workspace.yaml"):
+        if name not in snapshot[1]:
+            (project / name).write_text("{}")
+    unrelated = project / "unrelated.txt"
+    unrelated.write_text("preserve")
+
+    module["restore_snapshot"](project, snapshot)
+
+    assert module["valid_snapshot"](project) == snapshot
+    for name in ("package-lock.json", "pnpm-lock.yaml", "pnpm-workspace.yaml"):
+        assert (project / name).exists() == (name in snapshot[1])
+    assert unrelated.read_text() == "preserve"
+
+
+@pytest.mark.parametrize("fixture_name", ["project", "npm_project"])
+@pytest.mark.parametrize(
+    "filename",
+    ["package.json", "package-lock.json", "pnpm-lock.yaml", "pnpm-workspace.yaml"],
+)
+@pytest.mark.parametrize("kind", ["directory", "symlink", "broken-symlink"])
+def test_restore_rejects_unsafe_package_paths_before_writing(
+    request, fixture_name, filename, kind
+):
+    project = request.getfixturevalue(fixture_name)
+    snapshot = module["valid_snapshot"](project)
+    target = project / filename
+    target.unlink(missing_ok=True)
+    sentinel = project / "sentinel"
+    sentinel.write_text("preserve")
+    if kind == "directory":
+        target.mkdir()
+    else:
+        target.symlink_to(sentinel if kind == "symlink" else project / "missing")
+    if filename != "package.json":
+        (project / "package.json").write_text('{"changed": true}')
+    manifest = (
+        (project / "package.json").read_bytes() if filename != "package.json" else None
+    )
+
+    with pytest.raises(ValueError, match="unsafe package path"):
+        module["restore_snapshot"](project, snapshot)
+
+    assert sentinel.read_text() == "preserve"
+    if manifest is not None:
+        assert (project / "package.json").read_bytes() == manifest
+    assert target.is_dir() if kind == "directory" else target.is_symlink()
 
 
 def test_unused_exceptions_do_not_discard_a_resolved_patch(project):
@@ -108,7 +161,7 @@ def test_invalid_reconstructed_policy_restores_snapshot(project, monkeypatch):
         nonlocal calls
         calls += 1
         candidate = original_valid_snapshot(directory)
-        return None if calls > 1 else candidate
+        return None if calls == 2 else candidate
 
     monkeypatch.setitem(
         module["restore_invalid_state"].__globals__,

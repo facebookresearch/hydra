@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import runpy
@@ -660,6 +661,7 @@ def test_summary_uses_final_manifest_and_stable_phase_security_findings(
     monkeypatch.setattr(subprocess, "run", invoke)
     summary = prepare(project).split("<details>")[0]
     security, other = summary.split("## Other stable dependency upgrades")
+    other = other.split("## Locked dependency changes")[0]
     final = "3.0.0" if patched else "2.0.0"
     assert f"- renderer: `1.0.0` → `{final}`;" in security
     assert "- renderer:" not in other
@@ -759,7 +761,7 @@ def test_summary_precedes_collapsed_full_audit(npm_project, monkeypatch):
     fake_npm(monkeypatch)
 
     report = prepare(npm_project)
-    summary, details = report.split("<details>")
+    summary, details = report.split("<details>", 1)
 
     assert "renderer: `1.0.0` → `2.0.0`" in summary
     assert "## Remaining advisories" in summary
@@ -1502,7 +1504,7 @@ def test_pnpm_shared_workspace_is_rejected(pnpm_project):
     "operation",
     ["initial-audit", "view", "stable-audit", "frozen", "build", "final-audit"],
 )
-@pytest.mark.parametrize("mutated_file", ["package.json", "lock"])
+@pytest.mark.parametrize("mutated_file", ["package.json", "lock", "competing-files"])
 def test_nonmutating_commands_preserve_exact_package_files(
     request, monkeypatch, fixture_name, exit_code, operation, mutated_file
 ):
@@ -1540,7 +1542,14 @@ def test_nonmutating_commands_preserve_exact_package_files(
         elif args == ["run", "build"]:
             boundary = "build"
         if boundary == operation and not mutated:
-            if mutated_file == "package.json":
+            if mutated_file == "competing-files":
+                for name in (
+                    ["package-lock.json"]
+                    if pnpm
+                    else ["pnpm-lock.yaml", "pnpm-workspace.yaml"]
+                ):
+                    (project / name).write_text("{}")
+            elif mutated_file == "package.json":
                 manifest = json.loads((project / "package.json").read_bytes())
                 manifest["dependencies"]["renderer"] = "9.9.9"
                 (project / "package.json").write_text(json.dumps(manifest))
@@ -1562,11 +1571,18 @@ def test_nonmutating_commands_preserve_exact_package_files(
         return subprocess.CompletedProcess(command, 0, stdout, "")
 
     monkeypatch.setattr(subprocess, "run", invoke)
-    report = prepare(project)
+    validation = {}
+    report = prepare(project, validation=validation)
 
     assert mutated
     for name, content in files.items():
         assert (project / name).read_bytes() == content
+    assert audit_module["valid_snapshot"](project) is not None
+    for name in ("package-lock.json", "pnpm-lock.yaml", "pnpm-workspace.yaml"):
+        assert (project / name).exists() == (name in files)
+    for name, content in files.items():
+        assert f"- `{name}`: `{hashlib.sha256(content).hexdigest()}`" in report
+    assert validation["passed"] == ("## Production build\n\nPassed." in report)
     assert "restored" in report
     if operation in {"frozen", "build"}:
         assert "## Production build\n\nPassed." not in report
