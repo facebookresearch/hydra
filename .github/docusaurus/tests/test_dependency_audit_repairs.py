@@ -334,7 +334,8 @@ def test_fresh_security_resolution_is_isolated_and_restores_failures(
     notes = []
     result = module["fix_security"](project, float("inf"), notes)
     assert result.returncode == (1 if failure else 0)
-    assert len(commands) == 2
+    assert len(commands) == 3
+    assert commands[1] == ["audit", "--json", "--audit-level", "info"]
     if failure:
         assert (project / "pnpm-lock.yaml").read_bytes() == snapshot[1][
             "pnpm-lock.yaml"
@@ -487,9 +488,19 @@ def test_patch_publication_and_parent_constraints_are_reported(
         assert len(notes) == 1 and "restored" in notes[0]
 
 
+@pytest.mark.parametrize("direct_override", [False, True])
 def test_parent_can_use_an_older_patch_than_the_latest_registry_match(
-    project, monkeypatch
+    project, monkeypatch, direct_override
 ):
+    if direct_override:
+        workspace = project / "pnpm-workspace.yaml"
+        policy = yaml.safe_load(workspace.read_bytes())
+        policy["overrides"] = {"child": "^2.0.0"}
+        workspace.write_text(yaml.safe_dump(policy))
+        lockfile = project / "pnpm-lock.yaml"
+        lock = yaml.safe_load(lockfile.read_bytes())
+        lock["snapshots"] = {}
+        lockfile.write_text(yaml.safe_dump(lock))
     detail = {"patchedRange": ">=2.0.0", "nodes": ["child@1.0.0"]}
     data = {"package_manager": "pnpm", "vulnerabilities": {"child": {"via": [detail]}}}
     responses = {
@@ -511,6 +522,138 @@ def test_parent_can_use_an_older_patch_than_the_latest_registry_match(
     )
     assert "Published patch: `child@2.1.0`" in detail["fixStatus"]
     assert "No checked parent constraint excludes" in detail["fixStatus"]
+    assert detail["fixVersion"] == "2.1.0"
+
+
+@pytest.mark.parametrize("metadata", ["published", "unavailable", "mutated", "blocked"])
+def test_security_resolution_uses_verified_published_patch(
+    project, monkeypatch, metadata
+):
+    lockfile = project / "pnpm-lock.yaml"
+    lock = yaml.safe_load(lockfile.read_bytes())
+    lock["packages"] = {"parent@1.0.0": {}, "child@4.2.0": {}}
+    lock["snapshots"]["parent@1.0.0"]["dependencies"]["child"] = "4.2.0"
+    lockfile.write_text(yaml.safe_dump(lock))
+    before = module["valid_snapshot"](project)
+    workspace = project / "pnpm-workspace.yaml"
+    commands = []
+    response = {
+        "metadata": {"vulnerabilities": {"high": 1}},
+        "advisories": {
+            "example": {
+                "module_name": "child",
+                "severity": "high",
+                "title": "Example",
+                "url": "https://github.com/advisories/example",
+                "vulnerable_versions": "<=4.2.0",
+                "patched_versions": ">=4.2.1",
+                "findings": [{"version": "4.2.0"}],
+            }
+        },
+    }
+
+    def invoke(command, *, cwd, **kwargs):
+        args = command[5:]
+        commands.append(args)
+        if args[:2] == ["audit", "--fix=update"]:
+            policy = yaml.safe_load(workspace.read_bytes())
+            policy["minimumReleaseAgeExclude"].append("child@4.2.1")
+            workspace.write_text(yaml.safe_dump(policy))
+            return subprocess.CompletedProcess(command, 1, "remaining findings", "")
+        if args[:2] == ["audit", "--json"]:
+            return subprocess.CompletedProcess(command, 1, json.dumps(response), "")
+        if args[0] == "view":
+            value, code = ["4.3.0"], 0
+            if args[1] == "child@>=4.2.1" and metadata == "unavailable":
+                value, code = {"error": {"code": "ETIMEDOUT"}}, 1
+            elif args[1] == "child@>=4.2.1" and metadata == "mutated":
+                policy = yaml.safe_load(workspace.read_bytes())
+                policy["blockExoticSubdeps"] = False
+                workspace.write_text(yaml.safe_dump(policy))
+            elif args[1] == "parent@1.0.0":
+                value = {
+                    "dependencies": {
+                        "child": "~4.2.0" if metadata == "blocked" else "^4.1.1"
+                    }
+                }
+            elif args[1] == "child@~4.2.0 >=4.2.1":
+                value = []
+            return subprocess.CompletedProcess(command, code, json.dumps(value), "")
+        assert args[0] == "install" and "--ignore-scripts" in args
+        exclusions = yaml.safe_load(workspace.read_bytes())["minimumReleaseAgeExclude"]
+        assert "child@4.2.1" not in exclusions
+        assert ("child@4.3.0" in exclusions) == (metadata == "published")
+        version = "4.3.0" if metadata == "published" else "4.2.0"
+        proposed = yaml.safe_load(before[1]["pnpm-lock.yaml"])
+        proposed["packages"] = {"parent@1.0.0": {}, f"child@{version}": {}}
+        proposed["snapshots"]["parent@1.0.0"]["dependencies"]["child"] = version
+        lockfile.write_text(yaml.safe_dump(proposed))
+        return subprocess.CompletedProcess(command, 0, "", "")
+
+    monkeypatch.setattr(subprocess, "run", invoke)
+    notes = []
+    result = module["fix_security"](project, float("inf"), notes)
+    assert result.returncode == 0
+    assert not module["restore_invalid_state"](
+        project, before, notes, "Security fix", security_fix=True
+    )
+    expected = ["existing@1.0.0"] + (["child@4.3.0"] if metadata == "published" else [])
+    assert (
+        yaml.safe_load(workspace.read_bytes())["minimumReleaseAgeExclude"] == expected
+    )
+    assert yaml.safe_load(workspace.read_bytes())["blockExoticSubdeps"] is True
+    assert commands.index(
+        ["audit", "--fix=update", "--audit-level", "info", "--ignore-scripts"]
+    ) < next(i for i, args in enumerate(commands) if args[0] == "install")
+
+
+@pytest.mark.parametrize("constraint", ["1.0.0", "^1.0.0", ">=2.0.0", "unavailable"])
+def test_report_identifies_preserved_local_override_blocker(
+    project, monkeypatch, constraint
+):
+    workspace = project / "pnpm-workspace.yaml"
+    policy = yaml.safe_load(workspace.read_bytes())
+    policy["overrides"] = {"child": constraint}
+    workspace.write_text(yaml.safe_dump(policy))
+    snapshot = module["valid_snapshot"](project)
+    detail = {
+        "patchedRange": ">=2.0.0",
+        "nodes": ["child@1.0.0"],
+        "title": "Example",
+        "severity": "high",
+        "url": "https://github.com/advisories/example",
+        "range": "<2.0.0",
+    }
+    data = {
+        "package_manager": "pnpm",
+        "metadata": {"vulnerabilities": {"high": 1}},
+        "vulnerabilities": {"child": {"via": [detail], "fixAvailable": True}},
+    }
+
+    def invoke(command, **kwargs):
+        package = command[6]
+        value, code = ["2.0.0"], 0
+        if package == "parent@1.0.0":
+            value = {"dependencies": {"child": ">=1.0.0"}}
+        elif package in ("child@1.0.0 >=2.0.0", "child@^1.0.0 >=2.0.0"):
+            value = []
+        elif package == "child@unavailable >=2.0.0":
+            value, code = {"error": {"code": "ETIMEDOUT"}}, 1
+        return subprocess.CompletedProcess(command, code, json.dumps(value), "")
+
+    monkeypatch.setattr(subprocess, "run", invoke)
+    module["describe_pnpm_fixes"](project, data, snapshot[1], [], float("inf"), {})
+    report = module["format_remaining_audit"](data, snapshot[3])
+    assert "child@2.0.0" in report
+    if constraint in ("1.0.0", "^1.0.0"):
+        assert "Blocked by retained override" in report
+        assert "pnpm-workspace.yaml" in report and "overrides.child" in report
+        assert f"`{constraint}`" in report
+    elif constraint == "unavailable":
+        assert "Could not verify" in report and "override" in report
+    else:
+        assert "Blocked by retained override" not in report
+    assert module["valid_snapshot"](project) == snapshot
 
 
 @pytest.mark.parametrize("shared_patch", [False, True])
