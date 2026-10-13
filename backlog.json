@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-10-13",
-  "generated_at": "2026-10-13T10:50:37Z",
+  "generated_at": "2026-10-13T16:46:54Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 45,
+    "open_total": 46,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 3,
-        "percentage": 6.7
+        "count": 4,
+        "percentage": 8.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 38,
-        "percentage": 84.4
+        "percentage": 82.6
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 2,
-        "percentage": 4.4
+        "percentage": 4.3
       },
       {
         "category": "Question",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 45
+        "count": 46
       },
       {
         "status": "done",
@@ -783,6 +783,22 @@
       "updated": "2026-10-11",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3538"
+    },
+    {
+      "number": 3542,
+      "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-10-13",
+      "updated": "2026-10-13",
+      "labels": [
+        "bug",
+        "instantiate_api"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3542"
     },
     {
       "number": 385,
@@ -2513,6 +2529,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-10-13T16:46:54Z",
+      "kind": "new",
+      "issue": 3542,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3542",
+      "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root"
+    },
+    {
       "ts": "2026-10-11T20:59:20Z",
       "kind": "new",
       "issue": 3538,
@@ -4172,18 +4195,6 @@
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3436",
       "title": "`instantiate()` loses merged ancestor values when copying a context-parented subtree",
       "detail": "linked #3437"
-    },
-    {
-      "ts": "2026-09-05T08:55:42Z",
-      "kind": "status",
-      "issue": 3436,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3436",
-      "title": "`instantiate()` loses merged ancestor values when copying a context-parented subtree",
-      "detail": "not started → in progress",
-      "pr": {
-        "number": 3437,
-        "url": "https://github.com/hydra-ecosystem/hydra/pull/3437"
-      }
     }
   ]
 }

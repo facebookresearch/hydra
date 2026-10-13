@@ -104,7 +104,7 @@
     "753": "2026-09-05",
     "845": "2026-09-29"
   },
-  "generated_at": "2026-10-13T10:50:37Z",
+  "generated_at": "2026-10-13T16:46:54Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -563,6 +563,19 @@
       "status": "not started",
       "title": "[Bug] 1.4.0rc1: call-site overrides to instantiate() are no longer validated against structured config types",
       "updated_at": "2026-10-11T20:57:58Z"
+    },
+    "3542": {
+      "category": "Bug",
+      "created_at": "2026-10-13T16:45:35Z",
+      "labels": [
+        "bug",
+        "instantiate_api"
+      ],
+      "pr_numbers": [],
+      "state": "OPEN",
+      "status": "not started",
+      "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root",
+      "updated_at": "2026-10-13T16:45:35Z"
     },
     "468": {
       "category": "Enhancement",
