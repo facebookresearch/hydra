@@ -22,6 +22,10 @@ minimumReleaseAgeExclude:
   - "webpack-dev-server@5.2.6"
   - "ws@8.21.0"
 
+  - compression@1.8.2
+  - http-cache-semantics@4.3.0
+  - proxy-addr@2.0.8
+  - source-map-js@1.2.2
 overrides:
   "@babel/core": "7.29.6"
   "@babel/plugin-transform-modules-systemjs": "7.29.4"
