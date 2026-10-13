@@ -906,6 +906,20 @@ def test_callsite_override_materializes_none_root(instantiate_func: Any) -> None
     assert config._is_none()
 
 
+def test_callsite_override_materializes_missing_root(instantiate_func: Any) -> None:
+    @dataclass
+    class MissingRootConfig:
+        _target_: str = "builtins.dict"
+        count: int = 1
+
+    config = DictConfig(MISSING, ref_type=MissingRootConfig)
+
+    result = instantiate_func(config, count=2)
+
+    assert result == {"count": 2}
+    assert config._is_missing()
+
+
 @mark.parametrize("convert_to_list", [True, False])
 @mark.parametrize(
     "input_conf, passthrough, expected",

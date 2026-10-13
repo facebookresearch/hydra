@@ -921,7 +921,7 @@ def _copy_config_with_override_interpolations(
             merge_source._set_flags_root(True)
             copied_config._merge_with(merge_source, _allow_readonly_target=True)
 
-    if copied_config._is_none():
+    if copied_config._is_none() or copied_config._is_missing():
         ref_type = copied_config._metadata.ref_type
         parent = copied_config._get_parent()
         key = copied_config._key()
