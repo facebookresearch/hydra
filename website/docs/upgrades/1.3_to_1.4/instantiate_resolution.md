@@ -174,6 +174,13 @@ without that temporary guard. Explicit OmegaConf arguments retain their identity
 under the same recursion/conversion settings; other conversion modes behave as
 documented.
 
+For copying, eager resolution and detachment at target-call boundaries, use the
+experimental [instantiation isolation mode](/docs/advanced/instantiate_objects/overview#instantiation-isolation):
+pass `isolate=True`, or set `_isolate_: true` on the input config. Explicit
+call-site selection wins and applies to nested targets. Isolation restores those
+costs and gives up lazy dependencies; it retains Hydra 1.4 override semantics
+and does not guarantee pickleability.
+
 For an independent argument, copy the container and pass the copy at the
 call-site. Internal interpolations stay lazy; resolve before copying if they
 depend on external ancestors:

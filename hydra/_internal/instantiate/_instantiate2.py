@@ -5,6 +5,7 @@ import inspect
 import re
 import weakref
 from contextlib import ExitStack, contextmanager, nullcontext
+from contextvars import ContextVar
 from enum import Enum
 from textwrap import dedent
 from typing import (
@@ -63,6 +64,10 @@ DeferredCallContext = (
 )
 _INSTANTIATE_OVERRIDE_RESOLVER = "hydra.instantiate_override"
 _INSTANTIATE_OVERRIDE_STORAGE = "_hydra_instantiate_overrides"
+_ISOLATE_UNSPECIFIED_: Any = object()
+_ISOLATE_CONFIG_ARGUMENTS: ContextVar[bool] = ContextVar(
+    "hydra_isolate_config_arguments", default=False
+)
 
 
 def _resolve_instantiate_override(token: str, *, _root_: Any) -> Any:
@@ -78,6 +83,7 @@ class _Keys(str, Enum):
     RECURSIVE = "_recursive_"
     ARGS = "_args_"
     PARTIAL = "_partial_"
+    ISOLATE = "_isolate_"
     EXECUTION_WHITELIST = "_execution_whitelist_"
 
 
@@ -226,6 +232,18 @@ def _extract_pos_args(input_args: Any, kwargs: Any, full_key: str) -> tuple[Any,
     return output_args, kwargs
 
 
+def _isolate_config_argument(value: Any) -> Any:
+    if OmegaConf.is_config(value):
+        isolated = copy.deepcopy(value)
+        parent = value._get_parent()
+        if parent is not None:
+            isolated._set_parent(_copy_config_with_parent_context(parent))
+        _resolve_isolated_config(isolated)
+        isolated._set_parent(None)
+        return isolated
+    return value
+
+
 def _call_target(
     _target_: Callable[..., Any],
     _partial_: bool,
@@ -237,6 +255,9 @@ def _call_target(
 ) -> Any:
     """Call target (type) with args and kwargs."""
     args, kwargs = _extract_pos_args(args, kwargs, full_key)
+    if _ISOLATE_CONFIG_ARGUMENTS.get():
+        args = tuple(_isolate_config_argument(arg) for arg in args)
+        kwargs = {key: _isolate_config_argument(value) for key, value in kwargs.items()}
 
     resolved_target_name = _get_resolved_target_name_for_check(_target_)
     effective_target, effective_args, effective_kwargs = _authorize_target_invocation(
@@ -426,6 +447,7 @@ def _resolve_target(
 def instantiate(
     config: Any,
     *args: Any,
+    isolate: bool = _ISOLATE_UNSPECIFIED_,
     _execution_whitelist_: ExecutionWhitelist = None,
     **kwargs: Any,
 ) -> Any:
@@ -457,6 +479,16 @@ def instantiate(
                                   containers too.
                    _partial_: If True, return functools.partial wrapped method or object
                               False by default. Configure per target.
+                   _isolate_: Default isolation mode for this invocation, False
+                              when absent. Read only from the input config node;
+                              nested configs cannot change the selected mode.
+    :param isolate: Experimental invocation-level isolation mode. When omitted,
+                    use the input config's _isolate_ default. An explicit bool
+                    overrides that default for the entire invocation. Copy the input
+                    configuration with its ancestor context, resolve the input
+                    eagerly, and copy, resolve, and detach OmegaConf arguments
+                    before each target call. Applies to nested targets too.
+                    Preserves current override semantics and conversion modes.
     :param _execution_whitelist_: A target string, list of target strings,
                     execution_whitelist() policy, or UNSAFE_DISABLE_EXECUTION_CHECKS. A trailing
                     .* allows targets under a package prefix. Passing None preserves
@@ -479,6 +511,10 @@ def instantiate(
              if _target_ is a callable: the return value of the call
     """
 
+    use_config_isolation = isolate is _ISOLATE_UNSPECIFIED_
+    if not use_config_isolation and not isinstance(isolate, bool):
+        raise TypeError(f"isolate must be a bool, got {type(isolate).__name__}")
+
     if config is None:
         return None
 
@@ -490,8 +526,14 @@ def instantiate(
             "5e70100572e2183db32478e51b32d1edd9b9e1af4a47747d10c7b80b8fadf76e"
         )
     )
-    with _execution_policy_context(policy):
-        return _instantiate_impl(config, args, kwargs, execution_whitelist)
+    token = _ISOLATE_CONFIG_ARGUMENTS.set(False if use_config_isolation else isolate)
+    try:
+        with _execution_policy_context(policy):
+            return _instantiate_impl(
+                config, args, kwargs, execution_whitelist, use_config_isolation
+            )
+    finally:
+        _ISOLATE_CONFIG_ARGUMENTS.reset(token)
 
 
 def _instantiate_impl(
@@ -499,6 +541,7 @@ def _instantiate_impl(
     args: tuple[Any, ...],
     kwargs: dict[str, Any],
     execution_whitelist: NormalizedExecutionWhitelist,
+    use_config_isolation: bool = False,
 ) -> Any:
     source_config_is_omegaconf = OmegaConf.is_config(config)
 
@@ -521,14 +564,32 @@ def _instantiate_impl(
         config = OmegaConf.structured(config)
 
     if OmegaConf.is_dict(config):
+        if use_config_isolation:
+            isolate = (
+                kwargs.get(_Keys.ISOLATE, False)
+                if config._is_none()
+                else _get_effective_control(config, kwargs, _Keys.ISOLATE, False)
+            )
+            if not isinstance(isolate, bool):
+                raise TypeError(
+                    _with_full_key(
+                        f"_isolate_ must be a bool, got {type(isolate).__name__}",
+                        config._get_full_key(None),
+                    )
+                )
+            _ISOLATE_CONFIG_ARGUMENTS.set(isolate)
         _validate_override_types(config, kwargs)
         resolution_overrides = dict(kwargs)
         if args:
             resolution_overrides[_Keys.ARGS] = args
-        if resolution_overrides:
+        if resolution_overrides or (
+            _ISOLATE_CONFIG_ARGUMENTS.get() and not config._is_none()
+        ):
             config = _copy_config_with_override_interpolations(
                 config, resolution_overrides
             )
+            if _ISOLATE_CONFIG_ARGUMENTS.get():
+                _resolve_isolated_config(config)
             return instantiate_node(
                 config,
                 *args,
@@ -558,6 +619,10 @@ def _instantiate_impl(
                 deferred_call_context=deferred_call_context,
             )
     elif OmegaConf.is_sequence(config):
+        if _ISOLATE_CONFIG_ARGUMENTS.get():
+            config = _copy_config_with_parent_context(config)
+            _resolve_isolated_config(config)
+            source_config_is_omegaconf = False
         _recursive_ = kwargs.pop(_Keys.RECURSIVE, True)
         _convert_ = kwargs.pop(_Keys.CONVERT, ConvertMode.NONE)
         _partial_ = kwargs.pop(_Keys.PARTIAL, False)
@@ -964,16 +1029,7 @@ def _apply_override_interpolations(
                 _replace_child(node, key, merged)
 
 
-def _copy_config_with_override_interpolations(
-    config: DictConfig, overrides: ConfigOverlay
-) -> DictConfig:
-    OmegaConf.register_resolver(
-        _INSTANTIATE_OVERRIDE_RESOLVER,
-        _resolve_instantiate_override,
-        replace=True,
-        annotation_validation="off",
-    )
-
+def _copy_config_with_parent_context(config: Any) -> Any:
     path = []
     current: Any = config
     while current._get_parent() is not None:
@@ -995,6 +1051,55 @@ def _copy_config_with_override_interpolations(
             # original parent while preserving that parent for interpolation.
             merge_source._set_flags_root(True)
             copied_config._merge_with(merge_source, _allow_readonly_target=True)
+
+    return copied_config
+
+
+def _resolve_isolated_config(config: Any) -> None:
+    # The ancestor tree is private too; resolution can use its interpolation
+    # context without exposing constructor mutations to the source config.
+    config._set_flags_root(True)
+    config._set_flag(
+        flags=["allow_objects", "struct", "readonly"], values=[True, False, False]
+    )
+    # Explicit descendant flags can still prevent eager resolution. Temporarily
+    # unlock the private context tree too, since interpolations may resolve there.
+    pending = [config._get_root(), config]
+    seen = set()
+    with ExitStack() as writable:
+        while pending:
+            node = pending.pop()
+            if id(node) in seen:
+                continue
+            seen.add(id(node))
+            if node._get_node_flag("readonly") is True:
+                writable.enter_context(flag_override(node, "readonly", False))
+            if isinstance(node, Container):
+                content = node._value()
+                if isinstance(content, dict):
+                    pending.extend(content.values())
+                elif isinstance(content, (list, tuple)):
+                    pending.extend(content)
+            elif isinstance(node, UnionNode):
+                child = node._value()
+                if isinstance(child, Node):
+                    pending.append(child)
+        OmegaConf.resolve(config)
+
+
+def _copy_config_with_override_interpolations(
+    config: DictConfig, overrides: ConfigOverlay
+) -> DictConfig:
+    OmegaConf.register_resolver(
+        _INSTANTIATE_OVERRIDE_RESOLVER,
+        _resolve_instantiate_override,
+        replace=True,
+        annotation_validation="off",
+    )
+
+    current = config._get_root()
+    copied_config = _copy_config_with_parent_context(config)
+    copied_root = copied_config._get_root()
 
     if copied_config._is_none():
         ref_type = copied_config._metadata.ref_type
@@ -1157,7 +1262,9 @@ def instantiate_node(
             )
             raise InstantiationException(_with_full_key(msg, full_key))
 
-        exclude_keys = set({"_target_", "_convert_", "_recursive_", "_partial_"})
+        exclude_keys = set(
+            {"_target_", "_convert_", "_recursive_", "_partial_", "_isolate_"}
+        )
         if (overrides is not None and _Keys.TARGET in overrides) or _is_target(node):
             target = (
                 overrides[_Keys.TARGET]
