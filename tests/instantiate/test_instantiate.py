@@ -227,6 +227,10 @@ def structured_config_object_node(value: Any) -> Any:
     return AnyNode(value, flags={"allow_objects": True})
 
 
+def config_with_objects(value: Any) -> Any:
+    return OmegaConf.structured(value, flags={"allow_objects": True})
+
+
 def register_test_resolver(name: str, value: Any) -> Any:
     OmegaConf.register_resolver(name, lambda: value, replace=True)
     return value
@@ -2221,8 +2225,8 @@ def test_dict_override_merges_structured_config_fields(
     result = instantiate_func(
         cfg,
         value={
-            "count": "20",
-            "child": {"count": "30"},
+            "count": 20,
+            "child": {"count": 30},
             "tags": {"env": "dev"},
         },
     )
@@ -2368,7 +2372,7 @@ def test_dict_override_materializes_structured_config_with_allow_objects(
         _target_: str = "tests.instantiate.ArgsClass"
         value: Value | None = None
 
-    result = instantiate_func(Config, value={})
+    result = instantiate_func(config_with_objects(Config), value={})
 
     value = result.kwargs["value"]
     assert OmegaConf.get_type(value) is Value
@@ -2458,13 +2462,12 @@ def test_dict_override_merges_non_target_config(instantiate_func: Any) -> None:
 def test_runtime_override_is_not_coerced_by_structured_config(
     instantiate_func: Any,
 ) -> None:
-    result = instantiate_func(
-        AdamConf(),
-        params=Parameters([]),
-        lr="runtime value",
-    )
-
-    assert result.lr == "runtime value"
+    with raises(ValidationError):
+        instantiate_func(
+            AdamConf(),
+            params=Parameters([]),
+            lr="runtime value",
+        )
 
 
 @mark.parametrize("with_override", [False, True])
@@ -3589,7 +3592,7 @@ def test_direct_functools_partial_target_warns_in_legacy_mode() -> None:
     cfg = {"_target_": "functools.partial", "_args_": [pow], "exp": 2}
 
     with warns(UserWarning) as records:
-        factory = _instantiate2.instantiate(cfg)
+        factory = _instantiate2.instantiate(config_with_objects(cfg))
 
     assert factory(3) == 9
     assert any(
@@ -3604,7 +3607,8 @@ def test_direct_partial_warns_with_unsafe_disable_execution_checks() -> None:
 
     with warns(UserWarning, match=r"Using '_target_: functools\.partial'"):
         factory = _instantiate2.instantiate(
-            cfg, _execution_whitelist_=UNSAFE_DISABLE_EXECUTION_CHECKS
+            config_with_objects(cfg),
+            _execution_whitelist_=UNSAFE_DISABLE_EXECUTION_CHECKS,
         )
 
     assert factory(3) == 9
@@ -3691,7 +3695,8 @@ def test_execution_whitelist_applies_to_callable_targets() -> None:
     cfg = {"_target_": target}
     assert (
         _instantiate2.instantiate(
-            cfg, _execution_whitelist_="tests.instantiate.CallableClass"
+            config_with_objects(cfg),
+            _execution_whitelist_="tests.instantiate.CallableClass",
         )
         == "callable class"
     )
@@ -3711,17 +3716,19 @@ def test_execution_whitelist_preserves_bound_classmethod_identity() -> None:
     assert result.x == 11
 
 
-def test_non_recursive_plain_config_preserves_callable_target(
+def test_non_recursive_explicit_object_config_preserves_callable_target(
     instantiate_func: Any,
 ) -> None:
     target = CallableClass()
 
     result = instantiate_func(
-        {
-            "_target_": "tests.instantiate.ArgsClass",
-            "_recursive_": False,
-            "payload": {"_target_": target},
-        }
+        config_with_objects(
+            {
+                "_target_": "tests.instantiate.ArgsClass",
+                "_recursive_": False,
+                "payload": {"_target_": target},
+            }
+        )
     )
 
     payload = result.kwargs["payload"]
@@ -3743,7 +3750,7 @@ def test_callable_target_does_not_alias_literal_target_string(
         InstantiationException,
         match="Error locating target '__hydra_callable_target_0__'",
     ):
-        instantiate_func(cfg)
+        instantiate_func(config_with_objects(cfg))
 
 
 @mark.parametrize(
@@ -4158,7 +4165,9 @@ def test_policy_namespace_cannot_be_rebound_from_config(
     }
 
     with raises(InstantiationException, match="implementation state"):
-        _instantiate2.instantiate(config, _execution_whitelist_=execution_whitelist)
+        _instantiate2.instantiate(
+            config_with_objects(config), _execution_whitelist_=execution_whitelist
+        )
 
     assert execution_policy.UNCONTROLLED_EXECUTION_TARGETS is original
 
@@ -4227,10 +4236,12 @@ def test_config_cannot_return_frame_locals() -> None:
         warnings.simplefilter("ignore", UserWarning)
         with raises(InstantiationException, match="implementation metadata"):
             _instantiate2.instantiate(
-                {
-                    "_target_": "builtins.getattr",
-                    "_args_": [frame, "f_locals"],
-                }
+                config_with_objects(
+                    {
+                        "_target_": "builtins.getattr",
+                        "_args_": [frame, "f_locals"],
+                    }
+                )
             )
 
     generator.close()
@@ -4398,20 +4409,24 @@ def test_builtin_setattr_and_delattr_allow_application_objects() -> None:
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", UserWarning)
         _instantiate2.instantiate(
-            {
-                "_target_": "builtins.setattr",
-                "_convert_": "all",
-                "_args_": [receiver, "marker", "changed"],
-            }
+            config_with_objects(
+                {
+                    "_target_": "builtins.setattr",
+                    "_convert_": "all",
+                    "_args_": [receiver, "marker", "changed"],
+                }
+            )
         )
         assert receiver.marker == "changed"
 
         _instantiate2.instantiate(
-            {
-                "_target_": "builtins.delattr",
-                "_convert_": "all",
-                "_args_": [receiver, "marker"],
-            }
+            config_with_objects(
+                {
+                    "_target_": "builtins.delattr",
+                    "_convert_": "all",
+                    "_args_": [receiver, "marker"],
+                }
+            )
         )
         assert not hasattr(receiver, "marker")
 
@@ -4627,7 +4642,7 @@ def test_two_argument_iter_callback_is_blocked_in_legacy_mode() -> None:
         warns(UserWarning, match="_execution_whitelist_"),
         raises(InstantiationException, match="two-argument callback form"),
     ):
-        _instantiate2.instantiate(cfg)
+        _instantiate2.instantiate(config_with_objects(cfg))
 
     assert calls == []
 
@@ -4641,7 +4656,9 @@ def test_two_argument_iter_callback_cannot_be_whitelisted() -> None:
 
     cfg = {"_target_": "builtins.iter", "_args_": [callback, 2]}
     with raises(InstantiationException, match="two-argument callback form"):
-        _instantiate2.instantiate(cfg, _execution_whitelist_="builtins.iter")
+        _instantiate2.instantiate(
+            config_with_objects(cfg), _execution_whitelist_="builtins.iter"
+        )
 
     assert calls == []
 
@@ -4661,13 +4678,13 @@ def test_partial_call_target_reauthorizes_effective_callable() -> None:
         match="callback.*not in the Hydra execution whitelist",
     ):
         _instantiate2.instantiate(
-            cfg, _execution_whitelist_="functools.partial.__call__"
+            config_with_objects(cfg), _execution_whitelist_="functools.partial.__call__"
         )
 
     assert calls == []
     callback_target = execution_policy._get_resolved_target_name_for_check(callback)
     _instantiate2.instantiate(
-        cfg,
+        config_with_objects(cfg),
         _execution_whitelist_=["functools.partial.__call__", callback_target],
     )
     assert calls == ["called"]
@@ -4717,7 +4734,7 @@ def test_property_get_target_cannot_be_whitelisted() -> None:
         match=r"Target 'builtins\.property'.*cannot be authorized",
     ):
         _instantiate2.instantiate(
-            cfg, _execution_whitelist_="builtins.property.__get__"
+            config_with_objects(cfg), _execution_whitelist_="builtins.property.__get__"
         )
 
     assert calls == []
@@ -5384,7 +5401,7 @@ def test_getattr_unwraps_partial_callable_result() -> None:
             match=r"Target 'builtins\.eval'.*blacklisted",
         ),
     ):
-        _instantiate2.instantiate(cfg)
+        _instantiate2.instantiate(config_with_objects(cfg))
 
 
 def test_execution_whitelist_cannot_authorize_getattr_callable_result() -> None:
@@ -5481,7 +5498,7 @@ def test_execution_whitelist_authorizes_functools_partial_and_effective_callable
 
     with warns(UserWarning, match=r"Using '_target_: functools\.partial'"):
         factory = _instantiate2.instantiate(
-            cfg,
+            config_with_objects(cfg),
             _execution_whitelist_=[execution_whitelist, "builtins.pow"],
         )
 
@@ -5498,7 +5515,9 @@ def test_execution_whitelist_checks_functools_partial_effective_callable() -> No
             match=r"Target 'builtins\.pow'.*not in the Hydra execution whitelist",
         ),
     ):
-        _instantiate2.instantiate(cfg, _execution_whitelist_="functools.partial")
+        _instantiate2.instantiate(
+            config_with_objects(cfg), _execution_whitelist_="functools.partial"
+        )
 
 
 @mark.parametrize(
@@ -5519,7 +5538,7 @@ def test_execution_whitelist_authorizes_functools_partial_constructor(
 
     with warns(UserWarning, match=r"Using '_target_: functools\.partial'"):
         factory = _instantiate2.instantiate(
-            cfg,
+            config_with_objects(cfg),
             _execution_whitelist_=[execution_whitelist, "builtins.pow"],
         )
 
@@ -5546,7 +5565,9 @@ def test_functools_partial_constructor_rejects_subclass_with_spoofed_func(
         warns(UserWarning),
         raises(InstantiationException, match="cannot return partial subclasses"),
     ):
-        _instantiate2.instantiate(cfg, _execution_whitelist_=execution_whitelist)
+        _instantiate2.instantiate(
+            config_with_objects(cfg), _execution_whitelist_=execution_whitelist
+        )
 
 
 def test_unsafe_disable_execution_checks_permits_partial_subclass() -> None:
@@ -5562,7 +5583,8 @@ def test_unsafe_disable_execution_checks_permits_partial_subclass() -> None:
 
     with warns(UserWarning, match=r"Using '_target_: functools\.partial'"):
         factory = _instantiate2.instantiate(
-            cfg, _execution_whitelist_=UNSAFE_DISABLE_EXECUTION_CHECKS
+            config_with_objects(cfg),
+            _execution_whitelist_=UNSAFE_DISABLE_EXECUTION_CHECKS,
         )
 
     assert factory("1 + 2") == 3
@@ -5578,7 +5600,7 @@ def test_direct_functools_partial_applies_legacy_blacklist_to_callable() -> None
             match=r"Target 'builtins\.eval'.*blacklisted",
         ),
     ):
-        _instantiate2.instantiate(cfg)
+        _instantiate2.instantiate(config_with_objects(cfg))
 
 
 def test_unsafe_disable_checks_permit_blacklisted_partial_callable() -> None:
@@ -5586,7 +5608,8 @@ def test_unsafe_disable_checks_permit_blacklisted_partial_callable() -> None:
 
     with warns(UserWarning, match=r"Using '_target_: functools\.partial'"):
         factory = _instantiate2.instantiate(
-            cfg, _execution_whitelist_=UNSAFE_DISABLE_EXECUTION_CHECKS
+            config_with_objects(cfg),
+            _execution_whitelist_=UNSAFE_DISABLE_EXECUTION_CHECKS,
         )
 
     assert factory("1 + 2") == 3
@@ -5630,7 +5653,9 @@ def test_callable_result_from_any_target_requires_authorization() -> None:
         InstantiationException,
         match=r"Target 'builtins\.eval'.*cannot be authorized",
     ):
-        _instantiate2.instantiate(cfg, _execution_whitelist_="builtins.dict.get")
+        _instantiate2.instantiate(
+            config_with_objects(cfg), _execution_whitelist_="builtins.dict.get"
+        )
 
 
 def test_callable_result_from_any_target_allows_authorized_callable() -> None:
@@ -5642,7 +5667,8 @@ def test_callable_result_from_any_target_allows_authorized_callable() -> None:
 
     assert (
         _instantiate2.instantiate(
-            cfg, _execution_whitelist_=["builtins.dict.get", "builtins.pow"]
+            config_with_objects(cfg),
+            _execution_whitelist_=["builtins.dict.get", "builtins.pow"],
         )
         is pow
     )
@@ -5694,17 +5720,21 @@ def test_callable_result_producer_whitelist_does_not_authorize_result() -> None:
         InstantiationException,
         match=r"Target 'os\.remove'.*not in the Hydra execution whitelist",
     ):
-        _instantiate2.instantiate(cfg, _execution_whitelist_="builtins.dict.get")
+        _instantiate2.instantiate(
+            config_with_objects(cfg), _execution_whitelist_="builtins.dict.get"
+        )
 
 
 def test_native_partial_authorizes_callable_result_when_invoked() -> None:
     deferred = _instantiate2.instantiate(
-        {
-            "_target_": "builtins.dict.get",
-            "_partial_": True,
-            "_args_": [{"pow": pow, "eval": eval}],
-            "_convert_": "all",
-        },
+        config_with_objects(
+            {
+                "_target_": "builtins.dict.get",
+                "_partial_": True,
+                "_args_": [{"pow": pow, "eval": eval}],
+                "_convert_": "all",
+            }
+        ),
         _execution_whitelist_=["builtins.dict.get", "builtins.pow"],
     )
 
@@ -5768,7 +5798,7 @@ def test_direct_functools_partial_authorizes_result_when_invoked() -> None:
     }
     with warns(UserWarning, match=r"Using '_target_: functools\.partial'"):
         factory = _instantiate2.instantiate(
-            cfg,
+            config_with_objects(cfg),
             _execution_whitelist_=[
                 "functools.partial",
                 "builtins.dict.get",
@@ -5793,7 +5823,7 @@ def test_native_partial_mediates_partial_result_when_invoked() -> None:
     }
     with warns(UserWarning, match=r"Using '_target_: functools\.partial'"):
         outer = _instantiate2.instantiate(
-            cfg,
+            config_with_objects(cfg),
             _execution_whitelist_=[
                 "functools.partial",
                 "builtins.dict.get",
@@ -5865,7 +5895,9 @@ def test_dynamic_type_construction_is_not_allowed(target: str) -> None:
         InstantiationException,
         match="cannot be used for dynamic class construction",
     ):
-        _instantiate2.instantiate(cfg, _execution_whitelist_=target)
+        _instantiate2.instantiate(
+            config_with_objects(cfg), _execution_whitelist_=target
+        )
 
 
 def test_partial_type_reauthorizes_runtime_arguments() -> None:
@@ -5895,7 +5927,7 @@ def test_resolved_partial_target_cannot_bypass_dynamic_type_guard() -> None:
         match="cannot be used for dynamic class construction",
     ):
         _instantiate2.instantiate(
-            {"_target_": target},
+            config_with_objects({"_target_": target}),
             _execution_whitelist_="builtins.type",
         )
 
@@ -5909,7 +5941,7 @@ def test_resolved_partial_target_cannot_bypass_mock_parameter_guard() -> None:
         match="cannot configure callable attributes",
     ):
         _instantiate2.instantiate(
-            {"_target_": target},
+            config_with_objects({"_target_": target}),
             _execution_whitelist_="unittest.mock.NonCallableMock",
         )
 
@@ -5932,7 +5964,7 @@ def test_resolved_partial_target_substitutes_placeholder_before_guard() -> None:
         match="cannot be used for dynamic class construction",
     ):
         _instantiate2.instantiate(
-            {"_target_": target, "_args_": ["Selector"]},
+            config_with_objects({"_target_": target, "_args_": ["Selector"]}),
             _execution_whitelist_="builtins.type",
         )
 
@@ -5949,7 +5981,7 @@ def test_resolved_partial_target_preserves_unfilled_placeholder_error() -> None:
 
     with raises(TypeError, match="missing positional arguments in 'partial' call"):
         _instantiate2.instantiate(
-            {"_target_": target},
+            config_with_objects({"_target_": target}),
             _execution_whitelist_="builtins.pow",
         )
 
@@ -6002,7 +6034,9 @@ def test_non_callable_mock_cannot_configure_callable_children(
         InstantiationException,
         match="cannot configure callable attributes",
     ):
-        _instantiate2.instantiate(cfg, _execution_whitelist_=target)
+        _instantiate2.instantiate(
+            config_with_objects(cfg), _execution_whitelist_=target
+        )
 
 
 def test_non_callable_mock_rejects_positional_wraps() -> None:
@@ -6049,7 +6083,9 @@ def test_context_decorator_cannot_hide_deferred_callable_selection() -> None:
         InstantiationException,
         match=r"Target 'contextlib\.ContextDecorator\.__call__'.*cannot be authorized",
     ):
-        _instantiate2.instantiate(cfg, _execution_whitelist_=target)
+        _instantiate2.instantiate(
+            config_with_objects(cfg), _execution_whitelist_=target
+        )
 
 
 @mark.parametrize(

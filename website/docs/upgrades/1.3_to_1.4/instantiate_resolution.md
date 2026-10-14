@@ -6,124 +6,135 @@ title: Instantiate resolution and call-site overrides
 Hydra 1.4 changes when `hydra.utils.instantiate()` resolves configuration
 values and how call-site arguments interact with the input configuration.
 
-The examples on this page pass `_execution_whitelist_` because trusted call-site
-code is responsible for authorizing configured targets in Hydra 1.4. See the
-[execution whitelist migration guide](/docs/upgrades/1.3_to_1.4/execution_whitelist)
-for the associated security and migration context.
+Examples authorize targets with `_execution_whitelist_`; see the
+[execution whitelist migration guide](/docs/upgrades/1.3_to_1.4/execution_whitelist).
 
 ## Benefits
 
-`instantiate()` no longer eagerly resolves the full input configuration before
-it starts instantiating targets. Instead, it traverses the configuration and
-resolves each value when that value is needed. Calls on OmegaConf inputs without
-call-site overrides also avoid the former additional full-tree copy. When
-overrides are present, Hydra uses a private copy so configured interpolations
-resolve against the call-site values without modifying the input configuration.
+`instantiate()` no longer eagerly resolves the full configuration before
+constructing targets. Values resolve when needed during traversal or when a
+target accesses a passed OmegaConf container. Calls on OmegaConf inputs without
+overrides also avoid the former additional full-tree input copy.
 
-This has several benefits:
-
-- Unrelated parts of the configuration tree are not resolved.
-- A call-site argument can replace an unresolvable configured value without
-  forcing Hydra to resolve the replaced value first.
-- An earlier target can establish runtime state, such as registering a custom
-  resolver, before a later argument is resolved.
-- With `_recursive_=False`, the default `_convert_="none"`, and no call-site
-  overrides, Hydra no longer makes a final copy of OmegaConf containers before
-  the target call. Containers passed through from the input tree retain their
-  identity, lazy interpolations, ancestor context, resolver cache, and inherited
-  flags. Hydra temporarily marks the source configuration read-only during
-  instantiation and restores its previous state afterward.
+- Unrelated values remain unresolved.
+- Call-site arguments can replace unresolvable configured values.
+- Earlier targets can establish runtime state, such as registering a resolver,
+  before later values are accessed.
 
 ## Compatibility impact
 
-Call-site arguments determine the arguments passed to the target, but they do
-not modify the input configuration itself. Hydra applies them to a private copy
-used for resolution, so interpolations in other configured arguments resolve
-against the effective values.
-
-Call-site arguments are not generally coerced or validated against the
-corresponding field in an input Structured Config. Dictionary overrides of
-Structured Config nodes are the exception, as described below. Primitive
-values, native `list`, `tuple`, and `dict` containers, and OmegaConf containers
-remain supported configuration inputs. They retain Hydra's normal
-instantiation and conversion where applicable.
-
-Plain Python call-site overrides must be concrete runtime values. Hydra rejects
-`???` and strings containing OmegaConf interpolation syntax (`${...}`),
-including inside native containers. Explicit OmegaConf containers retain
-normal OmegaConf semantics and may contain missing values or interpolations.
-
-When a `dict` or `DictConfig` call-site argument overrides a parameter of the
-target being instantiated, it is handled according to the configured parameter
-value:
-
-- If the configured value is a Structured Config node, Hydra validates the
-  merged dictionary against the schema. Fields that the dictionary does not
-  name retain their configured values, and interpolations within the node can
-  resolve against the merged values.
-- Otherwise, if the configured mapping contains `_target_`, Hydra merges the
-  dictionary into that target config, preserving its target, instantiation
-  settings, and arguments that the dictionary does not name. `_recursive_`
-  controls whether the result is instantiated or passed through; it does not
-  change this merge behavior.
-- Any other configured mapping is replaced entirely.
-
-Hydra uses the configured parameter's effective value after interpolation to
-select among these cases. If the interpolation cannot be resolved, the
-call-site dictionary replaces it.
-
-The Structured Config behavior is an exception to replacement. Hydra 1.3
-instead merged dictionaries into configured plain mappings, so the target
-received configured keys that the call-site argument did not name:
+Call-site overrides leave the input unchanged. Configured interpolations
+resolve against those overrides in a private copy, preserving Hydra 1.3's result
+without eager resolution:
 
 ```python
+from omegaconf import OmegaConf
+
 from hydra.utils import instantiate
 
-cfg = {
-    "_target_": "builtins.dict",
-    "tags": {"env": "prod", "team": "ml"},
-}
-
-result = instantiate(cfg, tags={"env": "dev"}, _execution_whitelist_="builtins.dict")
-assert result["tags"] == {"env": "dev"}
+cfg = OmegaConf.create({"_target_": "builtins.dict", "b": 200, "c": "${b}"})
+result = instantiate(cfg, b=99, _execution_whitelist_="builtins.dict")
+assert result == {"b": 99, "c": 99}
+assert cfg.b == 200
 ```
 
-Hydra 1.3 returned `{"env": "dev", "team": "ml"}` for `tags`.
-
-For example, a configured target retains its merge behavior:
+Plain input containers and Structured Config defaults no longer automatically
+accept arbitrary Python objects during default/raw input conversion. Without an
+explicit `allow_objects` opt-in, such values, including object-valued `Any`
+defaults, now raise `UnsupportedValueType`. Pass runtime objects as call-site
+arguments instead:
 
 ```python
-cfg = {
-    "_target_": "builtins.dict",
-    "optimizer": {"_target_": "builtins.dict", "lr": 0.1, "momentum": 0.5},
-}
+runtime = object()
+cfg = {"_target_": "builtins.dict"}
 
-result = instantiate(
-    cfg,
-    optimizer={"lr": 0.3},
-    _execution_whitelist_="builtins.dict",
-)
-assert result["optimizer"] == {"lr": 0.3, "momentum": 0.5}
+# Previously accepted; now raises UnsupportedValueType:
+# instantiate({**cfg, "payload": runtime}, _execution_whitelist_="builtins.dict")
+
+result = instantiate(cfg, payload=runtime, _execution_whitelist_="builtins.dict")
+assert result["payload"] is runtime
 ```
 
-To pass a merged value, merge it explicitly at the call-site, for example with
-`OmegaConf.merge(cfg["tags"], {"env": "dev"})`.
-
-Hydra 1.4 intentionally changes the treatment of already-constructed dataclass
-and attrs instances passed as call-site arguments. They are now regular runtime
-objects and remain unchanged, even if they define `_target_`. Hydra no longer
-implicitly converts them to Structured Configs, merges them with the input
-configuration, or recursively instantiates them.
-
-To use a dataclass or attrs instance as configuration, explicitly convert it
-with `OmegaConf.structured(instance)`:
+If an input config intentionally contains arbitrary objects, opt in when
+constructing it:
 
 ```python
 from dataclasses import dataclass
 
 from omegaconf import OmegaConf
 
-from hydra.utils import instantiate
+
+@dataclass
+class Config:
+    payload: object
+
+
+config = Config(payload=object())
+cfg = OmegaConf.structured(config, flags={"allow_objects": True})
+```
+
+Bare `OmegaConf.structured(instance)` is sufficient only when all values are
+otherwise supported. Without the explicit opt-in, unsupported Structured Config
+field annotations such as `object` are rejected during default/raw input
+conversion. Use supported annotations, such as `Any` for an unrestricted
+runtime argument, with a supported default such as `None`.
+
+Call-site arguments are validated against declared configuration types without
+coercion: `"1"` for an `int` field raises `ValidationError`, whereas Hydra 1.3
+converted it to `1`. Unrestricted `Any` fields and additional parameters remain
+runtime values. Validation does not replace supplied values or construct omitted
+Structured Config defaults; factories run only when normal instantiation needs
+them. Primitive and container arguments retain normal instantiation and
+conversion semantics.
+
+Plain Python overrides reject `???` and interpolation strings (`${...}`), even
+inside native containers or constrained dataclass/attrs fields. Explicit
+OmegaConf arguments may contain either; their interpolations remain unresolved
+during validation. Future results follow
+the argument container's own schema, which may be untyped, rather than acquiring
+the destination field's schema. Configured interpolations retain normal
+OmegaConf validation and conversion on access.
+
+Dictionary overrides (`dict` or `DictConfig`) depend on the configured value:
+
+- **Structured Config:** merge with schema validation, retaining unnamed fields
+  and resolving configured interpolations against the merged values.
+- **Otherwise, a mapping with `_target_`:** merge, retaining its target, settings
+  and unnamed arguments. `_recursive_` controls instantiation, not merging.
+- **Other mappings:** replace entirely, whereas Hydra 1.3 merged them.
+
+Selection uses the configured value after interpolation. If it cannot be
+resolved, the dictionary replaces it. For example:
+
+```python
+cfg = {
+    "_target_": "builtins.dict",
+    "tags": {"env": "prod", "team": "ml"},
+    "optimizer": {"_target_": "builtins.dict", "lr": 0.1, "momentum": 0.5},
+}
+
+result = instantiate(
+    cfg,
+    tags={"env": "dev"},
+    optimizer={"lr": 0.3},
+    _execution_whitelist_="builtins.dict",
+)
+assert result["tags"] == {"env": "dev"}  # Hydra 1.3 retained team="ml"
+assert result["optimizer"] == {"lr": 0.3, "momentum": 0.5}
+```
+
+To retain plain mapping keys, merge explicitly at the call-site with
+`OmegaConf.merge(cfg["tags"], {"env": "dev"})`.
+
+Dataclass and attrs instances passed at the call-site now retain their identity
+as runtime objects, even if they define `_target_`. Hydra 1.3 treated them as
+configurations; Hydra 1.4 does not implicitly convert, merge or recursively
+instantiate them. Constrained fields still validate their type and field values
+without reconstructing them. To use an instance as configuration, convert it
+explicitly with `OmegaConf.structured(instance)`:
+
+```python
+from dataclasses import dataclass
 
 
 @dataclass
@@ -150,69 +161,27 @@ config_result = instantiate(
 assert config_result["child"] == {"value": 10}
 ```
 
-For example:
-
-```python
-from omegaconf import OmegaConf
-
-from hydra.utils import instantiate
-
-cfg = OmegaConf.create(
-    {
-        "_target_": "builtins.dict",
-        "b": 200,
-        "c": "${b}",
-    }
-)
-
-result = instantiate(cfg, b=99, _execution_whitelist_="builtins.dict")
-assert result == {"b": 99, "c": 99}
-```
-
-Hydra 1.4 leaves `cfg` unchanged while resolving `${b}` against the effective
-call-site value. This preserves the result produced by Hydra 1.3 without
-eagerly resolving the full configuration.
-
 With `_recursive_=False`, `_convert_="none"`, and no call-site overrides,
-OmegaConf containers are no longer copied and detached before the target call.
-The target receives the same `DictConfig`, `ListConfig`, or `TupleConfig`
-object from the input tree, temporarily marked read-only for the duration of
-instantiation, including the target constructor call. Hydra restores the
-configuration's previous read-only state before returning. A constructor that
-intentionally needs to mutate the source configuration can opt in explicitly
-with OmegaConf's `read_write()` context manager. When call-site overrides are
-present, configured containers come from Hydra's private resolution copy, and
-Hydra does not add this temporary read-only guard. Containers supplied directly
-as call-site values still retain their identity. Other conversion modes retain
-their documented conversion behavior.
+the target receives the original `DictConfig`, `ListConfig`, or `TupleConfig`,
+retaining its identity, lazy interpolations, ancestry, resolver cache and
+inherited flags. The source tree is temporarily read-only throughout
+instantiation, including constructors; Hydra restores its previous state
+afterward. Constructors can explicitly mutate the source with OmegaConf's
+`read_write()` context manager.
 
-To pass an independent Config object instead, create one explicitly:
+With overrides, configured containers come from the private resolution copy
+without that temporary guard. Explicit OmegaConf arguments retain their identity
+under the same recursion/conversion settings; other conversion modes behave as
+documented.
 
-```python
-cfg = OmegaConf.create(
-    {
-        "_target_": "builtins.dict",
-        "_recursive_": False,
-        "payload": {"value": 10, "alias": "${.value}"},
-    }
-)
-independent = OmegaConf.create(cfg.payload)
-result = instantiate(
-    cfg,
-    payload=independent,
-    _execution_whitelist_="builtins.dict",
-)
-assert result["payload"] is independent
-```
-
-`OmegaConf.create()` preserves lazy interpolations within the copied container.
-If an interpolation depends on an ancestor outside that container, resolve it
-while copying:
+For an independent argument, copy the container and pass the copy at the
+call-site. Internal interpolations stay lazy; resolve before copying if they
+depend on external ancestors:
 
 ```python
-independent = OmegaConf.create(
-    OmegaConf.to_container(cfg.payload, resolve=True)
-)
+independent = OmegaConf.create(container)
+# Alternative when interpolations depend on external ancestors:
+independent = OmegaConf.create(OmegaConf.to_container(container, resolve=True))
 ```
 
 ## Partial factories and serialization
