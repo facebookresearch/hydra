@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-10-14",
-  "generated_at": "2026-10-14T07:18:46Z",
+  "generated_at": "2026-10-14T07:44:38Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 46,
+    "open_total": 45,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 4,
-        "percentage": 8.7
+        "count": 3,
+        "percentage": 6.7
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 38,
-        "percentage": 82.6
+        "percentage": 84.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 2,
-        "percentage": 4.3
+        "percentage": 4.4
       },
       {
         "category": "Question",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -66,29 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 103
+        "count": 104
       }
     ]
   },
   "issues": [
-    {
-      "number": 3538,
-      "title": "[Bug] 1.4.0rc1: call-site overrides to instantiate() are no longer validated against structured config types",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3545,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3545"
-        }
-      ],
-      "created": "2026-10-11",
-      "updated": "2026-10-14",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3538"
-    },
     {
       "number": 3542,
       "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root",
@@ -2535,9 +2517,34 @@
       "updated": "2026-10-11",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3535"
+    },
+    {
+      "number": 3538,
+      "title": "[Bug] 1.4.0rc1: call-site overrides to instantiate() are no longer validated against structured config types",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3545,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3545"
+        }
+      ],
+      "created": "2026-10-11",
+      "updated": "2026-10-14",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3538"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-10-14T07:44:38Z",
+      "kind": "closed",
+      "issue": 3538,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3538",
+      "title": "[Bug] 1.4.0rc1: call-site overrides to instantiate() are no longer validated against structured config types"
+    },
     {
       "ts": "2026-10-14T03:58:30Z",
       "kind": "pr",
@@ -4207,13 +4214,6 @@
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3066",
       "title": "[Feature Request] Logging config to include `loggers` as well as `root` (suggested solution)",
       "detail": "removed \"triage\""
-    },
-    {
-      "ts": "2026-09-05T17:19:06Z",
-      "kind": "new",
-      "issue": 3438,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3438",
-      "title": "Improve type safety of Hydra logging configurations"
     }
   ]
 }
