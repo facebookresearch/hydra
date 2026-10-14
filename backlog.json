@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-10-14",
-  "generated_at": "2026-10-14T11:29:32Z",
+  "generated_at": "2026-10-14T11:42:05Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 45,
+    "open_total": 44,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 3,
-        "percentage": 6.7
+        "count": 2,
+        "percentage": 4.5
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 38,
-        "percentage": 84.4
+        "percentage": 86.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 2,
-        "percentage": 4.4
+        "percentage": 4.5
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 1,
-        "percentage": 2.2
+        "percentage": 2.3
       },
       {
         "category": "Refactor",
@@ -39,14 +39,14 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 1,
-        "percentage": 2.2
+        "percentage": 2.3
       }
     ],
     "by_status": [
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -66,29 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 104
+        "count": 105
       }
     ]
   },
   "issues": [
-    {
-      "number": 3537,
-      "title": "[Bug] 1.4.0rc1: instantiated objects keep a parent link to the source config, breaking pickling",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3547,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3547"
-        }
-      ],
-      "created": "2026-10-11",
-      "updated": "2026-10-13",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3537"
-    },
     {
       "number": 3542,
       "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root",
@@ -2540,9 +2522,34 @@
       "updated": "2026-10-14",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3538"
+    },
+    {
+      "number": 3537,
+      "title": "[Bug] 1.4.0rc1: instantiated objects keep a parent link to the source config, breaking pickling",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3547,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3547"
+        }
+      ],
+      "created": "2026-10-11",
+      "updated": "2026-10-13",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3537"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-10-14T11:42:05Z",
+      "kind": "closed",
+      "issue": 3537,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3537",
+      "title": "[Bug] 1.4.0rc1: instantiated objects keep a parent link to the source config, breaking pickling"
+    },
     {
       "ts": "2026-10-14T09:59:54Z",
       "kind": "pr",
@@ -4217,13 +4224,6 @@
       "issue": 3026,
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3026",
       "title": "[Feature Request] Allow for defaults list `override` to update the ordering of defaults?"
-    },
-    {
-      "ts": "2026-09-05T17:33:44Z",
-      "kind": "closed",
-      "issue": 3055,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3055",
-      "title": "[Feature Request] -- is there a way to sweep in nested folder inside config group?"
     }
   ]
 }
