@@ -174,6 +174,15 @@ without that temporary guard. Explicit OmegaConf arguments retain their identity
 under the same recursion/conversion settings; other conversion modes behave as
 documented.
 
+To give targets independent OmegaConf arguments with fixed values, or avoid
+serializing unrelated ancestors with a partial factory, use
+[instantiation isolation](/docs/advanced/instantiate_objects/overview#instantiation-isolation):
+pass `isolate=True`, or set `_isolate_: true` on the input config. An explicit
+call-site value wins for the entire invocation, including nested targets. This
+adds copying and eager-resolution costs and gives up source identity and lazy
+dependencies. Hydra 1.4 override semantics still apply; pickleability is not
+guaranteed.
+
 For an independent argument, copy the container and pass the copy at the
 call-site. Internal interpolations stay lazy; resolve before copying if they
 depend on external ancestors:
