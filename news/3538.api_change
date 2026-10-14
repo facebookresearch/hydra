@@ -1,0 +1,3 @@
+Validate call-site overrides against config schemas without coercion.
+
+Require explicit OmegaConf opt-in for objects stored in input configs.
