@@ -25,7 +25,7 @@ instantiation is not supported for these sequence inputs.
     <summary>Instantiate API (Expand for details)</summary>
 
     ```python
-    def instantiate(config: Any, *args: Any, **kwargs: Any) -> Any:
+    def instantiate(config: Any, *args: Any, isolate: bool = ..., **kwargs: Any) -> Any:
         """
         :param config: An config object describing what to call and what params to use.
                        In addition to the parameters, the config must contain:
@@ -51,6 +51,12 @@ instantiation is not supported for these sequence inputs.
                                       containers too.
                        _partial_: If True, return functools.partial wrapped method or object
                                   False by default. Configure per target.
+                       _isolate_: Default isolation mode for the entire invocation.
+                                  False when absent; nested targets cannot change it.
+        :param isolate: Isolation mode. An explicit bool overrides
+                        the input config's _isolate_ default. Copies and eagerly
+                        resolves config inputs and prepares independent OmegaConf
+                        arguments before target calls, including partial capture.
         :param _execution_whitelist_: A target string, list of target strings,
                                    object returned by execution_whitelist(), or
                                    UNSAFE_DISABLE_EXECUTION_CHECKS. Passing None
@@ -486,6 +492,44 @@ obj_object = instantiate(cfg_object, _execution_whitelist_="__main__.*")
 cfg_all = OmegaConf.create({..., "_convert_": "all"})
 obj_all = instantiate(cfg_all, _execution_whitelist_="__main__.*")
 ```
+
+### Instantiation isolation
+
+Use isolation to give targets independent OmegaConf arguments with fixed values.
+This lets targets mutate them without changing the source config, and avoids
+serializing unrelated ancestors with a partial factory:
+
+```python
+obj = instantiate(cfg, isolate=True, _execution_whitelist_="my_app.*")
+```
+
+Hydra eagerly resolves a private config copy before constructing targets. At
+each target call or `_partial_` capture, it also copies direct OmegaConf arguments,
+resolves them using their ancestor context, and detaches them from their parents.
+
+The input node can supply an invocation default with `_isolate_: true`:
+
+```yaml
+_target_: my_app.Model
+_isolate_: true
+sizes: [8, 16]
+```
+
+An explicit `isolate=True` or `isolate=False` wins for the entire invocation,
+including nested targets. Nested `_isolate_` defaults only apply to separate
+`instantiate()` calls. Hydra consumes `_isolate_` and the call-site `isolate`
+keyword; a config field named `isolate` is still passed to the target.
+
+The cost is extra copying and eager resolution, giving up source identity and
+lazy dependencies. Unused interpolations can fail, including those needing a
+resolver registered by a target. Non-OmegaConf call-site arguments retain their
+usual identity; objects stored in copied configs can be deep-copied.
+
+Isolation does not guarantee pickleability: a Structured Config can still carry
+an unimportable class in its own metadata. Non-target roots are not automatically
+detached; later partial-factory arguments are not isolated. Hydra 1.4 override
+validation and conversion still apply. This is not full Hydra 1.3 compatibility
+or isolation from resolver and constructor side effects.
 
 ### Partial Instantiation
 
