@@ -164,24 +164,36 @@ Named arguments in the config can be overridden by passing named argument with t
 Call-site arguments replace the corresponding arguments passed to the target
 without modifying the input configuration. Interpolations in other configured
 arguments resolve against those call-site values. Call-site values are not
-generally coerced against Structured Config fields. Dictionary overrides of
-Structured Config nodes are the exception, as described below.
+coerced against declared Structured Config fields: incompatible values are
+rejected instead of converted. Dictionary overrides of Structured Config nodes
+are merged and schema-validated, as described below.
 
 Plain Python call-site overrides must be concrete runtime values. Hydra rejects
 `???` and strings containing OmegaConf interpolation syntax (`${...}`),
 including inside native containers. Explicit OmegaConf containers retain
 normal OmegaConf semantics and may contain missing values or interpolations.
 
+Plain input containers and Structured Config defaults no longer automatically
+accept arbitrary Python objects during input conversion. Pass runtime objects as
+call-site arguments. To intentionally keep arbitrary objects in an input config,
+construct it with `OmegaConf.structured(config, flags={"allow_objects": True})`;
+bare `OmegaConf.structured(instance)` is sufficient only when all values are
+otherwise supported. See the
+[Hydra 1.4 upgrade guide](/docs/upgrades/1.3_to_1.4/instantiate_resolution)
+for migration details.
+
 Configuration values are resolved lazily as instantiation proceeds instead of
-resolving the full configuration tree up front. Calls on OmegaConf inputs
-without call-site overrides do not make an additional input copy. When
-overrides are present, Hydra uses a private copy so configured interpolations
-resolve against the call-site values while leaving the input unchanged. Runtime
-state established by an earlier target can still be used while resolving a
-later argument. During copy-free instantiation, Hydra temporarily marks the
-source configuration read-only, including while target constructors run, and
-restores its previous state before returning. Constructors can use OmegaConf's
-`read_write()` context manager to opt in to mutation explicitly.
+resolving the full configuration tree up front. A target that receives an
+OmegaConf container may trigger resolution later by accessing its values. Calls
+on OmegaConf inputs without call-site overrides do not make an additional input
+copy. When overrides are present, Hydra uses a private copy so configured
+interpolations resolve against the call-site values while leaving the input
+unchanged. Runtime state established by an earlier target can still be used
+while resolving a later argument. During copy-free instantiation, Hydra
+temporarily marks the source configuration read-only, including while target
+constructors run, and restores its previous state before returning.
+Constructors can use OmegaConf's `read_write()` context manager to opt in to
+mutation explicitly.
 
 Hydra `_partial_` factories cannot be pickled. Invoke the
 factory first; whether the constructed object can be pickled is determined by
