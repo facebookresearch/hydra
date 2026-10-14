@@ -27,7 +27,9 @@ from omegaconf import (
     flag_override,
 )
 from omegaconf._utils import is_structured_config
+from omegaconf._validation_context import _schema_validation
 from omegaconf.errors import InterpolationResolutionError
+from omegaconf.experimental import _validate
 
 from hydra._internal.deprecation_warning import deprecation_warning
 from hydra._internal.execution_policy import (
@@ -318,11 +320,28 @@ def _prepare_input_value(
     return value
 
 
-def _validate_callsite_override(value: Any, path: tuple[Any, ...]) -> None:
+def _validate_callsite_override(
+    value: Any, path: tuple[Any, ...], *, schema: Any = None
+) -> None:
+    if isinstance(value, Node):
+        if isinstance(value, Container) or schema is not None:
+            return
+        value = value._value()
     if is_structured_config(value):
+        if (
+            schema is not None
+            and schema._metadata.ref_type is not Any
+            and not isinstance(value, type)
+        ):
+            for key in schema:
+                child_schema = schema._get_child(key)
+                if child_schema._metadata.ref_type is not Any:
+                    _validate_callsite_override(
+                        getattr(value, key), (*path, key), schema=child_schema
+                    )
         return
 
-    raw_value = value._value() if isinstance(value, Node) else value
+    raw_value = value
     full_key = ".".join(
         str(component.value if isinstance(component, Enum) else component)
         for component in path
@@ -340,10 +359,18 @@ def _validate_callsite_override(value: Any, path: tuple[Any, ...]) -> None:
 
     if isinstance(value, dict):
         for key, child in value.items():
-            _validate_callsite_override(child, (*path, key))
+            _validate_callsite_override(
+                child,
+                (*path, key),
+                schema=schema._get_child(key) if schema is not None else None,
+            )
     elif isinstance(value, (list, tuple)):
         for index, child in enumerate(value):
-            _validate_callsite_override(child, (*path, index))
+            _validate_callsite_override(
+                child,
+                (*path, index),
+                schema=schema._get_child(index) if schema is not None else None,
+            )
 
 
 def _resolve_target(
@@ -438,6 +465,9 @@ def instantiate(
     :param kwargs: Optional named parameters to override
                    parameters in the config object. Parameters not present
                    in the config objects are being passed as is to the target.
+                   Declared field types are checked without coercion using a
+                   disposable copy. Interpolated OmegaConf arguments defer
+                   value checking to the supplied container's own schema.
                    Plain Python missing values and interpolation syntax are not
                    supported in call-site overrides; pass concrete runtime
                    values or an explicit OmegaConf container instead.
@@ -488,9 +518,10 @@ def _instantiate_impl(
         or isinstance(config, (dict, list))
         or type(config) is tuple
     ):
-        config = OmegaConf.structured(config, flags={"allow_objects": True})
+        config = OmegaConf.structured(config)
 
     if OmegaConf.is_dict(config):
+        _validate_override_types(config, kwargs)
         resolution_overrides = dict(kwargs)
         if args:
             resolution_overrides[_Keys.ARGS] = args
@@ -565,6 +596,47 @@ def _instantiate_impl(
                 Top level config must be an OmegaConf DictConfig/ListConfig/TupleConfig object,
                 a plain dict/list/tuple, or a Structured Config class or instance.""")
         )
+
+
+def _validate_override_types(config: DictConfig, overrides: ConfigOverlay) -> None:
+    if not overrides:
+        return
+    reserved_keys = {key.value for key in _Keys}
+    if config._is_none() or config._is_missing():
+        cls = config._metadata.ref_type
+        if not is_structured_config(cls):
+            return
+        token = _schema_validation.set(True)
+        try:
+            config = OmegaConf.structured(
+                cls, flags={"allow_objects": config._get_flag("allow_objects") is True}
+            )
+        finally:
+            _schema_validation.reset(token)
+    supplied = {}
+    for key in overrides:
+        value = _get_override_child(overrides, key)
+        if key in reserved_keys:
+            continue
+        schema = config._get_node(key, validate_access=False)
+        if schema is None:
+            continue
+        if schema._metadata.ref_type is Any and (
+            not is_structured_config(schema._metadata.object_type)
+            or _override_mapping(value) is None
+        ):
+            continue
+        supplied[key] = value
+    if not supplied:
+        return
+    probe = OmegaConf.masked_copy(config, list(supplied))
+    probe._set_flag("allow_objects", True)
+    # The probe is disposable. Keep original values for target execution;
+    # OmegaConf checks supplied fields without factories or resolution.
+    _validate(probe, supplied, in_place=True)
+    # Raw structured instances stay runtime objects. Their fields must not
+    # become deferred config markers solely for the validation probe.
+    _validate_callsite_override(supplied, (), schema=probe)
 
 
 def _convert_node(node: Any, convert: ConvertMode | str) -> Any:
@@ -885,6 +957,9 @@ def _apply_override_interpolations(
                 _replace_child(node, key, current_value)
 
             if merge_base is not None:
+                dict_override = _get_dict_override(_get_override_child(overrides, key))
+                if isinstance(merge_base, DictConfig) and dict_override is not None:
+                    _validate_override_types(merge_base, dict_override)
                 merged = OmegaConf.merge(merge_base, override_nodes[key])
                 _replace_child(node, key, merged)
 
@@ -926,7 +1001,12 @@ def _copy_config_with_override_interpolations(
         parent = copied_config._get_parent()
         key = copied_config._key()
         copied_config = (
-            OmegaConf.structured(ref_type)
+            OmegaConf.structured(
+                ref_type,
+                flags={
+                    "allow_objects": copied_config._get_flag("allow_objects") is True
+                },
+            )
             if is_structured_config(ref_type)
             else OmegaConf.create({})
         )

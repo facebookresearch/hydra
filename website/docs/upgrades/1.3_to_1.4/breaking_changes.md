@@ -175,10 +175,23 @@ have been removed:
   explicitly.
 - A `dict` or `DictConfig` call-site argument to `hydra.utils.instantiate()`
   replaces a plain mapping configured for that target parameter instead of
-  merging into it. As an exception, a dictionary overriding a Structured Config
-  node is merged and schema-validated. Configured target values also retain
-  merge behavior, regardless of whether recursive instantiation is enabled. See
-  [Instantiate resolution and call-site overrides](/docs/upgrades/1.3_to_1.4/instantiate_resolution).
+  merging into it. A dictionary overriding a Structured Config node is merged
+  and schema-validated; configured target values also retain merge behavior,
+  regardless of whether recursive instantiation is enabled. See [Instantiate
+  resolution and call-site overrides](/docs/upgrades/1.3_to_1.4/instantiate_resolution).
+- Call-site values for declared Structured Config fields are validated without
+  coercion. Incompatible values, such as `"1"` for an `int` field, are rejected
+  instead of converted. Unconstrained `Any` fields and additional parameters
+  remain runtime values. See [Instantiate resolution and call-site
+  overrides](/docs/upgrades/1.3_to_1.4/instantiate_resolution).
+- Plain input containers and Structured Config defaults no longer automatically
+  accept arbitrary Python objects during default/raw input conversion. Pass
+  runtime objects as call-site arguments. To intentionally retain arbitrary
+  objects in an input config, construct it with
+  `OmegaConf.structured(config, flags={"allow_objects": True})`; bare
+  `OmegaConf.structured(instance)` is sufficient only when all values are
+  otherwise supported. See [Instantiate resolution and call-site
+  overrides](/docs/upgrades/1.3_to_1.4/instantiate_resolution).
 - `hydra.utils.instantiate()` passes dataclass and attrs instances supplied as
   call-site arguments through unchanged instead of interpreting them as
   Structured Configs.
@@ -187,9 +200,11 @@ have been removed:
   OmegaConf containers instead.
 - `hydra.utils.instantiate()` resolves interpolations during recursive
   traversal instead of resolving the entire configuration before
-  instantiation. With `_recursive_=False`, `_convert_="none"`, and no call-site
-  overrides, Config containers are passed through without a final copy. See
-  [Instantiate resolution and call-site overrides](/docs/upgrades/1.3_to_1.4/instantiate_resolution).
+  instantiation. A target may also trigger resolution when it accesses a
+  passed OmegaConf container. With `_recursive_=False`, `_convert_="none"`, and
+  no call-site overrides, Config containers are passed through without a final
+  copy. See [Instantiate resolution and call-site
+  overrides](/docs/upgrades/1.3_to_1.4/instantiate_resolution).
 - During instantiation without call-site overrides, Hydra temporarily makes the
   source configuration read-only and restores its previous state afterward.
   Constructors that intentionally mutate it must opt in with OmegaConf's
