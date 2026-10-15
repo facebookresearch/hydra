@@ -566,6 +566,16 @@ def _instantiate_impl(
         config = OmegaConf.structured(config)
 
     if OmegaConf.is_dict(config):
+        _validate_override_types(config, kwargs)
+        resolution_overrides = dict(kwargs)
+        if args:
+            resolution_overrides[_Keys.ARGS] = args
+        if resolution_overrides:
+            config = _copy_config_with_override_interpolations(
+                config, resolution_overrides
+            )
+        # A missing or null root can supply schema defaults only after it has
+        # been materialized on the private override-copy path.
         if use_config_isolation_default:
             isolate = (
                 kwargs.get(_Keys.ISOLATE, False)
@@ -580,16 +590,15 @@ def _instantiate_impl(
                     )
                 )
             _ISOLATE_CONFIG_ARGUMENTS.set(isolate)
-        _validate_override_types(config, kwargs)
-        resolution_overrides = dict(kwargs)
-        if args:
-            resolution_overrides[_Keys.ARGS] = args
         if resolution_overrides or (
-            _ISOLATE_CONFIG_ARGUMENTS.get() and not config._is_none()
+            _ISOLATE_CONFIG_ARGUMENTS.get()
+            and not config._is_none()
+            and not config._is_missing()
         ):
-            config = _copy_config_with_override_interpolations(
-                config, resolution_overrides
-            )
+            if not resolution_overrides:
+                config = _copy_config_with_override_interpolations(
+                    config, resolution_overrides
+                )
             if _ISOLATE_CONFIG_ARGUMENTS.get():
                 _resolve_isolated_config(config)
             return instantiate_node(
@@ -1103,7 +1112,7 @@ def _copy_config_with_override_interpolations(
     copied_config = _copy_config_with_parent_context(config)
     copied_root = copied_config._get_root()
 
-    if copied_config._is_none():
+    if copied_config._is_none() or copied_config._is_missing():
         ref_type = copied_config._metadata.ref_type
         parent = copied_config._get_parent()
         key = copied_config._key()
