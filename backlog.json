@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-10-15",
-  "generated_at": "2026-10-15T07:18:17Z",
+  "generated_at": "2026-10-15T16:14:56Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 44,
@@ -46,12 +46,12 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 0
+        "count": 1
       },
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 1
+        "count": 0
       },
       {
         "status": "blocked",
@@ -76,12 +76,16 @@
       "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root",
       "category": "Bug",
       "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
+      "status": "in progress",
+      "status_emoji": "🔄",
       "prs": [
         {
           "number": 3543,
           "url": "https://github.com/hydra-ecosystem/hydra/pull/3543"
+        },
+        {
+          "number": 3548,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3548"
         }
       ],
       "created": "2026-10-13",
@@ -2544,6 +2548,26 @@
   ],
   "updates": [
     {
+      "ts": "2026-10-15T16:14:56Z",
+      "kind": "pr",
+      "issue": 3542,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3542",
+      "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root",
+      "detail": "linked #3548"
+    },
+    {
+      "ts": "2026-10-15T16:14:56Z",
+      "kind": "status",
+      "issue": 3542,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3542",
+      "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root",
+      "detail": "community PR → in progress",
+      "pr": {
+        "number": 3543,
+        "url": "https://github.com/hydra-ecosystem/hydra/pull/3543"
+      }
+    },
+    {
       "ts": "2026-10-14T11:42:05Z",
       "kind": "closed",
       "issue": 3537,
@@ -4210,20 +4234,6 @@
       "issue": 3012,
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3012",
       "title": "[Feature Request] It might be useful to have a utility function for integration testing pipelines built with Hydra that expose command line interfaces through config files."
-    },
-    {
-      "ts": "2026-09-05T17:59:14Z",
-      "kind": "closed",
-      "issue": 3015,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3015",
-      "title": "[Feature Request] Support Instantiation of User Plugins Without Special Module"
-    },
-    {
-      "ts": "2026-09-05T17:45:12Z",
-      "kind": "closed",
-      "issue": 3026,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3026",
-      "title": "[Feature Request] Allow for defaults list `override` to update the ordering of defaults?"
     }
   ]
 }

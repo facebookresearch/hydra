@@ -106,7 +106,7 @@
     "753": "2026-09-05",
     "845": "2026-09-29"
   },
-  "generated_at": "2026-10-15T07:18:17Z",
+  "generated_at": "2026-10-15T16:14:56Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -554,10 +554,11 @@
         "instantiate_api"
       ],
       "pr_numbers": [
-        "3543"
+        "3543",
+        "3548"
       ],
       "state": "OPEN",
-      "status": "community PR",
+      "status": "in progress",
       "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root",
       "updated_at": "2026-10-13T19:51:52Z"
     },
