@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-10-15",
-  "generated_at": "2026-10-15T16:14:56Z",
+  "generated_at": "2026-10-15T18:16:05Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 44,
@@ -79,10 +79,6 @@
       "status": "in progress",
       "status_emoji": "🔄",
       "prs": [
-        {
-          "number": 3543,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3543"
-        },
         {
           "number": 3548,
           "url": "https://github.com/hydra-ecosystem/hydra/pull/3548"
@@ -2548,6 +2544,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-10-15T18:16:05Z",
+      "kind": "pr",
+      "issue": 3542,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3542",
+      "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root",
+      "detail": "unlinked #3543"
+    },
+    {
       "ts": "2026-10-15T16:14:56Z",
       "kind": "pr",
       "issue": 3542,
@@ -4227,13 +4231,6 @@
       "issue": 3011,
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3011",
       "title": "New release of hydra-colorlog?"
-    },
-    {
-      "ts": "2026-09-05T18:15:00Z",
-      "kind": "closed",
-      "issue": 3012,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3012",
-      "title": "[Feature Request] It might be useful to have a utility function for integration testing pipelines built with Hydra that expose command line interfaces through config files."
     }
   ]
 }
