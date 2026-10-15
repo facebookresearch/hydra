@@ -910,6 +910,27 @@ def test_callsite_override_materializes_none_root(instantiate_func: Any) -> None
     assert config._is_none()
 
 
+@mark.parametrize("isolate", [False, True])
+@mark.parametrize("overrides,expected", [({}, {}), ({"count": 2}, {"count": 2})])
+def test_missing_structured_root_overrides(
+    instantiate_func: Any,
+    isolate: bool,
+    overrides: dict[str, int],
+    expected: dict[str, int],
+) -> None:
+    @dataclass
+    class Config:
+        _target_: str = "builtins.dict"
+        count: int = 1
+
+    config = DictConfig(MISSING, ref_type=Config)
+
+    result = instantiate_func(config, isolate=isolate, **overrides)
+
+    assert result == expected
+    assert config._is_missing()
+
+
 @mark.parametrize("convert_to_list", [True, False])
 @mark.parametrize(
     "input_conf, passthrough, expected",
