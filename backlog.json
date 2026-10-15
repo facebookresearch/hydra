@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-10-14",
-  "generated_at": "2026-10-14T11:42:05Z",
+  "generated_on": "2026-10-15",
+  "generated_at": "2026-10-15T07:18:17Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 44,
@@ -2506,24 +2506,6 @@
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3535"
     },
     {
-      "number": 3538,
-      "title": "[Bug] 1.4.0rc1: call-site overrides to instantiate() are no longer validated against structured config types",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3545,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3545"
-        }
-      ],
-      "created": "2026-10-11",
-      "updated": "2026-10-14",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3538"
-    },
-    {
       "number": 3537,
       "title": "[Bug] 1.4.0rc1: instantiated objects keep a parent link to the source config, breaking pickling",
       "category": "Bug",
@@ -2540,6 +2522,24 @@
       "updated": "2026-10-13",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3537"
+    },
+    {
+      "number": 3538,
+      "title": "[Bug] 1.4.0rc1: call-site overrides to instantiate() are no longer validated against structured config types",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3545,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3545"
+        }
+      ],
+      "created": "2026-10-11",
+      "updated": "2026-10-14",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3538"
     }
   ],
   "updates": [
