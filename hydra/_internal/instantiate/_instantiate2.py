@@ -1103,7 +1103,7 @@ def _copy_config_with_override_interpolations(
     copied_config = _copy_config_with_parent_context(config)
     copied_root = copied_config._get_root()
 
-    if copied_config._is_none():
+    if copied_config._is_none() or copied_config._is_missing():
         ref_type = copied_config._metadata.ref_type
         parent = copied_config._get_parent()
         key = copied_config._key()
