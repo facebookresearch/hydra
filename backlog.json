@@ -1,27 +1,27 @@
 {
   "generated_on": "2026-10-15",
-  "generated_at": "2026-10-15T19:43:15Z",
+  "generated_at": "2026-10-15T20:13:50Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 44,
+    "open_total": 43,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 2,
-        "percentage": 4.5
+        "count": 1,
+        "percentage": 2.3
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 38,
-        "percentage": 86.4
+        "percentage": 88.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 2,
-        "percentage": 4.5
+        "percentage": 4.7
       },
       {
         "category": "Question",
@@ -46,7 +46,7 @@
       {
         "status": "in progress",
         "emoji": "🔄",
-        "count": 1
+        "count": 0
       },
       {
         "status": "community PR",
@@ -66,32 +66,11 @@
       {
         "status": "done",
         "emoji": "✅",
-        "count": 105
+        "count": 106
       }
     ]
   },
   "issues": [
-    {
-      "number": 3542,
-      "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "in progress",
-      "status_emoji": "🔄",
-      "prs": [
-        {
-          "number": 3548,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3548"
-        }
-      ],
-      "created": "2026-10-13",
-      "updated": "2026-10-13",
-      "labels": [
-        "bug",
-        "instantiate_api"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3542"
-    },
     {
       "number": 468,
       "title": "Specify the schema for returning the result of optimization.",
@@ -2540,9 +2519,37 @@
       "updated": "2026-10-14",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3538"
+    },
+    {
+      "number": 3542,
+      "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3548,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3548"
+        }
+      ],
+      "created": "2026-10-13",
+      "updated": "2026-10-13",
+      "labels": [
+        "bug",
+        "instantiate_api"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3542"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-10-15T20:13:50Z",
+      "kind": "closed",
+      "issue": 3542,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3542",
+      "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root"
+    },
     {
       "ts": "2026-10-15T18:16:05Z",
       "kind": "pr",
@@ -4224,13 +4231,6 @@
       "issue": 3002,
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3002",
       "title": "Implement parallel startup with startup intervals between multiple tasks in multirun mode"
-    },
-    {
-      "ts": "2026-09-05T19:42:19Z",
-      "kind": "closed",
-      "issue": 3011,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3011",
-      "title": "New release of hydra-colorlog?"
     }
   ]
 }
