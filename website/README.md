@@ -38,7 +38,7 @@ This command generates static content into the `build` directory and can be serv
 
 ### Dependency maintenance
 
-See the [shared Docusaurus maintenance policy](https://github.com/hydra-ecosystem/github-actions/blob/0f76d226c783db60ee97bb4937d575c8f9896cf3/docusaurus/maintenance.md).
+See the [shared Docusaurus maintenance policy](https://github.com/hydra-ecosystem/github-actions/blob/a89822a7dbd0b506fa329c9d11e8206bab49a6d3/docusaurus/maintenance.md).
 The project directory and audit schedule are configured in
 [`.github/docusaurus.json`](../.github/docusaurus.json).
 The normal website build owns the security parser checks and Landscape
