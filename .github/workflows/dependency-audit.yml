@@ -16,14 +16,14 @@ jobs:
   audit:
     permissions:
       contents: read
-    uses: hydra-ecosystem/github-actions/.github/workflows/docusaurus-audit.yml@0f76d226c783db60ee97bb4937d575c8f9896cf3
+    uses: hydra-ecosystem/github-actions/.github/workflows/docusaurus-audit.yml@a89822a7dbd0b506fa329c9d11e8206bab49a6d3
 
   pull-request:
     needs: audit
     permissions:
       contents: write
       pull-requests: write
-    uses: hydra-ecosystem/github-actions/.github/workflows/docusaurus-publish.yml@0f76d226c783db60ee97bb4937d575c8f9896cf3
+    uses: hydra-ecosystem/github-actions/.github/workflows/docusaurus-publish.yml@a89822a7dbd0b506fa329c9d11e8206bab49a6d3
     with:
       validation-passed: ${{ needs.audit.outputs.validation_passed }}
       app-client-id: ${{ vars.DOCUSAURUS_APP_CLIENT_ID }}
