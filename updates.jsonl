@@ -997,3 +997,4 @@
 {"ts": "2026-10-15T16:14:56Z", "kind": "pr", "issue": 3542, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3542", "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root", "detail": "linked #3548"}
 {"ts": "2026-10-15T18:16:05Z", "kind": "pr", "issue": 3542, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3542", "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root", "detail": "unlinked #3543"}
 {"ts": "2026-10-15T20:13:50Z", "kind": "closed", "issue": 3542, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3542", "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root"}
+{"ts": "2026-10-16T14:37:24Z", "kind": "new", "issue": 3559, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3559", "title": "Quick survey: your experience as a PyTorch Ecosystem maintainer"}
