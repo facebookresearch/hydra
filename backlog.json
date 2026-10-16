@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-10-16",
-  "generated_at": "2026-10-16T14:37:24Z",
+  "generated_at": "2026-10-16T20:40:43Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 44,
+    "open_total": 43,
     "by_category": [
       {
         "category": "Bug",
@@ -14,14 +14,14 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 39,
-        "percentage": 88.6
+        "count": 38,
+        "percentage": 88.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 2,
-        "percentage": 4.5
+        "percentage": 4.7
       },
       {
         "category": "Question",
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 44
+        "count": 43
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 106
+        "count": 107
       }
     ]
   },
@@ -757,19 +757,6 @@
         "list composition"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3534"
-    },
-    {
-      "number": 3559,
-      "title": "Quick survey: your experience as a PyTorch Ecosystem maintainer",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-10-16",
-      "updated": "2026-10-16",
-      "labels": [],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3559"
     },
     {
       "number": 385,
@@ -2553,9 +2540,29 @@
         "instantiate_api"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3542"
+    },
+    {
+      "number": 3559,
+      "title": "Quick survey: your experience as a PyTorch Ecosystem maintainer",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-10-16",
+      "updated": "2026-10-16",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3559"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-10-16T20:40:43Z",
+      "kind": "closed",
+      "issue": 3559,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3559",
+      "title": "Quick survey: your experience as a PyTorch Ecosystem maintainer"
+    },
     {
       "ts": "2026-10-16T14:37:24Z",
       "kind": "new",
@@ -4237,13 +4244,6 @@
       "issue": 2991,
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/2991",
       "title": "[Feature Request] VS Code Hydra Config File Navigation"
-    },
-    {
-      "ts": "2026-09-05T19:55:51Z",
-      "kind": "closed",
-      "issue": 2993,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/2993",
-      "title": "[Feature Request] Allow complete group override while Inheriting other Configs"
     }
   ]
 }

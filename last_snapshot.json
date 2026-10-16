@@ -103,11 +103,12 @@
     "3537": "2026-10-14",
     "3538": "2026-10-14",
     "3542": "2026-10-15",
+    "3559": "2026-10-16",
     "385": "2026-09-05",
     "753": "2026-09-05",
     "845": "2026-09-29"
   },
-  "generated_at": "2026-10-16T14:37:24Z",
+  "generated_at": "2026-10-16T20:40:43Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -546,16 +547,6 @@
       "status": "not started",
       "title": "Support package destinations inside list items",
       "updated_at": "2026-10-10T15:43:55Z"
-    },
-    "3559": {
-      "category": "Enhancement",
-      "created_at": "2026-10-16T14:36:06Z",
-      "labels": [],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Quick survey: your experience as a PyTorch Ecosystem maintainer",
-      "updated_at": "2026-10-16T14:36:06Z"
     },
     "468": {
       "category": "Enhancement",
@@ -1986,6 +1977,16 @@
       "status": "done",
       "title": "[Bug] Hydra 1.4 crashes when overriding a missing Structured Config root",
       "updated_at": "2026-10-13T19:51:52Z"
+    },
+    "3559": {
+      "category": "Enhancement",
+      "created_at": "2026-10-16T14:36:06Z",
+      "labels": [],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Quick survey: your experience as a PyTorch Ecosystem maintainer",
+      "updated_at": "2026-10-16T14:36:06Z"
     },
     "385": {
       "category": "Enhancement",
