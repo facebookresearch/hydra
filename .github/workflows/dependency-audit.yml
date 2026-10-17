@@ -3,7 +3,16 @@ name: Docusaurus dependency audit
 'on':
   schedule:
   - cron: 0 2 * * 1
+  - cron: 0 2 1 */3 *
   workflow_dispatch:
+    inputs:
+      audit-kind:
+        description: Security fixes only, or security plus routine upgrades for this run.
+        type: choice
+        default: security
+        options:
+        - security
+        - upgrades
 
 permissions:
   contents: read
@@ -17,14 +26,16 @@ jobs:
     permissions:
       contents: read
       issues: write
-    uses: hydra-ecosystem/github-actions/.github/workflows/docusaurus-audit.yml@e21dd6f22a6b1aa948679773fc86a64f74ada1b2
+    uses: hydra-ecosystem/github-actions/.github/workflows/docusaurus-audit.yml@c077c202ff8ce71188345afe5f1f92837d5ed897
+    with:
+      audit-kind: ${{ inputs.audit-kind || 'auto' }}
 
   pull-request:
     needs: audit
     permissions:
       contents: write
       pull-requests: write
-    uses: hydra-ecosystem/github-actions/.github/workflows/docusaurus-publish.yml@e21dd6f22a6b1aa948679773fc86a64f74ada1b2
+    uses: hydra-ecosystem/github-actions/.github/workflows/docusaurus-publish.yml@c077c202ff8ce71188345afe5f1f92837d5ed897
     with:
       validation-passed: ${{ needs.audit.outputs.validation_passed }}
       app-client-id: ${{ vars.DOCUSAURUS_APP_CLIENT_ID }}
