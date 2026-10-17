@@ -1,5 +1,10 @@
 {
   "directory": "website",
+  "defaults": {
+    "repository": "hydra-ecosystem/github-actions",
+    "path": "defaults/docusaurus.json",
+    "ref": "main"
+  },
   "schedule": [
     "0 2 * * 1"
   ]
