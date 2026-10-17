@@ -39,8 +39,11 @@ This command generates static content into the `build` directory and can be serv
 ### Dependency maintenance
 
 See the [shared Docusaurus maintenance policy](https://github.com/hydra-ecosystem/github-actions/blob/c077c202ff8ce71188345afe5f1f92837d5ed897/docusaurus/maintenance.md).
-The project directory and audit schedule are configured in
-[`.github/docusaurus.json`](../.github/docusaurus.json).
+The project directory and shared defaults source are configured in
+[`.github/docusaurus.json`](../.github/docusaurus.json). The weekly security and
+quarterly upgrade schedules come from the shared defaults and are mirrored in
+[`.github/workflows/dependency-audit.yml`](../.github/workflows/dependency-audit.yml).
+Use **Run workflow** to choose security fixes or routine upgrades on demand.
 The normal website build owns the security parser checks and Landscape
 generation; the dependency audit invokes that build without duplicating them.
 
