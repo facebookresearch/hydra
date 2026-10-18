@@ -1,4 +1,4 @@
-name: Docusaurus dependency audit
+name: Node dependency audit
 
 'on':
   schedule:
@@ -26,7 +26,7 @@ jobs:
     permissions:
       contents: read
       issues: write
-    uses: hydra-ecosystem/github-actions/.github/workflows/docusaurus-audit.yml@c077c202ff8ce71188345afe5f1f92837d5ed897
+    uses: hydra-ecosystem/github-actions/.github/workflows/node-audit.yml@2026bcc879525736aa3263e0ec4c693b9e6b6ec6
     with:
       audit-kind: ${{ inputs.audit-kind || 'auto' }}
 
@@ -35,9 +35,9 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: hydra-ecosystem/github-actions/.github/workflows/docusaurus-publish.yml@c077c202ff8ce71188345afe5f1f92837d5ed897
+    uses: hydra-ecosystem/github-actions/.github/workflows/node-publish.yml@2026bcc879525736aa3263e0ec4c693b9e6b6ec6
     with:
       validation-passed: ${{ needs.audit.outputs.validation_passed }}
-      app-client-id: ${{ vars.DOCUSAURUS_APP_CLIENT_ID }}
+      app-client-id: ${{ vars.NODE_AUDIT_APP_CLIENT_ID }}
     secrets:
-      app-private-key: ${{ secrets.DOCUSAURUS_APP_PRIVATE_KEY }}
+      app-private-key: ${{ secrets.NODE_AUDIT_APP_PRIVATE_KEY }}
