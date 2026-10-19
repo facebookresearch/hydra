@@ -78,9 +78,6 @@ There are several standard approaches for configuring plugins. Check [this page]
       min_workers: 0
       upscaling_speed: 1.0
       max_workers: 1
-      initial_workers: 0
-      autoscaling_mode: default
-      target_utilization_fraction: 0.8
       idle_timeout_minutes: 5
       docker:
         image: ''

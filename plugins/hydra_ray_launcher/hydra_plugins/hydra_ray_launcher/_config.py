@@ -35,11 +35,6 @@ OmegaConf.register_resolver("ray_pkg_version", _pkg_version)
 # https://github.com/ray-project/ray/blob/master/python/ray/autoscaler/ray-schema.json
 
 
-class RayAutoScalingMode(Enum):
-    default = "default"
-    aggressive = "aggressive"
-
-
 class RayLoggingStyle(Enum):
     """
     If 'pretty', outputs with formatting and color.
@@ -233,20 +228,6 @@ class RayClusterConf:
     # The maximum number of workers nodes to launch in addition to the head
     # node. This takes precedence over min_workers.
     max_workers: int = 1
-
-    # The initial number of worker nodes to launch in addition to the head
-    # node. When the cluster is first brought up (or when it is refreshed with a
-    # subsequent `ray up`) this number of nodes will be started.
-    initial_workers: int = 0
-
-    autoscaling_mode: RayAutoScalingMode = RayAutoScalingMode.default
-
-    # The autoscaler will scale up the cluster to this target fraction of resource
-    # usage. For example, if a cluster of 10 nodes is 100% busy and
-    # target_utilization is 0.8, it would resize the cluster to 13. This fraction
-    # can be decreased to increase the aggressiveness of upscaling.
-    # This value must be less than 1.0 for scaling to happen.
-    target_utilization_fraction: float = 0.8
 
     # If a node is idle for this many minutes, it will be removed.
     idle_timeout_minutes: int = 5
