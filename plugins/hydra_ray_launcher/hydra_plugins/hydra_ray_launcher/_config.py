@@ -2,7 +2,6 @@
 import sys
 from dataclasses import dataclass, field
 from enum import Enum, IntEnum
-from importlib import import_module
 from importlib.metadata import version
 from typing import Any
 
@@ -22,11 +21,9 @@ class RayLauncherConf:
     ray: RayConf = field(default_factory=RayConf)
 
 
-def _pkg_version(mdl_name: str) -> str | None:
-    mdl = import_module(mdl_name)
-    ret = getattr(mdl, "__version__")
-    assert ret is None or isinstance(ret, str)
-    return ret
+def _pkg_version(mdl_name: str) -> str:
+    distribution = "hydra-core" if mdl_name == "hydra" else mdl_name
+    return version(distribution)
 
 
 OmegaConf.register_resolver("ray_pkg_version", _pkg_version)

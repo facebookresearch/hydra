@@ -39,6 +39,14 @@ defaults:
 ```
 There are several standard approaches for configuring plugins. Check [this page](../patterns/configuring_plugins.md) for more information.
 
+The `ray_pkg_version` resolver now takes installed distribution names instead of
+Python import names and reads their metadata without importing the module.
+For example, replace `${ray_pkg_version:yaml}` with `${ray_pkg_version:PyYAML}`.
+`${ray_pkg_version:hydra}` remains an alias for `hydra-core`.
+Packages must be installed, including editable installs.
+An importable source directory alone is insufficient. If metadata is unavailable,
+install the package or set its version explicitly in `env_setup.pip_packages`.
+
 ### `ray_aws` launcher
 
 :::important
