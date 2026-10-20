@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-10-20",
-  "generated_at": "2026-10-20T17:06:18Z",
+  "generated_at": "2026-10-20T17:53:54Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 42,
@@ -466,6 +466,24 @@
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3082"
     },
     {
+      "number": 3158,
+      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-05-10",
+      "updated": "2026-07-25",
+      "labels": [
+        "maintenance",
+        "plugin",
+        "ray-launcher",
+        "tests"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3158"
+    },
+    {
       "number": 3162,
       "title": "Support Sapling for Docusaurus last-updated metadata",
       "category": "Documentation",
@@ -526,6 +544,24 @@
         "instantiate_api"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3203"
+    },
+    {
+      "number": 3236,
+      "title": "Clarify Ray AWS launcher support and validation expectations",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-23",
+      "updated": "2026-06-29",
+      "labels": [
+        "maintenance",
+        "plugin",
+        "ray-launcher",
+        "needs decision"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3236"
     },
     {
       "number": 3279,
@@ -703,42 +739,6 @@
         "list composition"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3534"
-    },
-    {
-      "number": 3158,
-      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
-      "category": "Build",
-      "category_emoji": "🏗️",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-05-10",
-      "updated": "2026-07-25",
-      "labels": [
-        "maintenance",
-        "plugin",
-        "ray-launcher",
-        "tests"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3158"
-    },
-    {
-      "number": 3236,
-      "title": "Clarify Ray AWS launcher support and validation expectations",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-23",
-      "updated": "2026-06-29",
-      "labels": [
-        "maintenance",
-        "plugin",
-        "ray-launcher",
-        "needs decision"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3236"
     },
     {
       "number": 385,
@@ -1349,6 +1349,29 @@
         "triage"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/2898"
+    },
+    {
+      "number": 2927,
+      "title": "Ray Launcher:  Additional properties are not allowed",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3564,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3564"
+        }
+      ],
+      "created": "2024-07-21",
+      "updated": "2026-09-11",
+      "labels": [
+        "bug",
+        "help wanted",
+        "plugin",
+        "ray-launcher"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/2927"
     },
     {
       "number": 2938,
@@ -2535,29 +2558,6 @@
       "updated": "2026-10-16",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3559"
-    },
-    {
-      "number": 2927,
-      "title": "Ray Launcher:  Additional properties are not allowed",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [
-        {
-          "number": 3564,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3564"
-        }
-      ],
-      "created": "2024-07-21",
-      "updated": "2026-09-11",
-      "labels": [
-        "bug",
-        "help wanted",
-        "plugin",
-        "ray-launcher"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/2927"
     }
   ],
   "updates": [
