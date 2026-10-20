@@ -1010,3 +1010,4 @@
 {"ts": "2026-10-20T17:06:18Z", "kind": "closed", "issue": 2927, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/2927", "title": "Ray Launcher:  Additional properties are not allowed"}
 {"ts": "2026-10-20T17:06:18Z", "kind": "pr", "issue": 3158, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3158", "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin", "detail": "unlinked #3564"}
 {"ts": "2026-10-20T17:06:18Z", "kind": "pr", "issue": 3236, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3236", "title": "Clarify Ray AWS launcher support and validation expectations", "detail": "unlinked #3564"}
+{"ts": "2026-10-20T20:14:52Z", "kind": "new", "issue": 3568, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3568", "title": "Reconsider the way frozen dataclasses are handled"}

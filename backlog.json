@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-10-20",
-  "generated_at": "2026-10-20T18:20:10Z",
+  "generated_at": "2026-10-20T20:14:52Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 42,
+    "open_total": 43,
     "by_category": [
       {
         "category": "Bug",
@@ -14,20 +14,20 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 38,
-        "percentage": 90.5
+        "count": 39,
+        "percentage": 90.7
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 2,
-        "percentage": 4.8
+        "percentage": 4.7
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 1,
-        "percentage": 2.4
+        "percentage": 2.3
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 1,
-        "percentage": 2.4
+        "percentage": 2.3
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 42
+        "count": 43
       },
       {
         "status": "done",
@@ -739,6 +739,19 @@
         "list composition"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3534"
+    },
+    {
+      "number": 3568,
+      "title": "Reconsider the way frozen dataclasses are handled",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-10-20",
+      "updated": "2026-10-20",
+      "labels": [],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3568"
     },
     {
       "number": 385,
@@ -2562,6 +2575,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-10-20T20:14:52Z",
+      "kind": "new",
+      "issue": 3568,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3568",
+      "title": "Reconsider the way frozen dataclasses are handled"
+    },
+    {
       "ts": "2026-10-20T17:06:18Z",
       "kind": "pr",
       "issue": 3236,
@@ -4257,13 +4277,6 @@
         "number": 3441,
         "url": "https://github.com/hydra-ecosystem/hydra/pull/3441"
       }
-    },
-    {
-      "ts": "2026-09-06T14:03:50Z",
-      "kind": "new",
-      "issue": 3440,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3440",
-      "title": "hydra.mode discovery composes the config twice on every invocation"
     }
   ]
 }
