@@ -15,7 +15,7 @@ from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, setup_globals
 from omegaconf import open_dict
 
-from hydra_plugins.hydra_ray_launcher._launcher_util import (  # type: ignore
+from ._launcher_util import (
     JOB_RETURN_PICKLE,
     JOB_SPEC_PICKLE,
     launch_job_on_ray,
