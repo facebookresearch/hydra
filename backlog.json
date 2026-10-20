@@ -1,33 +1,33 @@
 {
   "generated_on": "2026-10-20",
-  "generated_at": "2026-10-20T07:18:36Z",
+  "generated_at": "2026-10-20T17:06:18Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 43,
+    "open_total": 42,
     "by_category": [
       {
         "category": "Bug",
         "emoji": "🐛",
-        "count": 1,
-        "percentage": 2.3
+        "count": 0,
+        "percentage": 0.0
       },
       {
         "category": "Enhancement",
         "emoji": "✨",
         "count": 38,
-        "percentage": 88.4
+        "percentage": 90.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 2,
-        "percentage": 4.7
+        "percentage": 4.8
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 1,
-        "percentage": 2.3
+        "percentage": 2.4
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 1,
-        "percentage": 2.3
+        "percentage": 2.4
       }
     ],
     "by_status": [
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 3
+        "count": 0
       },
       {
         "status": "blocked",
@@ -61,85 +61,16 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 40
+        "count": 42
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 107
+        "count": 108
       }
     ]
   },
   "issues": [
-    {
-      "number": 2927,
-      "title": "Ray Launcher:  Additional properties are not allowed",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3564,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3564"
-        }
-      ],
-      "created": "2024-07-21",
-      "updated": "2026-09-11",
-      "labels": [
-        "bug",
-        "help wanted",
-        "plugin",
-        "ray-launcher"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/2927"
-    },
-    {
-      "number": 3158,
-      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
-      "category": "Build",
-      "category_emoji": "🏗️",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3564,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3564"
-        }
-      ],
-      "created": "2026-05-10",
-      "updated": "2026-07-25",
-      "labels": [
-        "maintenance",
-        "plugin",
-        "ray-launcher",
-        "tests"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3158"
-    },
-    {
-      "number": 3236,
-      "title": "Clarify Ray AWS launcher support and validation expectations",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "community PR",
-      "status_emoji": "🤝",
-      "prs": [
-        {
-          "number": 3564,
-          "url": "https://github.com/hydra-ecosystem/hydra/pull/3564"
-        }
-      ],
-      "created": "2026-06-23",
-      "updated": "2026-06-29",
-      "labels": [
-        "maintenance",
-        "plugin",
-        "ray-launcher",
-        "needs decision"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3236"
-    },
     {
       "number": 468,
       "title": "Specify the schema for returning the result of optimization.",
@@ -772,6 +703,42 @@
         "list composition"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3534"
+    },
+    {
+      "number": 3158,
+      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-05-10",
+      "updated": "2026-07-25",
+      "labels": [
+        "maintenance",
+        "plugin",
+        "ray-launcher",
+        "tests"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3158"
+    },
+    {
+      "number": 3236,
+      "title": "Clarify Ray AWS launcher support and validation expectations",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-06-23",
+      "updated": "2026-06-29",
+      "labels": [
+        "maintenance",
+        "plugin",
+        "ray-launcher",
+        "needs decision"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3236"
     },
     {
       "number": 385,
@@ -2568,9 +2535,71 @@
       "updated": "2026-10-16",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3559"
+    },
+    {
+      "number": 2927,
+      "title": "Ray Launcher:  Additional properties are not allowed",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [
+        {
+          "number": 3564,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3564"
+        }
+      ],
+      "created": "2024-07-21",
+      "updated": "2026-09-11",
+      "labels": [
+        "bug",
+        "help wanted",
+        "plugin",
+        "ray-launcher"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/2927"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-10-20T17:06:18Z",
+      "kind": "pr",
+      "issue": 3236,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3236",
+      "title": "Clarify Ray AWS launcher support and validation expectations",
+      "detail": "unlinked #3564"
+    },
+    {
+      "ts": "2026-10-20T17:06:18Z",
+      "kind": "pr",
+      "issue": 3158,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3158",
+      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
+      "detail": "unlinked #3564"
+    },
+    {
+      "ts": "2026-10-20T17:06:18Z",
+      "kind": "closed",
+      "issue": 2927,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/2927",
+      "title": "Ray Launcher:  Additional properties are not allowed"
+    },
+    {
+      "ts": "2026-10-20T17:06:18Z",
+      "kind": "status",
+      "issue": 3236,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3236",
+      "title": "Clarify Ray AWS launcher support and validation expectations",
+      "detail": "community PR → not started"
+    },
+    {
+      "ts": "2026-10-20T17:06:18Z",
+      "kind": "status",
+      "issue": 3158,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3158",
+      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
+      "detail": "community PR → not started"
+    },
     {
       "ts": "2026-10-20T07:18:36Z",
       "kind": "pr",
@@ -4235,48 +4264,6 @@
       "issue": 3440,
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3440",
       "title": "hydra.mode discovery composes the config twice on every invocation"
-    },
-    {
-      "ts": "2026-09-06T08:27:15Z",
-      "kind": "closed",
-      "issue": 3389,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3389",
-      "title": "Remove remaining Meta-era repository branding and processes"
-    },
-    {
-      "ts": "2026-09-06T04:53:33Z",
-      "kind": "closed",
-      "issue": 3400,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3400",
-      "title": "[Bug] dev8 deprecation warning about internal usage?"
-    },
-    {
-      "ts": "2026-09-06T04:51:38Z",
-      "kind": "pr",
-      "issue": 3427,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3427",
-      "title": "HydraConfig is unavailable during multirun controller initialization",
-      "detail": "linked #3439"
-    },
-    {
-      "ts": "2026-09-06T04:51:38Z",
-      "kind": "label",
-      "issue": 3400,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3400",
-      "title": "[Bug] dev8 deprecation warning about internal usage?",
-      "detail": "removed \"awaiting_response\""
-    },
-    {
-      "ts": "2026-09-06T04:51:38Z",
-      "kind": "status",
-      "issue": 3427,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3427",
-      "title": "HydraConfig is unavailable during multirun controller initialization",
-      "detail": "not started → community PR",
-      "pr": {
-        "number": 3439,
-        "url": "https://github.com/hydra-ecosystem/hydra/pull/3439"
-      }
     }
   ]
 }
