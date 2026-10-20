@@ -10,7 +10,7 @@ from hydra.test_utils.launcher_common_tests import (
 from hydra.test_utils.test_utils import chdir_plugin_root
 from pytest import mark
 
-from hydra_plugins.hydra_ray_launcher.ray_launcher import RayLauncher  # type: ignore
+from hydra_plugins.hydra_ray_launcher.ray_launcher import RayLauncher
 
 chdir_plugin_root()
 

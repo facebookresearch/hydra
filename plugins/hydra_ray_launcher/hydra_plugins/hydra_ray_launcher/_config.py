@@ -1,13 +1,11 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
-import sys
 from dataclasses import dataclass, field
 from enum import Enum, IntEnum
-from importlib import import_module
+from importlib.metadata import version
 from typing import Any, Dict, List, Optional
 
 from hydra.core.config_store import ConfigStore
 from omegaconf import OmegaConf
-from pkg_resources import get_distribution
 
 
 @dataclass
@@ -22,11 +20,9 @@ class RayLauncherConf:
     ray: RayConf = field(default_factory=RayConf)
 
 
-def _pkg_version(mdl_name: str) -> Optional[str]:
-    mdl = import_module(mdl_name)
-    ret = getattr(mdl, "__version__")
-    assert ret is None or isinstance(ret, str)
-    return ret
+def _pkg_version(mdl_name: str) -> str:
+    distribution = "hydra-core" if mdl_name == "hydra" else mdl_name
+    return version(distribution)
 
 
 OmegaConf.register_new_resolver("ray_pkg_version", _pkg_version)
@@ -172,17 +168,14 @@ class RsyncConf:
     exclude: List[str] = field(default_factory=list)
 
 
-def _pip_pkgs_default_factory():
+def _pip_pkgs_default_factory() -> Dict[str, str]:
     d = {
         "omegaconf": "${ray_pkg_version:omegaconf}",
         "hydra_core": "${ray_pkg_version:hydra}",
         "ray": "${ray_pkg_version:ray}",
         "cloudpickle": "${ray_pkg_version:cloudpickle}",
-        "hydra_ray_launcher": get_distribution("hydra_ray_launcher").version,
+        "hydra_ray_launcher": version("hydra_ray_launcher"),
     }
-
-    if sys.version_info < (3, 8):
-        d["pickle5"] = get_distribution("pickle5").version
 
     return d
 
