@@ -1,6 +1,6 @@
 {
-  "generated_on": "2026-10-19",
-  "generated_at": "2026-10-19T07:29:59Z",
+  "generated_on": "2026-10-20",
+  "generated_at": "2026-10-20T07:18:36Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 43,
@@ -51,7 +51,7 @@
       {
         "status": "community PR",
         "emoji": "🤝",
-        "count": 0
+        "count": 3
       },
       {
         "status": "blocked",
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 43
+        "count": 40
       },
       {
         "status": "done",
@@ -71,6 +71,75 @@
     ]
   },
   "issues": [
+    {
+      "number": 2927,
+      "title": "Ray Launcher:  Additional properties are not allowed",
+      "category": "Bug",
+      "category_emoji": "🐛",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3564,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3564"
+        }
+      ],
+      "created": "2024-07-21",
+      "updated": "2026-09-11",
+      "labels": [
+        "bug",
+        "help wanted",
+        "plugin",
+        "ray-launcher"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/2927"
+    },
+    {
+      "number": 3158,
+      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
+      "category": "Build",
+      "category_emoji": "🏗️",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3564,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3564"
+        }
+      ],
+      "created": "2026-05-10",
+      "updated": "2026-07-25",
+      "labels": [
+        "maintenance",
+        "plugin",
+        "ray-launcher",
+        "tests"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3158"
+    },
+    {
+      "number": 3236,
+      "title": "Clarify Ray AWS launcher support and validation expectations",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "community PR",
+      "status_emoji": "🤝",
+      "prs": [
+        {
+          "number": 3564,
+          "url": "https://github.com/hydra-ecosystem/hydra/pull/3564"
+        }
+      ],
+      "created": "2026-06-23",
+      "updated": "2026-06-29",
+      "labels": [
+        "maintenance",
+        "plugin",
+        "ray-launcher",
+        "needs decision"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3236"
+    },
     {
       "number": 468,
       "title": "Specify the schema for returning the result of optimization.",
@@ -421,24 +490,6 @@
       "url": "https://github.com/hydra-ecosystem/hydra/issues/2874"
     },
     {
-      "number": 2927,
-      "title": "Ray Launcher:  Additional properties are not allowed",
-      "category": "Bug",
-      "category_emoji": "🐛",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2024-07-21",
-      "updated": "2026-09-11",
-      "labels": [
-        "bug",
-        "help wanted",
-        "plugin",
-        "ray-launcher"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/2927"
-    },
-    {
       "number": 2944,
       "title": "[Feature Request] I would like resolvers to access the decorated main function's docstring and the name of the running script, as well as some other capabilities.",
       "category": "Enhancement",
@@ -482,24 +533,6 @@
         "enhancement"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3082"
-    },
-    {
-      "number": 3158,
-      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
-      "category": "Build",
-      "category_emoji": "🏗️",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-05-10",
-      "updated": "2026-07-25",
-      "labels": [
-        "maintenance",
-        "plugin",
-        "ray-launcher",
-        "tests"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3158"
     },
     {
       "number": 3162,
@@ -562,24 +595,6 @@
         "instantiate_api"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3203"
-    },
-    {
-      "number": 3236,
-      "title": "Clarify Ray AWS launcher support and validation expectations",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-06-23",
-      "updated": "2026-06-29",
-      "labels": [
-        "maintenance",
-        "plugin",
-        "ray-launcher",
-        "needs decision"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3236"
     },
     {
       "number": 3279,
@@ -2557,6 +2572,66 @@
   ],
   "updates": [
     {
+      "ts": "2026-10-20T07:18:36Z",
+      "kind": "pr",
+      "issue": 3236,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3236",
+      "title": "Clarify Ray AWS launcher support and validation expectations",
+      "detail": "linked #3564"
+    },
+    {
+      "ts": "2026-10-20T07:18:36Z",
+      "kind": "pr",
+      "issue": 3158,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3158",
+      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
+      "detail": "linked #3564"
+    },
+    {
+      "ts": "2026-10-20T07:18:36Z",
+      "kind": "pr",
+      "issue": 2927,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/2927",
+      "title": "Ray Launcher:  Additional properties are not allowed",
+      "detail": "linked #3564"
+    },
+    {
+      "ts": "2026-10-20T07:18:36Z",
+      "kind": "status",
+      "issue": 3236,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3236",
+      "title": "Clarify Ray AWS launcher support and validation expectations",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3564,
+        "url": "https://github.com/hydra-ecosystem/hydra/pull/3564"
+      }
+    },
+    {
+      "ts": "2026-10-20T07:18:36Z",
+      "kind": "status",
+      "issue": 3158,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3158",
+      "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3564,
+        "url": "https://github.com/hydra-ecosystem/hydra/pull/3564"
+      }
+    },
+    {
+      "ts": "2026-10-20T07:18:36Z",
+      "kind": "status",
+      "issue": 2927,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/2927",
+      "title": "Ray Launcher:  Additional properties are not allowed",
+      "detail": "not started → community PR",
+      "pr": {
+        "number": 3564,
+        "url": "https://github.com/hydra-ecosystem/hydra/pull/3564"
+      }
+    },
+    {
       "ts": "2026-10-16T20:40:43Z",
       "kind": "closed",
       "issue": 3559,
@@ -4202,48 +4277,6 @@
         "number": 3439,
         "url": "https://github.com/hydra-ecosystem/hydra/pull/3439"
       }
-    },
-    {
-      "ts": "2026-09-05T21:32:16Z",
-      "kind": "closed",
-      "issue": 385,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/385",
-      "title": "Experimentation tracking support"
-    },
-    {
-      "ts": "2026-09-05T21:30:54Z",
-      "kind": "closed",
-      "issue": 753,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/753",
-      "title": "Explore a the option of a dedicated Prompt-toolkit based Hydra shell"
-    },
-    {
-      "ts": "2026-09-05T21:05:44Z",
-      "kind": "closed",
-      "issue": 1512,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/1512",
-      "title": "Support multirun partial failure in Ax Sweeper"
-    },
-    {
-      "ts": "2026-09-05T20:59:34Z",
-      "kind": "closed",
-      "issue": 1602,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/1602",
-      "title": "[Bug] sporadic transient errors from Ray plugin CI"
-    },
-    {
-      "ts": "2026-09-05T20:55:52Z",
-      "kind": "closed",
-      "issue": 3371,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3371",
-      "title": "Set up CLA, GA4, and privacy policy"
-    },
-    {
-      "ts": "2026-09-05T20:14:37Z",
-      "kind": "closed",
-      "issue": 2991,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/2991",
-      "title": "[Feature Request] VS Code Hydra Config File Navigation"
     }
   ]
 }

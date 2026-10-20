@@ -108,7 +108,7 @@
     "753": "2026-09-05",
     "845": "2026-09-29"
   },
-  "generated_at": "2026-10-19T07:29:59Z",
+  "generated_at": "2026-10-20T07:18:36Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -285,9 +285,11 @@
         "plugin",
         "ray-launcher"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3564"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "Ray Launcher:  Additional properties are not allowed",
       "updated_at": "2026-09-11T22:32:23Z"
     },
@@ -336,9 +338,11 @@
         "ray-launcher",
         "tests"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3564"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "Evaluate AWS CI mocks for automated testing of the Ray Launcher Plugin",
       "updated_at": "2026-07-25T03:18:49Z"
     },
@@ -401,9 +405,11 @@
         "plugin",
         "ray-launcher"
       ],
-      "pr_numbers": [],
+      "pr_numbers": [
+        "3564"
+      ],
       "state": "OPEN",
-      "status": "not started",
+      "status": "community PR",
       "title": "Clarify Ray AWS launcher support and validation expectations",
       "updated_at": "2026-06-29T19:49:00Z"
     },
