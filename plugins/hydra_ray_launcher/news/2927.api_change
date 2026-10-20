@@ -1,0 +1,2 @@
+Remove `initial_workers`, `autoscaling_mode` and `target_utilization_fraction`
+from the `ray_aws` cluster config because Ray's cluster schema rejects them.

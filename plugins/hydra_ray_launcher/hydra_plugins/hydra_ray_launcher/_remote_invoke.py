@@ -14,7 +14,9 @@ from hydra.core.singleton import Singleton
 from hydra.core.utils import JobReturn, setup_globals
 from omegaconf import open_dict
 
-from ._launcher_util import (
+# This file runs as a standalone script on the cluster, so it cannot use
+# relative imports.
+from hydra_plugins.hydra_ray_launcher._launcher_util import (
     JOB_RETURN_PICKLE,
     JOB_SPEC_PICKLE,
     launch_job_on_ray,

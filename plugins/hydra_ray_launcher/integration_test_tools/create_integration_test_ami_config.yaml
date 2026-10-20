@@ -9,9 +9,6 @@ ray_yaml:
   cluster_name: ray_test_base_AMI
   min_workers: 0
   max_workers: 1
-  initial_workers: 0
-  autoscaling_mode: default
-  target_utilization_fraction: 0.8
   idle_timeout_minutes: 5
   docker:
     image: ''

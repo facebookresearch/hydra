@@ -1,20 +1,26 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+import runpy
+import shutil
 import sys
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, cast
 
 from hydra.core.plugins import Plugins
+from hydra.core.utils import setup_globals
 from hydra.plugins.launcher import Launcher
 from hydra.test_utils.launcher_common_tests import (
     IntegrationTestSuite,
     LauncherTestSuite,
 )
 from hydra.test_utils.test_utils import chdir_plugin_root
+from hydra.utils import instantiate
 from omegaconf import OmegaConf
-from pytest import mark
+from pytest import mark, raises
+from ray.autoscaler._private.util import prepare_config, validate_config
 
 from hydra_plugins.hydra_ray_launcher import _core_aws
+from hydra_plugins.hydra_ray_launcher._config import RayAWSLauncherConf
 from hydra_plugins.hydra_ray_launcher.ray_aws_launcher import RayAWSLauncher
 from hydra_plugins.hydra_ray_launcher.ray_launcher import RayLauncher
 
@@ -122,6 +128,60 @@ def test_ray_aws_launch_does_not_mutate_launcher_config(
         "pip install example==1.0",
         "cluster",
     ]
+
+
+def test_ray_aws_default_cluster_config_passes_ray_validation(
+    monkeypatch: Any, tmp_path: Path
+) -> None:
+    class StopLaunch(Exception):
+        pass
+
+    captured: dict[str, Any] = {}
+
+    def create_or_update_cluster(config: Any, **kwargs: Any) -> None:
+        captured["config"] = config
+        raise StopLaunch()
+
+    monkeypatch.setattr(_core_aws, "configure_log", lambda *args: None)
+    monkeypatch.setattr(_core_aws, "_pickle_jobs", lambda **kwargs: None)
+    monkeypatch.setattr(_core_aws.sdk, "configure_logging", lambda **kwargs: None)
+    monkeypatch.setattr(
+        _core_aws.sdk, "create_or_update_cluster", create_or_update_cluster
+    )
+
+    setup_globals()
+    launcher = instantiate(OmegaConf.structured(RayAWSLauncherConf))
+    launcher.setup(
+        hydra_context=cast(Any, object()),
+        task_function=lambda cfg: None,
+        config=OmegaConf.create(
+            {
+                "hydra": {
+                    "hydra_logging": {},
+                    "verbose": False,
+                    "sweep": {"dir": str(tmp_path)},
+                }
+            }
+        ),
+    )
+    with raises(StopLaunch):
+        launcher.launch([], 0)
+
+    # Ray runs the same preparation and schema validation in
+    # create_or_update_cluster before it creates any cloud resources.
+    validate_config(prepare_config(captured["config"]))
+
+
+def test_ray_aws_remote_invoke_script_imports_standalone(tmp_path: Path) -> None:
+    # _core_aws copies _remote_invoke.py alone into a remote temp dir and runs it
+    # as a script, outside of the hydra_plugins package.
+    script = Path(_core_aws.__file__).parent / "_remote_invoke.py"
+    standalone_script = tmp_path / "_remote_invoke.py"
+    shutil.copy(script, standalone_script)
+
+    namespace = runpy.run_path(str(standalone_script))
+
+    assert callable(namespace["launch_jobs"])
 
 
 def test_ray_launcher_object_store_memory(monkeypatch: Any, tmp_path: Path) -> None:
