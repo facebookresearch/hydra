@@ -109,7 +109,7 @@
     "753": "2026-09-05",
     "845": "2026-09-29"
   },
-  "generated_at": "2026-10-21T00:50:56Z",
+  "generated_at": "2026-10-21T07:20:15Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -542,7 +542,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Reconsider the way frozen dataclasses are handled",
-      "updated_at": "2026-10-20T20:13:32Z"
+      "updated_at": "2026-10-21T01:37:02Z"
     },
     "468": {
       "category": "Enhancement",
