@@ -1,4 +1,0 @@
-The `ray_pkg_version` resolver now requires installed distribution names.
-Use `PyYAML` instead of `yaml`; `hydra` remains an alias for `hydra-core`.
-Source-only modules must be installed or given an explicit version.
-The Ray plugin now explicitly requires Python 3.8 or newer.
