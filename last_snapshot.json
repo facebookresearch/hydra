@@ -109,7 +109,7 @@
     "753": "2026-09-05",
     "845": "2026-09-29"
   },
-  "generated_at": "2026-10-20T20:14:52Z",
+  "generated_at": "2026-10-21T00:50:56Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -570,7 +570,7 @@
       "state": "OPEN",
       "status": "not started",
       "title": "Allow adding help messages to command line arguments",
-      "updated_at": "2026-07-27T08:31:57Z"
+      "updated_at": "2026-10-20T20:21:39Z"
     },
     "700": {
       "category": "Enhancement",
