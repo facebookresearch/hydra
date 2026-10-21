@@ -1,6 +1,6 @@
 {
   "generated_on": "2026-10-21",
-  "generated_at": "2026-10-21T07:20:15Z",
+  "generated_at": "2026-10-21T08:38:32Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
     "open_total": 43,
@@ -750,7 +750,10 @@
       "prs": [],
       "created": "2026-10-20",
       "updated": "2026-10-21",
-      "labels": [],
+      "labels": [
+        "awaiting_response",
+        "structured config"
+      ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3568"
     },
     {
@@ -2575,6 +2578,14 @@
   ],
   "updates": [
     {
+      "ts": "2026-10-21T08:38:32Z",
+      "kind": "label",
+      "issue": 3568,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3568",
+      "title": "Reconsider the way frozen dataclasses are handled",
+      "detail": "added \"awaiting_response\", \"structured config\""
+    },
+    {
       "ts": "2026-10-20T20:14:52Z",
       "kind": "new",
       "issue": 3568,
@@ -4265,18 +4276,6 @@
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3440",
       "title": "hydra.mode discovery composes the config twice on every invocation",
       "detail": "linked #3441"
-    },
-    {
-      "ts": "2026-09-07T07:22:19Z",
-      "kind": "status",
-      "issue": 3440,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3440",
-      "title": "hydra.mode discovery composes the config twice on every invocation",
-      "detail": "not started → community PR",
-      "pr": {
-        "number": 3441,
-        "url": "https://github.com/hydra-ecosystem/hydra/pull/3441"
-      }
     }
   ]
 }
