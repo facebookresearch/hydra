@@ -108,9 +108,15 @@ manually and are not signed through CLA Assistant.
 We use GitHub issues to track public bugs. Please ensure your description is
 clear and has sufficient instructions to be able to reproduce the issue.
 
+## Security
+
 Report security vulnerabilities privately through
 [GitHub Security Advisories](https://github.com/hydra-ecosystem/hydra/security/advisories/new).
-Do not file a public issue for a suspected security vulnerability.
+Do not file a public issue or pull request for a suspected security vulnerability.
+
+Hydra will request CVEs for vulnerabilities assessed as Medium severity or higher.
+Low-severity vulnerabilities may be fixed and documented in a security advisory
+without requesting a CVE.
 
 ## License
 By contributing to hydra, you agree that your contributions will be licensed
