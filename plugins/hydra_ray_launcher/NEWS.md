@@ -1,3 +1,20 @@
+1.2.2 (2026-10-21)
+==================
+
+### API Change (Renames, deprecations and removals)
+
+- Breaking change: `ray_pkg_version` now expects installed distribution names,
+  such as `PyYAML` instead of `yaml`. `hydra` remains an alias for `hydra-core`. ([#3566](https://github.com/hydra-ecosystem/hydra/issues/3566))
+
+- Explicitly require Python 3.8 or newer, matching the `importlib.metadata`
+  dependency already used in 1.2.1. ([#3566](https://github.com/hydra-ecosystem/hydra/issues/3566))
+
+### Bug Fixes
+
+- Security fix: read package versions from installed distribution metadata
+  instead of importing modules. ([#3566](https://github.com/hydra-ecosystem/hydra/issues/3566))
+
+
 1.2.1 (2024-02-15)
 ======================
 
