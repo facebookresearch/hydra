@@ -1,0 +1,13 @@
+# Cached repository review rules for coding agents. CI owns its commands.
+# Refresh explicitly; source hashes live in .review-profile.sources.json.
+version: 2
+repository: github.com/hydra-ecosystem/hydra
+branches: [main]
+sources: [AGENTS.md, CONTRIBUTING.md]
+
+rules:
+  ci: Required CI and CLA checks must pass on the current PR head.
+  news: >-
+    Non-trivial user-visible changes need an appropriate news fragment,
+    following CONTRIBUTING.md. Record the reason for any exemption.
+  docs: Changed APIs, behavior or configuration need applicable documentation updates.
