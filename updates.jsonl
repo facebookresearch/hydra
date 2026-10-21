@@ -1012,3 +1012,4 @@
 {"ts": "2026-10-20T17:06:18Z", "kind": "pr", "issue": 3236, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3236", "title": "Clarify Ray AWS launcher support and validation expectations", "detail": "unlinked #3564"}
 {"ts": "2026-10-20T20:14:52Z", "kind": "new", "issue": 3568, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3568", "title": "Reconsider the way frozen dataclasses are handled"}
 {"ts": "2026-10-21T08:38:32Z", "kind": "label", "issue": 3568, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3568", "title": "Reconsider the way frozen dataclasses are handled", "detail": "added \"awaiting_response\", \"structured config\""}
+{"ts": "2026-10-21T10:43:13Z", "kind": "closed", "issue": 3568, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3568", "title": "Reconsider the way frozen dataclasses are handled"}

@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-10-21",
-  "generated_at": "2026-10-21T08:38:32Z",
+  "generated_at": "2026-10-21T10:43:13Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 43,
+    "open_total": 42,
     "by_category": [
       {
         "category": "Bug",
@@ -14,20 +14,20 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 39,
-        "percentage": 90.7
+        "count": 38,
+        "percentage": 90.5
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 2,
-        "percentage": 4.7
+        "percentage": 4.8
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 1,
-        "percentage": 2.3
+        "percentage": 2.4
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 1,
-        "percentage": 2.3
+        "percentage": 2.4
       }
     ],
     "by_status": [
@@ -61,12 +61,12 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 43
+        "count": 42
       },
       {
         "status": "done",
         "emoji": "✅",
-        "count": 108
+        "count": 109
       }
     ]
   },
@@ -739,22 +739,6 @@
         "list composition"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3534"
-    },
-    {
-      "number": 3568,
-      "title": "Reconsider the way frozen dataclasses are handled",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "not started",
-      "status_emoji": "⬜",
-      "prs": [],
-      "created": "2026-10-20",
-      "updated": "2026-10-21",
-      "labels": [
-        "awaiting_response",
-        "structured config"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3568"
     },
     {
       "number": 385,
@@ -2574,9 +2558,32 @@
       "updated": "2026-10-16",
       "labels": [],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3559"
+    },
+    {
+      "number": 3568,
+      "title": "Reconsider the way frozen dataclasses are handled",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-10-20",
+      "updated": "2026-10-21",
+      "labels": [
+        "awaiting_response",
+        "structured config"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3568"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-10-21T10:43:13Z",
+      "kind": "closed",
+      "issue": 3568,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3568",
+      "title": "Reconsider the way frozen dataclasses are handled"
+    },
     {
       "ts": "2026-10-21T08:38:32Z",
       "kind": "label",
@@ -4268,14 +4275,6 @@
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3440",
       "title": "hydra.mode discovery composes the config twice on every invocation",
       "detail": "community PR → not started"
-    },
-    {
-      "ts": "2026-09-07T07:22:19Z",
-      "kind": "pr",
-      "issue": 3440,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3440",
-      "title": "hydra.mode discovery composes the config twice on every invocation",
-      "detail": "linked #3441"
     }
   ]
 }

@@ -105,11 +105,12 @@
     "3538": "2026-10-14",
     "3542": "2026-10-15",
     "3559": "2026-10-16",
+    "3568": "2026-10-21",
     "385": "2026-09-05",
     "753": "2026-09-05",
     "845": "2026-09-29"
   },
-  "generated_at": "2026-10-21T08:38:32Z",
+  "generated_at": "2026-10-21T10:43:13Z",
   "issues": {
     "1085": {
       "category": "Enhancement",
@@ -533,19 +534,6 @@
       "status": "not started",
       "title": "Support package destinations inside list items",
       "updated_at": "2026-10-10T15:43:55Z"
-    },
-    "3568": {
-      "category": "Enhancement",
-      "created_at": "2026-10-20T20:13:32Z",
-      "labels": [
-        "awaiting_response",
-        "structured config"
-      ],
-      "pr_numbers": [],
-      "state": "OPEN",
-      "status": "not started",
-      "title": "Reconsider the way frozen dataclasses are handled",
-      "updated_at": "2026-10-21T08:37:15Z"
     },
     "468": {
       "category": "Enhancement",
@@ -2003,6 +1991,19 @@
       "status": "done",
       "title": "Quick survey: your experience as a PyTorch Ecosystem maintainer",
       "updated_at": "2026-10-16T14:36:06Z"
+    },
+    "3568": {
+      "category": "Enhancement",
+      "created_at": "2026-10-20T20:13:32Z",
+      "labels": [
+        "awaiting_response",
+        "structured config"
+      ],
+      "pr_numbers": [],
+      "state": "CLOSED",
+      "status": "done",
+      "title": "Reconsider the way frozen dataclasses are handled",
+      "updated_at": "2026-10-21T08:37:15Z"
     },
     "385": {
       "category": "Enhancement",
