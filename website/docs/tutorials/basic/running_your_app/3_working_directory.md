@@ -8,9 +8,9 @@ import {ExampleGithubLink} from "@site/src/components/GithubLink"
 
 <ExampleGithubLink to="examples/tutorials/basic/running_your_hydra_app/3_working_directory"/>
 
-Hydra can solve the problem of your needing to specify a new output directory for each run, by
-creating a directory for each run and executing your code within that output directory.
-By default, this output directory is used to store Hydra output for the run (Configuration, Logs etc).
+Hydra creates an output directory for each run to store configuration snapshots and logs.
+By default, the application's working directory stays unchanged.
+Set `hydra.job.chdir=True` to run the application inside its output directory.
 
 Every time you run the app, a new output directory is created.
 You can retrieve the path of the output directy by
@@ -104,7 +104,7 @@ You can disable its creation by overriding `hydra.output_subdir` to `null`.
 
 With `hydra.job.chdir=True`, you can still access the original working directory by importing `get_original_cwd()` and `to_absolute_path()` in `hydra.utils`:
 
-```python
+```python title="original_cwd.py"
 from hydra.utils import get_original_cwd, to_absolute_path
 
 @hydra.main()
@@ -118,11 +118,11 @@ if __name__ == "__main__":
     my_app()
 ```
 
-```text title="$ python examples/tutorial/8_working_directory/original_cwd.py"
-Current working directory  : /Users/omry/dev/hydra/outputs/2019-10-23/10-53-03
-Original working directory : /Users/omry/dev/hydra
-to_absolute_path('foo')    : /Users/omry/dev/hydra/foo
-to_absolute_path('/foo')   : /foo
+```text title="$ python original_cwd.py hydra.job.chdir=True"
+Current working directory : /home/omry/dev/hydra/outputs/2019-10-23/10-53-03
+Orig working directory    : /home/omry/dev/hydra
+to_absolute_path('foo')   : /home/omry/dev/hydra/foo
+to_absolute_path('/foo')  : /foo
 ```
 
 The name of the generated working directories can be [customized](/configure_hydra/workdir.md).
