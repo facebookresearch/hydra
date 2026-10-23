@@ -1015,3 +1015,5 @@
 {"ts": "2026-10-21T10:43:13Z", "kind": "closed", "issue": 3568, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3568", "title": "Reconsider the way frozen dataclasses are handled"}
 {"ts": "2026-10-23T06:47:39Z", "kind": "new", "issue": 3575, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3575", "title": "[Documentation] Explain config loading using a virtual filesystem perspective"}
 {"ts": "2026-10-23T13:13:29Z", "kind": "closed", "issue": 3203, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3203", "title": "[Feature Request] Type validation for instantiate arguments"}
+{"ts": "2026-10-23T17:51:48Z", "kind": "new", "issue": 3576, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3576", "title": "Add per-name {item} substitution to override aliases"}
+{"ts": "2026-10-23T17:51:48Z", "kind": "new", "issue": 3577, "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3577", "title": "Add nested groups to override aliases"}

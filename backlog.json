@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-10-23",
-  "generated_at": "2026-10-23T13:13:29Z",
+  "generated_at": "2026-10-23T17:51:48Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 42,
+    "open_total": 44,
     "by_category": [
       {
         "category": "Bug",
@@ -14,20 +14,20 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 37,
-        "percentage": 88.1
+        "count": 39,
+        "percentage": 88.6
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 3,
-        "percentage": 7.1
+        "percentage": 6.8
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 1,
-        "percentage": 2.4
+        "percentage": 2.3
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 1,
-        "percentage": 2.4
+        "percentage": 2.3
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 42
+        "count": 44
       },
       {
         "status": "done",
@@ -738,6 +738,36 @@
         "documentation"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3575"
+    },
+    {
+      "number": 3576,
+      "title": "Add per-name {item} substitution to override aliases",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-10-23",
+      "updated": "2026-10-23",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3576"
+    },
+    {
+      "number": 3577,
+      "title": "Add nested groups to override aliases",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-10-23",
+      "updated": "2026-10-23",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3577"
     },
     {
       "number": 385,
@@ -1659,6 +1689,22 @@
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3202"
     },
     {
+      "number": 3203,
+      "title": "[Feature Request] Type validation for instantiate arguments",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "done",
+      "status_emoji": "✅",
+      "prs": [],
+      "created": "2026-06-08",
+      "updated": "2026-06-26",
+      "labels": [
+        "enhancement",
+        "instantiate_api"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3203"
+    },
+    {
       "number": 3220,
       "title": "Consider promoting callbacks out of experimental",
       "category": "Enhancement",
@@ -2573,25 +2619,23 @@
         "structured config"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3568"
-    },
-    {
-      "number": 3203,
-      "title": "[Feature Request] Type validation for instantiate arguments",
-      "category": "Enhancement",
-      "category_emoji": "✨",
-      "status": "done",
-      "status_emoji": "✅",
-      "prs": [],
-      "created": "2026-06-08",
-      "updated": "2026-06-26",
-      "labels": [
-        "enhancement",
-        "instantiate_api"
-      ],
-      "url": "https://github.com/hydra-ecosystem/hydra/issues/3203"
     }
   ],
   "updates": [
+    {
+      "ts": "2026-10-23T17:51:48Z",
+      "kind": "new",
+      "issue": 3577,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3577",
+      "title": "Add nested groups to override aliases"
+    },
+    {
+      "ts": "2026-10-23T17:51:48Z",
+      "kind": "new",
+      "issue": 3576,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3576",
+      "title": "Add per-name {item} substitution to override aliases"
+    },
     {
       "ts": "2026-10-23T13:13:29Z",
       "kind": "closed",
@@ -4274,21 +4318,6 @@
       "issue": 3445,
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3445",
       "title": "Reach and enforce 100% public type coverage"
-    },
-    {
-      "ts": "2026-09-10T15:50:16Z",
-      "kind": "new",
-      "issue": 3444,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3444",
-      "title": "Include ANTLR license with the build JAR in Hydra 1.4 sdists"
-    },
-    {
-      "ts": "2026-09-07T19:46:27Z",
-      "kind": "pr",
-      "issue": 3440,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3440",
-      "title": "hydra.mode discovery composes the config twice on every invocation",
-      "detail": "unlinked #3441"
     }
   ]
 }
