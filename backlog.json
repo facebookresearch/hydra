@@ -1,9 +1,9 @@
 {
-  "generated_on": "2026-10-22",
-  "generated_at": "2026-10-22T10:47:38Z",
+  "generated_on": "2026-10-23",
+  "generated_at": "2026-10-23T06:47:39Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 42,
+    "open_total": 43,
     "by_category": [
       {
         "category": "Bug",
@@ -15,19 +15,19 @@
         "category": "Enhancement",
         "emoji": "✨",
         "count": 38,
-        "percentage": 90.5
+        "percentage": 88.4
       },
       {
         "category": "Documentation",
         "emoji": "📄",
-        "count": 2,
-        "percentage": 4.8
+        "count": 3,
+        "percentage": 7.0
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 1,
-        "percentage": 2.4
+        "percentage": 2.3
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 1,
-        "percentage": 2.4
+        "percentage": 2.3
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 42
+        "count": 43
       },
       {
         "status": "done",
@@ -739,6 +739,21 @@
         "list composition"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3534"
+    },
+    {
+      "number": 3575,
+      "title": "[Documentation] Explain config loading using a virtual filesystem perspective",
+      "category": "Documentation",
+      "category_emoji": "📄",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-10-23",
+      "updated": "2026-10-23",
+      "labels": [
+        "documentation"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3575"
     },
     {
       "number": 385,
@@ -2578,6 +2593,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-10-23T06:47:39Z",
+      "kind": "new",
+      "issue": 3575,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3575",
+      "title": "[Documentation] Explain config loading using a virtual filesystem perspective"
+    },
+    {
       "ts": "2026-10-21T10:43:13Z",
       "kind": "closed",
       "issue": 3568,
@@ -4267,14 +4289,6 @@
       "issue": 3427,
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3427",
       "title": "HydraConfig is unavailable during multirun controller initialization"
-    },
-    {
-      "ts": "2026-09-07T19:46:27Z",
-      "kind": "status",
-      "issue": 3440,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3440",
-      "title": "hydra.mode discovery composes the config twice on every invocation",
-      "detail": "community PR → not started"
     }
   ]
 }
