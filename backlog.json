@@ -1,9 +1,9 @@
 {
   "generated_on": "2026-10-23",
-  "generated_at": "2026-10-23T17:53:02Z",
+  "generated_at": "2026-10-23T18:34:53Z",
   "repo": "hydra-ecosystem/hydra",
   "summary": {
-    "open_total": 44,
+    "open_total": 45,
     "by_category": [
       {
         "category": "Bug",
@@ -14,20 +14,20 @@
       {
         "category": "Enhancement",
         "emoji": "✨",
-        "count": 39,
-        "percentage": 88.6
+        "count": 40,
+        "percentage": 88.9
       },
       {
         "category": "Documentation",
         "emoji": "📄",
         "count": 3,
-        "percentage": 6.8
+        "percentage": 6.7
       },
       {
         "category": "Question",
         "emoji": "❓",
         "count": 1,
-        "percentage": 2.3
+        "percentage": 2.2
       },
       {
         "category": "Refactor",
@@ -39,7 +39,7 @@
         "category": "Build",
         "emoji": "🏗️",
         "count": 1,
-        "percentage": 2.3
+        "percentage": 2.2
       }
     ],
     "by_status": [
@@ -61,7 +61,7 @@
       {
         "status": "not started",
         "emoji": "⬜",
-        "count": 44
+        "count": 45
       },
       {
         "status": "done",
@@ -768,6 +768,21 @@
         "enhancement"
       ],
       "url": "https://github.com/hydra-ecosystem/hydra/issues/3577"
+    },
+    {
+      "number": 3578,
+      "title": "Add slice() for lists and discrete sweeps",
+      "category": "Enhancement",
+      "category_emoji": "✨",
+      "status": "not started",
+      "status_emoji": "⬜",
+      "prs": [],
+      "created": "2026-10-23",
+      "updated": "2026-10-23",
+      "labels": [
+        "enhancement"
+      ],
+      "url": "https://github.com/hydra-ecosystem/hydra/issues/3578"
     },
     {
       "number": 385,
@@ -2623,6 +2638,13 @@
   ],
   "updates": [
     {
+      "ts": "2026-10-23T18:34:53Z",
+      "kind": "new",
+      "issue": 3578,
+      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3578",
+      "title": "Add slice() for lists and discrete sweeps"
+    },
+    {
       "ts": "2026-10-23T17:51:48Z",
       "kind": "new",
       "issue": 3577,
@@ -4311,13 +4333,6 @@
       "issue": 3202,
       "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3202",
       "title": "Disallow parent traversal in Defaults List config groups"
-    },
-    {
-      "ts": "2026-09-10T21:58:13Z",
-      "kind": "new",
-      "issue": 3445,
-      "issue_url": "https://github.com/hydra-ecosystem/hydra/issues/3445",
-      "title": "Reach and enforce 100% public type coverage"
     }
   ]
 }
